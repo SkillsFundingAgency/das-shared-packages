@@ -7,11 +7,9 @@ namespace SFA.DAS.Configuration
     {
         public ConfigurationOptions(string serviceName = null, string environmentName = null, string versionNumber = null)
         {
-            var assemblyName = Assembly.GetEntryAssembly().GetName();
-
-            ServiceName = string.IsNullOrEmpty(serviceName) ? assemblyName.Name : serviceName;
+            ServiceName = string.IsNullOrEmpty(serviceName) ? Assembly.GetEntryAssembly().GetName().Name : serviceName;
             EnvironmentName = string.IsNullOrEmpty(environmentName) ? GetEnvironmentName() : environmentName;
-            VersionNumber = string.IsNullOrEmpty(serviceName) ? $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}" : versionNumber;
+            VersionNumber = string.IsNullOrEmpty(serviceName) ? GetVersionNumer() : versionNumber;
         }
 
         public string ServiceName { get; private set; }
@@ -22,6 +20,12 @@ namespace SFA.DAS.Configuration
         {
             var environmentName = Environment.GetEnvironmentVariable("DASENV");
             return string.IsNullOrEmpty(environmentName) ? "Dev" : environmentName;
+        }
+
+        private string GetVersionNumer()
+        {
+            var version = Assembly.GetEntryAssembly().GetName().Version;
+            return $"{version.Major}.{version.Minor}";
         }
     }
 }
