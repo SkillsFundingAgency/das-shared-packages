@@ -1,22 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
-  <id>SFA.DAS.Configuration</id>
+  <id>SFA.DAS.Configuration.AzureTableStorage</id>
   <version>1.0.0</version>
   <authors>Skills Funding Agency</authors>
   <owners>Skills Funding Agency</owners>
-  <summary>Shared configuration project</summary>
+  <summary>Azure Table Storage repository for configuration</summary>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
-  <description>Provides framework for storing configuration in a persistence store based on environment</description>
+  <description>Provides storage layer for shared configuration in Azure Table Storage</description>
   <releaseNotes></releaseNotes>
   <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
   <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
   <tags></tags>
   <dependencies>
-    <dependency id="Newtonsoft.Json" version="8.0.3"/>
+    <dependency id="WindowsAzure.Storage" version="4.3.0"/>
+    <dependency id="SFA.DAS.Configuration" version="1.0.0"/>
   </dependencies>
   </metadata>
   <files>
-	<file src="SFA.DAS.Configuration.dll" target=".\Bin\Release" />
+	<file src="SFA.DAS.Configuration.AzureTableStorage.dll" target=".\Bin\Release" />
   </files>
 </package>

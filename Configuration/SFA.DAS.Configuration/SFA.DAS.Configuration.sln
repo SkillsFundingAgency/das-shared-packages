@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A71A2CA0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration.UnitTests", "SFA.DAS.Configuration.UnitTests\SFA.DAS.Configuration.UnitTests.csproj", "{DCAE686F-CD1B-4534-A735-C478BE92E1FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration.AzureTableStorage", "SFA.DAS.Configuration.AzureTableStorage\SFA.DAS.Configuration.AzureTableStorage.csproj", "{81BDDA54-55F6-4694-A474-31BBD30F3EF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{DCAE686F-CD1B-4534-A735-C478BE92E1FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCAE686F-CD1B-4534-A735-C478BE92E1FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCAE686F-CD1B-4534-A735-C478BE92E1FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81BDDA54-55F6-4694-A474-31BBD30F3EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81BDDA54-55F6-4694-A474-31BBD30F3EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81BDDA54-55F6-4694-A474-31BBD30F3EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81BDDA54-55F6-4694-A474-31BBD30F3EF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
