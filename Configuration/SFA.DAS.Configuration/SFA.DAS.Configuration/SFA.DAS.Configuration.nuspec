@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
+  <id>SFA.DAS.Configuration</id>
+  <version>1.0.0.0</version>
+  <authors>Skills Funding Agency</authors>
+  <owners>Skills Funding Agency</owners>
+  <summary>Shared configuration project</summary>
+  <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  <description>Provides framework for storing configuration in a persistence store based on environment</description>
+  <releaseNotes></releaseNotes>
+  <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+  <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+  <tags></tags>
+  <dependencies>
+    <dependency id="Newtonsoft.Json" version="8.0.3"/>
+  </dependencies>
+  </metadata>
+  <files>
+	<file src="SFA.DAS.Configuration.dll" target=".\Bin\Release" />
+  </files>
+</package>
