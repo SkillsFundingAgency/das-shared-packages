@@ -7,7 +7,7 @@ namespace SFA.DAS.Configuration
     {
         public ConfigurationOptions(string serviceName = null, string environmentName = null, string versionNumber = null)
         {
-            var assemblyName = Assembly.GetCallingAssembly().GetName();
+            var assemblyName = Assembly.GetEntryAssembly().GetName();
 
             ServiceName = string.IsNullOrEmpty(serviceName) ? assemblyName.Name : serviceName;
             EnvironmentName = string.IsNullOrEmpty(environmentName) ? GetEnvironmentName() : environmentName;
