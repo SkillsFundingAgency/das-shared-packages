@@ -27,7 +27,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             var result = await table.ExecuteAsync(tableOperation);
 
             var configItem = (ConfigurationItem)result.Result;
-            return configItem.Data;
+            return configItem == null ? null : configItem.Data;
         }
     }
 }
