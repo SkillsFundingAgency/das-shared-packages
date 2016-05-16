@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
+  <id>SFA.DAS.Messaging</id>
+  <version>1.0.0</version>
+  <authors>DAS</authors>
+  <owners>DAS</owners>
+  <summary>Shared messaging project</summary>
+  <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  <description>Provides framework for messaging between components</description>
+  <releaseNotes></releaseNotes>
+  <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+  <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+  <tags></tags>
+  <dependencies>
+  </dependencies>
+  </metadata>
+  <files>
+	  <file src=".\bin\Release\SFA.DAS.Messaging.dll" />
+  </files>
+</package>
