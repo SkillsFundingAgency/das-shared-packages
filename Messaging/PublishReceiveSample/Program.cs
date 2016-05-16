@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SFA.DAS.Messaging;
+using SFA.DAS.Messaging.AzureServiceBus;
 
 namespace PublishReceiveSample
 {
@@ -12,6 +13,12 @@ namespace PublishReceiveSample
         static void Main(string[] args)
         {
             var messageSubSystem = GetMessageSubSystem();
+            if (messageSubSystem == null)
+            {
+                return;
+            }
+            Console.WriteLine();
+
             var messageService = new MessagingService(messageSubSystem);
             var exit = false;
 
@@ -36,12 +43,34 @@ namespace PublishReceiveSample
                         exit = true;
                         break;
                 }
+                Console.WriteLine();
             }
         }
 
         private static IMessageSubSystem GetMessageSubSystem()
         {
-            return new FileSystemMessageSubSystem();
+            Console.WriteLine("Which message sub-system would you like to use?");
+            Console.WriteLine("   1. File system");
+            Console.WriteLine("   2. Azure ServiceBus");
+            Console.WriteLine("   3. Quit");
+            Console.Write("Selection (1 - 3): ");
+            var selection = int.Parse(Console.ReadLine().Trim());
+
+            switch (selection)
+            {
+                case 1:
+                    return new FileSystemMessageSubSystem();
+                case 2:
+                    Console.Write("Connection string: ");
+                    var connectionString = Console.ReadLine().Trim();
+
+                    Console.Write("Queue name: ");
+                    var queueName = Console.ReadLine().Trim();
+
+                    return new AzureServiceBusMessageSubSystem(connectionString, queueName);
+                default:
+                    return null;
+            }
         }
         private static void PublishMessage(MessagingService messageService)
         {

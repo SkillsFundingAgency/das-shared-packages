@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishReceiveSample", "Pub
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{AA04D4A9-7217-4E88-B933-36E9C1A2E08F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.AzureServiceBus", "SFA.DAS.Messaging.AzureServiceBus\SFA.DAS.Messaging.AzureServiceBus.csproj", "{71C7C83D-5BBA-4F13-B31F-B86CA5485422}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{291BF54B-0B82-4E22-BC39-E37ADDD792AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{291BF54B-0B82-4E22-BC39-E37ADDD792AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{291BF54B-0B82-4E22-BC39-E37ADDD792AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71C7C83D-5BBA-4F13-B31F-B86CA5485422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C7C83D-5BBA-4F13-B31F-B86CA5485422}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C7C83D-5BBA-4F13-B31F-B86CA5485422}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71C7C83D-5BBA-4F13-B31F-B86CA5485422}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
