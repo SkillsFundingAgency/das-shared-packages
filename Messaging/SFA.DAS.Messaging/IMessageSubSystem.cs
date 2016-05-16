@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Messaging
 {
-    public class Class1
+    public interface IMessageSubSystem
     {
+        Task Enqueue(string message);
+        Task<string> Dequeue();
     }
 }
