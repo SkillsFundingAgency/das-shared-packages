@@ -16,12 +16,14 @@ let testDirectory = getBuildParamOrDefault "buildMode" "Debug"
 let myBuildConfig = if testDirectory = "Release" then MSBuildRelease else MSBuildDebug
 let userPath = getBuildParamOrDefault "userDirectory" @"C:\Users\buildguest\"
 
+let publishNuget = getBuildParamOrDefault "publishNuget" "false"
+let nugetOutputDirectory = getBuildParamOrDefault "nugetOutputDirectory" "bin/Release"
 let nugetAccessKey = getBuildParamOrDefault "nugetAccessKey" ""
 
 let isAutomationProject = getBuildParamOrDefault "AcceptanceTests" "false"
 
-let devWebsitePort = getBuildParamOrDefault "devport" "7070"
-let accWebsitePort = getBuildParamOrDefault "accport" "5050"
+let devWebsitePort = getBuildParamOrDefault "devport" "7071"
+let accWebsitePort = getBuildParamOrDefault "accport" "5051"
 
 let mutable projectName = ""
 let mutable folderPrecompiled = @"\"+ projectName + ".Release_precompiled "
@@ -29,11 +31,15 @@ let mutable publishDirectory = rootPublishDirectory @@ projectName
 let mutable publishingProfile = projectName + "PublishProfile"
 let mutable shouldPublishSite = false
 
-let mutable versionNumber = "1.0.0.0"
+let mutable versionNumber = getBuildParamOrDefault "versionNumber" "1.0.0.0"
+
+let mutable solutionFilePresent = true
 
 Target "Set Solution Name" (fun _ ->
     
     let directoryHelper = FileSystemHelper.directoryInfo(currentDirectory).Name
+
+    
 
     let mutable solutionNameToMatch = ""
     if isAutomationProject.ToLower() = "false" then 
@@ -41,42 +47,46 @@ Target "Set Solution Name" (fun _ ->
     else 
         solutionNameToMatch <- "*Automation.sln"
 
-    let findSolutionFile = FindFirstMatchingFile "*.sln" currentDirectory
+    let findSolutionFile = TryFindFirstMatchingFile "*.sln" currentDirectory
     
-    let solutionFileHelper = FileSystemHelper.fileInfo(findSolutionFile)
+    if findSolutionFile.IsSome then
+        
+        let solutionFileHelper = FileSystemHelper.fileInfo(findSolutionFile.Value)
             
-    projectName <- solutionFileHelper.Name.Replace(solutionFileHelper.Extension, "")
-    folderPrecompiled <- sprintf @"\%s.%s_precompiled " projectName testDirectory
-    publishDirectory <- rootPublishDirectory @@  projectName
-    publishingProfile <- projectName + "PublishProfile"
+        projectName <- solutionFileHelper.Name.Replace(solutionFileHelper.Extension, "")
+        folderPrecompiled <- sprintf @"\%s.%s_precompiled " projectName testDirectory
+        publishDirectory <- rootPublishDirectory @@  projectName
+        publishingProfile <- projectName + "PublishProfile"
 
-    let subDirectories = directoryInfo(currentDirectory).GetDirectories()
+        let subDirectories = directoryInfo(currentDirectory).GetDirectories()
     
-    if subDirectories.Length > 0 then 
-        for directory in subDirectories do
-            if shouldPublishSite = false then 
-                shouldPublishSite <- fileExists((directory.FullName @@ @"Properties\PublishProfiles\" @@ publishingProfile + ".pubxml"))
+        if subDirectories.Length > 0 then 
+            for directory in subDirectories do
+                if shouldPublishSite = false then 
+                    shouldPublishSite <- fileExists((directory.FullName @@ @"Properties\PublishProfiles\" @@ publishingProfile + ".pubxml"))
                 
-    else
-        shouldPublishSite <- false
-    
-    versionNumber <- "1.0.0.0"    
-    let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
-    let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
-
-    if testDirectory.ToLower() = "release" then
-        versionNumber <- buildVersion
-        if versionNumber.ToLower() <> "localbuild" then
-            versionNumber <- sprintf  @"%s.%s.%s.0" assemblyMajorNumber assemblyMinorNumber buildVersion
         else
-            versionNumber <- "1.0.0.0"
+            shouldPublishSite <- false
+    
+        versionNumber <- "1.0.0.0"    
+        let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
+        let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
 
-    trace ("Will publish: " + (shouldPublishSite.ToString()))
-    trace ("PublishingProfile: " + publishingProfile)
-    trace ("PublishDirectory: " + publishDirectory)
-    trace ("PrecompiledFolder: " + folderPrecompiled)
-    trace ("VersionNumber:" + versionNumber)
-    trace ("Project Name has been set to: " + projectName)
+        if testDirectory.ToLower() = "release" then
+            versionNumber <- buildVersion
+            if versionNumber.ToLower() <> "localbuild" then
+                versionNumber <- sprintf  @"%s.%s.0.%s" assemblyMajorNumber assemblyMinorNumber buildVersion
+            else
+                versionNumber <- "1.0.0.0"
+
+        trace ("Will publish: " + (shouldPublishSite.ToString()))
+        trace ("PublishingProfile: " + publishingProfile)
+        trace ("PublishDirectory: " + publishDirectory)
+        trace ("PrecompiledFolder: " + folderPrecompiled)
+        trace ("VersionNumber:" + versionNumber)
+        trace ("Project Name has been set to: " + projectName)
+    else
+        solutionFilePresent <- false
 
 )
 
@@ -139,16 +149,18 @@ Target "Build DNX Project"(fun _ ->
 )
 
 let buildSolution() = 
-    let buildMode = getBuildParamOrDefault "buildMode" "Debug"
 
-    let properties = 
-                    [
-                        ("TargetProfile","cloud")
-                    ]
+    if solutionFilePresent then
+        let buildMode = getBuildParamOrDefault "buildMode" "Debug"
 
-    !! (@"./" + projectName + ".sln")
-        |> MSBuildReleaseExt null properties "Publish"
-        |> Log "Build-Output: "
+        let properties = 
+                        [
+                            ("TargetProfile","cloud")
+                        ]
+
+        !! (@"./" + projectName + ".sln")
+            |> MSBuildReleaseExt null properties "Publish"
+            |> Log "Build-Output: "
 
 
 Target "Build Acceptance Solution"(fun _ ->
@@ -359,20 +371,29 @@ Target "Create Development Site in IIS" (fun _ ->
 
 Target "Create Nuget Package" (fun _ ->
     
-    "FAKEBuildScript.nuspec"
-    |> NuGet (fun p -> 
-        {p with               
-            Authors = ["Daniel Ashton"]
-            Project = "FAKEBuildScript"
-            Summary = "Simple Script used for building .NET projects locally and on a CI"
-            Description = "Build script for .NET projects using FAKE. Simply install the nuget package and then execute the RunBuild.bat file. This will then build the solution file, and run any tests that are available. The Tests are picked up by convention, anything ending in .UnitTests. If there is a Publishing Profile, named [SolutionName]PublishingProfile, this will also create two websites in IIS, one for dev and one for test."
-            Version = "1.0.4"
-            NoPackageAnalysis = true
-            OutputPath = currentDirectory
-            WorkingDir = currentDirectory
-            AccessKey = nugetAccessKey
-            Publish = true
-            })
+
+    if testDirectory.ToLower() = "release" then
+        let nupkgFiles = !! (currentDirectory + "/**/*.nuspec") 
+
+    
+        for nupkgFile in nupkgFiles do
+            let fileInfo = fileSystemInfo(nupkgFile)
+            let name = fileInfo.Name.Replace(fileInfo.Extension,"")
+            
+            (fileInfo.FullName)
+            |> NuGet (fun p -> 
+                {p with               
+                    Authors = [name]
+                    Project = name
+                    Summary = name
+                    Description = name
+                    Version = versionNumber
+                    NoPackageAnalysis = true
+                    OutputPath = FileSystemHelper.DirectoryName(fileInfo.FullName) @@ nugetOutputDirectory
+                    WorkingDir = FileSystemHelper.DirectoryName(fileInfo.FullName)
+                    AccessKey = nugetAccessKey
+                    Publish = System.Convert.ToBoolean(publishNuget)
+                    })
 )
 
 "Set Solution Name"
@@ -390,6 +411,7 @@ Target "Create Nuget Package" (fun _ ->
    ==>"Building Unit Tests"
    ==>"Run NUnit Tests"
    ==>"Compile Views"
+   ==>"Create Nuget Package"
    ==>"Zip Compiled Source"
    ==>"Create Development Site in IIS"
    ==>"Create Accceptance Test Site in IIS"

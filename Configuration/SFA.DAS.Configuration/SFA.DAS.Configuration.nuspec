@@ -17,6 +17,6 @@
   </dependencies>
   </metadata>
   <files>
-	<file src="SFA.DAS.Configuration.dll" target=".\Bin\Release" />
+	<file src=".\bin\Release\SFA.DAS.Configuration.dll" />
   </files>
 </package>
