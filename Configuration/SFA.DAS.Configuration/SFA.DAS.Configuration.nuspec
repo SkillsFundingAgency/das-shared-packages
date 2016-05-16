@@ -3,8 +3,8 @@
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
   <id>SFA.DAS.Configuration</id>
   <version>1.0.0</version>
-  <authors>Skills Funding Agency</authors>
-  <owners>Skills Funding Agency</owners>
+  <authors>DAS</authors>
+  <owners>DAS</owners>
   <summary>Shared configuration project</summary>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <description>Provides framework for storing configuration in a persistence store based on environment</description>

@@ -3,8 +3,8 @@
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
   <id>SFA.DAS.Configuration.AzureTableStorage</id>
   <version>1.0.0</version>
-  <authors>Skills Funding Agency</authors>
-  <owners>Skills Funding Agency</owners>
+  <authors>DAS</authors>
+  <owners>DAS</owners>
   <summary>Azure Table Storage repository for configuration</summary>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <description>Provides storage layer for shared configuration in Azure Table Storage</description>
