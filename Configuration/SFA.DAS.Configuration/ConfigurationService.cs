@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace SFA.DAS.Configuration
 {
-    public class ConfigurationService
+    public class ConfigurationService : IConfigurationService
     {
         private readonly IConfigurationRepository _configurationRepository;
         private readonly ConfigurationOptions _options;
