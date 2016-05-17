@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace SFA.DAS.Messaging
@@ -23,13 +19,13 @@ namespace SFA.DAS.Messaging
 
         public virtual T Content { get; protected set; }
 
-        public virtual Task Complete()
+        public virtual Task CompleteAsync()
         {
-            return _subSystemMessage.Complete();
+            return _subSystemMessage.CompleteAsync();
         }
-        public virtual Task Abort()
+        public virtual Task AbortAsync()
         {
-            return _subSystemMessage.Abort();
+            return _subSystemMessage.AbortAsync();
         }
     }
 }

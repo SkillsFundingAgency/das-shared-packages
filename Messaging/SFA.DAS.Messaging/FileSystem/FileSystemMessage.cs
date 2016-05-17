@@ -13,7 +13,7 @@ namespace SFA.DAS.Messaging.FileSystem
             Content = content;
         }
 
-        public override Task Complete()
+        public override Task CompleteAsync()
         {
             var lockPath = GetLockPath(_file);
             _file.Delete();
@@ -21,7 +21,7 @@ namespace SFA.DAS.Messaging.FileSystem
             return Task.FromResult<object>(null);
         }
 
-        public override Task Abort()
+        public override Task AbortAsync()
         {
             var lockPath = GetLockPath(_file);
             File.Delete(lockPath);

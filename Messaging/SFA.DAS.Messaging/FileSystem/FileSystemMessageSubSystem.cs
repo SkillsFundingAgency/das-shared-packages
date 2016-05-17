@@ -20,7 +20,7 @@ namespace SFA.DAS.Messaging.FileSystem
             _directoryPath = directoryPath;
         }
 
-        public async Task Enqueue(string message)
+        public async Task EnqueueAsync(string message)
         {
             if (!Directory.Exists(_directoryPath))
             {
@@ -37,7 +37,7 @@ namespace SFA.DAS.Messaging.FileSystem
             }
         }
 
-        public async Task<SubSystemMessage> Dequeue()
+        public async Task<SubSystemMessage> DequeueAsync()
         {
             DeleteOldLockFiles();
             var messages = GetDirectoryContents("*.json");

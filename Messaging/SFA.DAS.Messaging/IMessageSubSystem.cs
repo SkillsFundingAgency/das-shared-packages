@@ -4,7 +4,7 @@ namespace SFA.DAS.Messaging
 {
     public interface IMessageSubSystem
     {
-        Task Enqueue(string message);
-        Task<SubSystemMessage> Dequeue();
+        Task EnqueueAsync(string message);
+        Task<SubSystemMessage> DequeueAsync();
     }
 }

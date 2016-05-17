@@ -6,11 +6,11 @@ namespace SFA.DAS.Messaging
     {
         public virtual string Content { get; protected set; }
 
-        public virtual Task Complete()
+        public virtual Task CompleteAsync()
         {
             return Task.FromResult<object>(null);
         }
-        public virtual Task Abort()
+        public virtual Task AbortAsync()
         {
             return Task.FromResult<object>(null);
         }

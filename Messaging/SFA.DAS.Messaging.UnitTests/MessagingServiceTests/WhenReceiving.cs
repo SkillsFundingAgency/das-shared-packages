@@ -24,10 +24,10 @@ namespace SFA.DAS.Messaging.UnitTests.MessagingServiceTests
             //Arrange
             var expectedEvent = TestEvent.GetDefault();
             var expectedMessage = MockMessageFromContent(JsonConvert.SerializeObject(expectedEvent));
-            _messageSubSystem.Setup(x => x.Dequeue()).Returns(Task.FromResult(expectedMessage.Object));
+            _messageSubSystem.Setup(x => x.DequeueAsync()).Returns(Task.FromResult(expectedMessage.Object));
 
             //Act
-            var actual = await _messagingService.Receive<TestEvent>();
+            var actual = await _messagingService.ReceiveAsync<TestEvent>();
             
             //Assert
             Assert.AreEqual(expectedEvent.Timestamp, actual.Content.Timestamp);
@@ -39,10 +39,10 @@ namespace SFA.DAS.Messaging.UnitTests.MessagingServiceTests
         {
             //Arrange
             var expectedMessage = MockMessageFromContent(JsonConvert.SerializeObject(expectedEvent));
-            _messageSubSystem.Setup(x => x.Dequeue()).Returns(Task.FromResult(expectedMessage.Object));
+            _messageSubSystem.Setup(x => x.DequeueAsync()).Returns(Task.FromResult(expectedMessage.Object));
 
             //Act
-            var actual = await _messagingService.Receive<TestEvent>();
+            var actual = await _messagingService.ReceiveAsync<TestEvent>();
 
             //Assert
             Assert.IsNull(actual.Content);

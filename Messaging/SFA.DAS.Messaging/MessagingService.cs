@@ -12,7 +12,7 @@ namespace SFA.DAS.Messaging
             _messageSubSsytem = messageSubSsytem;
         }
 
-        public async Task Publish<T>(T @event)
+        public async Task PublishAsync<T>(T @event)
             where T : new()
         {
             if (@event == null)
@@ -23,13 +23,13 @@ namespace SFA.DAS.Messaging
 
             var message = JsonConvert.SerializeObject(@event);
 
-            await _messageSubSsytem.Enqueue(message);
+            await _messageSubSsytem.EnqueueAsync(message);
         }
 
-        public async Task<Message<T>> Receive<T>()
+        public async Task<Message<T>> ReceiveAsync<T>()
             where T : new()
         {
-            var message = await _messageSubSsytem.Dequeue();
+            var message = await _messageSubSsytem.DequeueAsync();
             return new Message<T>(message);
         }
     }

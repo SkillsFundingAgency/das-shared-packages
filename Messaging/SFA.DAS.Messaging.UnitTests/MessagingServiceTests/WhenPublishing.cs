@@ -19,7 +19,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessagingServiceTests
             _basicEventJson = JsonConvert.SerializeObject(_basicEvent);
 
             _messageSubSystem = new Mock<IMessageSubSystem>();
-            _messageSubSystem.Setup(ss => ss.Enqueue(It.IsAny<string>())).Returns(Task.FromResult<object>(null));
+            _messageSubSystem.Setup(ss => ss.EnqueueAsync(It.IsAny<string>())).Returns(Task.FromResult<object>(null));
 
             _messageService = new MessagingService(_messageSubSystem.Object);
         }
@@ -28,20 +28,20 @@ namespace SFA.DAS.Messaging.UnitTests.MessagingServiceTests
         public async Task ThenItShouldEnqueueJsonSerializedMessage()
         {
             // Act
-            await _messageService.Publish(_basicEvent);
+            await _messageService.PublishAsync(_basicEvent);
 
             // Assert
-            _messageSubSystem.Verify(ss => ss.Enqueue(_basicEventJson), Times.Once());
+            _messageSubSystem.Verify(ss => ss.EnqueueAsync(_basicEventJson), Times.Once());
         }
 
         [Test]
         public async Task ThenItShouldNotQueueWhenTheMessageIsNull()
         {
             // Act
-            await _messageService.Publish<TestEvent>(null);
+            await _messageService.PublishAsync<TestEvent>(null);
 
             // Assert
-            _messageSubSystem.Verify(ss => ss.Enqueue(It.IsAny<string>()), Times.Never());
+            _messageSubSystem.Verify(ss => ss.EnqueueAsync(It.IsAny<string>()), Times.Never());
         }
     }
 }

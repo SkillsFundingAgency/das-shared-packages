@@ -15,7 +15,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             _queueName = queueName;
         }
 
-        public async Task Enqueue(string message)
+        public async Task EnqueueAsync(string message)
         {
             var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
             var brokeredMessage = new BrokeredMessage(message)
@@ -26,7 +26,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             await client.SendAsync(brokeredMessage);
         }
 
-        public async Task<SubSystemMessage> Dequeue()
+        public async Task<SubSystemMessage> DequeueAsync()
         {
             var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
             var brokeredMessage = await client.ReceiveAsync();

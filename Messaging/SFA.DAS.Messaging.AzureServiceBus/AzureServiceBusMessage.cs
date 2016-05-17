@@ -13,11 +13,11 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             Content = brokeredMessage.GetBody<string>();
         }
 
-        public override Task Complete()
+        public override Task CompleteAsync()
         {
             return _brokeredMessage.CompleteAsync();
         }
-        public override Task Abort()
+        public override Task AbortAsync()
         {
             return _brokeredMessage.AbandonAsync();
         }

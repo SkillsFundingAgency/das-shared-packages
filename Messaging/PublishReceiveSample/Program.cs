@@ -72,13 +72,13 @@ namespace PublishReceiveSample
         private static void PublishMessage(MessagingService messageService)
         {
             var e = new SampleEvent { Timestamp = DateTimeOffset.Now, Id = Guid.NewGuid().ToString() };
-            messageService.Publish(e).Wait();
+            messageService.PublishAsync(e).Wait();
 
             WriteColoredLine($"Published message at {e.Timestamp} with id {e.Id}", ConsoleColor.Yellow);
         }
         private static void ReceiveMessage(MessagingService messageService)
         {
-            var receiveTask = messageService.Receive<SampleEvent>();
+            var receiveTask = messageService.ReceiveAsync<SampleEvent>();
             receiveTask.Wait();
             var e = receiveTask.Result;
             if (e == null || e.Content == null)
@@ -87,7 +87,7 @@ namespace PublishReceiveSample
             }
             else
             {
-                e.Complete();
+                e.CompleteAsync();
                 WriteColoredLine($"Published message at {e.Content.Timestamp} with id {e.Content.Id}", ConsoleColor.Yellow);
             }
         }
