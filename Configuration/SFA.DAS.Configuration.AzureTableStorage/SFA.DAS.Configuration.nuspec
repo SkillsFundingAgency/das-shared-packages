@@ -1,23 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">    
-  <id>SFA.DAS.Configuration.AzureTableStorage</id>
-  <version>1.0.0</version>
-  <authors>DAS</authors>
-  <owners>DAS</owners>
-  <summary>Azure Table Storage repository for configuration</summary>
-  <requireLicenseAcceptance>false</requireLicenseAcceptance>
-  <description>Provides storage layer for shared configuration in Azure Table Storage</description>
-  <releaseNotes></releaseNotes>
-  <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
-  <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
-  <tags></tags>
-  <dependencies>
-    <dependency id="WindowsAzure.Storage" version="4.3.0"/>
-    <dependency id="SFA.DAS.Configuration" version="1.0.0"/>
-  </dependencies>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SFA.DAS.Configuration.AzureTableStorage</id>
+    <version>1.0.0</version>
+    <authors>DAS</authors>
+    <owners>DAS</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides storage layer for shared configuration in Azure Table Storage</description>
+    <summary>Azure Table Storage repository for configuration</summary>
+    <releaseNotes />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="WindowsAzure.Storage" version="4.3.0"/>
+        <dependency id="SFA.DAS.Configuration" version="1.0.0"/>
+      </group>
+    </dependencies>
   </metadata>
   <files>
-	<file src="\Bin\Release\SFA.DAS.Configuration.AzureTableStorage.dll"/>
+    <file src="bin\Release\SFA.DAS.Configuration.AzureTableStorage.dll" target="lib\net45\SFA.DAS.Configuration.AzureTableStorage.dll" />
   </files>
 </package>
