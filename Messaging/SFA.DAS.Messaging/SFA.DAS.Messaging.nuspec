@@ -17,6 +17,6 @@
     </dependencies>
   </metadata>
   <files>
-	  <file src=".\bin\Release\SFA.DAS.Messaging.dll" />
+	  <file src="bin\Release\SFA.DAS.Messaging.dll" />
   </files>
 </package>
