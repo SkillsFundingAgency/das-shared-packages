@@ -26,18 +26,11 @@ namespace SFA.DAS.Messaging
             await _messageSubSsytem.Enqueue(message);
         }
 
-        public async Task<T> Receive<T>()
+        public async Task<Message<T>> Receive<T>()
             where T : new()
         {
-            
             var message = await _messageSubSsytem.Dequeue();
-
-            if (string.IsNullOrEmpty(message))
-            {
-                return await Task.FromResult(default(T));
-            }
-
-            return JsonConvert.DeserializeObject<T>(message);
+            return new Message<T>(message);
         }
     }
 }

@@ -45,8 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileSystemMessageSubSystem.cs" />
+    <Compile Include="FileSystem\FileSystemMessage.cs" />
+    <Compile Include="FileSystem\FileSystemMessageSubSystem.cs" />
     <Compile Include="IMessageSubSystem.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="SubSystemMessage.cs" />
     <Compile Include="MessagingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

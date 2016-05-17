@@ -1,6 +1,7 @@
 ﻿using System;
 using SFA.DAS.Messaging;
 using SFA.DAS.Messaging.AzureServiceBus;
+using SFA.DAS.Messaging.FileSystem;
 
 namespace PublishReceiveSample
 {
@@ -80,13 +81,14 @@ namespace PublishReceiveSample
             var receiveTask = messageService.Receive<SampleEvent>();
             receiveTask.Wait();
             var e = receiveTask.Result;
-            if (e == null)
+            if (e == null || e.Content == null)
             {
                 WriteColoredLine("No messages in queue to receive", ConsoleColor.Red);
             }
             else
             {
-                WriteColoredLine($"Published message at {e.Timestamp} with id {e.Id}", ConsoleColor.Yellow);
+                e.Complete();
+                WriteColoredLine($"Published message at {e.Content.Timestamp} with id {e.Content.Id}", ConsoleColor.Yellow);
             }
         }
         private static void WriteColoredLine(string line, ConsoleColor color)

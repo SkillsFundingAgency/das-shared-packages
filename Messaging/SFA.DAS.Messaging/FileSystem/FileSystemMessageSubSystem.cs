@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Messaging
+namespace SFA.DAS.Messaging.FileSystem
 {
     public class FileSystemMessageSubSystem : IMessageSubSystem
     {
@@ -36,29 +37,20 @@ namespace SFA.DAS.Messaging
             }
         }
 
-        public async Task<string> Dequeue()
+        public async Task<SubSystemMessage> Dequeue()
         {
-            var directory = new DirectoryInfo(_directoryPath);
-            if (!directory.Exists)
+            DeleteOldLockFiles();
+            var messages = GetDirectoryContents("*.json");
+            var locks = GetDirectoryContents("*.lck");
+            var availableMessages = messages.Where(m => !locks.Any(l => l.Name.StartsWith(m.Name)));
+
+            if (!availableMessages.Any())
             {
-                return await Task.FromResult<string>(null);
+                return null;
             }
 
-            var contents = directory.GetFiles("*.json", SearchOption.TopDirectoryOnly);
-            if (!contents.Any())
-            {
-                return await Task.FromResult<string>(null);
-            }
-
-            var next = contents.OrderBy(fi => fi.LastWriteTimeUtc).First();
-            string message;
-            using (var stream = next.OpenRead())
-            using (var reader = new StreamReader(stream))
-            {
-                message = await reader.ReadToEndAsync();
-            }
-            next.Delete();
-
+            var next = availableMessages.OrderBy(fi => fi.LastWriteTimeUtc).First();
+            var message = await FileSystemMessage.Create(next);
             return message;
         }
 
@@ -71,6 +63,31 @@ namespace SFA.DAS.Messaging
                 return appSettingsPath;
             }
             return Path.Combine(Environment.GetEnvironmentVariable("TEMP"), Guid.NewGuid().ToString());
+        }
+        private IEnumerable<FileInfo> GetDirectoryContents(string filter = "*.*")
+        {
+            var directory = new DirectoryInfo(_directoryPath);
+            if (!directory.Exists)
+            {
+                return new FileInfo[0];
+            }
+
+            var contents = directory.GetFiles(filter, SearchOption.TopDirectoryOnly);
+            if (!contents.Any())
+            {
+                return new FileInfo[0];
+            }
+
+            return contents;
+        }
+        private void DeleteOldLockFiles()
+        {
+            var contents = GetDirectoryContents("*.lck");
+            var oldFiles = contents.Where(f => f.LastWriteTimeUtc.CompareTo(DateTime.UtcNow.AddMinutes(-10)) < 0);
+            foreach (var file in oldFiles)
+            {
+                file.Delete();
+            }
         }
     }
 }

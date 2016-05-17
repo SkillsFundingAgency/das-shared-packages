@@ -26,7 +26,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             await client.SendAsync(brokeredMessage);
         }
 
-        public async Task<string> Dequeue()
+        public async Task<SubSystemMessage> Dequeue()
         {
             var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
             var brokeredMessage = await client.ReceiveAsync();
@@ -35,9 +35,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
                 return null;
             }
 
-            var message = brokeredMessage.GetBody<string>();
-            await brokeredMessage.CompleteAsync(); //TODO: We should probably create a version of the messaging system that takes more advantage this reliable messaging stuff
-            return message;
+            return new AzureServiceBusMessage(brokeredMessage);
         }
     }
 }
