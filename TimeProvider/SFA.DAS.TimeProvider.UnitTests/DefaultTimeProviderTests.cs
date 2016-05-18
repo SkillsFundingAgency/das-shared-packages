@@ -9,13 +9,13 @@ namespace SFA.DAS.TimeProvider.UnitTests
         [Test]
         public void VerifyDefaultProviderIsUsed()
         {
-            Assert.That(TimeProvider.Current is DefaultTimeProvider);
+            Assert.That(DateTimeProvider.Current is DefaultTimeProvider);
         }
 
         [Test]
         public void VerifyCurrentReturnsExpectedDateTime()
         {
-            Assert.That(TimeProvider.Current.UtcNow, Is.EqualTo(DateTime.UtcNow).Within(1).Seconds);
+            Assert.That(DateTimeProvider.Current.UtcNow, Is.EqualTo(DateTime.UtcNow).Within(1).Seconds);
         }
     }
 }

@@ -3,7 +3,7 @@ using SFA.DAS.TimeProvider;
 
 namespace UsageSample
 {
-    public class FakeTimeProvider : TimeProvider
+    public class FakeTimeProvider : DateTimeProvider
     {
         private readonly DateTime _currentTime;
 

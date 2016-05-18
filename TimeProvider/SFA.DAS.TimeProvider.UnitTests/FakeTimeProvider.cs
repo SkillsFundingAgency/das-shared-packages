@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.TimeProvider.UnitTests
 {
-    public class FakeTimeProvider : TimeProvider
+    public class FakeTimeProvider : DateTimeProvider
     {
         private readonly DateTime _currentTime;
 

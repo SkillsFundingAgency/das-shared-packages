@@ -9,7 +9,7 @@ namespace SFA.DAS.TimeProvider.UnitTests
         [TearDown]
         public void Teardown()
         {
-            TimeProvider.ResetToDefault();
+            DateTimeProvider.ResetToDefault();
         }
 
         [Test]
@@ -17,9 +17,9 @@ namespace SFA.DAS.TimeProvider.UnitTests
         {
             var newDateTime = DateTime.Now.AddDays(-1);
 
-            TimeProvider.Current = new FakeTimeProvider(newDateTime);
+            DateTimeProvider.Current = new FakeTimeProvider(newDateTime);
 
-            Assert.That(TimeProvider.Current is FakeTimeProvider);
+            Assert.That(DateTimeProvider.Current is FakeTimeProvider);
         }
 
         [Test]
@@ -27,9 +27,9 @@ namespace SFA.DAS.TimeProvider.UnitTests
         {
             var newDateTime = DateTime.Now.AddDays(-1);
 
-            TimeProvider.Current = new FakeTimeProvider(newDateTime);
+            DateTimeProvider.Current = new FakeTimeProvider(newDateTime);
 
-            Assert.That(TimeProvider.Current.UtcNow, Is.EqualTo(newDateTime));
+            Assert.That(DateTimeProvider.Current.UtcNow, Is.EqualTo(newDateTime));
         }
 
         [Test]
@@ -37,13 +37,13 @@ namespace SFA.DAS.TimeProvider.UnitTests
         {
             var newDateTime = DateTime.Now.AddDays(-1);
 
-            TimeProvider.Current = new FakeTimeProvider(newDateTime);
+            DateTimeProvider.Current = new FakeTimeProvider(newDateTime);
 
-            TimeProvider.ResetToDefault();
+            DateTimeProvider.ResetToDefault();
 
-            Assert.That(TimeProvider.Current.UtcNow, Is.Not.EqualTo(newDateTime));
-            Assert.That(TimeProvider.Current.UtcNow, Is.EqualTo(DateTime.UtcNow).Within(1).Seconds);
-            Assert.That(TimeProvider.Current is DefaultTimeProvider);
+            Assert.That(DateTimeProvider.Current.UtcNow, Is.Not.EqualTo(newDateTime));
+            Assert.That(DateTimeProvider.Current.UtcNow, Is.EqualTo(DateTime.UtcNow).Within(1).Seconds);
+            Assert.That(DateTimeProvider.Current is DefaultTimeProvider);
         }
     }
 }

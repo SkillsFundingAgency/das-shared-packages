@@ -19,20 +19,20 @@ namespace UsageSample
 
         private static void WriteCurrentDateTime()
         {
-            Console.WriteLine("The current DateTime is: {0}", TimeProvider.Current.UtcNow);
+            Console.WriteLine("The current DateTime is: {0}", DateTimeProvider.Current.UtcNow);
         }
 
         private static void SetDateTime(DateTime newDateTime)
         {
-            TimeProvider.Current = new FakeTimeProvider(newDateTime);
-            Console.WriteLine("Changed TimeProvider to {0}", TimeProvider.Current);
+            DateTimeProvider.Current = new FakeTimeProvider(newDateTime);
+            Console.WriteLine("Changed TimeProvider to {0}", DateTimeProvider.Current);
             WriteCurrentDateTime();
         }
 
         private static void Reset()
         {
-            TimeProvider.ResetToDefault();
-            Console.WriteLine("Resetting TimeProvider to {0}", TimeProvider.Current);
+            DateTimeProvider.ResetToDefault();
+            Console.WriteLine("Resetting TimeProvider to {0}", DateTimeProvider.Current);
         }
     }
 }

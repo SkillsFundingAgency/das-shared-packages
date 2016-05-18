@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="DefaultTimeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TimeProvider.cs" />
+    <Compile Include="DateTimeProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SFA.DAS.TimeProvider.nuspec" />

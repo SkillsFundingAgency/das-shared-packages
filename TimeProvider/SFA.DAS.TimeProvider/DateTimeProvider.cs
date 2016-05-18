@@ -2,16 +2,16 @@
 
 namespace SFA.DAS.TimeProvider
 {
-    public abstract class TimeProvider
+    public abstract class DateTimeProvider
     {
-        private static TimeProvider current;
+        private static DateTimeProvider current;
 
-        static TimeProvider()
+        static DateTimeProvider()
         {
             current = new DefaultTimeProvider();
         }
 
-        public static TimeProvider Current
+        public static DateTimeProvider Current
         {
             get { return current; }
             set
