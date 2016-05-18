@@ -26,7 +26,7 @@ namespace UsageSample
         {
             TimeProvider.Current = new FakeTimeProvider(newDateTime);
             Console.WriteLine("Changed TimeProvider to {0}", TimeProvider.Current);
-            Console.WriteLine("The current DateTime is: {0}", TimeProvider.Current.UtcNow);
+            WriteCurrentDateTime();
         }
 
         private static void Reset()
