@@ -7,7 +7,7 @@ namespace SFA.DAS.Configuration
     {
         public ConfigurationOptions(string serviceName = null, string environmentName = null, string versionNumber = null)
         {
-            ServiceName = string.IsNullOrEmpty(serviceName) ? Assembly.GetEntryAssembly().GetName().Name : serviceName;
+            ServiceName = string.IsNullOrEmpty(serviceName) ? GetServiceName() : serviceName;
             EnvironmentName = string.IsNullOrEmpty(environmentName) ? GetEnvironmentName() : environmentName;
             VersionNumber = string.IsNullOrEmpty(serviceName) ? GetVersionNumer() : versionNumber;
         }
@@ -16,16 +16,35 @@ namespace SFA.DAS.Configuration
         public string EnvironmentName { get; private set; }
         public string VersionNumber { get; private set; }
 
+        private string GetServiceName()
+        {
+            return GetAssemblyName().Name;
+        }
         private string GetEnvironmentName()
         {
             var environmentName = Environment.GetEnvironmentVariable("DASENV");
             return string.IsNullOrEmpty(environmentName) ? "Dev" : environmentName;
         }
-
         private string GetVersionNumer()
         {
-            var version = Assembly.GetEntryAssembly().GetName().Version;
+            var version = GetAssemblyName().Version;
             return $"{version.Major}.{version.Minor}";
+        }
+        private AssemblyName GetAssemblyName()
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            if (assembly == null)
+            {
+                throw new InvalidOperationException("Unable to determine assembly");
+            }
+
+            var assemblyName = assembly.GetName();
+            if (assemblyName == null)
+            {
+                throw new InvalidOperationException("Unable to determine assembly name");
+            }
+
+            return assemblyName;
         }
     }
 }
