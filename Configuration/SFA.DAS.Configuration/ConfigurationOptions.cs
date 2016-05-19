@@ -9,7 +9,7 @@ namespace SFA.DAS.Configuration
         {
             ServiceName = string.IsNullOrEmpty(serviceName) ? GetServiceName() : serviceName;
             EnvironmentName = string.IsNullOrEmpty(environmentName) ? GetEnvironmentName() : environmentName;
-            VersionNumber = string.IsNullOrEmpty(serviceName) ? GetVersionNumer() : versionNumber;
+            VersionNumber = string.IsNullOrEmpty(versionNumber) ? GetVersionNumer() : versionNumber;
         }
 
         public string ServiceName { get; private set; }
