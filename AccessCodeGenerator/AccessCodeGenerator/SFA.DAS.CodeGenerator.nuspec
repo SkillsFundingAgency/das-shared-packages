@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
-        <id>SFA.DAS.AccessCodeGenerator</id>
+        <id>SFA.DAS.CodeGenerator</id>
         <version>1.0.0</version>
         <authors>DAS</authors>
         <owners>DAS</owners>
@@ -9,12 +9,12 @@
         <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Provides a way of generating a code that can be used for verification of a suer entering a website. The length of the desired code can be passed in. There is the option of making a numeric code or alphanumeric, the alphanumeric conforms to the DEC alphabet.</description>
-        <summary>Access Code Generator project</summary>
+        <summary>Code Generator project</summary>
         <releaseNotes />
         <dependencies>
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\Release\SFA.DAS.AccessCodeGenerator.dll" target="lib\net45\SFA.DAS.AccessCodeGenerator.dll" />
+        <file src="bin\Release\SFA.DAS.CodeGenerator.dll" target="lib\net45\SFA.DAS.CodeGenerator.dll" />
     </files>
 </package>
