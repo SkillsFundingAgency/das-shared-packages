@@ -8,8 +8,8 @@
         <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Provides a way of generating a code that can be used for verification of a suer entering a website. The length of the desired code can be passed in. There is the option of making a numeric code or alphanumeric, the alphanumeric conforms to the DEC alphabet.</description>
-        <summary>Code Generator project</summary>
+        <description>Provides a way of generating a code that can be used for verification of a user entering a website. The length of the desired code can be passed in. There is the option of making a numeric code or alphanumeric, the alphanumeric conforms to the DEC alphabet.</description>
+        <summary>Code Generator</summary>
         <releaseNotes />
         <dependencies>
         </dependencies>
