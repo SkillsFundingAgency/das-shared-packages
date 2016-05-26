@@ -43,7 +43,7 @@ namespace GettingConfiguration
                 new ConfigurationOptions("GettingConfiguration", "DEV", "1.0"));
 
             // Get the configuration
-            var configTask = configurationService.Get<SampleConfiguration>();
+            var configTask = configurationService.GetAsync<SampleConfiguration>();
             configTask.Wait();
             var config = configTask.Result;
 

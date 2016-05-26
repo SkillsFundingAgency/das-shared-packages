@@ -4,6 +4,7 @@ namespace SFA.DAS.Configuration
 {
     public interface IConfigurationRepository
     {
-        Task<string> Get(string serviceName, string environmentName, string version);
+        string Get(string serviceName, string environmentName, string version);
+        Task<string> GetAsync(string serviceName, string environmentName, string version);
     }
 }

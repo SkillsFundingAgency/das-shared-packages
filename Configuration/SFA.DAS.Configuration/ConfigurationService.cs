@@ -14,9 +14,19 @@ namespace SFA.DAS.Configuration
             _options = options;
         }
 
-        public async Task<T> Get<T>()
+        public T Get<T>()
         {
-            var details = await _configurationRepository.Get(_options.ServiceName, _options.EnvironmentName, _options.VersionNumber);
+            var details = _configurationRepository.Get(_options.ServiceName, _options.EnvironmentName, _options.VersionNumber);
+            return ParseConfig<T>(details);
+        }
+        public async Task<T> GetAsync<T>()
+        {
+            var details = await _configurationRepository.GetAsync(_options.ServiceName, _options.EnvironmentName, _options.VersionNumber);
+            return ParseConfig<T>(details);
+        }
+
+        private T ParseConfig<T>(string details)
+        {
             if (string.IsNullOrEmpty(details))
             {
                 return default(T);

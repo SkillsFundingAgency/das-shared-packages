@@ -18,16 +18,34 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             _storageAccount = CloudStorageAccount.Parse(storageConnectionString);
         }
 
-        public async Task<string> Get(string serviceName, string environmentName, string version)
+        public string Get(string serviceName, string environmentName, string version)
         {
-            var tableClient = _storageAccount.CreateCloudTableClient();
-            var table = tableClient.GetTableReference("Configuration");
-
-            var tableOperation = TableOperation.Retrieve<ConfigurationItem>(environmentName, $"{serviceName}_{version}");
-            var result = await table.ExecuteAsync(tableOperation);
+            var table = GetTable();
+            var operation = GetOperation(serviceName, environmentName, version);
+            var result = table.Execute(operation);
 
             var configItem = (ConfigurationItem)result.Result;
-            return configItem == null ? null : configItem.Data;
+            return configItem?.Data;
+        }
+        public async Task<string> GetAsync(string serviceName, string environmentName, string version)
+        {
+            var table = GetTable();
+            var operation = GetOperation(serviceName, environmentName, version);
+            var result = await table.ExecuteAsync(operation);
+
+            var configItem = (ConfigurationItem)result.Result;
+            return configItem?.Data;
+        }
+
+
+        private CloudTable GetTable()
+        {
+            var tableClient = _storageAccount.CreateCloudTableClient();
+            return tableClient.GetTableReference("Configuration");
+        }
+        private TableOperation GetOperation(string serviceName, string environmentName, string version)
+        {
+            return TableOperation.Retrieve<ConfigurationItem>(environmentName, $"{serviceName}_{version}");
         }
     }
 }

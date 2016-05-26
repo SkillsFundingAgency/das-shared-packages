@@ -4,6 +4,6 @@ namespace SFA.DAS.Configuration
 {
     public interface IConfigurationService
     {
-        Task<T> Get<T>();
+        Task<T> GetAsync<T>();
     }
 }

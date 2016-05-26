@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
 {
-    public class WhenGetting
+    public class WhenGettingAsync
     {
         private Mock<IConfigurationRepository> _configurationRepo;
         private ConfigurationOptions _options;
@@ -17,8 +17,8 @@ namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
             var devConfig = JsonConvert.SerializeObject(TestConfiguration.GetDefault());
             var sitConfig = JsonConvert.SerializeObject(new TestConfiguration { Text = "SIT Details" });
             _configurationRepo = new Mock<IConfigurationRepository>();
-            _configurationRepo.Setup(repo => repo.Get("SFA.DAS.Configuration.UnitTests", "Dev", "1.0")).Returns(devConfig);
-            _configurationRepo.Setup(repo => repo.Get("SFA.DAS.Configuration.UnitTests", "SIT", "1.0")).Returns(sitConfig);
+            _configurationRepo.Setup(repo => repo.GetAsync("SFA.DAS.Configuration.UnitTests", "Dev", "1.0")).Returns(Task.FromResult(devConfig));
+            _configurationRepo.Setup(repo => repo.GetAsync("SFA.DAS.Configuration.UnitTests", "SIT", "1.0")).Returns(Task.FromResult(sitConfig));
 
             _options = new ConfigurationOptions("SFA.DAS.Configuration.UnitTests", "Dev", "1.0");
 
@@ -26,74 +26,74 @@ namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
         }
 
         [Test]
-        public void ThenItShouldReturnNullWhenConfigurationNotFound()
+        public async Task ThenItShouldReturnNullWhenConfigurationNotFound()
         {
             // Arrange
             var options = new ConfigurationOptions(_options.ServiceName, "PROD", _options.VersionNumber);
             var configurationService = new ConfigurationService(_configurationRepo.Object, options);
 
             // Act
-            var actual = configurationService.Get<TestConfiguration>();
+            var actual = await configurationService.GetAsync<TestConfiguration>();
 
             // Assert
             Assert.Null(actual);
         }
 
         [Test]
-        public void ThenItShouldReturnAnInstanceOfTestConfigurationWhenConfigurationFound()
+        public async Task ThenItShouldReturnAnInstanceOfTestConfigurationWhenConfigurationFound()
         {
             // Act
-            var actual = _configurationService.Get<TestConfiguration>();
+            var actual = await _configurationService.GetAsync<TestConfiguration>();
 
             // Assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public void ThenItShouldReturnCorrectNumberValue()
+        public async Task ThenItShouldReturnCorrectNumberValue()
         {
             // Act
-            var actual = _configurationService.Get<TestConfiguration>();
+            var actual = await _configurationService.GetAsync<TestConfiguration>();
 
             // Assert
             Assert.AreEqual(1234, actual.Number);
         }
 
         [Test]
-        public void ThenItShouldReturnCorrectAmountValue()
+        public async Task ThenItShouldReturnCorrectAmountValue()
         {
             // Act
-            var actual = _configurationService.Get<TestConfiguration>();
+            var actual = await _configurationService.GetAsync<TestConfiguration>();
 
             // Assert
             Assert.AreEqual(12.34, actual.Amount);
         }
 
         [Test]
-        public void ThenItShouldReturnCorrectToggleValue()
+        public async Task ThenItShouldReturnCorrectToggleValue()
         {
             // Act
-            var actual = _configurationService.Get<TestConfiguration>();
+            var actual = await _configurationService.GetAsync<TestConfiguration>();
 
             // Assert
             Assert.AreEqual(true, actual.Toggle);
         }
 
         [Test]
-        public void ThenItShouldReturnCorrectTextValue()
+        public async Task ThenItShouldReturnCorrectTextValue()
         {
             // Act
-            var actual = _configurationService.Get<TestConfiguration>();
+            var actual = await _configurationService.GetAsync<TestConfiguration>();
 
             // Assert
             Assert.AreEqual("Some details", actual.Text);
         }
 
         [Test]
-        public void ThenItShouldReturnCorrectCollectionValue()
+        public async Task ThenItShouldReturnCorrectCollectionValue()
         {
             // Act
-            var actual = _configurationService.Get<TestConfiguration>();
+            var actual = await _configurationService.GetAsync<TestConfiguration>();
 
             // Assert
             Assert.AreEqual(3, actual.Collection.Count);
@@ -103,14 +103,14 @@ namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
         }
 
         [Test]
-        public void ThenItShouldReturnConfigForEnvironment()
+        public async Task ThenItShouldReturnConfigForEnvironment()
         {
             // Arrange
             var options = new ConfigurationOptions(_options.ServiceName, "SIT", _options.VersionNumber);
             var configurationService = new ConfigurationService(_configurationRepo.Object, options);
 
             // Act
-            var actual = configurationService.Get<TestConfiguration>();
+            var actual = await configurationService.GetAsync<TestConfiguration>();
             
             // Assert
             Assert.AreEqual("SIT Details", actual.Text);
