@@ -52,7 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="SFA.DAS.Messaging.AzureServiceBus.nuspec" />
+    <None Include="SFA.DAS.Messaging.AzureServiceBus.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Messaging\SFA.DAS.Messaging.csproj">
