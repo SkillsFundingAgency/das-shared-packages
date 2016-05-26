@@ -10,7 +10,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private CloudStorageAccount _storageAccount;
 
         public AzureTableStorageConfigurationRepository()
-            : this(CloudConfigurationManager.GetSetting("StorageConnectionString"))
+            : this(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"))
         {
         }
         public AzureTableStorageConfigurationRepository(string storageConnectionString)

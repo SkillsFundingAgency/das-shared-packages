@@ -7,11 +7,7 @@ namespace SFA.DAS.Configuration
     {
         private readonly IConfigurationRepository _configurationRepository;
         private readonly ConfigurationOptions _options;
-
-        public ConfigurationService(IConfigurationRepository configurationRepository)
-            : this(configurationRepository, new ConfigurationOptions())
-        {
-        }
+        
         public ConfigurationService(IConfigurationRepository configurationRepository, ConfigurationOptions options)
         {
             _configurationRepository = configurationRepository;

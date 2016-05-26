@@ -39,7 +39,8 @@ namespace GettingConfiguration
             Console.WriteLine();
 
             // Create a new configuration service
-            var configurationService = new ConfigurationService(repo);
+            var configurationService = new ConfigurationService(repo,
+                new ConfigurationOptions("GettingConfiguration", "DEV", "1.0"));
 
             // Get the configuration
             var configTask = configurationService.Get<SampleConfiguration>();
