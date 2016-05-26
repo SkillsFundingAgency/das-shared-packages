@@ -5,11 +5,11 @@ namespace SFA.DAS.Messaging
 {
     public class MessagingService
     {
-        private readonly IMessageSubSystem _messageSubSsytem;
+        private readonly IMessageSubSystem _messageSubSystem;
 
-        public MessagingService(IMessageSubSystem messageSubSsytem)
+        public MessagingService(IMessageSubSystem messageSubSystem)
         {
-            _messageSubSsytem = messageSubSsytem;
+            _messageSubSystem = messageSubSystem;
         }
 
         public async Task PublishAsync<T>(T @event)
@@ -23,13 +23,13 @@ namespace SFA.DAS.Messaging
 
             var message = JsonConvert.SerializeObject(@event);
 
-            await _messageSubSsytem.EnqueueAsync(message);
+            await _messageSubSystem.EnqueueAsync(message);
         }
 
         public async Task<Message<T>> ReceiveAsync<T>()
             where T : new()
         {
-            var message = await _messageSubSsytem.DequeueAsync();
+            var message = await _messageSubSystem.DequeueAsync();
             return new Message<T>(message);
         }
     }
