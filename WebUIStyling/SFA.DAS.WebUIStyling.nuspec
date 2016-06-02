@@ -14,5 +14,8 @@
         <file src="assets\images\*.*" target="content\Content\images" />
         <file src="assets\javascripts\*.*" target="content\Scripts" />
         <file src="assets\stylesheets\*.*" target="content\Content\stylesheets" />
+        <file src="assets\stylesheets\images\*.*" target="content\Content\stylesheets\images" />
+        <file src="assets\stylesheets\fonts\*.*" target="content\Content\stylesheets\fonts" />
+        <file src="assets\stylesheets\external-links\*.*" target="content\Content\stylesheets\external-links" />
     </files>
 </package>
