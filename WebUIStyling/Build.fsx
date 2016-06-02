@@ -35,6 +35,24 @@ let mutable versionNumber = getBuildParamOrDefault "versionNumber" "1.0.0.0"
 
 let mutable solutionFilePresent = true
 
+Target "Set version number" (fun _ ->
+
+    versionNumber <- "1.0.0.0"    
+    let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
+    let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
+
+    if testDirectory.ToLower() = "release" then
+        versionNumber <- buildVersion
+        if versionNumber.ToLower() <> "localbuild" then
+            versionNumber <- sprintf  @"%s.%s.0.%s" assemblyMajorNumber assemblyMinorNumber buildVersion
+        else
+            versionNumber <- "1.0.0.0"
+
+
+    trace ("VersionNumber:" + versionNumber)
+
+)
+
 Target "Set Solution Name" (fun _ ->
     
     let directoryHelper = FileSystemHelper.directoryInfo(currentDirectory).Name
@@ -68,22 +86,11 @@ Target "Set Solution Name" (fun _ ->
         else
             shouldPublishSite <- false
     
-        versionNumber <- "1.0.0.0"    
-        let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
-        let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
-
-        if testDirectory.ToLower() = "release" then
-            versionNumber <- buildVersion
-            if versionNumber.ToLower() <> "localbuild" then
-                versionNumber <- sprintf  @"%s.%s.0.%s" assemblyMajorNumber assemblyMinorNumber buildVersion
-            else
-                versionNumber <- "1.0.0.0"
 
         trace ("Will publish: " + (shouldPublishSite.ToString()))
         trace ("PublishingProfile: " + publishingProfile)
         trace ("PublishDirectory: " + publishDirectory)
         trace ("PrecompiledFolder: " + folderPrecompiled)
-        trace ("VersionNumber:" + versionNumber)
         trace ("Project Name has been set to: " + projectName)
     else
         solutionFilePresent <- false
@@ -428,7 +435,8 @@ Target "Create Nuget Package" (fun _ ->
     ==>"Building Integration Tests"
     //==>"Run Acceptance Tests"
 
-"Set Solution Name"
+"Set version number"
+   ==>"Set Solution Name"
    ==>"Update Assembly Info Version Numbers"
    ==>"Clean Publish Directory"
    ==>"Clean Projects"
