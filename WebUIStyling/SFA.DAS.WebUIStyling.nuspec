@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>SFA.DAS.WebUIStyling</id>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <authors>DAS</authors>
         <owners>DAS</owners>
         <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
@@ -11,8 +11,8 @@
         <description>Styling assests for DAS web projects</description>
     </metadata>
     <files>
-        <file src="assets\images\*.*" target="content\assets\images" />
-        <file src="assets\javascripts\*.*" target="content\assets\javascripts" />
-        <file src="assets\stylesheets\*.*" target="content\assets\stylesheets" />
+        <file src="assets\images\*.*" target="content\Content\images" />
+        <file src="assets\javascripts\*.*" target="content\Scripts" />
+        <file src="assets\stylesheets\*.*" target="content\Content\stylesheets" />
     </files>
 </package>
