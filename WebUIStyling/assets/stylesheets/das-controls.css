@@ -1,0 +1,10 @@
+.button.button-secondary {
+    border: none; 
+    background: none; 
+    color: #005ea5; 
+    text-decoration: underline; 
+    box-shadow: none
+}
+.button.button-secondary:hover {
+    color:#2e8aca;
+}
