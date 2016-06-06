@@ -6,5 +6,9 @@
     box-shadow: none
 }
 .button.button-secondary:hover {
+    border: none; 
+    background: none; 
     color:#2e8aca;
+    text-decoration: underline; 
+    box-shadow: none
 }
