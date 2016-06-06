@@ -1,4 +1,4 @@
-.button.button-secondary {
+.button.button-secondary, .button.button-secondary:focus {
     border: none; 
     background: none; 
     color: #005ea5; 
