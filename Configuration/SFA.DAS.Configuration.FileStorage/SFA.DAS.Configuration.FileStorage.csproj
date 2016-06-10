@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8F7569FB-5A78-4C50-86A7-CACA49AEC5F5}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{6DF8D733-71BF-4652-8294-CE5AF2AC73DF}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GettingConfiguration</RootNamespace>
-    <AssemblyName>GettingConfiguration</AssemblyName>
+    <RootNamespace>SFA.DAS.Configuration.FileStorage</RootNamespace>
+    <AssemblyName>SFA.DAS.Configuration.FileStorage</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -42,29 +40,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="FileStorageConfigurationRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <Content Include="App_Data\DEV_GettingConfiguration_1.0.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Configuration.AzureTableStorage\SFA.DAS.Configuration.AzureTableStorage.csproj">
-      <Project>{81bdda54-55f6-4694-a474-31bbd30f3ef6}</Project>
-      <Name>SFA.DAS.Configuration.AzureTableStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Configuration.FileStorage\SFA.DAS.Configuration.FileStorage.csproj">
-      <Project>{6DF8D733-71BF-4652-8294-CE5AF2AC73DF}</Project>
-      <Name>SFA.DAS.Configuration.FileStorage</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Configuration\SFA.DAS.Configuration.csproj">
-      <Project>{01489492-dc61-4f97-8047-1a8bc6cc399b}</Project>
+      <Project>{01489492-DC61-4F97-8047-1A8BC6CC399B}</Project>
       <Name>SFA.DAS.Configuration</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SFA.DAS.Configuration.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

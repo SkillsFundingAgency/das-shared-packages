@@ -1,14 +1,15 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SFA.DAS.Configuration.AzureTableStorage")]
+[assembly: AssemblyTitle("SFA.DAS.Configuration.FileStorage")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SFA.DAS.Configuration.AzureTableStorage")]
+[assembly: AssemblyProduct("SFA.DAS.Configuration.FileStorage")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("81bdda54-55f6-4694-a474-31bbd30f3ef6")]
+[assembly: Guid("6df8d733-71bf-4652-8294-ce5af2ac73df")]
 
 // Version information for an assembly consists of the following four values:
 //

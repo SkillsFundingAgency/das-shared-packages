@@ -1,6 +1,7 @@
 ﻿using System;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.Configuration.FileStorage;
 
 namespace GettingConfiguration
 {
@@ -17,8 +18,9 @@ namespace GettingConfiguration
             {
                 Console.WriteLine("Where is your configuration stored:");
                 Console.WriteLine("    1. Azure Table Storage");
-                Console.WriteLine("    2. None of the above. Exit");
-                Console.Write("Please select (1 - 2): ");
+                Console.WriteLine("    2. File Storage");
+                Console.WriteLine("    3. None of the above. Exit");
+                Console.Write("Please select (1 - 3): ");
                 var input = Console.ReadLine();
                 switch (input)
                 {
@@ -26,6 +28,9 @@ namespace GettingConfiguration
                         repo = new AzureTableStorageConfigurationRepository();
                         break;
                     case "2":
+                        repo = new FileStorageConfigurationRepository();
+                        break;
+                    case "3":
                         exit = true;
                         break;
                     default:
