@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>SFA.DAS.OidcMiddleware</id>
+        <version>1.0.0</version>
+        <authors>DAS</authors>
+        <owners>DAS</owners>
+        <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>OWIN Middleware providing OpenId Connect authentication for authorisation code flow</description>
+        <summary>OIDC Middleware</summary>
+        <releaseNotes />
+        <dependencies>
+            <group targetFramework=".NETFramework4.5">
+                <dependency id="IdentityModel" version="1.11.0" />
+                <dependency id="Microsoft.Owin.Security" version="3.0.1" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\SFA.DAS.OidcMiddleware.dll" target="lib\net45\SFA.DAS.OidcMiddleware.dll" />
+    </files>
+</package>
