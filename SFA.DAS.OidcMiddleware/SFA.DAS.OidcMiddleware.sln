@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.OidcMiddleware", "SFA.DAS.OidcMiddleware\SFA.DAS.OidcMiddleware.csproj", "{EA5AD9E8-1DB7-4490-BBA6-EEF5C65AA647}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BCAC7F88-808A-4B84-BD19-B2C4C7B4F5D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.OidcMiddleware.UnitTests", "SFA.DAS.OidcMiddleware.UnitTests\SFA.DAS.OidcMiddleware.UnitTests.csproj", "{9B8CECB6-1315-41A2-A958-34DC2CDA5312}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0D47FF0-9064-4A12-A5DE-D5CE911095B6}"
+	ProjectSection(SolutionItems) = preProject
+		Build.fsx = Build.fsx
+		RunBuild.bat = RunBuild.bat
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA5AD9E8-1DB7-4490-BBA6-EEF5C65AA647}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA5AD9E8-1DB7-4490-BBA6-EEF5C65AA647}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA5AD9E8-1DB7-4490-BBA6-EEF5C65AA647}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA5AD9E8-1DB7-4490-BBA6-EEF5C65AA647}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B8CECB6-1315-41A2-A958-34DC2CDA5312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B8CECB6-1315-41A2-A958-34DC2CDA5312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B8CECB6-1315-41A2-A958-34DC2CDA5312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B8CECB6-1315-41A2-A958-34DC2CDA5312}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B8CECB6-1315-41A2-A958-34DC2CDA5312} = {BCAC7F88-808A-4B84-BD19-B2C4C7B4F5D6}
+	EndGlobalSection
+EndGlobal
