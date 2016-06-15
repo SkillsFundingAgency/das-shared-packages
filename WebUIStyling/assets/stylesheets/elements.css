@@ -2661,3 +2661,11 @@ a[href^=mailto],.fake-link[href^=mailto],details summary[href^=mailto] {
     padding-left: 20px;
     
 }
+
+.validation-summary,.validation-summary-info {
+    border-left: 3px solid #bfc1c3;
+    box-sizing: content-box;
+    margin-bottom: 30px;
+    margin-left: -18px;
+    padding: 15px 0 10px 15px
+}
