@@ -1,4 +1,7 @@
-﻿using Microsoft.Owin.Security;
+﻿using System;
+using System.Security.Claims;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataHandler;
 
 namespace SFA.DAS.OidcMiddleware
 {
@@ -6,6 +9,10 @@ namespace SFA.DAS.OidcMiddleware
     {
         public OidcMiddlewareOptions(string authenticationType) : base(authenticationType)
         {
+        }
+        public OidcMiddlewareOptions() : base("code")
+        {
+
         }
 
         public string AuthorizeEndpoint { get; set; }
@@ -17,5 +24,6 @@ namespace SFA.DAS.OidcMiddleware
         public string TokenEndpoint { get; set; }
         public string BaseUrl { get; set; }
         public string UserInfoEndpoint { get; set; }
+        public Action<ClaimsIdentity> AuthenticatedCallback { get; set; }
     }
 }

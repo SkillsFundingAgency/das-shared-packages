@@ -5,7 +5,11 @@ using SFA.DAS.OidcMiddleware.Strategies;
 
 namespace SFA.DAS.OidcMiddleware
 {
-    public class CodeFlowAuthenticationHandler : AuthenticationHandler<OidcMiddlewareOptions>
+    public interface ICodeFlowAuthenticationHandler 
+    {
+    }
+
+    public class CodeFlowAuthenticationHandler : AuthenticationHandler<OidcMiddlewareOptions>, ICodeFlowAuthenticationHandler
     {
         private readonly IAuthenticateCoreStrategy _authenticateCoreStrategy;
         private readonly IApplyResponseChallengeStrategy _applyResponseChallengeStrategy;
