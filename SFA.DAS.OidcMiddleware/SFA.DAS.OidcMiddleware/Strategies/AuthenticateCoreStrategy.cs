@@ -36,7 +36,7 @@ namespace SFA.DAS.OidcMiddleware.Strategies
             {
                 return new AuthenticationTicket(null, null);
             }
-            
+
             var code = query.GetValues("code")[0];
             var tokenResponse = await _buildRequestAuthorisationCode.GetTokenResponse(_options.TokenEndpoint, _options.ClientId, _options.ClientSecret, code, context.Request.Uri);
 
@@ -71,17 +71,17 @@ namespace SFA.DAS.OidcMiddleware.Strategies
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
                 {
                     claims.AddRange(await _buildUserInfoClient.GetUserClaims(_options, response.AccessToken));
-                    claims.Add(new Claim(ClaimTypes.NameIdentifier, claims.FirstOrDefault(c => c.Type == "name").Value));
+                    claims.Add(new Claim(ClaimTypes.NameIdentifier, claims.First(c => c.Type == "name").Value));
                     claims.Add(new Claim("access_token", response.AccessToken));
                     claims.Add(new Claim("expires_at", (DateTime.UtcNow.ToEpochTime() + response.ExpiresIn).ToDateTimeFromEpoch().ToString()));
                 }
 
-                    if (!string.IsNullOrWhiteSpace(response.RefreshToken))
-                    {
-                        claims.Add(new Claim("refresh_token", response.RefreshToken));
-                    }
+                if (!string.IsNullOrWhiteSpace(response.RefreshToken))
+                {
+                    claims.Add(new Claim("refresh_token", response.RefreshToken));
+                }
 
-                    var id = new ClaimsIdentity(claims, "Cookies");
+                var id = new ClaimsIdentity(claims, "Cookies");
 
                 context.Authentication.SignIn(id);
 
