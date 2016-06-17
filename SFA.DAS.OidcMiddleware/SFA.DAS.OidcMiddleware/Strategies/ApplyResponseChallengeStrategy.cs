@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Security.Claims;
 using Microsoft.Owin;
+using SFA.DAS.OidcMiddleware.Builders;
 
-namespace SFA.DAS.OidcMiddleware
+namespace SFA.DAS.OidcMiddleware.Strategies
 {
-    public class ApplyResponseChallengeStrategy
+    public class ApplyResponseChallengeStrategy : IApplyResponseChallengeStrategy
     {
         private readonly OidcMiddlewareOptions _options;
         private readonly IBuildAuthorizeRequestUrl _buildAuthorizeRequestUrl;

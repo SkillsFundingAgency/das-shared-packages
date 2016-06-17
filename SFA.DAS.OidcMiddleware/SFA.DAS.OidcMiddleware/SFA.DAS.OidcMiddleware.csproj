@@ -53,6 +53,10 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.20622.1351, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.206221351\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,11 +65,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplyResponseChallengeStrategy.cs" />
-    <Compile Include="BuildAuthorizeRequestUrl.cs" />
+    <Compile Include="Builders\BuildAuthorizeRequestUrl.cs" />
+    <Compile Include="Builders\BuildRequestAuthorisationCode.cs" />
+    <Compile Include="Builders\BuildUserInfoClientUrl.cs" />
+    <Compile Include="Builders\IBuildAuthorizeRequestUrl.cs" />
+    <Compile Include="Builders\IBuildRequestAuthorisationCode.cs" />
+    <Compile Include="Builders\IBuildUserInfoClientUrl.cs" />
     <Compile Include="CodeFlowAuthenticationHandler.cs" />
-    <Compile Include="IBuildAuthorizeRequestUrl.cs" />
+    <Compile Include="OidcMiddlewareOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategies\ApplyResponseChallengeStrategy.cs" />
+    <Compile Include="Strategies\AuthenticateCoreStrategy.cs" />
+    <Compile Include="Strategies\IApplyResponseChallengeStrategy.cs" />
+    <Compile Include="Strategies\IAuthenticateCoreStrategy.cs" />
+    <Compile Include="Validators\ISecurityTokenValidation.cs" />
+    <Compile Include="Validators\SecurityTokenValidation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

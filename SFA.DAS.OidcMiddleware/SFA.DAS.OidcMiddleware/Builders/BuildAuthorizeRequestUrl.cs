@@ -1,7 +1,7 @@
 ﻿using System;
 using IdentityModel.Client;
 
-namespace SFA.DAS.OidcMiddleware
+namespace SFA.DAS.OidcMiddleware.Builders
 {
     public class BuildAuthorizeRequestUrl : IBuildAuthorizeRequestUrl
     {
