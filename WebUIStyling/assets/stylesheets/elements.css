@@ -2669,3 +2669,9 @@ a[href^=mailto],.fake-link[href^=mailto],details summary[href^=mailto] {
     margin-left: -18px;
     padding: 15px 0 10px 15px
 }
+
+.form-prepopped {
+    color: #6f777b;
+    font-weight: 700;
+    margin-right: 10px;
+}
