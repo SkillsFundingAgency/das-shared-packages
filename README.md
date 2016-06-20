@@ -40,3 +40,45 @@ DateTimeProvider.ResetToDefault();
 
 ## CodeGenerator
 Provides a way of generating a code that can be used for verification of a suer entering a website. The length of the desired code can be passed in. There is the option of making a numeric code or alphanumeric, the alphanumeric conforms to the DEC alphabet. It is also possible to pass your own implementation of the abstract class RandomNumberGenerator
+
+## SFA.DAS.Oidc.Middleware
+Creates a NuGet package that is to be used for Code flow authentication. Once you have referenced the nuget package the following needs to configured in Startup
+
+
+```csharp
+app.UseCodeFlowAuthentication(new OidcMiddlewareOptions
+{
+        ClientId = "[CLIENT_ID]",
+        ClientSecret = "[CLIENT_SECRET]",
+        Scopes = "openid",
+        BaseUrl = Constants.BaseAddress,
+        TokenEndpoint = Constants.TokenEndpoint,
+        UserInfoEndpoint = Constants.UserInfoEndpoint,
+        AuthorizeEndpoint = Constants.AuthorizeEndpoint,
+	AuthenticatedCallback = identity => { identity.AddClaim(new Claim("CustomClaim", "new claim added")); }
+});
+
+...
+
+    public static class Constants
+    {
+        public const string BaseAddress = "[END_POINT_FOR_IDENTITY_URL]";
+
+        public const string AuthorizeEndpoint = BaseAddress + "/Login/dialog/appl/oidctest/wflow/authorize";
+        public const string LogoutEndpoint = BaseAddress + "/connect/endsession";
+        public const string TokenEndpoint = BaseAddress + "/Login/rest/appl/oidctest/wflow/token";
+        public const string UserInfoEndpoint = BaseAddress + "/Login/rest/appl/oidctest/wflow/userinfo";
+        public const string IdentityTokenValidationEndpoint = BaseAddress + "/connect/identitytokenvalidation";
+        public const string TokenRevocationEndpoint = BaseAddress + "/connect/revocation";
+    }
+
+
+```
+
+And in Global.asax.cs
+
+```csharp
+AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
+```
+
+You are then able to use the [Authorize] attrbiute on any Controller Actions that you require authentication for
