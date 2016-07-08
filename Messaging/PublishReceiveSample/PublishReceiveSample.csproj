@@ -50,10 +50,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Messaging.AzureServiceBus\SFA.DAS.Messaging.AzureServiceBus.csproj">
-      <Project>{71C7C83D-5BBA-4F13-B31F-B86CA5485422}</Project>
-      <Name>SFA.DAS.Messaging.AzureServiceBus</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Messaging\SFA.DAS.Messaging.csproj">
       <Project>{B0F2744B-BE9A-4329-BE89-B7D17BFE8F53}</Project>
       <Name>SFA.DAS.Messaging</Name>
