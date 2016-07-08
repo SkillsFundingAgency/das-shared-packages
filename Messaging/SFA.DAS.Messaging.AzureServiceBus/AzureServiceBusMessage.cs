@@ -3,14 +3,14 @@ using Microsoft.ServiceBus.Messaging;
 
 namespace SFA.DAS.Messaging.AzureServiceBus
 {
-    public class AzureServiceBusMessage : SubSystemMessage
+    public class AzureServiceBusMessage<T> : Message<T>
     {
         private readonly BrokeredMessage _brokeredMessage;
 
         public AzureServiceBusMessage(BrokeredMessage brokeredMessage)
+            : base(brokeredMessage.GetBody<T>())
         {
             _brokeredMessage = brokeredMessage;
-            Content = brokeredMessage.GetBody<string>();
         }
 
         public override Task CompleteAsync()

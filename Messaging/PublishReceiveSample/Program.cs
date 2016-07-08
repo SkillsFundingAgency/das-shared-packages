@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using SFA.DAS.Messaging;
+using SFA.DAS.Messaging.AzureServiceBus;
 using SFA.DAS.Messaging.FileSystem;
 
 namespace PublishReceiveSample
@@ -16,20 +17,35 @@ namespace PublishReceiveSample
         {
             DefaultColor = Console.ForegroundColor;
 
-            IMessagePublisher publisher;
-            IPollingMessageReceiver receiver;
-            LoadSubsystem(out publisher, out receiver);
-            if (publisher == null)
+            try
             {
-                WriteColoredLine("Goodbye", DetailsColor);
-                System.Threading.Thread.Sleep(2000);
-                return;
-            }
+                IMessagePublisher publisher;
+                IPollingMessageReceiver receiver;
+                LoadSubsystem(out publisher, out receiver);
+                if (publisher == null)
+                {
+                    WriteColoredLine("Goodbye", DetailsColor);
+                    System.Threading.Thread.Sleep(2000);
+                    return;
+                }
 
-            WriteColoredLine("");
-            while (PerformAction(publisher, receiver))
-            {
                 WriteColoredLine("");
+                while (PerformAction(publisher, receiver))
+                {
+                    WriteColoredLine("");
+                }
+            }
+            catch (AggregateException ex)
+            {
+                WriteColoredLine(ex.InnerException.Message, ErrorColor);
+                WriteColoredLine("Press any key to exit");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                WriteColoredLine(ex.Message, ErrorColor);
+                WriteColoredLine("Press any key to exit");
+                Console.ReadKey();
             }
         }
 
@@ -61,6 +77,18 @@ namespace PublishReceiveSample
                         var fs = new FileSystemMessageService(dir);
                         publisher = fs;
                         receiver = fs;
+                        validSelection = true;
+                        break;
+                    case "2":
+                        WriteColoredText("Connection string: ");
+                        var connectionString = Console.ReadLine();
+
+                        WriteColoredText("Queue name: ");
+                        var queueName = Console.ReadLine();
+
+                        var asb = new AzureServiceBusMessageService(connectionString, queueName);
+                        publisher = asb;
+                        receiver = asb;
                         validSelection = true;
                         break;
                     case "0":
