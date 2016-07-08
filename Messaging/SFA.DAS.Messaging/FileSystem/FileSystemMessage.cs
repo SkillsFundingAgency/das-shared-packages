@@ -1,56 +1,50 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.Messaging.FileSystem
 {
-    public class FileSystemMessage : SubSystemMessage
+    public class FileSystemMessage<T> : Message<T>
     {
-        private readonly FileInfo _file;
+        private readonly FileInfo _dataFile;
+        private readonly FileInfo _lockFile;
 
-        private FileSystemMessage(FileInfo file, string content)
+        public FileSystemMessage(FileInfo dataFile, FileInfo lockFile, T content) : base(content)
         {
-            _file = file;
-            Content = content;
+            _dataFile = dataFile;
+            _lockFile = lockFile;
         }
 
         public override Task CompleteAsync()
         {
-            var lockPath = GetLockPath(_file);
-            _file.Delete();
-            File.Delete(lockPath);
+            _dataFile.Delete();
+            _lockFile.Delete();
             return Task.FromResult<object>(null);
         }
 
         public override Task AbortAsync()
         {
-            var lockPath = GetLockPath(_file);
-            File.Delete(lockPath);
+            _lockFile.Delete();
             return Task.FromResult<object>(null);
         }
 
-        public static async Task<FileSystemMessage> Create(FileInfo file)
-        {
-            var lockFilePath = GetLockPath(file);
 
-            // TODO: Handle error when lock file exists
-            using (var stream = new FileStream(lockFilePath, FileMode.CreateNew, FileAccess.Write))
+        public static async Task<FileSystemMessage<T>> Lock(FileInfo dataFile)
+        {
+            var lockFile = new FileInfo(Path.Combine(dataFile.Directory.FullName, dataFile.Name + ".lck"));
+            using (var s = lockFile.Create())
             {
-                stream.Close();
+                s.Close();
             }
 
-            string content;
-            using (var stream = file.OpenRead())
+            using (var stream = new FileStream(dataFile.FullName, FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
-                content = await reader.ReadToEndAsync();
+                var json = await reader.ReadToEndAsync();
+                var content = JsonConvert.DeserializeObject<T>(json);
+
+                return new FileSystemMessage<T>(dataFile, lockFile, content);
             }
-
-            return new FileSystemMessage(file, content);
-        }
-
-        private static string GetLockPath(FileInfo file)
-        {
-            return file.FullName + ".lck";
         }
     }
 }

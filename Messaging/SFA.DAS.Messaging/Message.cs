@@ -1,31 +1,17 @@
-﻿using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Messaging
 {
-    public class Message<T>
+    public abstract class Message<T>
     {
-        private readonly SubSystemMessage _subSystemMessage;
-
-        public Message(SubSystemMessage subSystemMessage)
+        protected Message(T content)
         {
-            _subSystemMessage = subSystemMessage;
-
-            if (_subSystemMessage != null)
-            {
-                Content = JsonConvert.DeserializeObject<T>(_subSystemMessage.Content);
-            }
+            Content = content;
         }
 
-        public virtual T Content { get; protected set; }
+        public T Content { get; }
 
-        public virtual Task CompleteAsync()
-        {
-            return _subSystemMessage.CompleteAsync();
-        }
-        public virtual Task AbortAsync()
-        {
-            return _subSystemMessage.AbortAsync();
-        }
+        public abstract Task CompleteAsync();
+        public abstract Task AbortAsync();
     }
 }
