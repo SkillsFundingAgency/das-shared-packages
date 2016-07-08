@@ -23,7 +23,7 @@ let nugetAccessKey = getBuildParamOrDefault "nugetAccessKey" ""
 let isAutomationProject = getBuildParamOrDefault "AcceptanceTests" "false"
 
 let devWebsitePort = getBuildParamOrDefault "devport" "7071"
-let accWebsitePort = getBuildParamOrDefault "accport" "5051"
+let accWebsitePort = getBuildParamOrDefault "accport" "5051" 
 
 let mutable projectName = ""
 let mutable folderPrecompiled = @"\"+ projectName + ".Release_precompiled "
