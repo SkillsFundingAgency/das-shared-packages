@@ -121,26 +121,20 @@ namespace PublishReceiveSample
         }
         private static void LoadHalJson(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
         {
-            var connectionString = "server=.;database=scratchpad;trusted_connection=true;";
-            var pubStoreSproc = "usp_StoreMessage";
-            var pubReceiveSproc = "usp_GetPageOfMessages";
-            var subGetSproc = "usp_GetLastMessageId";
-            var subUpdateSproc = "usp_UpdateLastMessageId";
+            WriteColoredText("Connection string: ");
+            var connectionString = Console.ReadLine();
 
-            //WriteColoredText("Connection string: ");
-            //var connectionString = Console.ReadLine();
+            WriteColoredText("Publish store sproc: ");
+            var pubStoreSproc = Console.ReadLine();
 
-            //WriteColoredText("Publish store sproc: ");
-            //var pubStoreSproc = Console.ReadLine();
+            WriteColoredText("Publish receive sproc: ");
+            var pubReceiveSproc = Console.ReadLine();
 
-            //WriteColoredText("Publish receive sproc: ");
-            //var pubReceiveSproc = Console.ReadLine();
+            WriteColoredText("Receive get sproc: ");
+            var subGetSproc = Console.ReadLine();
 
-            //WriteColoredText("Receive get sproc: ");
-            //var subGetSproc = Console.ReadLine();
-
-            //WriteColoredText("Receive update sproc: ");
-            //var subUpdateSproc = Console.ReadLine();
+            WriteColoredText("Receive update sproc: ");
+            var subUpdateSproc = Console.ReadLine();
 
             publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc));
 
