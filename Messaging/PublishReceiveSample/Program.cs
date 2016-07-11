@@ -1,8 +1,13 @@
 ﻿using System;
 using System.IO;
+using PublishReceiveSample.SyndicationSamples;
 using SFA.DAS.Messaging;
 using SFA.DAS.Messaging.AzureServiceBus;
 using SFA.DAS.Messaging.FileSystem;
+using SFA.DAS.Messaging.Syndication;
+using SFA.DAS.Messaging.Syndication.Hal.Json;
+using SFA.DAS.Messaging.Syndication.Http;
+using SFA.DAS.Messaging.Syndication.SqlServer;
 
 namespace PublishReceiveSample
 {
@@ -60,6 +65,7 @@ namespace PublishReceiveSample
                 WriteColoredLine("What sub-system would you like to use:");
                 WriteColoredLine("   1. File system");
                 WriteColoredLine("   2. Azure Service Bus");
+                WriteColoredLine("   3. Hal+Json");
                 WriteColoredLine("   0. Quit");
                 WriteColoredText("Enter selection: ");
 
@@ -67,28 +73,15 @@ namespace PublishReceiveSample
                 switch (input)
                 {
                     case "1":
-                        WriteColoredText("Storage dir (%temp%/[Guid]): ");
-                        var dir = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(dir))
-                        {
-                            dir = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), Guid.NewGuid().ToString());
-                        }
-
-                        var fs = new FileSystemMessageService(dir);
-                        publisher = fs;
-                        receiver = fs;
+                        LoadFileSystem(out publisher, out receiver);
                         validSelection = true;
                         break;
                     case "2":
-                        WriteColoredText("Connection string: ");
-                        var connectionString = Console.ReadLine();
-
-                        WriteColoredText("Queue name: ");
-                        var queueName = Console.ReadLine();
-
-                        var asb = new AzureServiceBusMessageService(connectionString, queueName);
-                        publisher = asb;
-                        receiver = asb;
+                        LoadAzureServiceBus(out publisher, out receiver);
+                        validSelection = true;
+                        break;
+                    case "3":
+                        LoadHalJson(out publisher, out receiver);
                         validSelection = true;
                         break;
                     case "0":
@@ -101,6 +94,56 @@ namespace PublishReceiveSample
                 }
             }
         }
+        private static void LoadFileSystem(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+        {
+            WriteColoredText("Storage dir (%temp%/[Guid]): ");
+            var dir = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(dir))
+            {
+                dir = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), Guid.NewGuid().ToString());
+            }
+
+            var fs = new FileSystemMessageService(dir);
+            publisher = fs;
+            receiver = fs;
+        }
+        private static void LoadAzureServiceBus(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+        {
+            WriteColoredText("Connection string: ");
+            var connectionString = Console.ReadLine();
+
+            WriteColoredText("Queue name: ");
+            var queueName = Console.ReadLine();
+
+            var asb = new AzureServiceBusMessageService(connectionString, queueName);
+            publisher = asb;
+            receiver = asb;
+        }
+        private static void LoadHalJson(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+        {
+            WriteColoredText("Connection string: ");
+            var connectionString = Console.ReadLine();
+
+            WriteColoredText("Publish store sproc: ");
+            var pubStoreSproc = Console.ReadLine();
+
+            WriteColoredText("Publish receive sproc: ");
+            var pubReceiveSproc = Console.ReadLine();
+
+            WriteColoredText("Receive get sproc: ");
+            var subGetSproc = Console.ReadLine();
+
+            WriteColoredText("Receive update sproc: ");
+            var subUpdateSproc = Console.ReadLine();
+
+            publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc));
+
+            var feedPositionRepo = new SqlServerFeedPositionRepository(connectionString, subGetSproc, subUpdateSproc);
+            receiver = new SyndicationPollingMessageReceiver(
+                new HalJsonMessageClient(feedPositionRepo, new HttpClientWrapper("http://localhost:16972/"), new MessageIdentifierFactory()), 
+                feedPositionRepo);
+        }
+
         private static bool PerformAction(IMessagePublisher publisher, IPollingMessageReceiver receiver)
         {
             while (true)
