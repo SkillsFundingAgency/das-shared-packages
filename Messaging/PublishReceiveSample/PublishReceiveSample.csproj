@@ -65,6 +65,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleEvent.cs" />
+    <Compile Include="SyndicationSamples\MessageIdentifierFactory.cs" />
+    <Compile Include="SyndicationSamples\SampleEventMessageIdentifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -74,6 +76,14 @@
     <ProjectReference Include="..\SFA.DAS.Messaging.AzureServiceBus\SFA.DAS.Messaging.AzureServiceBus.csproj">
       <Project>{71C7C83D-5BBA-4F13-B31F-B86CA5485422}</Project>
       <Name>SFA.DAS.Messaging.AzureServiceBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Messaging.Syndication.SqlServer\SFA.DAS.Messaging.Syndication.SqlServer.csproj">
+      <Project>{04F5051A-591D-41D1-A54B-BCCA972DEB6E}</Project>
+      <Name>SFA.DAS.Messaging.Syndication.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Messaging.Syndication\SFA.DAS.Messaging.Syndication.csproj">
+      <Project>{D3CA1966-E98C-4685-9F36-DD7E9A349BAA}</Project>
+      <Name>SFA.DAS.Messaging.Syndication</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Messaging\SFA.DAS.Messaging.csproj">
       <Project>{B0F2744B-BE9A-4329-BE89-B7D17BFE8F53}</Project>

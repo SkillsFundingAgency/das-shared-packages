@@ -9,11 +9,12 @@ namespace SFA.DAS.Messaging.Syndication.Http
     public class HttpClientWrapper : IHttpClientWrapper
     {
         private readonly HttpClient _client;
+        private readonly Uri _baseUri;
 
         public HttpClientWrapper(string baseServerUrl, IDictionary<string, string[]> defaultHeaders = null)
         {
             _client = new HttpClient();
-            _client.BaseAddress = new Uri(baseServerUrl);
+            _baseUri = new Uri(baseServerUrl);
             if (defaultHeaders != null)
             {
                 AddHeaders(defaultHeaders, _client.DefaultRequestHeaders);
@@ -38,7 +39,7 @@ namespace SFA.DAS.Messaging.Syndication.Http
             var request = new HttpRequestMessage
             {
                 Method = new HttpMethod(verb),
-                RequestUri = new Uri(url)
+                RequestUri = new Uri(_baseUri, url)
             };
             if (headers != null)
             {
