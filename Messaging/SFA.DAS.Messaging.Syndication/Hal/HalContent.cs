@@ -1,7 +1,7 @@
 namespace SFA.DAS.Messaging.Syndication.Hal
 {
-    public class HalContent
+    public class HalContent<T>
     {
-        public dynamic[] Messages { get; set; }
+        public T[] Messages { get; set; }
     }
 }

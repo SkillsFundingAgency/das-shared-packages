@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace SFA.DAS.Messaging.Syndication.Hal
 {
-    public class HalPage
+    public class HalPage<T>
     {
         [JsonProperty("_links")]
         public HalPageLinks Links { get; set; }
@@ -11,6 +11,6 @@ namespace SFA.DAS.Messaging.Syndication.Hal
         public long Count { get; set; }
 
         [JsonProperty("_embedded")]
-        public HalContent Embedded { get; set; }
+        public HalContent<T> Embedded { get; set; }
     }
 }

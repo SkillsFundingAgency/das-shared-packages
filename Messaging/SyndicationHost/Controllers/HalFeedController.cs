@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using SFA.DAS.Messaging.Syndication.Hal;
+using SFA.DAS.Messaging.Syndication.Hal.Json;
 using SFA.DAS.Messaging.Syndication.SqlServer;
 using SyndicationHost.Hal;
 

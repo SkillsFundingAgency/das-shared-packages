@@ -4,5 +4,7 @@
     {
         string PreviousPage(int pageNumber);
         string NextPage(int pageNumber);
+        string FirstPage(int pageNumber);
+        string LastPage(int pageNumber);
     }
 }

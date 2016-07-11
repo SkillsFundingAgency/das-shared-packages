@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace SFA.DAS.Messaging.Syndication.Hal
+namespace SFA.DAS.Messaging.Syndication.Hal.Json
 {
     public class HalJsonMessageService<T>
     {
@@ -24,16 +25,19 @@ namespace SFA.DAS.Messaging.Syndication.Hal
         {
             var rawPage = await _messageRepository.RetreivePageAsync<T>(page, pageSize);
             var hasMorePages = page * pageSize < rawPage.TotalNumberOfMessages;
+            var numberOfPages = (int)Math.Ceiling(rawPage.TotalNumberOfMessages / (float)pageSize);
 
-            var halPage = new HalPage
+            var halPage = new HalPage<dynamic>
             {
                 Links = new HalPageLinks
                 {
                     Next = hasMorePages ? _pageLinkBuilder.NextPage(page + 1) : null,
-                    Prev = page > 1 ? _pageLinkBuilder.PreviousPage(page - 1) : null
+                    Prev = page > 1 ? _pageLinkBuilder.PreviousPage(page - 1) : null,
+                    First = rawPage.TotalNumberOfMessages > 0 ? _pageLinkBuilder.FirstPage(1) : null,
+                    Last = rawPage.TotalNumberOfMessages > 0 ? _pageLinkBuilder.LastPage(numberOfPages) : null
                 },
                 Count = rawPage.TotalNumberOfMessages,
-                Embedded = new HalContent
+                Embedded = new HalContent<dynamic>
                 {
                     Messages = rawPage.Messages.Select(msg => BuildEmbeddedMessage(_attributeExtractor.Extract(msg))).ToArray()
                 }

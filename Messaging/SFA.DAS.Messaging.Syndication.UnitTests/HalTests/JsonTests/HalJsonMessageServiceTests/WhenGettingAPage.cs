@@ -4,8 +4,9 @@ using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using SFA.DAS.Messaging.Syndication.Hal;
+using SFA.DAS.Messaging.Syndication.Hal.Json;
 
-namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.HalJsonMessageServiceTests
+namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMessageServiceTests
 {
     public class WhenGettingAPage
     {
@@ -46,6 +47,8 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.HalJsonMessageService
             _halPageLinkBuilder = new Mock<IHalPageLinkBuilder>();
             _halPageLinkBuilder.Setup(x => x.NextPage(It.IsAny<int>())).Returns("/nextpage");
             _halPageLinkBuilder.Setup(x => x.PreviousPage(It.IsAny<int>())).Returns("/prevpage");
+            _halPageLinkBuilder.Setup(x => x.FirstPage(It.IsAny<int>())).Returns("/first");
+            _halPageLinkBuilder.Setup(x => x.LastPage(It.IsAny<int>())).Returns("/last");
 
             _messageService = new HalJsonMessageService<TestMessage>(_messageRepository.Object, _halResourceAttributeExtrator.Object, _halPageLinkBuilder.Object);
         }
@@ -104,10 +107,10 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.HalJsonMessageService
             Assert.AreEqual("me", embeddedMessages[0]["_links"]["self"].Value<string>());
         }
 
-        [TestCase(2, "/nextpage", "/prevpage")]
-        [TestCase(1, "/nextpage", null)]
-        [TestCase(10, null, "/prevpage")]
-        public async Task ThenItShouldIncludePageLinks(int page, string expectedNext, string expectedPrev)
+        [TestCase(2, "/nextpage", "/prevpage", "/first", "/last")]
+        [TestCase(1, "/nextpage", null, "/first", "/last")]
+        [TestCase(10, null, "/prevpage", "/first", "/last")]
+        public async Task ThenItShouldIncludePageLinks(int page, string expectedNext, string expectedPrev, string expectedFirst, string expectedLast)
         {
             // Act
             var actual = await _messageService.GetPageAsync(page, 10);
@@ -117,22 +120,47 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.HalJsonMessageService
 
             var jsonContent = JObject.Parse(actual.Content);
             Assert.IsNotNull(jsonContent["_links"]);
+            AssertJsonLinkCorrect(jsonContent, "next", expectedNext);
+            AssertJsonLinkCorrect(jsonContent, "prev", expectedPrev);
+            AssertJsonLinkCorrect(jsonContent, "first", expectedFirst);
+            AssertJsonLinkCorrect(jsonContent, "last", expectedLast);
+        }
 
-            if (expectedNext == null)
+        [Test]
+        public async Task ThenItShouldNotIncludeFirstAndLastLinksIfNoRecords()
+        {
+            // Arrange
+            _messageRepository.Setup(r => r.RetreivePageAsync<TestMessage>(It.IsAny<int>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(new SyndicationPage<TestMessage>
+                {
+                    Messages = new TestMessage[0],
+                    PageNumber = 1,
+                    TotalNumberOfMessages = 0
+                }));
+
+            // Act
+            var actual = await _messageService.GetPageAsync(1, 10);
+
+            // Assert
+            Assert.IsNotNull(actual.Content);
+
+            var jsonContent = JObject.Parse(actual.Content);
+            Assert.IsNotNull(jsonContent["_links"]);
+            AssertJsonLinkCorrect(jsonContent, "first", null);
+            AssertJsonLinkCorrect(jsonContent, "last", null);
+        }
+
+
+
+        private void AssertJsonLinkCorrect(JObject jsonContainer, string linkName, string expectedUrl)
+        {
+            if (expectedUrl == null)
             {
-                Assert.IsNull(jsonContent["_links"]["next"]);
+                Assert.IsNull(jsonContainer["_links"][linkName]);
             }
             else
             {
-                Assert.AreEqual(expectedNext, jsonContent["_links"]["next"].Value<string>());
-            }
-            if (expectedPrev == null)
-            {
-                Assert.IsNull(jsonContent["_links"]["prev"]);
-            }
-            else
-            {
-                Assert.AreEqual(expectedPrev, jsonContent["_links"]["prev"].Value<string>());
+                Assert.AreEqual(expectedUrl, jsonContainer["_links"][linkName].Value<string>());
             }
         }
     }

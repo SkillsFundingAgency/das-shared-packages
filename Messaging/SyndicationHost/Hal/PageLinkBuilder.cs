@@ -8,8 +8,15 @@ namespace SyndicationHost.Hal
         {
             return "/hal?page=" + pageNumber;
         }
-
         public string NextPage(int pageNumber)
+        {
+            return "/hal?page=" + pageNumber;
+        }
+        public string FirstPage(int pageNumber)
+        {
+            return "/hal?page=" + pageNumber;
+        }
+        public string LastPage(int pageNumber)
         {
             return "/hal?page=" + pageNumber;
         }
