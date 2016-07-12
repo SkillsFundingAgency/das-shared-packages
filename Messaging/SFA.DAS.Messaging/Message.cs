@@ -8,8 +8,12 @@ namespace SFA.DAS.Messaging
         {
             Content = content;
         }
+        protected Message()
+        {
+            
+        }
 
-        public T Content { get; }
+        public T Content { get; protected set; }
 
         public abstract Task CompleteAsync();
         public abstract Task AbortAsync();
