@@ -47,9 +47,11 @@
   <ItemGroup>
     <Compile Include="FileSystem\FileSystemMessage.cs" />
     <Compile Include="FileSystem\FileSystemMessageService.cs" />
+    <Compile Include="IEventingMessageReceiver.cs" />
     <Compile Include="IMessagePublisher.cs" />
     <Compile Include="IPollingMessageReceiver.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
