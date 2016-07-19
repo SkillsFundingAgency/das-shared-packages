@@ -3,6 +3,7 @@ using System.IO;
 using PublishReceiveSample.SyndicationSamples;
 using SFA.DAS.Messaging;
 using SFA.DAS.Messaging.AzureServiceBus;
+using SFA.DAS.Messaging.AzureStorageQueue;
 using SFA.DAS.Messaging.FileSystem;
 using SFA.DAS.Messaging.Syndication;
 using SFA.DAS.Messaging.Syndication.Hal.Json;
@@ -64,8 +65,9 @@ namespace PublishReceiveSample
             {
                 WriteColoredLine("What sub-system would you like to use:");
                 WriteColoredLine("   1. File system");
-                WriteColoredLine("   2. Azure Service Bus");
-                WriteColoredLine("   3. Hal+Json");
+                WriteColoredLine("   2. Azure Storage Queue");
+                WriteColoredLine("   3. Azure Service Bus");
+                WriteColoredLine("   4. Hal+Json");
                 WriteColoredLine("   0. Quit");
                 WriteColoredText("Enter selection: ");
 
@@ -77,10 +79,14 @@ namespace PublishReceiveSample
                         validSelection = true;
                         break;
                     case "2":
-                        LoadAzureServiceBus(out publisher, out receiver);
+                        LoadAzureStorageQueue(out publisher, out receiver);
                         validSelection = true;
                         break;
                     case "3":
+                        LoadAzureServiceBus(out publisher, out receiver);
+                        validSelection = true;
+                        break;
+                    case "4":
                         LoadHalJson(out publisher, out receiver);
                         validSelection = true;
                         break;
@@ -106,6 +112,22 @@ namespace PublishReceiveSample
             var fs = new FileSystemMessageService(dir);
             publisher = fs;
             receiver = fs;
+        }
+        private static void LoadAzureStorageQueue(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+        {
+            WriteColoredText("Connection string (Blank for dev storage): ");
+            var connectionString = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = "UseDevelopmentStorage=true;";
+            }
+
+            WriteColoredText("Queue name: ");
+            var queueName = Console.ReadLine();
+
+            var asq = new AzureStorageQueueService(connectionString, queueName);
+            publisher = asq;
+            receiver = asq;
         }
         private static void LoadAzureServiceBus(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
         {
