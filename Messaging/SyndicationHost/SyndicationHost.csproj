@@ -194,7 +194,9 @@
     <Folder Include="Views\HalFeed\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Messaging.Syndication.SqlServer\SFA.DAS.Messaging.Syndication.SqlServer.csproj">
