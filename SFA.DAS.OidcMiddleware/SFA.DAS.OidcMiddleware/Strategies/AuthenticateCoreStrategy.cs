@@ -48,6 +48,8 @@ namespace SFA.DAS.OidcMiddleware.Strategies
             var state = query.GetValues("state")[0];
             var properties = _options.StateDataFormat.Unprotect(state);
 
+            _options.AuthenticatedCallback(identity);
+
             return new AuthenticationTicket(identity, properties);
         }
 
@@ -84,7 +86,7 @@ namespace SFA.DAS.OidcMiddleware.Strategies
                 var id = new ClaimsIdentity(claims, "Cookies");
 
                 context.Authentication.SignIn(id);
-
+          
                 return id;
             }
 
