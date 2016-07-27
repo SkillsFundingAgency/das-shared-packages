@@ -47,8 +47,8 @@ namespace SFA.DAS.OidcMiddleware.Strategies
 
             var state = query.GetValues("state")[0];
             var properties = _options.StateDataFormat.Unprotect(state);
+            _options.AuthenticatedCallback?.Invoke(identity);
 
-            _options.AuthenticatedCallback(identity);
 
             return new AuthenticationTicket(identity, properties);
         }
