@@ -41,6 +41,10 @@ namespace SFA.DAS.OidcMiddleware.Strategies
             var tokenResponse = await _buildRequestAuthorisationCode.GetTokenResponse(_options.TokenEndpoint, _options.ClientId, _options.ClientSecret, code, context.Request.Uri);
 
             var tempState = await GetTempStateAsync(context);
+            if (tempState == null)
+            {
+                return new AuthenticationTicket(null, null);
+            }
             context.Authentication.SignOut("TempState");
 
             var identity = await ValidateResponseAndSignInAsync(tokenResponse, tempState.Item2, context);
@@ -56,7 +60,7 @@ namespace SFA.DAS.OidcMiddleware.Strategies
         private async Task<Tuple<string, string>> GetTempStateAsync(IOwinContext context)
         {
             var data = await context.Authentication.AuthenticateAsync("TempState");
-
+            if (data == null) return null;
             var state = data.Identity.FindFirst("state").Value;
             var nonce = data.Identity.FindFirst("nonce").Value;
 
