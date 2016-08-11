@@ -13,10 +13,10 @@ namespace SyndicationHost.Controllers
         public async Task<ActionResult> Index(int page = 1)
         {
             var messageService = new HalJsonMessageService<Message>(
-                new SqlServerMessageRepository("server=.;database=scratchpad;trusted_connection=true;", "usp_StoreMessage", "usp_GetPageOfMessages"),
+                new SqlServerMessageRepository("server=.;database=scratchpad;trusted_connection=true;", "usp_StoreMessage", "usp_GetPageOfMessages", 10),
                 new HalResourceAttributeExtrator(),
                 new PageLinkBuilder());
-            var halPage = await messageService.GetPageAsync(page, 10);
+            var halPage = await messageService.GetPageAsync(page);
             var contentType = halPage.Headers["Content-Type"].DefaultIfEmpty("application/hal+json").FirstOrDefault();
 
             return Content(halPage.Content, contentType);

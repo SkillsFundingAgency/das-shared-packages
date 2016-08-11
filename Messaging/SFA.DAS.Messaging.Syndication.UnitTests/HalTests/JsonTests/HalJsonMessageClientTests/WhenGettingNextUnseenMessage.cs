@@ -101,14 +101,14 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.AreEqual(_message6.Id, actual.Identifier);
+            Assert.AreEqual(_message1.Id, actual.Identifier);
         }
 
-        [TestCase("MSG006", "MSG005")]
-        [TestCase("MSG005", "MSG004")]
-        [TestCase("MSG004", "MSG003")]
-        [TestCase("MSG003", "MSG002")]
-        [TestCase("MSG002", "MSG001")]
+        [TestCase("MSG001", "MSG002")]
+        [TestCase("MSG002", "MSG003")]
+        [TestCase("MSG003", "MSG004")]
+        [TestCase("MSG004", "MSG005")]
+        [TestCase("MSG005", "MSG006")]
         public async Task ThenItShouldReturnTheNextMostRecentOneSinceLastSeenMessage(string lastSeenMessageId, string expectedNextMessageId)
         {
             // Arrange
@@ -128,7 +128,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         {
             // Arrange
             _feedPositionRepository.Setup(r => r.GetLastSeenMessageIdentifierAsync())
-                .Returns(Task.FromResult(_message1.Id));
+                .Returns(Task.FromResult(_message6.Id));
 
             // Act
             var actual = await _messageClient.GetNextUnseenMessage<TestMessage>();
@@ -150,7 +150,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.AreEqual(_message6.Id, actual.Identifier);
+            Assert.AreEqual(_message1.Id, actual.Identifier);
         }
     }
 }

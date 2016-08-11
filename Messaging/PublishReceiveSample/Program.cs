@@ -164,7 +164,7 @@ namespace PublishReceiveSample
             //WriteColoredText("Receive update sproc: ");
             //var subUpdateSproc = Console.ReadLine();
 
-            publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc));
+            publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc, 10));
 
             var feedPositionRepo = new SqlServerFeedPositionRepository(connectionString, subGetSproc, subUpdateSproc);
             receiver = new SyndicationPollingMessageReceiver(
