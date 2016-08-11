@@ -74,6 +74,57 @@ namespace SFA.DAS.Messaging.Syndication.Hal.Json
 
             return messages[indexOfLastMessage + 1];
         }
+        public async Task<IEnumerable<ClientMessage<T>>> GetBatchOfUnseenMessages<T>(int batchSize)
+        {
+            var lastMessageId = await _feedPositionRepository.GetLastSeenMessageIdentifierAsync();
+            var messageIdentifier = _messageIdentifierFactory.Create<T>();
+
+            var page = await GetPage<T>("/");
+            if (page == null)
+            {
+                return new ClientMessage<T>[0];
+            }
+
+            var batch = new List<ClientMessage<T>>();
+            var canPullMessages = string.IsNullOrEmpty(lastMessageId);
+            while (batch.Count < batchSize)
+            {
+                var messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+                foreach (var message in messages)
+                {
+                    if (!canPullMessages)
+                    {
+                        canPullMessages = message.Identifier.Equals(lastMessageId);
+                        continue;
+                    }
+
+                    batch.Add(message);
+                    if (batch.Count >= batchSize)
+                    {
+                        break;
+                    }
+                }
+
+                if (batch.Count >= batchSize)
+                {
+                    break;
+                }
+                if (string.IsNullOrEmpty(page.Links.Next))
+                {
+                    if (canPullMessages)
+                    {
+                        break;
+                    }
+                    page = await GetPage<T>("/");
+                    canPullMessages = true;
+                }
+                else
+                {
+                    page = await GetPage<T>(page.Links.Next);
+                }
+            }
+            return batch.ToArray();
+        }
 
         private async Task<HalPage<T>> GetPage<T>(string pageUrl)
         {

@@ -41,24 +41,44 @@ namespace SFA.DAS.Messaging.FileSystem
 
         public async Task<Message<T>> ReceiveAsAsync<T>() where T : new()
         {
-            var directory = new DirectoryInfo(_storageDirectory);
-            if (!directory.Exists)
-            {
-                return null;
-            }
-
-            var jsonFiles = directory.GetFiles("*.json");
-            var lockFiles = directory.GetFiles("*.lck");
-            var nextFile = jsonFiles
-                .Where(jf => !lockFiles.Any(lf => lf.Name.StartsWith(jf.Name)))
-                .OrderByDescending(jf => jf.LastWriteTimeUtc)
-                .FirstOrDefault();
+            var nextFile = GetAvailableMessages().FirstOrDefault();
             if (nextFile == null)
             {
                 return null;
             }
 
             return await FileSystemMessage<T>.Lock(nextFile);
+        }
+        public async Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
+        {
+            var availableMessageFiles = GetAvailableMessages().Take(batchSize).ToArray();
+            if (!availableMessageFiles.Any())
+            {
+                return new Message<T>[0];
+            }
+
+            var messages = new Message<T>[availableMessageFiles.Length];
+            for (var i = 0; i < messages.Length; i++)
+            {
+                messages[i] = await FileSystemMessage<T>.Lock(availableMessageFiles[i]);
+            }
+            return messages;
+        }
+
+
+        private IEnumerable<FileInfo> GetAvailableMessages()
+        {
+            var directory = new DirectoryInfo(_storageDirectory);
+            if (!directory.Exists)
+            {
+                return new FileInfo[0];
+            }
+
+            var jsonFiles = directory.GetFiles("*.json");
+            var lockFiles = directory.GetFiles("*.lck");
+            return jsonFiles
+                .Where(jf => !lockFiles.Any(lf => lf.Name.StartsWith(jf.Name)))
+                .OrderByDescending(jf => jf.LastWriteTimeUtc);
         }
     }
 }

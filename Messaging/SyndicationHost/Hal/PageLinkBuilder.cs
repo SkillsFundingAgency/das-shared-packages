@@ -6,19 +6,19 @@ namespace SyndicationHost.Hal
     {
         public string PreviousPage(int pageNumber)
         {
-            return "/hal?page=" + pageNumber;
+            return "/halfeed?page=" + pageNumber;
         }
         public string NextPage(int pageNumber)
         {
-            return "/hal?page=" + pageNumber;
+            return "/halfeed?page=" + pageNumber;
         }
         public string FirstPage(int pageNumber)
         {
-            return "/hal?page=" + pageNumber;
+            return "/halfeed?page=" + pageNumber;
         }
         public string LastPage(int pageNumber)
         {
-            return "/hal?page=" + pageNumber;
+            return "/halfeed?page=" + pageNumber;
         }
     }
 }

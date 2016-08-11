@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using PublishReceiveSample.SyndicationSamples;
 using SFA.DAS.Messaging;
 using SFA.DAS.Messaging.AzureServiceBus;
@@ -168,7 +169,7 @@ namespace PublishReceiveSample
 
             var feedPositionRepo = new SqlServerFeedPositionRepository(connectionString, subGetSproc, subUpdateSproc);
             receiver = new SyndicationPollingMessageReceiver(
-                new HalJsonMessageClient(feedPositionRepo, new HttpClientWrapper("http://localhost:16972/"), new MessageIdentifierFactory()), 
+                new HalJsonMessageClient(feedPositionRepo, new HttpClientWrapper("http://localhost:16972/"), new MessageIdentifierFactory()),
                 feedPositionRepo);
         }
 
@@ -179,6 +180,7 @@ namespace PublishReceiveSample
                 WriteColoredLine("What would you like to do:");
                 WriteColoredLine("   1. Publish message");
                 WriteColoredLine("   2. Receive message");
+                WriteColoredLine("   3. Receive batch of messages");
                 WriteColoredLine("   0. Quit");
                 WriteColoredText("Enter selection: ");
 
@@ -190,6 +192,9 @@ namespace PublishReceiveSample
                         return true;
                     case "2":
                         Receive(receiver);
+                        return true;
+                    case "3":
+                        ReceiveBatch(receiver);
                         return true;
                     case "0":
                         return false;
@@ -217,6 +222,23 @@ namespace PublishReceiveSample
             {
                 message.CompleteAsync();
                 WriteColoredLine($"Received message with id {message.Content.Id} published at {message.Content.Timestamp}", DetailsColor);
+            }
+        }
+        private static void ReceiveBatch(IPollingMessageReceiver receiver)
+        {
+            var messages = receiver.ReceiveBatchAsAsync<SampleEvent>(10).Result?.ToArray();
+            if (messages == null || !messages.Any())
+            {
+                WriteColoredLine("No messages waiting for processing", DetailsColor);
+            }
+            else
+            {
+                foreach (var message in messages)
+                {
+                    message.CompleteAsync();
+                    WriteColoredLine($"Received message with id {message.Content.Id} published at {message.Content.Timestamp}", DetailsColor);
+                    System.Threading.Thread.Sleep(50);
+                }
             }
         }
 
