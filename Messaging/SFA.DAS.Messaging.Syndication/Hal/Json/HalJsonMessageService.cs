@@ -8,7 +8,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace SFA.DAS.Messaging.Syndication.Hal.Json
 {
-    public class HalJsonMessageService<T>
+    public class HalJsonMessageService<T> : IHalJsonMessageService<T>
     {
         private readonly IMessageRepository _messageRepository;
         private readonly IHalResourceAttributeExtrator<T> _attributeExtractor;
