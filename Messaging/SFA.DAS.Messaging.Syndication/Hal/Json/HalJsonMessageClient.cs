@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Messaging.Syndication.Http;
@@ -29,48 +30,68 @@ namespace SFA.DAS.Messaging.Syndication.Hal.Json
                 return null;
             }
 
-            ClientMessage<T>[] messages;
-            int indexOfLastMessage;
             if (string.IsNullOrEmpty(lastMessageId))
             {
-                if (!string.IsNullOrEmpty(page.Links.Next) && !string.IsNullOrEmpty(page.Links.Last))
-                {
-                    page = await GetPage<T>(page.Links.Last);
-                }
-
-                messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
-                indexOfLastMessage = messages.Length;
+                var message = page.Embedded.Messages.FirstOrDefault();
+                return message != null ? ConvertMessageToClientMessages<T>(message, messageIdentifier) : null;
             }
-            else
+
+            var messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+            var indexOfLastMessage = IndexOf(messages, lastMessageId);
+            while (indexOfLastMessage == -1 || indexOfLastMessage >= messages.Length - 1)
             {
+                if (string.IsNullOrEmpty(page.Links.Next))
+                {
+                    return null;
+                }
+                page = await GetPage<T>(page.Links.Next);
                 messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
                 indexOfLastMessage = IndexOf(messages, lastMessageId);
-                while (indexOfLastMessage == -1)
-                {
-                    page = await GetPage<T>(page.Links.Next);
-                    messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
-                    indexOfLastMessage = IndexOf(messages, lastMessageId);
-
-                    if (indexOfLastMessage == 0)
-                    {
-                        page = await GetPage<T>(page.Links.Prev);
-                        messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
-                        indexOfLastMessage = messages.Length;
-                    }
-
-                    if (indexOfLastMessage == -1 && string.IsNullOrEmpty(page.Links.Next))
-                    {
-                        indexOfLastMessage = messages.Length;
-                    }
-                }
             }
+            return messages[indexOfLastMessage + 1];
 
-            if (indexOfLastMessage < 1)
-            {
-                return null;
-            }
+            //ClientMessage<T>[] messages;
+            //int indexOfLastMessage;
+            //if (string.IsNullOrEmpty(lastMessageId))
+            //{
+            //    if (!string.IsNullOrEmpty(page.Links.Next) && !string.IsNullOrEmpty(page.Links.Last))
+            //    {
+            //        page = await GetPage<T>(page.Links.Last);
+            //    }
 
-            return messages[indexOfLastMessage - 1];
+            //    messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+            //    indexOfLastMessage = messages.Length;
+            //}
+            //else
+            //{
+            //    messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+            //    indexOfLastMessage = IndexOf(messages, lastMessageId);
+            //    while (indexOfLastMessage == -1)
+            //    {
+            //        page = await GetPage<T>(page.Links.Next);
+            //        messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+            //        indexOfLastMessage = IndexOf(messages, lastMessageId);
+
+            //        if (indexOfLastMessage == 0)
+            //        {
+            //            page = await GetPage<T>(page.Links.Prev);
+            //            messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+            //            indexOfLastMessage = messages.Length;
+            //        }
+
+            //        if (indexOfLastMessage == -1 && string.IsNullOrEmpty(page.Links.Next))
+            //        {
+            //            indexOfLastMessage = messages.Length;
+            //        }
+            //    }
+            //}
+
+            //if (indexOfLastMessage < 1)
+            //{
+            //    return null;
+            //}
+
+            //return messages[indexOfLastMessage - 1];
         }
 
         private async Task<HalPage<T>> GetPage<T>(string pageUrl)
