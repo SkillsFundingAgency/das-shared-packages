@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SFA.DAS.Messaging.Syndication</id>
+    <version>2.0.0</version>
+    <authors>DAS</authors>
+    <owners>DAS</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides synidcation sub-system implementation</description>
+    <summary>Syndication messaging system</summary>
+    <releaseNotes />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="SFA.DAS.Messaging" version="2.0.0"/>
+        <dependency id="Newtonsoft.Json" version="9.0.1"/>
+        <dependency id="Microsoft.Net.Http" version="2.2.29"/>
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SFA.DAS.Messaging.Syndication.dll" target="lib\net45\SFA.DAS.Messaging.Syndication.dll" />
+  </files>
+</package>
