@@ -85,9 +85,9 @@ You are then able to use the [Authorize] attrbiute on any Controller Actions tha
 
 ## Logging
 
-## DAS.SFA.NLog.Targets.AzureEventHub - NLog Target for Azure Event Hub
+## NLog Target for Azure Event Hub - DAS.SFA.NLog.Targets.AzureEventHub 
 
-A custom [NLog](https://github.com/nlog/nlog/wiki) target that pushes log events to [Azure Event Hub](https://azure.microsoft.com/en-gb/services/event-hubs/)
+A custom [NLog](https://github.com/nlog/nlog/wiki) target that pushes log events to [Azure Event Hub](https://azure.microsoft.com/en-gb/services/event-hubs/).
 
 The Event Hub target works best with the [BufferingWrapper](https://github.com/nlog/nlog/wiki/BufferingWrapper-target) or [AsyncWrapper](https://github.com/nlog/nlog/wiki/AsyncWrapper-target) targets applied.
 
