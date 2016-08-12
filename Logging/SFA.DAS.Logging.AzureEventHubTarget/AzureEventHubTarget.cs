@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using Newtonsoft.Json;
 using NLog;
@@ -24,7 +25,7 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
         public string EventHubConnectionString { get; set; }
 
         [RequiredParameter]
-        public string EventHubPath { get; set; }
+        public string EventHubName { get; set; }
 
         public string PartitionKey { get; set; }
 
@@ -47,7 +48,7 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
 
             if (_eventHubClient == null)
             {
-                _eventHubClient = _messsagingFactory.CreateEventHubClient(EventHubPath);
+                _eventHubClient = _messsagingFactory.CreateEventHubClient(EventHubName);
             }
 
             var payload = FormPayload(logEvents.Select(e => e.LogEvent), partitionKey);
