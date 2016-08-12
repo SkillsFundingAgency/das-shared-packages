@@ -7,5 +7,6 @@ namespace SFA.DAS.Messaging.Syndication
         public IEnumerable<T> Messages { get; set; }
         public int PageNumber { get; set; }
         public long TotalNumberOfMessages { get; set; }
+        public int TotalNumberOfPages { get; set; }
     }
 }

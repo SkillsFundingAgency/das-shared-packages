@@ -19,7 +19,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         public void Arrange()
         {
             _messageRepository = new Mock<IMessageRepository>();
-            _messageRepository.Setup(r => r.RetreivePageAsync<TestMessage>(It.IsAny<int>(), It.IsAny<int>()))
+            _messageRepository.Setup(r => r.RetreivePageAsync<TestMessage>(It.IsAny<int>()))
                 .Returns(Task.FromResult(new SyndicationPage<TestMessage>
                 {
                     Messages = new[]
@@ -27,7 +27,8 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
                         new TestMessage()
                     },
                     PageNumber = 2,
-                    TotalNumberOfMessages = 100
+                    TotalNumberOfMessages = 100,
+                    TotalNumberOfPages = 10
                 }));
 
             _halResourceAttributeExtrator = new Mock<IHalResourceAttributeExtrator<TestMessage>>();
@@ -57,7 +58,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         public async Task ThenItShouldReturnAPageOfResults()
         {
             // Act
-            var actual = await _messageService.GetPageAsync(2, 10);
+            var actual = await _messageService.GetPageAsync(2);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -67,7 +68,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         public async Task ThenItShouldReturnHalJsonContentTypeHeader()
         {
             // Act
-            var actual = await _messageService.GetPageAsync(2, 10);
+            var actual = await _messageService.GetPageAsync(2);
 
             // Assert
             Assert.IsNotNull(actual.Headers);
@@ -79,7 +80,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         public async Task ThenItShouldReturnJsonSerialisedPageOfResults()
         {
             // Act
-            var actual = await _messageService.GetPageAsync(2, 10);
+            var actual = await _messageService.GetPageAsync(2);
 
             // Assert
             Assert.IsNotNull(actual.Content);
@@ -94,7 +95,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         public async Task ThenItShouldIncludeEmbeddedMessage()
         {
             // Act
-            var actual = await _messageService.GetPageAsync(2, 10);
+            var actual = await _messageService.GetPageAsync(2);
 
             // Assert
             Assert.IsNotNull(actual.Content);
@@ -107,13 +108,14 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
             Assert.AreEqual("me", embeddedMessages[0]["_links"]["self"].Value<string>());
         }
 
-        [TestCase(2, "/nextpage", "/prevpage", "/first", "/last")]
         [TestCase(1, "/nextpage", null, "/first", "/last")]
+        [TestCase(2, "/nextpage", "/prevpage", "/first", "/last")]
+        [TestCase(5, "/nextpage", "/prevpage", "/first", "/last")]
         [TestCase(10, null, "/prevpage", "/first", "/last")]
         public async Task ThenItShouldIncludePageLinks(int page, string expectedNext, string expectedPrev, string expectedFirst, string expectedLast)
         {
             // Act
-            var actual = await _messageService.GetPageAsync(page, 10);
+            var actual = await _messageService.GetPageAsync(page);
 
             // Assert
             Assert.IsNotNull(actual.Content);
@@ -130,7 +132,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         public async Task ThenItShouldNotIncludeFirstAndLastLinksIfNoRecords()
         {
             // Arrange
-            _messageRepository.Setup(r => r.RetreivePageAsync<TestMessage>(It.IsAny<int>(), It.IsAny<int>()))
+            _messageRepository.Setup(r => r.RetreivePageAsync<TestMessage>(It.IsAny<int>()))
                 .Returns(Task.FromResult(new SyndicationPage<TestMessage>
                 {
                     Messages = new TestMessage[0],
@@ -139,7 +141,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
                 }));
 
             // Act
-            var actual = await _messageService.GetPageAsync(1, 10);
+            var actual = await _messageService.GetPageAsync(1);
 
             // Assert
             Assert.IsNotNull(actual.Content);

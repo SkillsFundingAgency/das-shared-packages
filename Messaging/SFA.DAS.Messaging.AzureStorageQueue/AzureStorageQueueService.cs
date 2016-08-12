@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -35,6 +36,12 @@ namespace SFA.DAS.Messaging.AzureStorageQueue
             }
 
             return new AzureStorageQueueMessage<T>(message, queue);
+        }
+        public async Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
+        {
+            var queue = GetQueue();
+            var batch = await queue.GetMessagesAsync(batchSize);
+            return batch.Select(m => new AzureStorageQueueMessage<T>(m, queue));
         }
 
         private CloudQueue GetQueue()

@@ -56,12 +56,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HalTests\JsonTests\HalJsonMessageClientTests\WhenGettingBatchOfUnseenMessages.cs" />
     <Compile Include="HalTests\JsonTests\HalJsonMessageClientTests\WhenGettingNextUnseenMessage.cs" />
     <Compile Include="HalTests\JsonTests\HalJsonMessageServiceTests\WhenGettingAPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyndicationMessagePublisherTests\WhenPublishing.cs" />
+    <Compile Include="SyndicationMessageTests\WhenAborting.cs" />
     <Compile Include="SyndicationMessageTests\WhenCompleting.cs" />
     <Compile Include="SyndicationPollingMessageReceiverTests\WhenReceivingAsAType.cs" />
+    <Compile Include="SyndicationPollingMessageReceiverTests\WhenReceivingBatchAsAsync.cs" />
     <Compile Include="TestMessage.cs" />
   </ItemGroup>
   <ItemGroup>

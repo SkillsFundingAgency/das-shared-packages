@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
 
@@ -14,7 +16,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             _connectionString = connectionString;
             _queueName = queueName;
         }
-        
+
         public async Task PublishAsync(object message)
         {
             var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
@@ -36,6 +38,12 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             }
 
             return new AzureServiceBusMessage<T>(brokeredMessage);
+        }
+        public async Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
+        {
+            var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
+            var batch = await client.ReceiveBatchAsync(batchSize);
+            return batch.Select(m => new AzureServiceBusMessage<T>(m));
         }
     }
 }

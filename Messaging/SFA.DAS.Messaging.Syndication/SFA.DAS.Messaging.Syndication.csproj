@@ -63,6 +63,7 @@
     <Compile Include="Hal\IHalResourceAttributeExtrator.cs" />
     <Compile Include="Hal\Json\HalJsonMessageClient.cs" />
     <Compile Include="Hal\Json\HalJsonMessageService.cs" />
+    <Compile Include="Hal\Json\IHalJsonMessageService.cs" />
     <Compile Include="Http\HttpClientWrapper.cs" />
     <Compile Include="Http\IHttpClientWrapper.cs" />
     <Compile Include="IFeedPositionRepository.cs" />
