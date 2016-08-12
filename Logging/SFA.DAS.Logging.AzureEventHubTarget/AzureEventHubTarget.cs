@@ -9,7 +9,7 @@ using NLog.Common;
 using NLog.Config;
 using NLog.Targets;
 
-namespace SFA.DAS.Logging.AzureEventHubTarget
+namespace SFA.DAS.NLog.Targets.AzureEventHub
 {
     [Target("AzureEventHub")]
     public class AzureEventHubTarget : TargetWithLayout

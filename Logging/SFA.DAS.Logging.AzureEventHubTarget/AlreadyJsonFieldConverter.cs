@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace SFA.DAS.Logging.AzureEventHubTarget
+namespace SFA.DAS.NLog.Targets.AzureEventHub
 {
     public sealed class AlreadyJsonFieldConverter : JsonConverter
     {
