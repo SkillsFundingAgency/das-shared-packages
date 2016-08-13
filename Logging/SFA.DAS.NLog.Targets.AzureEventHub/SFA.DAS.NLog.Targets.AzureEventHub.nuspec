@@ -19,6 +19,6 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\Release\SFA.DAS.Logging.AzureEventHubTarget.dll" target="lib\net45\SFA.DAS.Logging.AzureEventHubTarget.dll" />
+        <file src="bin\Release\SFA.DAS.NLog.Targets.AzureEventHub.dll" target="lib\net45\SFA.DAS.NLog.Targets.AzureEventHub.dll" />
     </files>
 </package>
