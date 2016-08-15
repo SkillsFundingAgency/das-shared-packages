@@ -92,6 +92,17 @@ A custom [NLog](https://github.com/nlog/nlog/wiki) target that pushes log events
 The Event Hub target works best with the [BufferingWrapper](https://github.com/nlog/nlog/wiki/BufferingWrapper-target) or [AsyncWrapper](https://github.com/nlog/nlog/wiki/AsyncWrapper-target) targets applied.
 
 ## Configuration Syntax
+
+Add the following to your NLog.config file to reference the EventHub target assembly:
+
+```xml
+<extensions>
+    <add assembly="SFA.DAS.NLog.Targets.AzureEventHub"/>
+</extensions>
+```
+
+The target has the following configuration format:
+
 ```xml
 <targets>
   <target xsi:type="AzureEventHub" 
