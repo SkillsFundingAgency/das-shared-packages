@@ -33,14 +33,8 @@ namespace SFA.DAS.OidcMiddleware.Validators
 
             SecurityToken jwt;
             var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
-
-            // validate nonce
-           // var nonceClaim = principal.FindAll("info").FirstOrDefault(c => c.Value.StartsWith("{\"nonce"))?.Value;
             var nonceClaim = principal.FindAll("nonce").FirstOrDefault();
-
-        
-
-
+            
             if (!string.Equals(nonceClaim.Value, nonce, StringComparison.Ordinal))
             {
                 throw new Exception("invalid nonce");
