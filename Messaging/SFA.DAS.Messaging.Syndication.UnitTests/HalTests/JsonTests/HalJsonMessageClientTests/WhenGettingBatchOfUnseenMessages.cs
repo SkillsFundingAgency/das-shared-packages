@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
@@ -9,7 +10,7 @@ using SFA.DAS.Messaging.Syndication.Http;
 
 namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMessageClientTests
 {
-    public class WhenGettingNextUnseenMessage
+    public class WhenGettingBatchOfUnseenMessages
     {
         private readonly TestMessage _message1 = new TestMessage { Id = "MSG001" };
         private readonly TestMessage _message2 = new TestMessage { Id = "MSG002" };
@@ -29,7 +30,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         {
             _feedPositionRepository = new Mock<IFeedPositionRepository>();
             _feedPositionRepository.Setup(r => r.GetLastSeenMessageIdentifierAsync())
-                .Returns(Task.FromResult("MSG002"));
+                .Returns(Task.FromResult(string.Empty));
 
             var page1 = JsonConvert.SerializeObject(new HalPage<TestMessage>
             {
@@ -76,81 +77,128 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.HalTests.JsonTests.HalJsonMess
         }
 
         [Test]
-        public async Task ThenItShouldReturnNullIfNoMessages()
+        public async Task ThenItShouldReturnAnEmptyListIfNotDataOnFeed()
         {
             // Arrange
-            _httpClientWrapper.Setup(c => c.Get("/", It.IsAny<IDictionary<string, string[]>>()))
-                .Returns(Task.FromResult<string>(null));
+            var blankPage = JsonConvert.SerializeObject(new HalPage<TestMessage>
+            {
+                Links = new HalPageLinks
+                {
+                },
+                Count = 0,
+                Embedded = new HalContent<TestMessage>
+                {
+                    Messages = new TestMessage[0]
+                }
+            });
+            _httpClientWrapper.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<IDictionary<string, string[]>>()))
+                .Returns(Task.FromResult(blankPage));
 
             // Act
-            var actual = await _messageClient.GetNextUnseenMessage<TestMessage>();
-
-            // Assert
-            Assert.IsNull(actual);
-        }
-
-        [Test]
-        public async Task ThenItShouldReturnOldestMessageIfNotSeenAnyMessagesYet()
-        {
-            // Arrange
-            _feedPositionRepository.Setup(r => r.GetLastSeenMessageIdentifierAsync())
-                .Returns(Task.FromResult<string>(null));
-
-            // Act
-            var actual = await _messageClient.GetNextUnseenMessage<TestMessage>();
+            var actual = await _messageClient.GetBatchOfUnseenMessages<TestMessage>(10);
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.AreEqual(_message1.Id, actual.Identifier);
+            Assert.IsEmpty(actual);
         }
 
-        [TestCase("MSG001", "MSG002")]
+        [Test]
+        public async Task ThenItShouldReturnAllMessagesIfBatchSizeIsBiggerThanAvailable()
+        {
+            // Arrange
+            var page = JsonConvert.SerializeObject(new HalPage<TestMessage>
+            {
+                Links = new HalPageLinks
+                {
+                    First = "/first"
+                },
+                Count = 2,
+                Embedded = new HalContent<TestMessage>
+                {
+                    Messages = new[] { _message1, _message2 }
+                }
+            });
+            _httpClientWrapper.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<IDictionary<string, string[]>>()))
+                .Returns(Task.FromResult(page));
+
+            // Act
+            var actual = await _messageClient.GetBatchOfUnseenMessages<TestMessage>(10);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(2, actual.Count());
+        }
+
+        [Test]
+        public async Task ThenItShouldStartBatchAtFirstMessageIfNoLastSeenPointer()
+        {
+            // Act
+            var actual = await _messageClient.GetBatchOfUnseenMessages<TestMessage>(10);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(_message1.Id, actual.First().Identifier);
+        }
+
         [TestCase("MSG002", "MSG003")]
         [TestCase("MSG003", "MSG004")]
-        [TestCase("MSG004", "MSG005")]
-        [TestCase("MSG005", "MSG006")]
-        public async Task ThenItShouldReturnTheNextMostRecentOneSinceLastSeenMessage(string lastSeenMessageId, string expectedNextMessageId)
+        public async Task ThenItShouldStartFromMessageAfterLastSeenIfThereIsLastSeenPointer(string lastSeenPointer, string expectedFirstMessageId)
         {
             // Arrange
             _feedPositionRepository.Setup(r => r.GetLastSeenMessageIdentifierAsync())
-                .Returns(Task.FromResult(lastSeenMessageId));
+                .Returns(Task.FromResult(lastSeenPointer));
 
             // Act
-            var actual = await _messageClient.GetNextUnseenMessage<TestMessage>();
+            var actual = await _messageClient.GetBatchOfUnseenMessages<TestMessage>(10);
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.AreEqual(expectedNextMessageId, actual.Identifier);
+            Assert.AreEqual(expectedFirstMessageId, actual.First().Identifier);
         }
 
         [Test]
-        public async Task ThenItShouldReturnNullIfUpToDateWithMessages()
+        public async Task ThenItShouldReturnAnEmptyListWhenAllMessagesHaveBeenSeen()
         {
             // Arrange
             _feedPositionRepository.Setup(r => r.GetLastSeenMessageIdentifierAsync())
                 .Returns(Task.FromResult(_message6.Id));
 
             // Act
-            var actual = await _messageClient.GetNextUnseenMessage<TestMessage>();
+            var actual = await _messageClient.GetBatchOfUnseenMessages<TestMessage>(10);
 
             // Assert
-            Assert.IsNull(actual);
+            Assert.IsNotNull(actual);
+            Assert.IsEmpty(actual);
         }
 
         [Test]
-        public async Task ThenItShouldReturnOldestMessageIdLastSeenIdIsNotInFeed()
+        public async Task ThenItShouldReturnMessagesAcrossFeedPages()
         {
 
             // Arrange
             _feedPositionRepository.Setup(r => r.GetLastSeenMessageIdentifierAsync())
-                .Returns(Task.FromResult("XXX"));
+                .Returns(Task.FromResult(_message2.Id));
 
             // Act
-            var actual = await _messageClient.GetNextUnseenMessage<TestMessage>();
+            var actual = (await _messageClient.GetBatchOfUnseenMessages<TestMessage>(10)).ToArray();
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.AreEqual(_message1.Id, actual.Identifier);
+            Assert.AreEqual(_message3.Id, actual[0].Identifier);
+            Assert.AreEqual(_message4.Id, actual[1].Identifier);
         }
+
+        [Test]
+        public async Task ThenItShouldReturnCorrectNumberOfItemsIfBatchSizeIsLessThanAvailable()
+        {
+            // Act
+            var actual = (await _messageClient.GetBatchOfUnseenMessages<TestMessage>(2)).ToArray();
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(_message1.Id, actual[0].Identifier);
+            Assert.AreEqual(_message2.Id, actual[1].Identifier);
+        }
+
     }
 }

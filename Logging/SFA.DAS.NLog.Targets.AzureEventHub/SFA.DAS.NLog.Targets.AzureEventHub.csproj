@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41E0AA5B-3231-4080-99BA-725E30711788}</ProjectGuid>
+    <ProjectGuid>{F379E27F-757E-4F6C-B51C-50614B1856CF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.Messaging.Syndication.UnitTests</RootNamespace>
-    <AssemblyName>SFA.DAS.Messaging.Syndication.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>SFA.DAS.NLog.Targets.AzureEventHub</RootNamespace>
+    <AssemblyName>SFA.DAS.NLog.Targets.AzureEventHub</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,24 +30,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Moq, Version=4.5.10.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.5.10\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Microsoft.ServiceBus, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.ServiceBus.3.3.2\lib\net45-full\Microsoft.ServiceBus.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,31 +54,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HalTests\JsonTests\HalJsonMessageClientTests\WhenGettingBatchOfUnseenMessages.cs" />
-    <Compile Include="HalTests\JsonTests\HalJsonMessageClientTests\WhenGettingNextUnseenMessage.cs" />
-    <Compile Include="HalTests\JsonTests\HalJsonMessageServiceTests\WhenGettingAPage.cs" />
+    <Compile Include="AlreadyJsonFieldConverter.cs" />
+    <Compile Include="AzureEventHubTarget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SyndicationMessagePublisherTests\WhenPublishing.cs" />
-    <Compile Include="SyndicationMessageTests\WhenAborting.cs" />
-    <Compile Include="SyndicationMessageTests\WhenCompleting.cs" />
-    <Compile Include="SyndicationPollingMessageReceiverTests\WhenReceivingAsAType.cs" />
-    <Compile Include="SyndicationPollingMessageReceiverTests\WhenReceivingBatchAsAsync.cs" />
-    <Compile Include="TestMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="SFA.DAS.NLog.Targets.AzureEventHub.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Messaging.Syndication\SFA.DAS.Messaging.Syndication.csproj">
-      <Project>{D3CA1966-E98C-4685-9F36-DD7E9A349BAA}</Project>
-      <Name>SFA.DAS.Messaging.Syndication</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Messaging\SFA.DAS.Messaging.csproj">
-      <Project>{b0f2744b-be9a-4329-be89-b7d17bfe8f53}</Project>
-      <Name>SFA.DAS.Messaging</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

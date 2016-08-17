@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Messaging.Syndication.Http;
@@ -29,48 +30,100 @@ namespace SFA.DAS.Messaging.Syndication.Hal.Json
                 return null;
             }
 
-            ClientMessage<T>[] messages;
-            int indexOfLastMessage;
             if (string.IsNullOrEmpty(lastMessageId))
             {
-                if (!string.IsNullOrEmpty(page.Links.Next) && !string.IsNullOrEmpty(page.Links.Last))
-                {
-                    page = await GetPage<T>(page.Links.Last);
-                }
-
-                messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
-                indexOfLastMessage = messages.Length;
+                var message = page.Embedded.Messages.FirstOrDefault();
+                return message != null ? ConvertMessageToClientMessages<T>(message, messageIdentifier) : null;
             }
-            else
+
+            var messages = new ClientMessage<T>[0];
+            var indexOfLastMessage = -1;
+            while (indexOfLastMessage == -1)
             {
                 messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
                 indexOfLastMessage = IndexOf(messages, lastMessageId);
-                while (indexOfLastMessage == -1)
+
+                // Was it not on this page
+                if (indexOfLastMessage == -1)
                 {
+                    // we have run out of pages, so return the first
+                    if (string.IsNullOrEmpty(page.Links.Next))
+                    {
+                        page = await GetPage<T>(page.Links.First);
+                        messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+                        return messages[0];
+                    }
+
+                    page = await GetPage<T>(page.Links.Next);
+                    continue;
+                }
+
+                // Did we find a message, but is the last one on the page
+                if (indexOfLastMessage >= messages.Length - 1)
+                {
+                    if (string.IsNullOrEmpty(page.Links.Next))
+                    {
+                        return null;
+                    }
+
                     page = await GetPage<T>(page.Links.Next);
                     messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
-                    indexOfLastMessage = IndexOf(messages, lastMessageId);
-
-                    if (indexOfLastMessage == 0)
-                    {
-                        page = await GetPage<T>(page.Links.Prev);
-                        messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
-                        indexOfLastMessage = messages.Length;
-                    }
-
-                    if (indexOfLastMessage == -1 && string.IsNullOrEmpty(page.Links.Next))
-                    {
-                        indexOfLastMessage = messages.Length;
-                    }
+                    return messages[0];
                 }
             }
 
-            if (indexOfLastMessage < 1)
+            return messages[indexOfLastMessage + 1];
+        }
+        public async Task<IEnumerable<ClientMessage<T>>> GetBatchOfUnseenMessages<T>(int batchSize)
+        {
+            var lastMessageId = await _feedPositionRepository.GetLastSeenMessageIdentifierAsync();
+            var messageIdentifier = _messageIdentifierFactory.Create<T>();
+
+            var page = await GetPage<T>("/");
+            if (page == null)
             {
-                return null;
+                return new ClientMessage<T>[0];
             }
 
-            return messages[indexOfLastMessage - 1];
+            var batch = new List<ClientMessage<T>>();
+            var canPullMessages = string.IsNullOrEmpty(lastMessageId);
+            while (batch.Count < batchSize)
+            {
+                var messages = page.Embedded.Messages.Select(m => ConvertMessageToClientMessages(m, messageIdentifier)).ToArray();
+                foreach (var message in messages)
+                {
+                    if (!canPullMessages)
+                    {
+                        canPullMessages = message.Identifier.Equals(lastMessageId);
+                        continue;
+                    }
+
+                    batch.Add(message);
+                    if (batch.Count >= batchSize)
+                    {
+                        break;
+                    }
+                }
+
+                if (batch.Count >= batchSize)
+                {
+                    break;
+                }
+                if (string.IsNullOrEmpty(page.Links.Next))
+                {
+                    if (canPullMessages)
+                    {
+                        break;
+                    }
+                    page = await GetPage<T>("/");
+                    canPullMessages = true;
+                }
+                else
+                {
+                    page = await GetPage<T>(page.Links.Next);
+                }
+            }
+            return batch.ToArray();
         }
 
         private async Task<HalPage<T>> GetPage<T>(string pageUrl)

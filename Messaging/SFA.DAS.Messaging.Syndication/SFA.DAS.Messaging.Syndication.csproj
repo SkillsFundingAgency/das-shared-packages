@@ -63,6 +63,7 @@
     <Compile Include="Hal\IHalResourceAttributeExtrator.cs" />
     <Compile Include="Hal\Json\HalJsonMessageClient.cs" />
     <Compile Include="Hal\Json\HalJsonMessageService.cs" />
+    <Compile Include="Hal\Json\IHalJsonMessageService.cs" />
     <Compile Include="Http\HttpClientWrapper.cs" />
     <Compile Include="Http\IHttpClientWrapper.cs" />
     <Compile Include="IFeedPositionRepository.cs" />
@@ -84,6 +85,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="SFA.DAS.Messaging.Syndication.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
