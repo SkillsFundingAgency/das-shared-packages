@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace SFA.DAS.Messaging.Syndication.Hal.Json
 {
-    public class HalJsonMessageService<T>
+    public class HalJsonMessageService<T> : IHalJsonMessageService<T>
     {
         private readonly IMessageRepository _messageRepository;
         private readonly IHalResourceAttributeExtrator<T> _attributeExtractor;
@@ -21,11 +20,10 @@ namespace SFA.DAS.Messaging.Syndication.Hal.Json
             _pageLinkBuilder = pageLinkBuilder;
         }
 
-        public async Task<HalResponse> GetPageAsync(int page, int pageSize)
+        public async Task<HalResponse> GetPageAsync(int page)
         {
-            var rawPage = await _messageRepository.RetreivePageAsync<T>(page, pageSize);
-            var hasMorePages = page * pageSize < rawPage.TotalNumberOfMessages;
-            var numberOfPages = (int)Math.Ceiling(rawPage.TotalNumberOfMessages / (float)pageSize);
+            var rawPage = await _messageRepository.RetreivePageAsync<T>(page);
+            var hasMorePages = page < rawPage.TotalNumberOfPages;
 
             var halPage = new HalPage<dynamic>
             {
@@ -34,7 +32,7 @@ namespace SFA.DAS.Messaging.Syndication.Hal.Json
                     Next = hasMorePages ? _pageLinkBuilder.NextPage(page + 1) : null,
                     Prev = page > 1 ? _pageLinkBuilder.PreviousPage(page - 1) : null,
                     First = rawPage.TotalNumberOfMessages > 0 ? _pageLinkBuilder.FirstPage(1) : null,
-                    Last = rawPage.TotalNumberOfMessages > 0 ? _pageLinkBuilder.LastPage(numberOfPages) : null
+                    Last = rawPage.TotalNumberOfMessages > 0 ? _pageLinkBuilder.LastPage(rawPage.TotalNumberOfPages) : null
                 },
                 Count = rawPage.TotalNumberOfMessages,
                 Embedded = new HalContent<dynamic>

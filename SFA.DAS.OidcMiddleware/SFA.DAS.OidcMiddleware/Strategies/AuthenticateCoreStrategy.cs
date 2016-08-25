@@ -41,12 +41,18 @@ namespace SFA.DAS.OidcMiddleware.Strategies
             var tokenResponse = await _buildRequestAuthorisationCode.GetTokenResponse(_options.TokenEndpoint, _options.ClientId, _options.ClientSecret, code, context.Request.Uri);
 
             var tempState = await GetTempStateAsync(context);
+            if (tempState == null)
+            {
+                return new AuthenticationTicket(null, null);
+            }
             context.Authentication.SignOut("TempState");
 
             var identity = await ValidateResponseAndSignInAsync(tokenResponse, tempState.Item2, context);
 
             var state = query.GetValues("state")[0];
             var properties = _options.StateDataFormat.Unprotect(state);
+            _options.AuthenticatedCallback?.Invoke(identity);
+
 
             return new AuthenticationTicket(identity, properties);
         }
@@ -54,7 +60,7 @@ namespace SFA.DAS.OidcMiddleware.Strategies
         private async Task<Tuple<string, string>> GetTempStateAsync(IOwinContext context)
         {
             var data = await context.Authentication.AuthenticateAsync("TempState");
-
+            if (data == null) return null;
             var state = data.Identity.FindFirst("state").Value;
             var nonce = data.Identity.FindFirst("nonce").Value;
 
@@ -71,7 +77,7 @@ namespace SFA.DAS.OidcMiddleware.Strategies
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
                 {
                     claims.AddRange(await _buildUserInfoClient.GetUserClaims(_options, response.AccessToken));
-                    claims.Add(new Claim(ClaimTypes.NameIdentifier, claims.First(c => c.Type == "name").Value));
+                    claims.Add(new Claim(ClaimTypes.Name, claims.First(c => c.Type == "name").Value));
                     claims.Add(new Claim("access_token", response.AccessToken));
                     claims.Add(new Claim("expires_at", (DateTime.UtcNow.ToEpochTime() + response.ExpiresIn).ToDateTimeFromEpoch().ToString()));
                 }
@@ -84,7 +90,7 @@ namespace SFA.DAS.OidcMiddleware.Strategies
                 var id = new ClaimsIdentity(claims, "Cookies");
 
                 context.Authentication.SignIn(id);
-
+          
                 return id;
             }
 

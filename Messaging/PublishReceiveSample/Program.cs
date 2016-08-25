@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using PublishReceiveSample.SyndicationSamples;
 using SFA.DAS.Messaging;
 using SFA.DAS.Messaging.AzureServiceBus;
+using SFA.DAS.Messaging.AzureStorageQueue;
 using SFA.DAS.Messaging.FileSystem;
 using SFA.DAS.Messaging.Syndication;
 using SFA.DAS.Messaging.Syndication.Hal.Json;
@@ -64,8 +66,9 @@ namespace PublishReceiveSample
             {
                 WriteColoredLine("What sub-system would you like to use:");
                 WriteColoredLine("   1. File system");
-                WriteColoredLine("   2. Azure Service Bus");
-                WriteColoredLine("   3. Hal+Json");
+                WriteColoredLine("   2. Azure Storage Queue");
+                WriteColoredLine("   3. Azure Service Bus");
+                WriteColoredLine("   4. Hal+Json");
                 WriteColoredLine("   0. Quit");
                 WriteColoredText("Enter selection: ");
 
@@ -77,10 +80,14 @@ namespace PublishReceiveSample
                         validSelection = true;
                         break;
                     case "2":
-                        LoadAzureServiceBus(out publisher, out receiver);
+                        LoadAzureStorageQueue(out publisher, out receiver);
                         validSelection = true;
                         break;
                     case "3":
+                        LoadAzureServiceBus(out publisher, out receiver);
+                        validSelection = true;
+                        break;
+                    case "4":
                         LoadHalJson(out publisher, out receiver);
                         validSelection = true;
                         break;
@@ -107,6 +114,22 @@ namespace PublishReceiveSample
             publisher = fs;
             receiver = fs;
         }
+        private static void LoadAzureStorageQueue(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+        {
+            WriteColoredText("Connection string (Blank for dev storage): ");
+            var connectionString = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = "UseDevelopmentStorage=true;";
+            }
+
+            WriteColoredText("Queue name: ");
+            var queueName = Console.ReadLine();
+
+            var asq = new AzureStorageQueueService(connectionString, queueName);
+            publisher = asq;
+            receiver = asq;
+        }
         private static void LoadAzureServiceBus(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
         {
             WriteColoredText("Connection string: ");
@@ -121,26 +144,32 @@ namespace PublishReceiveSample
         }
         private static void LoadHalJson(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
         {
-            WriteColoredText("Connection string: ");
-            var connectionString = Console.ReadLine();
+            var connectionString = "server=.;database=scratchpad;trusted_connection=true;";
+            var pubStoreSproc = "usp_StoreMessage";
+            var pubReceiveSproc = "usp_GetPageOfMessages";
+            var subGetSproc = "usp_GetLastMessageId";
+            var subUpdateSproc = "usp_UpdateLastMessageId";
 
-            WriteColoredText("Publish store sproc: ");
-            var pubStoreSproc = Console.ReadLine();
+            //WriteColoredText("Connection string: ");
+            //var connectionString = Console.ReadLine();
 
-            WriteColoredText("Publish receive sproc: ");
-            var pubReceiveSproc = Console.ReadLine();
+            //WriteColoredText("Publish store sproc: ");
+            //var pubStoreSproc = Console.ReadLine();
 
-            WriteColoredText("Receive get sproc: ");
-            var subGetSproc = Console.ReadLine();
+            //WriteColoredText("Publish receive sproc: ");
+            //var pubReceiveSproc = Console.ReadLine();
 
-            WriteColoredText("Receive update sproc: ");
-            var subUpdateSproc = Console.ReadLine();
+            //WriteColoredText("Receive get sproc: ");
+            //var subGetSproc = Console.ReadLine();
 
-            publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc));
+            //WriteColoredText("Receive update sproc: ");
+            //var subUpdateSproc = Console.ReadLine();
+
+            publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc, 10));
 
             var feedPositionRepo = new SqlServerFeedPositionRepository(connectionString, subGetSproc, subUpdateSproc);
             receiver = new SyndicationPollingMessageReceiver(
-                new HalJsonMessageClient(feedPositionRepo, new HttpClientWrapper("http://localhost:16972/"), new MessageIdentifierFactory()), 
+                new HalJsonMessageClient(feedPositionRepo, new HttpClientWrapper("http://localhost:16972/"), new MessageIdentifierFactory()),
                 feedPositionRepo);
         }
 
@@ -151,6 +180,7 @@ namespace PublishReceiveSample
                 WriteColoredLine("What would you like to do:");
                 WriteColoredLine("   1. Publish message");
                 WriteColoredLine("   2. Receive message");
+                WriteColoredLine("   3. Receive batch of messages");
                 WriteColoredLine("   0. Quit");
                 WriteColoredText("Enter selection: ");
 
@@ -162,6 +192,9 @@ namespace PublishReceiveSample
                         return true;
                     case "2":
                         Receive(receiver);
+                        return true;
+                    case "3":
+                        ReceiveBatch(receiver);
                         return true;
                     case "0":
                         return false;
@@ -189,6 +222,23 @@ namespace PublishReceiveSample
             {
                 message.CompleteAsync();
                 WriteColoredLine($"Received message with id {message.Content.Id} published at {message.Content.Timestamp}", DetailsColor);
+            }
+        }
+        private static void ReceiveBatch(IPollingMessageReceiver receiver)
+        {
+            var messages = receiver.ReceiveBatchAsAsync<SampleEvent>(10).Result?.ToArray();
+            if (messages == null || !messages.Any())
+            {
+                WriteColoredLine("No messages waiting for processing", DetailsColor);
+            }
+            else
+            {
+                foreach (var message in messages)
+                {
+                    message.CompleteAsync();
+                    WriteColoredLine($"Received message with id {message.Content.Id} published at {message.Content.Timestamp}", DetailsColor);
+                    System.Threading.Thread.Sleep(50);
+                }
             }
         }
 

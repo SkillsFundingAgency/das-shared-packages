@@ -22,7 +22,9 @@ namespace SFA.DAS.Configuration.FileStorage
 
         private static string GetConfigFilePath(string serviceName, string environmentName, string version)
         {
-            var appDataFolder = !string.IsNullOrEmpty(AppDomain.CurrentDomain.RelativeSearchPath) ? (string)AppDomain.CurrentDomain.GetData("DataDirectory") : @".\App_Data";
+            var appDataFolder = !string.IsNullOrEmpty((string)AppDomain.CurrentDomain.GetData("DataDirectory")) 
+                ? (string)AppDomain.CurrentDomain.GetData("DataDirectory") 
+                : Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "App_Data");
 
             var path = Path.Combine(appDataFolder, $"{environmentName}_{serviceName}_{version}.json");
             return path;

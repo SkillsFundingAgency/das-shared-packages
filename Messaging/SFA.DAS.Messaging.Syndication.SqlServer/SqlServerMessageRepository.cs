@@ -11,12 +11,14 @@ namespace SFA.DAS.Messaging.Syndication.SqlServer
         private readonly string _connectionString;
         private readonly string _storeStoredProcedureName;
         private readonly string _retreiveStoredProcedureName;
+        private readonly int _pageSize;
 
-        public SqlServerMessageRepository(string connectionString, string storeStoredProcedureName, string retreiveStoredProcedureName)
+        public SqlServerMessageRepository(string connectionString, string storeStoredProcedureName, string retreiveStoredProcedureName, int pageSize)
         {
             _connectionString = connectionString;
             _storeStoredProcedureName = storeStoredProcedureName;
             _retreiveStoredProcedureName = retreiveStoredProcedureName;
+            _pageSize = pageSize;
         }
 
         public async Task StoreAsync(object message)
@@ -42,7 +44,7 @@ namespace SFA.DAS.Messaging.Syndication.SqlServer
             }
         }
 
-        public async Task<SyndicationPage<T>> RetreivePageAsync<T>(int page, int pageSize)
+        public async Task<SyndicationPage<T>> RetreivePageAsync<T>(int page)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -59,7 +61,7 @@ namespace SFA.DAS.Messaging.Syndication.SqlServer
                             Direction = System.Data.ParameterDirection.Output
                         };
                         command.Parameters.Add(new SqlParameter("PageNumber", page));
-                        command.Parameters.Add(new SqlParameter("PageSize", pageSize));
+                        command.Parameters.Add(new SqlParameter("PageSize", _pageSize));
                         command.Parameters.Add(numMessagesParam);
 
                         var messages = new List<T>();
@@ -70,11 +72,16 @@ namespace SFA.DAS.Messaging.Syndication.SqlServer
                                 messages.Add(JsonConvert.DeserializeObject<T>((string)reader["MessageBody"]));
                             }
                         }
+
+                        var totalNumberOfMessages = Convert.ToInt32(numMessagesParam.Value);
+                        var totalNumberOfPages = (int) Math.Ceiling(totalNumberOfMessages/(float) _pageSize);
+
                         return new SyndicationPage<T>
                         {
                             Messages = messages,
                             PageNumber = page,
-                            TotalNumberOfMessages = Convert.ToInt32(numMessagesParam.Value)
+                            TotalNumberOfMessages = totalNumberOfMessages,
+                            TotalNumberOfPages = totalNumberOfPages
                         };
                     }
                 }

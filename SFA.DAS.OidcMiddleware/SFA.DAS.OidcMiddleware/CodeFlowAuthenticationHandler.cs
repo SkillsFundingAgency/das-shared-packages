@@ -22,6 +22,7 @@ namespace SFA.DAS.OidcMiddleware
 
         protected override async Task<AuthenticationTicket> AuthenticateCoreAsync()
         {
+            
             return await _authenticateCoreStrategy.Authenticate(Context);
         }
 
