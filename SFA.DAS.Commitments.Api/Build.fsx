@@ -16,6 +16,7 @@ let testDirectory = getBuildParamOrDefault "buildMode" "Debug"
 let myBuildConfig = if testDirectory = "Release" then MSBuildRelease else MSBuildDebug
 let userPath = getBuildParamOrDefault "userDirectory" @"C:\Users\buildguest\"
 
+let nunitTestFormat = getBuildParamOrDefault "nunitTestFormat" "nunit2"
 let publishNuget = getBuildParamOrDefault "publishNuget" "false"
 let nugetOutputDirectory = getBuildParamOrDefault "nugetOutputDirectory" "bin/Release"
 let nugetAccessKey = getBuildParamOrDefault "nugetAccessKey" ""
@@ -23,17 +24,37 @@ let nugetAccessKey = getBuildParamOrDefault "nugetAccessKey" ""
 let isAutomationProject = getBuildParamOrDefault "AcceptanceTests" "false"
 
 let devWebsitePort = getBuildParamOrDefault "devport" "7071"
-let accWebsitePort = getBuildParamOrDefault "accport" "5051" 
+let accWebsitePort = getBuildParamOrDefault "accport" "5051"
 
 let mutable projectName = ""
 let mutable folderPrecompiled = @"\"+ projectName + ".Release_precompiled "
 let mutable publishDirectory = rootPublishDirectory @@ projectName
 let mutable publishingProfile = projectName + "PublishProfile"
 let mutable shouldPublishSite = false
+let mutable shouldCreateDbProject = false
+let mutable sqlPublishFile = ""
 
 let mutable versionNumber = getBuildParamOrDefault "versionNumber" "1.0.0.0"
 
 let mutable solutionFilePresent = true
+
+Target "Set version number" (fun _ ->
+    if publishNuget.ToLower() = "false" then
+        let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
+        let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
+
+        if testDirectory.ToLower() = "release" then
+            versionNumber <- buildVersion
+            if versionNumber.ToLower() <> "localbuild" then
+                versionNumber <- sprintf  @"%s.%s.0.%s" assemblyMajorNumber assemblyMinorNumber buildVersion
+            else
+                versionNumber <- "1.0.0.0"
+
+    else
+        trace "Skipping version number set"
+
+    trace versionNumber
+)
 
 Target "Set Solution Name" (fun _ ->
     
@@ -67,23 +88,25 @@ Target "Set Solution Name" (fun _ ->
                 
         else
             shouldPublishSite <- false
-    
-        versionNumber <- "1.0.0.0"    
-        let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
-        let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
 
-        if testDirectory.ToLower() = "release" then
-            versionNumber <- buildVersion
-            if versionNumber.ToLower() <> "localbuild" then
-                versionNumber <- sprintf  @"%s.%s.0.%s" assemblyMajorNumber assemblyMinorNumber buildVersion
-            else
-                versionNumber <- "1.0.0.0"
+        let subdirs = FileSystemHelper.directoryInfo(currentDirectory).EnumerateDirectories("*.Database")
+        
+        let mutable databaseDir = ""
+
+        for directs in subdirs do
+            trace directs.Name
+            let dirExists = directs.Name.Contains("Database")
+            if(dirExists) then
+                databaseDir <- directs.Name
+
+        let sqlPublishFile = (@"./"+ databaseDir + "/Database.Publish.xml")
+        shouldCreateDbProject <- fileExists(sqlPublishFile)
 
         trace ("Will publish: " + (shouldPublishSite.ToString()))
+        trace ("Will build db project: " + (shouldCreateDbProject.ToString()))
         trace ("PublishingProfile: " + publishingProfile)
         trace ("PublishDirectory: " + publishDirectory)
         trace ("PrecompiledFolder: " + folderPrecompiled)
-        trace ("VersionNumber:" + versionNumber)
         trace ("Project Name has been set to: " + projectName)
     else
         solutionFilePresent <- false
@@ -205,6 +228,79 @@ Target "Publish Solution"(fun _ ->
         trace "Skipping publish"
 )
 
+Target "Build Database project"(fun _ ->
+    
+    
+    if shouldCreateDbProject then
+        trace "Publish Database project"
+
+        trace (@".\" + projectName + ".Database.Publish.xml")
+
+        let buildMode = getBuildParamOrDefault "buildMode" "Debug"
+        let directoryinfo = FileSystemHelper.directoryInfo(@".\" @@ publishDirectory)
+        let directory = directoryinfo.FullName
+        
+
+        let properties = 
+                        [
+                            ("DebugSymbols", "False");
+                            ("SqlPublishProfilePath", @".\Database.Publish.xml");
+                            ("ToolsVersion","14");
+                        ]
+
+        !! (@".\**\*.sqlproj")
+            |> MSBuildReleaseExt null properties "Build"
+            |> Log "Build-Output: "
+    else
+        trace "Skipping Build Database project"
+
+)
+
+Target "Publish Database project"(fun _ ->
+    
+    if shouldCreateDbProject then
+        trace "Publish Database project"
+
+        trace (@".\" + projectName + ".Database.Publish.xml")
+
+        let buildMode = getBuildParamOrDefault "buildMode" "Debug"
+        let directoryinfo = FileSystemHelper.directoryInfo(@".\" @@ publishDirectory)
+        let directory = directoryinfo.FullName
+        trace directory
+
+        let properties = 
+                        [
+                            ("DebugSymbols", "False");
+                            ("TargetDatabaseName", "Database");
+                            ("SqlPublishProfilePath", @".\Database.Publish.xml");
+                            ("TargetConnectionString", "Data Source=.;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True");
+                            ("PublishScriptFileName","Database.sql");
+                            ("ToolsVersion","14");
+                            ("PublishToDatabase","true");
+                        ]
+
+        !! (@".\**\*.sqlproj")
+            |> MSBuildReleaseExt null properties "Publish"
+            |> Log "Build-Output: "
+    else
+        trace "Skipping Publish Database project"
+)
+
+Target "Clean Projects" (fun _ ->
+    trace "Clean Projects"
+    !! (".\**\*.csproj")
+        |> myBuildConfig "" "Clean"
+        |> Log "AppBuild-Output: "
+)
+
+
+Target "Build Projects" (fun _ ->
+    trace "Build Projects"
+    !! (".\**\*.csproj")
+        |> myBuildConfig "" "Rebuild"
+        |> Log "AppBuild-Output: "
+)
+
 Target "Cleaning Unit Tests" (fun _ ->
 
     trace "Cleaning Unit Tests"
@@ -225,18 +321,23 @@ Target "Building Unit Tests" (fun _ ->
 
 Target "Run NUnit Tests" (fun _ ->
 
-
     trace "Run NUnit Tests"
-    let testDlls = !! ("./*.UnitTests/bin/" + testDirectory + "/*.UnitTests.dll") 
 
+    let mutable shouldRunTests = false
+
+    let testDlls = !! ("./*.UnitTests/bin/" + testDirectory + "/*.UnitTests.dll") 
     
     for testDll in testDlls do
-        [testDll] |> Fake.Testing.NUnit3.NUnit3 (fun p ->
+        shouldRunTests <- true
+
+    if shouldRunTests then
+        !! ("./*.UnitTests/bin/" + testDirectory + "/*.UnitTests.dll")  |>
+            Fake.Testing.NUnit3.NUnit3 (fun p ->
             {p with
                 ToolPath = nUnitToolPath;
                 ShadowCopy = false;
                 Framework = Testing.NUnit3.NUnit3Runtime.Net45;
-                ResultSpecs = ["TestResult.xml;format=nunit2"];
+                ResultSpecs = [("TestResult.xml;format=" + nunitTestFormat)];
                 })
 )
 
@@ -258,17 +359,23 @@ Target "Building Integration Tests" (fun _ ->
 
 )
 
-Target "Run Integration Tests" (fun _ ->
+Target "Run Acceptance Tests" (fun _ ->
 
-    trace "Run Integration Tests"
+    trace "Run Acceptance Tests"
+    
+    let mutable shouldRunTests = false
+
     let testDlls = !! ("./**/bin/" + testDirectory + "/*.AcceptanceTests.dll") 
-        
+    
     for testDll in testDlls do
-        [testDll] |> Fake.Testing.NUnit3.NUnit3 (fun p ->
+        shouldRunTests <- true
+    
+    if shouldRunTests then
+        !! ("./**/bin/" + testDirectory + "/*.AcceptanceTests.dll")  |> Fake.Testing.NUnit3.NUnit3 (fun p ->
             {p with
                 ToolPath = nUnitToolPath;
                 StopOnError = false;
-                ResultSpecs = ["TestResult.xml;format=nunit2"];
+                ResultSpecs = [("TestResult.xml;format=" + nunitTestFormat)];
                 })
 )
 
@@ -304,7 +411,7 @@ Target "Compile Views" (fun _ ->
 Target "Clean Project" (fun _ ->
 
     trace "Clean Project"
-    trace (@".\" + projectName + "\*.csproj")
+    
     !! (@".\" + projectName + "\*.csproj")
       |> myBuildConfig "" "Clean"
       |> Log "AppBuild-Output: "
@@ -314,7 +421,7 @@ Target "Clean Project" (fun _ ->
 Target "Build Project" (fun _ ->
 
     trace "Building Project"
-    trace (@".\" + projectName + "\*.csproj")
+    
     !! (@".\" + projectName + "\*.csproj")
       |> myBuildConfig "" "Rebuild"
       |> Log "AppBuild-Output: "
@@ -396,16 +503,21 @@ Target "Create Nuget Package" (fun _ ->
                     })
 )
 
-"Set Solution Name"
+"Set version number"
+   ==>"Set Solution Name"
     ==>"Build Acceptance Solution"
     ==>"Cleaning Integration Tests"
     ==>"Building Integration Tests"
-    //==>"Run Integration Tests"
+    //==>"Run Acceptance Tests"
 
-"Set Solution Name"
+"Set version number"
+   ==>"Set Solution Name"
    ==>"Update Assembly Info Version Numbers"
    ==>"Clean Publish Directory"
+   ==>"Clean Projects"
+   ==>"Build Projects"
    ==>"Build Solution"
+   ==>"Build Database project"
    ==>"Publish Solution"
    ==>"Cleaning Unit Tests"
    ==>"Building Unit Tests"
@@ -416,5 +528,9 @@ Target "Create Nuget Package" (fun _ ->
    ==>"Create Development Site in IIS"
    ==>"Create Accceptance Test Site in IIS"
 
+
+"Set Solution Name"
+    ==> "Build Database project"
+    ==> "Publish Database project"
    
 RunTargetOrDefault  "Create Accceptance Test Site in IIS"
