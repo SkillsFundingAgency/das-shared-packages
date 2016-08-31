@@ -20,7 +20,7 @@ namespace SFA.DAS.Commitments.Api.Client
 
         public async Task<List<CommitmentListItem>> GetForProvider(long providerId)
         {
-            var url = $"{_baseUrl}api/commitments/{providerId}";
+            var url = $"{_baseUrl}api/provider/{providerId}/commitments";
 
             var content = await Execute(url);
 
