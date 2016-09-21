@@ -85,7 +85,7 @@ You are then able to use the [Authorize] attrbiute on any Controller Actions tha
 
 ## Logging
 
-## NLog Target for Azure Event Hub - DAS.SFA.NLog.Targets.AzureEventHub 
+## NLog Target for Azure Event Hub - DAS.SFA.NLog.Targets.AzureEventHub
 
 A custom [NLog](https://github.com/nlog/nlog/wiki) target that pushes log events to [Azure Event Hub](https://azure.microsoft.com/en-gb/services/event-hubs/).
 
@@ -105,7 +105,7 @@ The target has the following configuration format:
 
 ```xml
 <targets>
-  <target xsi:type="AzureEventHub" 
+  <target xsi:type="AzureEventHub"
           name="String"
           appName="String"
           layout="Layout"
@@ -115,8 +115,8 @@ The target has the following configuration format:
 </targets>
 ```
 ## Parameters
-* _name_ - Name of the target. [String](String) 
-* _appName_ - Name of the application. Added as property to the log event. [String](String) 
+* _name_ - Name of the target. [String](String)
+* _appName_ - Name of the application. Added as property to the log event. [String](String)
 * _layout_ - (Optional) Layout that should be used to calculate the value for the **message** field. [Layout](https://github.com/nlog/nlog/wiki/Layouts)
 * _eventHubConnectionString_ - Azure Event Hub connection string. [String](String)
 * _eventHubName_ - Event Hub Name. [String](String)
@@ -125,7 +125,7 @@ The target has the following configuration format:
 ### Example
 ```xml
 <targets>
-  <target xsi:type="AzureEventHub" 
+  <target xsi:type="AzureEventHub"
           name="eventHubLogger"
           appName="MyTestApplication"
           layout="${message}"
@@ -134,3 +134,8 @@ The target has the following configuration format:
   </target>
 </targets>
 ```
+
+##  Messaging
+Provides a common interface to work with messaging sub-systems. Includes various implementations.
+
+See [messaging readme](Messaging/README.md)
