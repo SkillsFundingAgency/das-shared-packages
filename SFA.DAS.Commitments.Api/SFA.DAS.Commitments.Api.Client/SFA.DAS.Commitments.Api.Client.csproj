@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommitmentsApi.cs" />
+    <Compile Include="Configuration\ICommitmentsApiClientConfiguration.cs" />
+    <Compile Include="HttpClientBase.cs" />
     <Compile Include="ICommitmentsApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

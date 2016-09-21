@@ -46,6 +46,9 @@
     <Compile Include="ApprenticeshipStatus.cs" />
     <Compile Include="Commitment.cs" />
     <Compile Include="CommitmentListItem.cs" />
+    <Compile Include="CommitmentStatus.cs" />
+    <Compile Include="CommitmentStatusChange.cs" />
+    <Compile Include="CommitmentTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
