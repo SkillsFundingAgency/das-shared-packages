@@ -14,7 +14,7 @@
     <dependencies>
       <group targetFramework=".NETFramework4.5">
         <dependency id="SFA.DAS.Tasks.Api.Types" version="1.0.0"/>
-        <dependency id="Newtonsoft.Json" version="8.0.3" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
       </group>
     </dependencies>
   </metadata>
