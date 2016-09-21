@@ -9,108 +9,103 @@ namespace SFA.DAS.Commitments.Api.Client
 {
     public class CommitmentsApi : HttpClientBase, ICommitmentsApi
     {
-        private readonly string _baseUrl;
+        private readonly ICommitmentsApiClientConfiguration _configuration;
 
         public CommitmentsApi(ICommitmentsApiClientConfiguration configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
-            _baseUrl = configuration.BaseUrl;
+            _configuration = configuration;
         }
 
         public async Task CreateEmployerCommitment(long employerAccountId, Commitment commitment)
         {
-            var url = $"{_baseUrl}api/employer/{employerAccountId}/commitments";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
 
             await PostCommitment(url, commitment);
         }
 
         public async Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId)
         {
-            var url = $"{_baseUrl}api/employer/{employerAccountId}/commitments";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
 
             return await GetCommitments(url);
         }
 
         public async Task<Commitment> GetEmployerCommitment(long employerAccountId, long commitmentId)
         {
-            var url = $"{_baseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
 
             return await GetCommitment(url);
         }
 
         public async Task<Apprenticeship> GetEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId)
         {
-            var url = $"{_baseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
 
             return await GetApprenticeship(url);
         }
 
         public async Task PatchEmployerCommitment(long employerAccountId, long commitmentId, CommitmentStatus status)
         {
-            var url = $"{_baseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
 
-            var change = new CommitmentStatusChange
-            {
-                Status = status,
-                Message = ""
-            };
-
-            await PatchCommitment(url, change);
+            await PatchCommitment(url, status);
         }
 
-        public async Task PostProviderCommitmentTask(long providerId, long commitmentId, CommitmentTask task)
+        public async Task PatchProviderCommitment(long providerId, long commitmentId, CommitmentStatus status)
         {
-            var url = $"{_baseUrl}api/provider/{providerId}/commitments/{commitmentId}/tasks";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
-            await PostCommitmentTask(url, task);
+            await PatchCommitment(url, status);
         }
 
         public async Task UpdateEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship)
         {
-            var url = $"{_baseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
 
             await PutApprenticeship(url, apprenticeship);
         }
 
-        public async Task PatchApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, ApprenticeshipStatus status)
+        public async Task PatchEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, ApprenticeshipStatus status)
         {
-            var url = $"{_baseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
 
             await PatchApprenticeship(url, status);
         }
 
         public async Task<Apprenticeship> GetProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId)
         {
-            var url = $"{_baseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
 
             return await GetApprenticeship(url);
         }
 
         public async Task CreateProviderApprenticeship(long providerId, long commitmentId, Apprenticeship apprenticeship)
         {
-            var url = $"{_baseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships";
 
             await PostApprenticeship(url, apprenticeship);
         }
 
         public async Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship)
         {
-            var url = $"{_baseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
 
             await PutApprenticeship(url, apprenticeship);
         }
 
         public async Task<List<CommitmentListItem>> GetProviderCommitments(long providerId)
         {
-            var url = $"{_baseUrl}api/provider/{providerId}/commitments";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments";
 
             return await GetCommitments(url);
         }
-        
+
+       
         public async Task<Commitment> GetProviderCommitment(long providerId, long commitmentId)
         {
-            var url = $"{_baseUrl}api/provider/{providerId}/commitments/{commitmentId}";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
             return await GetCommitment(url);
         }
@@ -123,13 +118,7 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<Commitment>(content);
         }
 
-        private async Task PostCommitmentTask(string url, CommitmentTask task)
-        {
-            var data = JsonConvert.SerializeObject(task);
-            await PostAsync(url, data);
-        }
-
-        private async Task PatchCommitment(string url, CommitmentStatusChange change)
+        private async Task PatchCommitment(string url, CommitmentStatus change)
         {
             var data = JsonConvert.SerializeObject(change);
             await PatchAsync(url, data);
