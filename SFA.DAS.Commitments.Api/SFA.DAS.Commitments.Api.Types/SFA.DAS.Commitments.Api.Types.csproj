@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B3D79E6A-7A5E-4B52-9A78-6AE6F1009166}</ProjectGuid>
+    <ProjectGuid>{AA3B3870-F97A-443B-8429-663DE064A8AD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SFA.DAS.Commitments.Api.Types</RootNamespace>
@@ -47,8 +47,6 @@
     <Compile Include="Commitment.cs" />
     <Compile Include="CommitmentListItem.cs" />
     <Compile Include="CommitmentStatus.cs" />
-    <Compile Include="CommitmentStatusChange.cs" />
-    <Compile Include="CommitmentTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

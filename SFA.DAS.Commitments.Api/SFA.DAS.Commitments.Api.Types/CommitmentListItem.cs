@@ -16,5 +16,6 @@
         {
             return Status == CommitmentStatus.Draft;
         }
+
     }
 }
