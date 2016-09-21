@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Tasks.Api.Types", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Tasks.Api.Client", "SFA.DAS.Tasks.Api.Client\SFA.DAS.Tasks.Api.Client.csproj", "{E442B238-0C69-449E-A2C5-FD890CF6A7DC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildAndDeploy", "BuildAndDeploy", "{677B002D-8621-490D-BB3C-49E441CB65BE}"
+	ProjectSection(SolutionItems) = preProject
+		Build.fsx = Build.fsx
+		RunBuild.bat = RunBuild.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
