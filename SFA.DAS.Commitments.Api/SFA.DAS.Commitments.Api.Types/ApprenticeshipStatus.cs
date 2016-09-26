@@ -2,6 +2,8 @@
 {
     public enum ApprenticeshipStatus : short
     {
-        Created = 0
+        ReadyForApproval = 0,
+        Approved = 1,
+        Paused = 2
     }
 }
