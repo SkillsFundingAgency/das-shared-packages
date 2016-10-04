@@ -27,7 +27,6 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
         /// Obsolete - use EventHubConnectionStringKey
         /// </summary>
         [Obsolete("Use EventHubConnectionStringKey")]
-        [RequiredParameter]
         public string EventHubConnectionString { get; set; }
 
         /// <summary>
@@ -36,9 +35,16 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
         [RequiredParameter]
         public string EventHubConnectionStringKey { get; set; }
 
-        [RequiredParameter]
+        [Obsolete("Use EventHubNameKey")]
         public string EventHubName { get; set; }
 
+        /// <summary>
+        /// Points to the app config setting that contains the EventHubName. This uses CloudConfiguration.GetSetting which falls back to use Appsetting if not presents
+        /// </summary>
+        [RequiredParameter]
+        public string EventHubNameKey { get; set; }
+
+        [RequiredParameter]
         public string PartitionKey { get; set; }
 
         protected override void Write(AsyncLogEventInfo logEvent)
@@ -68,7 +74,11 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
 
             if (_eventHubClient == null)
             {
-                _eventHubClient = _messsagingFactory.CreateEventHubClient(EventHubName);
+                var eventHubName = !string.IsNullOrWhiteSpace(CloudConfigurationManager.GetSetting(EventHubNameKey)) 
+                                    ? CloudConfigurationManager.GetSetting(EventHubNameKey)
+                                    : EventHubName;
+
+                _eventHubClient = _messsagingFactory.CreateEventHubClient(eventHubName);
             }
 
             var payload = FormPayload(logEvents.Select(e => e.LogEvent), partitionKey);
