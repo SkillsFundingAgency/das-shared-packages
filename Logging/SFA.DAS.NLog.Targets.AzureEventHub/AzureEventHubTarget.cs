@@ -2,7 +2,7 @@
 using System.Dynamic;
 using System.Linq;
 using System.Text;
-using Microsoft.ServiceBus;
+using Microsoft.Azure;
 using Microsoft.ServiceBus.Messaging;
 using Newtonsoft.Json;
 using NLog;
@@ -20,13 +20,20 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
 
         [RequiredParameter]
         public string AppName { get; set; }
+        
+        /// <summary>
+        /// Points to the app config setting that contains the EventHubConnectionString. This uses CloudConfiguration.GetSetting which falls back to use Appsetting if not presents
+        /// </summary>
+        [RequiredParameter]
+        public string EventHubConnectionStringKey { get; set; }
+        
+        /// <summary>
+        /// Points to the app config setting that contains the EventHubName. This uses CloudConfiguration.GetSetting which falls back to use Appsetting if not presents
+        /// </summary>
+        [RequiredParameter]
+        public string EventHubNameKey { get; set; }
 
         [RequiredParameter]
-        public string EventHubConnectionString { get; set; }
-
-        [RequiredParameter]
-        public string EventHubName { get; set; }
-
         public string PartitionKey { get; set; }
 
         protected override void Write(AsyncLogEventInfo logEvent)
@@ -43,12 +50,12 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
         {
             if (_messsagingFactory == null)
             {
-                _messsagingFactory = MessagingFactory.CreateFromConnectionString(EventHubConnectionString);
+                _messsagingFactory = MessagingFactory.CreateFromConnectionString(CloudConfigurationManager.GetSetting(EventHubConnectionStringKey));
             }
 
             if (_eventHubClient == null)
             {
-                _eventHubClient = _messsagingFactory.CreateEventHubClient(EventHubName);
+                _eventHubClient = _messsagingFactory.CreateEventHubClient(CloudConfigurationManager.GetSetting(EventHubNameKey));
             }
 
             var payload = FormPayload(logEvents.Select(e => e.LogEvent), partitionKey);

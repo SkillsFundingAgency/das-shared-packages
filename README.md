@@ -109,8 +109,8 @@ The target has the following configuration format:
           name="String"
           appName="String"
           layout="Layout"
-          eventHubConnectionString="String"
-          eventHubName="String">
+          eventHubConnectionStringKey="String"
+          eventHubNameKey="String">
   </target>
 </targets>
 ```
@@ -120,17 +120,23 @@ The target has the following configuration format:
 * _layout_ - (Optional) Layout that should be used to calculate the value for the **message** field. [Layout](https://github.com/nlog/nlog/wiki/Layouts)
 * _eventHubConnectionString_ - Azure Event Hub connection string. [String](String)
 * _eventHubName_ - Event Hub Name. [String](String)
-
+* _eventHubConnectionStringKey_ The app setting key that should be used to for the Connection string [String](String)
+ _eventHubNameKey_ - The app setting key that should be used for the Event Hub Name. [String](String)
 
 ### Example
 ```xml
+<appSettings>
+	<add key="EventHubName" value="Event hub name"/>
+	<add key="EventHubConnectionString" value="Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=<sas name>;SharedAccessKey=<sas key>;TransportType=Amqp"/>
+</appSettings>
+
 <targets>
   <target xsi:type="AzureEventHub"
           name="eventHubLogger"
           appName="MyTestApplication"
           layout="${message}"
-          eventHubConnectionString="Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=<sas name>;SharedAccessKey=<sas key>;TransportType=Amqp"
-          eventHubName="test-hub">
+          eventHubConnectionStringKey="EventHubConnectionString"
+          eventHubNameKey="EventHubName">
   </target>
 </targets>
 ```
