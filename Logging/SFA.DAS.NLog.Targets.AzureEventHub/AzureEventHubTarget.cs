@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using Microsoft.Azure;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using Newtonsoft.Json;
@@ -21,8 +23,18 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
         [RequiredParameter]
         public string AppName { get; set; }
 
+        /// <summary>
+        /// Obsolete - use EventHubConnectionStringKey
+        /// </summary>
+        [Obsolete("Use EventHubConnectionStringKey")]
         [RequiredParameter]
         public string EventHubConnectionString { get; set; }
+
+        /// <summary>
+        /// Points to the app config setting that contains the EventHubConnectionString. This uses CloudConfiguration.GetSetting which falls back to use Appsetting if not presents
+        /// </summary>
+        [RequiredParameter]
+        public string EventHubConnectionStringKey { get; set; }
 
         [RequiredParameter]
         public string EventHubName { get; set; }
@@ -43,7 +55,15 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
         {
             if (_messsagingFactory == null)
             {
-                _messsagingFactory = MessagingFactory.CreateFromConnectionString(EventHubConnectionString);
+                if (!string.IsNullOrWhiteSpace(EventHubConnectionStringKey))
+                {
+                    _messsagingFactory = MessagingFactory.CreateFromConnectionString(CloudConfigurationManager.GetSetting(EventHubConnectionStringKey));
+                }
+                else
+                {
+                    _messsagingFactory = MessagingFactory.CreateFromConnectionString(EventHubConnectionString);
+                }
+                
             }
 
             if (_eventHubClient == null)
