@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
 using Microsoft.Azure;
-using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using Newtonsoft.Json;
 using NLog;
@@ -22,22 +20,13 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
 
         [RequiredParameter]
         public string AppName { get; set; }
-
-        /// <summary>
-        /// Obsolete - use EventHubConnectionStringKey
-        /// </summary>
-        [Obsolete("Use EventHubConnectionStringKey")]
-        public string EventHubConnectionString { get; set; }
-
+        
         /// <summary>
         /// Points to the app config setting that contains the EventHubConnectionString. This uses CloudConfiguration.GetSetting which falls back to use Appsetting if not presents
         /// </summary>
         [RequiredParameter]
         public string EventHubConnectionStringKey { get; set; }
-
-        [Obsolete("Use EventHubNameKey")]
-        public string EventHubName { get; set; }
-
+        
         /// <summary>
         /// Points to the app config setting that contains the EventHubName. This uses CloudConfiguration.GetSetting which falls back to use Appsetting if not presents
         /// </summary>
@@ -61,24 +50,12 @@ namespace SFA.DAS.NLog.Targets.AzureEventHub
         {
             if (_messsagingFactory == null)
             {
-                if (!string.IsNullOrWhiteSpace(EventHubConnectionStringKey))
-                {
-                    _messsagingFactory = MessagingFactory.CreateFromConnectionString(CloudConfigurationManager.GetSetting(EventHubConnectionStringKey));
-                }
-                else
-                {
-                    _messsagingFactory = MessagingFactory.CreateFromConnectionString(EventHubConnectionString);
-                }
-                
+                _messsagingFactory = MessagingFactory.CreateFromConnectionString(CloudConfigurationManager.GetSetting(EventHubConnectionStringKey));
             }
 
             if (_eventHubClient == null)
             {
-                var eventHubName = !string.IsNullOrWhiteSpace(CloudConfigurationManager.GetSetting(EventHubNameKey)) 
-                                    ? CloudConfigurationManager.GetSetting(EventHubNameKey)
-                                    : EventHubName;
-
-                _eventHubClient = _messsagingFactory.CreateEventHubClient(eventHubName);
+                _eventHubClient = _messsagingFactory.CreateEventHubClient(CloudConfigurationManager.GetSetting(EventHubNameKey));
             }
 
             var payload = FormPayload(logEvents.Select(e => e.LogEvent), partitionKey);
