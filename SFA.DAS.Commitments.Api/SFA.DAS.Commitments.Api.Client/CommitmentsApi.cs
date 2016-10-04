@@ -12,6 +12,7 @@ namespace SFA.DAS.Commitments.Api.Client
         private readonly ICommitmentsApiClientConfiguration _configuration;
 
         public CommitmentsApi(ICommitmentsApiClientConfiguration configuration)
+            : base(configuration.ClientToken)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
