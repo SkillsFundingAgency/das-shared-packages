@@ -14,6 +14,7 @@
             <group targetFramework=".NETFramework4.5">
                 <dependency id="Newtonsoft.Json" version="9.0.1" />
                 <dependency id="WindowsAzure.ServiceBus" version="3.3.2" />
+                <dependency id="Microsoft.WindowsAzure.ConfigurationManager" version="3.2.1" />
                 <dependency id="NLog" version="4.3.7" />
             </group>
         </dependencies>
