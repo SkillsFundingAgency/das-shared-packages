@@ -503,13 +503,15 @@ Target "Create Nuget Package" (fun _ ->
                     })
 )
 
-"Set Solution Name"
+"Set version number"
+    ==>"Set Solution Name"
     ==>"Build Acceptance Solution"
     ==>"Cleaning Integration Tests"
     ==>"Building Integration Tests"
     //==>"Run Acceptance Tests"
 
-"Set Solution Name"
+"Set version number"
+   ==>"Set Solution Name"
    ==>"Update Assembly Info Version Numbers"
    ==>"Clean Publish Directory"
    ==>"Clean Projects"
