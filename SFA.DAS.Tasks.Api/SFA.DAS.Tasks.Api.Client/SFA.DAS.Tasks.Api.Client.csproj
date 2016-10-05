@@ -45,8 +45,6 @@
     <Compile Include="ITasksApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TasksApi.cs" />
-    <Compile Include="Templates\CreateCommitmentTemplate.cs" />
-    <Compile Include="Templates\SubmitCommitmentTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -40,6 +40,8 @@
     <Compile Include="TaskAlert.cs" />
     <Compile Include="TaskStatuses.cs" />
     <Compile Include="TaskTemplate.cs" />
+    <Compile Include="Templates\CreateCommitmentTemplate.cs" />
+    <Compile Include="Templates\SubmitCommitmentTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SFA.DAS.Tasks.Api.nuspec" />
