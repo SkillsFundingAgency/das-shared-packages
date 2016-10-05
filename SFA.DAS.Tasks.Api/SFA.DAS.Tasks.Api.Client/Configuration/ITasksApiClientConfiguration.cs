@@ -3,6 +3,6 @@
     public interface ITasksApiClientConfiguration
     {
         string BaseUrl { get; set; }
-        string ClientSecret { get; set; }
+        string ClientToken { get; set; }
     }
 }

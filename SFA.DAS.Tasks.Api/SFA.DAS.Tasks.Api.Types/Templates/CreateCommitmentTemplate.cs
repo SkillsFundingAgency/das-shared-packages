@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Tasks.Api.Client.Templates
+﻿namespace SFA.DAS.Tasks.Api.Types.Templates
 {
     public class CreateCommitmentTemplate
     {
