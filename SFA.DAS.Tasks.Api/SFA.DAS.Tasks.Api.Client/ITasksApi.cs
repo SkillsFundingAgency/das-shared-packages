@@ -7,7 +7,7 @@ namespace SFA.DAS.Tasks.Api.Client
     {
         System.Threading.Tasks.Task CreateTask(string assignee, Task task);
         System.Threading.Tasks.Task<List<Task>> GetTasks(string assignee);
-        System.Threading.Tasks.Task UpdateTask(long id, Task task);
-        System.Threading.Tasks.Task<Task> GetTask(long id, string assignee);
+        System.Threading.Tasks.Task UpdateTask(string assignee, long id, Task task);
+        System.Threading.Tasks.Task<Task> GetTask(string assignee, long id);
     }
 }

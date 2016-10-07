@@ -21,7 +21,7 @@ namespace SFA.DAS.Tasks.Api.Client
 
         public async System.Threading.Tasks.Task CreateTask(string assignee, Task task)
         {
-            var url = $"{_baseUrl}api/tasks/{assignee}";
+            var url = $"{_baseUrl}api/{assignee}/tasks";
 
             var content = JsonConvert.SerializeObject(task);
 
@@ -30,27 +30,29 @@ namespace SFA.DAS.Tasks.Api.Client
 
         public async Task<List<Task>> GetTasks(string assignee)
         {
-            var url = $"{_baseUrl}api/tasks/{assignee}";
+            var url = $"{_baseUrl}api/{assignee}/tasks";
 
             var content = await GetAsync(url);
 
             return JsonConvert.DeserializeObject<List<Task>>(content);
         }
 
-        public async System.Threading.Tasks.Task UpdateTask(long id, Task task)
+        public async System.Threading.Tasks.Task UpdateTask(string assignee, long id, Task task)
         {
-            var url = $"{_baseUrl}api/tasks/{id}";
+            var url = $"{_baseUrl}api/{assignee}/tasks/{id}";
 
             var content = JsonConvert.SerializeObject(task);
 
             await PutAsync(url, content);
         }
 
-        public async Task<Task> GetTask(long id, string assignee)
+        public async Task<Task> GetTask(string assignee, long id)
         {
-            var tasks = await GetTasks(assignee);
+            var url = $"{_baseUrl}api/{assignee}/tasks/{id}";
 
-            return tasks.SingleOrDefault(x => x.Id == id);
+            var content = await GetAsync(url);
+
+            return JsonConvert.DeserializeObject<Task>(content);
         }
     }
 }
