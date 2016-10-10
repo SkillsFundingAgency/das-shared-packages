@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SFA.DAS.Notifications.Api.Client</id>
+    <version>1.1.0</version>
+    <authors>DAS</authors>
+    <owners>DAS</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides a client layer to call the SFA.DAS.Notifications.Api service</description>
+    <summary>Client layer for SFA.DAS.Notifications.Api service</summary>
+    <releaseNotes />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="SFA.DAS.Notifications.Api.Types" version="1.1.0"/>
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SFA.DAS.Notifications.Api.Client.dll" target="lib\net45\SFA.DAS.Notifications.Api.Client.dll" />
+  </files>
+</package>
