@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApprenticeshipEvent.cs" />
+    <Compile Include="ApprenticeshipEventView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TrainingTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SFA.DAS.Events.Api.nuspec" />
