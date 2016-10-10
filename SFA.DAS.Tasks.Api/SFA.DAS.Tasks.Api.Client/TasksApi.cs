@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Tasks.Api.Client.Configuration;
@@ -13,6 +12,7 @@ namespace SFA.DAS.Tasks.Api.Client
         private readonly string _baseUrl;
 
         public TasksApi(ITasksApiClientConfiguration configuration)
+            : base(configuration.ClientToken)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
