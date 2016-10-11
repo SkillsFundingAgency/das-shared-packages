@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApiTokens.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApiTokens.Console", "SFA.DAS.ApiTokens.Console\SFA.DAS.ApiTokens.Console.csproj", "{FEDD4667-1591-40AA-891D-9FB419D6E796}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApiTokens.Client", "SFA.DAS.ApiTokens.Client\SFA.DAS.ApiTokens.Client.csproj", "{66CD63DA-E135-4CB0-8640-2EC4BF715983}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FEDD4667-1591-40AA-891D-9FB419D6E796}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEDD4667-1591-40AA-891D-9FB419D6E796}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEDD4667-1591-40AA-891D-9FB419D6E796}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
