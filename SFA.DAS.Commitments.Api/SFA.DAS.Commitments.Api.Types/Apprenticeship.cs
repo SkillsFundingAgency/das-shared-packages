@@ -9,7 +9,9 @@ namespace SFA.DAS.Commitments.Api.Types
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ULN { get; set; }
-        public string TrainingId { get; set; } //standard or framework
+        public TrainingType TrainingType { get; set; }
+        public string TrainingCode { get; set; }
+        public string TrainingName { get; set; }
         public decimal? Cost { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
