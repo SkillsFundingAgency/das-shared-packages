@@ -121,20 +121,10 @@
                 ? new Dictionary<object, object>() 
                 : logEvent.Properties;
             
-            if (!properties.ContainsKey("message"))
-            {
-                properties.Add("message", message);
-            }
-
-            if (!properties.ContainsKey("level"))
-            {
-                properties.Add("level", logEvent.Level);
-            }
-
-            if (!properties.ContainsKey("app_Name"))
-            {
-                properties.Add("app_Name", AppName);
-            }
+            properties.Add("message", message);
+            properties.Add("level", logEvent.Level);
+            properties.Add("app_Name", AppName);
+            properties.Add("@timestamp", logEvent.TimeStamp);
 
             return properties;
         }

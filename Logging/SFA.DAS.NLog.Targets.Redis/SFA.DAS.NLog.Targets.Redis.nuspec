@@ -14,7 +14,7 @@
             <group targetFramework=".NETFramework4.5">
                 <dependency id="Newtonsoft.Json" version="9.0.1" />
                 <dependency id="StackExchange.Redis" version="1.1.608" />
-                <dependency id="NLog" version="4.3.10" />
+                <dependency id="NLog" version="4.3.7" />
             </group>
         </dependencies>
     </metadata>
