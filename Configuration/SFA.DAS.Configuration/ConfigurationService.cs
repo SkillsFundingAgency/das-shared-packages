@@ -29,7 +29,9 @@ namespace SFA.DAS.Configuration
                 return ParseConfig<T>(details);
 
             details = _configurationRepository.Get(_options.ServiceName, _options.EnvironmentName, _options.VersionNumber);
-            _configurationCache?.Set(typeof(T).FullName, details);
+
+            if (!string.IsNullOrEmpty(details))
+                _configurationCache?.Set(typeof(T).FullName, details);
 
             return ParseConfig<T>(details);
         }
@@ -41,7 +43,9 @@ namespace SFA.DAS.Configuration
                 return ParseConfig<T>(details);
 
             details = await _configurationRepository.GetAsync(_options.ServiceName, _options.EnvironmentName, _options.VersionNumber);
-            _configurationCache?.Set(typeof(T).FullName, details);
+
+            if (!string.IsNullOrEmpty(details))
+                _configurationCache?.Set(typeof(T).FullName, details);
 
             return ParseConfig<T>(details);
         }

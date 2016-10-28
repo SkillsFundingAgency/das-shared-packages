@@ -202,7 +202,7 @@ namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
             var configurationService = new ConfigurationService(_configurationRepo.Object, options, cache.Object);
 
             cache.Setup(x => x.Get<string>(It.IsAny<string>()));
-            _configurationRepo.Setup(x => x.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            _configurationRepo.Setup(x => x.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_devConfig);
 
             // Act
             configurationService.Get<TestConfiguration>();
@@ -222,7 +222,7 @@ namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
             var configurationService = new ConfigurationService(_configurationRepo.Object, options, cache.Object);
 
             cache.Setup(x => x.Get<string>(It.IsAny<string>()));
-            _configurationRepo.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(null);
+            _configurationRepo.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(_devConfig);
 
             // Act
             await configurationService.GetAsync<TestConfiguration>();
