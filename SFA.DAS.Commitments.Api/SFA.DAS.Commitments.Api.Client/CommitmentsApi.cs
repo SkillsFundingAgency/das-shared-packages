@@ -19,11 +19,11 @@ namespace SFA.DAS.Commitments.Api.Client
             _configuration = configuration;
         }
 
-        public async Task CreateEmployerCommitment(long employerAccountId, Commitment commitment)
+        public async Task<Commitment> CreateEmployerCommitment(long employerAccountId, Commitment commitment)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
 
-            await PostCommitment(url, commitment);
+            return await PostCommitment(url, commitment);
         }
 
         public async Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId)
