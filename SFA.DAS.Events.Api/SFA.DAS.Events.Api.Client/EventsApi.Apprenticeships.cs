@@ -7,18 +7,23 @@ using SFA.DAS.Events.Api.Types;
 
 namespace SFA.DAS.Events.Api.Client
 {
-    public class EventsApi : HttpClientBase, IEventsApi
+    public partial class EventsApi : HttpClientBase, IEventsApi
     {
         private readonly IEventsApiClientConfiguration _configuration;
 
-        public EventsApi(IEventsApiClientConfiguration configuration)
-            : base(configuration.ClientToken)
+        public EventsApi(IEventsApiClientConfiguration configuration) : base(configuration.ClientToken)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
+
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Creates a new ApprenticeshipEvent
+        /// </summary>
+        /// <param name="apprenticeshipEvent">ApprenticeshipEvent to create</param>
+        /// <returns></returns>
         public async Task CreateApprenticeshipEvent(ApprenticeshipEvent apprenticeshipEvent)
         {
             var url = $"{_configuration.BaseUrl}api/events/apprenticeships";
@@ -71,7 +76,7 @@ namespace SFA.DAS.Events.Api.Client
             return JsonConvert.DeserializeObject<List<ApprenticeshipEventView>>(content);
         }
 
-        private string BuildDateQuery(DateTime? fromDate, DateTime? toDate)
+        private static string BuildDateQuery(DateTime? fromDate, DateTime? toDate)
         {
             var fromDateString = FormatDateTime(fromDate);
             var toDateString = FormatDateTime(toDate);
@@ -82,7 +87,7 @@ namespace SFA.DAS.Events.Api.Client
             return string.IsNullOrWhiteSpace(toDateString) ? $"fromDate={fromDateString}&" : $"fromDate={fromDateString}&toDate={toDateString}&";
         }
 
-        private string FormatDateTime(DateTime? source)
+        private static string FormatDateTime(DateTime? source)
         {
             return source.HasValue ? $"{source:yyyyMMddHHmmss}" : string.Empty;
         }
