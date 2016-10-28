@@ -13,7 +13,7 @@
     <releaseNotes />
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="SFA.DAS.Events.Api.Types" version="1.2.0"/>
+        <dependency id="SFA.DAS.Events.Api.Types" version="1.3.0"/>
         <dependency id="Newtonsoft.Json" version="9.0.1" />
       </group>
     </dependencies>
