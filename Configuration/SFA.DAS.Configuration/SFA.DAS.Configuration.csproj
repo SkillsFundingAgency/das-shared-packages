@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ConfigurationOptions.cs" />
     <Compile Include="ConfigurationService.cs" />
+    <Compile Include="IConfigurationCache.cs" />
     <Compile Include="IConfigurationRepository.cs" />
     <Compile Include="IConfigurationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

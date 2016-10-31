@@ -122,7 +122,7 @@
                 : logEvent.Properties;
             
             properties.Add("message", message);
-            properties.Add("level", logEvent.Level);
+            properties.Add("level", logEvent.Level.Name);
             properties.Add("app_Name", AppName);
             properties.Add("@timestamp", logEvent.TimeStamp);
 

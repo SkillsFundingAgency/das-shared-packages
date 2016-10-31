@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,23 +17,16 @@ namespace SFA.DAS.Events.Api.Client
 
         protected async Task<string> GetAsync(string url)
         {
-            var content = "";
+            string content;
 
-            try
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
-                {
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+                var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                var response = await client.SendAsync(requestMessage);
+                content = await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
             }
 
             return content;
@@ -40,27 +34,19 @@ namespace SFA.DAS.Events.Api.Client
 
         protected async Task<string> PostAsync(string url, string data)
         {
-            var content = "";
+            string content;
 
-            try
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
                 {
+                    Content = new StringContent(data, Encoding.UTF8, "application/json")
+                };
 
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
-                    {
-                        Content = new StringContent(data, Encoding.UTF8, "application/json")
-                    };
-
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                var response = await client.SendAsync(requestMessage);
+                content = await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
             }
 
             return content;
@@ -68,26 +54,19 @@ namespace SFA.DAS.Events.Api.Client
 
         protected async Task<string> PutAsync(string url, string data)
         {
-            var content = "";
+            string content;
 
-            try
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
+                var requestMessage = new HttpRequestMessage(HttpMethod.Put, url)
                 {
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Put, url)
-                    {
-                        Content = new StringContent(data, Encoding.UTF8, "application/json")
-                    };
+                    Content = new StringContent(data, Encoding.UTF8, "application/json")
+                };
 
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                var response = await client.SendAsync(requestMessage);
+                content = await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
             }
 
             return content;
@@ -95,30 +74,22 @@ namespace SFA.DAS.Events.Api.Client
 
         protected async Task<string> PatchAsync(string url, string data)
         {
-            var content = "";
+            string content;
 
-            try
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
+                var requestMessage = new HttpRequestMessage(new HttpMethod("PATCH"), url)
                 {
-                    var requestMessage = new HttpRequestMessage(new HttpMethod("PATCH"), url)
-                    {
-                        Content = new StringContent(data, Encoding.UTF8, "application/json")
-                    };
+                    Content = new StringContent(data, Encoding.UTF8, "application/json")
+                };
 
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                var response = await client.SendAsync(requestMessage);
+                content = await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
             }
 
             return content;
         }
-
     }
 }
