@@ -12,13 +12,15 @@
         private readonly int _port;
         private readonly int _db;
         private readonly string _password;
+        private readonly bool _useSsl;
 
-        public RedisConnectionManager(string host, int port, int db, string password)
+        public RedisConnectionManager(string host, int port, int db, string password, bool useSsl)
         {
             _host = host;
             _port = port;
             _db = db;
             _password = password;
+            _useSsl = useSsl;
 
             InitializeConnection();
         }
@@ -31,7 +33,8 @@
                 SyncTimeout = 3000,
                 ConnectTimeout = 3000,
                 ConnectRetry = 3,
-                KeepAlive = 5
+                KeepAlive = 5,
+                Ssl = _useSsl
             };
             connectionOptions.EndPoints.Add(_host, _port);
 

@@ -50,6 +50,8 @@
         /// </summary>
         public string Password { get; set; }
 
+        public bool Ssl { get; set; }
+
         public bool IncludeAllProperties { get; set; }
 
         private RedisConnectionManager _redisConnectionManager;
@@ -62,7 +64,7 @@
         {
             base.InitializeTarget();
 
-            _redisConnectionManager = new RedisConnectionManager(Host, Port, Db, Password);
+            _redisConnectionManager = new RedisConnectionManager(Host, Port, Db, Password, Ssl);
         }
 
         protected override void CloseTarget()
