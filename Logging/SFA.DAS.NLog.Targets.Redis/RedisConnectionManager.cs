@@ -7,42 +7,17 @@
     internal class RedisConnectionManager : IDisposable
     {
         private ConnectionMultiplexer _connectionMultiplexer;
-
-        private readonly string _host;
-        private readonly int _port;
         private readonly int _db;
-        private readonly string _password;
-        private readonly bool _useSsl;
 
-        public RedisConnectionManager(string host, int port, int db, string password, bool useSsl)
+        public RedisConnectionManager(string connectionString, int db)
         {
-            _host = host;
-            _port = port;
             _db = db;
-            _password = password;
-            _useSsl = useSsl;
-
-            InitializeConnection();
+            InitializeConnection(connectionString);
         }
 
-        private void InitializeConnection()
+        private void InitializeConnection(string connectionString)
         {
-            var connectionOptions = new ConfigurationOptions
-            {
-                AbortOnConnectFail = false,
-                SyncTimeout = 3000,
-                ConnectTimeout = 3000,
-                ConnectRetry = 3,
-                KeepAlive = 5,
-                Ssl = _useSsl
-            };
-            connectionOptions.EndPoints.Add(_host, _port);
-
-            if (!string.IsNullOrEmpty(_password))
-            {
-                connectionOptions.Password = _password;
-            }
-
+            var connectionOptions = ConfigurationOptions.Parse(connectionString);
             _connectionMultiplexer = ConnectionMultiplexer.Connect(connectionOptions);
         }
 
