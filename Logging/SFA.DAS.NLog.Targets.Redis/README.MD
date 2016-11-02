@@ -25,7 +25,7 @@ The `<target />` configuration section contains six required fields and one opti
 ## Config File
 
     <appSettings>
-        <add key="Logging.Redis.ConnectionString" value="my.dev.redis:6380,password=mysecurepassword,ssl=True"/>
+        <add key="Logging.Redis.ConnectionString" value="my.dev.redis:6380,password=mysecurepassword,ssl=True"/>
         <add key="Logging.Redis.Db" value="0"/>
         <add key="Logging.Redis.Key" value="logsKey" />
     </appSettings>
