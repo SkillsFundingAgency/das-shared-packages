@@ -4,7 +4,6 @@ SFA.DAS.NLog.Targets.Redis
 ==========
 
 This project is based on **NLog.Redis** but with the option of including all the properties of a LogEvent.  
-Out but will be a json string.
 
 ## Installation
 
@@ -12,7 +11,7 @@ Out but will be a json string.
 
 ## Usage
 
-The `<target />` configuration section contains five required fields and one optional field.
+The `<target />` configuration section contains six required fields and one optional field.
 
 - connectionStringKey (required): Key for appSettings - Sets the Azure redis connection string
 - DbSettingsKey (required): Key for appSettings - Sets the port the Redis server is listening on.
@@ -24,6 +23,13 @@ The `<target />` configuration section contains five required fields and one opt
 
 
 ## Config File
+
+    <appSettings>
+        <add key="Logging.Redis.ConnectionString" value="my.dev.redis:6380,password=mysecurepassword,ssl=True"/>
+        <add key="Logging.Redis.Db" value="0"/>
+        <add key="Logging.Redis.Key" value="logsKey" />
+    </appSettings>
+
 
     <nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" throwExceptions="true">
       <extensions>
