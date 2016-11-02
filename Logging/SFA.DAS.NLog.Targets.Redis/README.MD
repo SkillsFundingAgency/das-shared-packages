@@ -14,9 +14,9 @@ Out but will be a json string.
 
 The `<target />` configuration section contains five required fields and one optional field.
 
-- connectionStringKey (required): Key for appSettings - Setts the Azure redis connection string
-- DbSettingsKey (required): Key for appSettings - Setts the port the Redis server is listening on.
-- KeySettingsKey (required): Key for appSettings - Setts the key that should be used to identify the Redis list or the pub/sub channel to which the log messages are being delivered.
+- connectionStringKey (required): Key for appSettings - Sets the Azure redis connection string
+- DbSettingsKey (required): Key for appSettings - Sets the port the Redis server is listening on.
+- KeySettingsKey (required): Key for appSettings - Sets the key that should be used to identify the Redis list or the pub/sub channel to which the log messages are being delivered.
 - layout (required): The layout that defines the format of the message to be sent to the Redis target.
 - appName (required): Name of the application. Added as property to the log event. 
 - dataType (required): The Redis data type that should be used to store the log messages. This can be either `list` or `channel`.
