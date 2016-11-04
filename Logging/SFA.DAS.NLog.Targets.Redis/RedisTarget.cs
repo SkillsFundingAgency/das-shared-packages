@@ -36,6 +36,8 @@
         [RequiredParameter]
         public string KeySettingsKey { get; set; }
 
+        public string EnvironmentKey { get; set; }
+
 
 
         private RedisConnectionManager _redisConnectionManager;
@@ -121,6 +123,15 @@
             properties.Add("level", logEvent.Level.Name);
             properties.Add("app_Name", AppName);
             properties.Add("@timestamp", logEvent.TimeStamp);
+            if (!properties.ContainsKey("Environment") && !string.IsNullOrEmpty(EnvironmentKey))
+            {
+                var environment = CloudConfigurationManager.GetSetting(EnvironmentKey);
+                if (environment != null)
+                {
+                    properties.Add("Environment", environment);
+                }
+            }
+
 
             return properties;
         }
