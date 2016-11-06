@@ -2,27 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using Common;
     using Microsoft.Azure;
-
     using Newtonsoft.Json;
-
     using NLog.Config;
 
     [Target("Redis")]
-    public class RedisTarget : TargetWithLayout
+    public sealed class RedisTarget : TargetWithLayout
     {
-        protected const string ListDataType = "list";
-        protected const string ChannelDataType = "channel";
-
-        protected int Db;
-
-        protected string Key;
-
-        public bool IncludeAllProperties { get; set; }
-
-        public string DataType { get; set; }
-
+        private RedisConnectionManager _redisConnectionManager;
+        private string _key;
 
         [RequiredParameter]
         public string AppName { get; set; }
@@ -31,16 +20,11 @@
         public string ConnectionStringKey { get; set; }
 
         [RequiredParameter]
-        public string DbSettingsKey { get; set; }
-
-        [RequiredParameter]
         public string KeySettingsKey { get; set; }
 
         public string EnvironmentKey { get; set; }
 
-
-
-        private RedisConnectionManager _redisConnectionManager;
+        public bool IncludeAllProperties { get; set; }
 
         public RedisTarget()
         {
@@ -50,19 +34,11 @@
         {
             base.InitializeTarget();
 
-            DataType = ListDataType;
-            IncludeAllProperties = true;
-
-            int outDb;
-            int.TryParse(CloudConfigurationManager.GetSetting(DbSettingsKey), out outDb);
-            Db = outDb;
-
-            Key = CloudConfigurationManager.GetSetting(KeySettingsKey);
-
+            _key = CloudConfigurationManager.GetSetting(KeySettingsKey);
 
             var connectionString = CloudConfigurationManager.GetSetting(ConnectionStringKey);
 
-            _redisConnectionManager = new RedisConnectionManager(connectionString, Db);
+            _redisConnectionManager = new RedisConnectionManager(connectionString);
         }
 
         protected override void CloseTarget()
@@ -80,17 +56,7 @@
 
             var redisDatabase = _redisConnectionManager.GetDatabase();
 
-            switch (DataType.ToLower())
-            {
-                case ListDataType:
-                    redisDatabase.ListRightPush(Key, redisValue);
-                    break;
-                case ChannelDataType:
-                    redisDatabase.Publish(Key, redisValue);
-                    break;
-                default:
-                    throw new Exception("no data type defined for redis");
-            }
+            redisDatabase.ListRightPush(_key, redisValue);
         }
 
         protected override void Write(Common.AsyncLogEventInfo logEvent)
@@ -99,17 +65,8 @@
             var redisValue = CreateRedisJsonValue(dict);
 
             var redisDatabase = _redisConnectionManager.GetDatabase();
-            switch (DataType.ToLower())
-            {
-                case ListDataType:
-                    redisDatabase.ListRightPushAsync(Key, redisValue);
-                    break;
-                case ChannelDataType:
-                    redisDatabase.PublishAsync(Key, redisValue);
-                    break;
-                default:
-                    throw new Exception("no data type defined for redis");
-            }
+
+            redisDatabase.ListRightPushAsync(_key, redisValue);
         }
 
         private IDictionary<object, object> GetDictionary(LogEventInfo logEvent, bool includeProperties)
@@ -123,6 +80,7 @@
             properties.Add("level", logEvent.Level.Name);
             properties.Add("app_Name", AppName);
             properties.Add("@timestamp", logEvent.TimeStamp);
+
             if (!properties.ContainsKey("Environment") && !string.IsNullOrEmpty(EnvironmentKey))
             {
                 var environment = CloudConfigurationManager.GetSetting(EnvironmentKey);
@@ -131,7 +89,6 @@
                     properties.Add("Environment", environment);
                 }
             }
-
 
             return properties;
         }
