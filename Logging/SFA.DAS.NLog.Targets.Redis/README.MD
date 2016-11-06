@@ -14,20 +14,17 @@ This project is based on **NLog.Redis** but with the option of including all the
 The `<target />` configuration section contains six required fields and one optional field.
 
 - connectionStringKey (required): Key for appSettings - Sets the Azure redis connection string
-- dbSettingsKey (required): Key for appSettings - Sets the port the Redis server is listening on.
 - keySettingsKey (required): Key for appSettings - Sets the key that should be used to identify the Redis list or the pub/sub channel to which the log messages are being delivered.
 - layout (required): The layout that defines the format of the message to be sent to the Redis target.
 - appName (required): Name of the application. Added as property to the log event. 
 - environment (optional): Name of the environment.
-- dataType (required): The Redis data type that should be used to store the log messages. This can be either `list` or `channel`.
 - includeAllProperties:  true | false
 
 
 ## Config File
 
     <appSettings>
-        <add key="Logging.Redis.ConnectionString" value="my.dev.redis:6380,password=mysecurepassword,ssl=True"/>
-        <add key="Logging.Redis.Db" value="0"/>
+        <add key="Logging.Redis.ConnectionString" value="my.dev.redis:6380,password=mysecurepassword,defaultDatabase=0,ssl=True"/>
         <add key="Logging.Redis.Key" value="logsKey" />
         <add key="EnvironmentName" value="Test" />
     </appSettings>
@@ -39,7 +36,7 @@ The `<target />` configuration section contains six required fields and one opti
       </extensions>
       <targets>
            <target xsi:type="Redis" name="redis" appName="" environmentKey="EnvironmentName" connectionStringKey="Logging.Redis.ConnectionString" includeAllProperties="true"
-                dataType="list" dbSettingsKey="Logging.Redis.Db" keySettingsKey="Logging.Redis.Key"
+                keySettingsKey="Logging.Redis.Key"
                 layout="${message}" />
       </targets>
       <rules>
