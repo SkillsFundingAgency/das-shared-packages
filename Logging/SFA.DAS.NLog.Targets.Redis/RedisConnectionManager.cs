@@ -7,11 +7,9 @@
     internal class RedisConnectionManager : IDisposable
     {
         private ConnectionMultiplexer _connectionMultiplexer;
-        private readonly int _db;
 
-        public RedisConnectionManager(string connectionString, int db)
+        public RedisConnectionManager(string connectionString)
         {
-            _db = db;
             InitializeConnection(connectionString);
         }
 
@@ -25,7 +23,7 @@
         {
             if (_connectionMultiplexer == null) throw new Exception("connection manager not initialized");
 
-            return _connectionMultiplexer.GetDatabase(_db);
+            return _connectionMultiplexer.GetDatabase();
         }
 
         public void Dispose()
