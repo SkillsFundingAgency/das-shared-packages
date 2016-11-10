@@ -90,6 +90,14 @@
                 }
             }
 
+            if (logEvent.Exception != null)
+            {
+                if (!properties.ContainsKey("Exception"))
+                {
+                    properties.Add("Exception", new { message = logEvent.Exception.Message, source = logEvent.Exception.Source, innerException = logEvent.Exception.InnerException, stackTrace = logEvent.Exception.StackTrace });
+                }
+            }
+
             return properties;
         }
 
