@@ -15,7 +15,7 @@ namespace SFA.DAS.Events.Api.Client
         /// <returns></returns>
         public async Task CreateAgreementEvent(AgreementEvent agreementEvent)
         {
-            var url = $"{_configuration.BaseUrl}api/events/agreements";
+            var url = $"{_configuration.BaseUrl}api/events/engagements";
 
             await PostAgreementEvent(url, agreementEvent);
         }
@@ -29,7 +29,7 @@ namespace SFA.DAS.Events.Api.Client
         /// <returns>List of AgreementEvents</returns>
         public async Task<List<AgreementEventView>> GetAgreementEventsById(long fromEventId = 0, int pageSize = 1000, int pageNumber = 1)
         {
-            var url = $"{_configuration.BaseUrl}api/events/agreements?fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
+            var url = $"{_configuration.BaseUrl}api/events/engagements?fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
 
             return await GetAgreementEvents(url);
         }
@@ -46,7 +46,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var dateString = BuildDateQuery(fromDate, toDate);
 
-            var url = $"{_configuration.BaseUrl}api/events/agreements?{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
+            var url = $"{_configuration.BaseUrl}api/events/engagements?{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
 
             return await GetAgreementEvents(url);
         }
