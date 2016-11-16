@@ -26,6 +26,13 @@ namespace SFA.DAS.Commitments.Api.Client
             return await PostCommitment(url, commitment);
         }
 
+        public async Task PutEmployerCommitment(long employerAccountId, long commitmentId, CommitmentStatus commitmentStatus)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
+
+            await PutCommitment(url, commitmentStatus);
+        }
+
         public async Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
@@ -47,18 +54,25 @@ namespace SFA.DAS.Commitments.Api.Client
             return await GetApprenticeship(url);
         }
 
-        public async Task PatchEmployerCommitment(long employerAccountId, long commitmentId, CommitmentStatus commitmentStatus)
+        public async Task PatchEmployerCommitment(long employerAccountId, long commitmentId, AgreementStatus agreementStatus)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
 
-            await PatchCommitment(url, commitmentStatus);
+            await PatchCommitment(url, agreementStatus);
         }
 
-        public async Task PatchProviderCommitment(long providerId, long commitmentId, CommitmentStatus commitmentStatus)
+        public async Task PutProviderCommitment(long providerId, long commitmentId, CommitmentStatus commitmentStatus)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
-            await PatchCommitment(url, commitmentStatus);
+            await PutCommitment(url, commitmentStatus);
+        }
+
+        public async Task PatchProviderCommitment(long providerId, long commitmentId, AgreementStatus agreementStatus)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
+
+            await PatchCommitment(url, agreementStatus);
         }
 
         public async Task CreateEmployerApprenticeship(long employerAccountId, long commitmentId, Apprenticeship apprenticeship)
@@ -125,10 +139,16 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<Commitment>(content);
         }
 
-        private async Task PatchCommitment(string url, CommitmentStatus commitmentStatus)
+        private async Task PatchCommitment(string url, AgreementStatus agreementStatus)
+        {
+            var data = JsonConvert.SerializeObject(agreementStatus);
+            await PatchAsync(url, data);
+        }
+
+        private async Task PutCommitment(string url, CommitmentStatus commitmentStatus)
         {
             var data = JsonConvert.SerializeObject(commitmentStatus);
-            await PatchAsync(url, data);
+            await PutAsync(url, data);
         }
 
         private async Task PatchApprenticeship(string url, PaymentStatus paymentStatus)
