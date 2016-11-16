@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Commitments.Api.Types
 {
@@ -18,6 +19,7 @@ namespace SFA.DAS.Commitments.Api.Types
         public long? ProviderId { get; set; }
         public string ProviderName { get; set; }
         public CommitmentStatus CommitmentStatus { get; set; }
+        public EditStatus EditStatusCommitmentStatus { get; set; }
 
         public List<Apprenticeship> Apprenticeships { get; set; }
     }
