@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Api.Types;
@@ -14,7 +15,6 @@ namespace SFA.DAS.Commitments.Api.Client
         Task UpdateEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship);
         Task PatchEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, PaymentStatus paymentStatus);
         Task CreateEmployerApprenticeship(long employerAccountId, long commitmentId, Apprenticeship apprenticeship);
-
 
         Task<List<CommitmentListItem>> GetProviderCommitments(long providerId);
         Task<Commitment> GetProviderCommitment(long providerId, long commitmentId);
