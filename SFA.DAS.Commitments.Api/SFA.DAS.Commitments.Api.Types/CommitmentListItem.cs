@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Commitments.Api.Types
+﻿using System;
+
+namespace SFA.DAS.Commitments.Api.Types
 {
     public class CommitmentListItem
     {
