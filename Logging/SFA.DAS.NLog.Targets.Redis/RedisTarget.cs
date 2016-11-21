@@ -94,7 +94,14 @@
             {
                 if (!properties.ContainsKey("Exception"))
                 {
-                    properties.Add("Exception", new { message = logEvent.Exception.Message, source = logEvent.Exception.Source, innerException = logEvent.Exception.InnerException, stackTrace = logEvent.Exception.StackTrace });
+                    dynamic innerException = null;
+
+                    if (logEvent.Exception.InnerException != null)
+                    {
+                        innerException = new { message = logEvent.Exception.InnerException.Message, source = logEvent.Exception.InnerException.Source, stackTrace = logEvent.Exception.InnerException.StackTrace };
+                    }
+
+                    properties.Add("Exception", new { message = logEvent.Exception.Message, source = logEvent.Exception.Source, innerException = innerException, stackTrace = logEvent.Exception.StackTrace });
                 }
             }
 
