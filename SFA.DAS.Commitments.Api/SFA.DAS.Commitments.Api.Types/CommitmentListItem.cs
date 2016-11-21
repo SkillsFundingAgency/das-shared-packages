@@ -7,7 +7,6 @@ namespace SFA.DAS.Commitments.Api.Types
         public long Id { get; set; }
         public string Reference { get; set; }
         public long EmployerAccountId { get; set; }
-        public string EmployerAccountName { get; set; }
         public string LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public long? ProviderId { get; set; }
