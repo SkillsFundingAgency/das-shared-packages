@@ -42,9 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgreementEvent.cs" />
+    <Compile Include="AgreementStatus.cs" />
     <Compile Include="ApprenticeshipEvent.cs" />
     <Compile Include="AgreementEventView.cs" />
     <Compile Include="ApprenticeshipEventView.cs" />
+    <Compile Include="PaymentStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrainingTypes.cs" />
   </ItemGroup>

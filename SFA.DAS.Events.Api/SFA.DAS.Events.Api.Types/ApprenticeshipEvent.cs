@@ -6,8 +6,8 @@ namespace SFA.DAS.Events.Api.Types
     {
         public string Event { get; set; }
         public long ApprenticeshipId { get; set; }
-        public string PaymentStatus { get; set; }
-        public string AgreementStatus { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
+        public AgreementStatus AgreementStatus { get; set; }
         public string ProviderId { get; set; }
         public string LearnerId { get; set; }
         public string EmployerAccountId { get; set; }
