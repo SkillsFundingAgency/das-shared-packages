@@ -2,8 +2,7 @@
 {
     public enum TrainingTypes
     {
-        Unspecified = 0,
-        Framework = 1,
-        Standard = 2
+        Framework = 0,
+        Standard = 1
     }
 }
