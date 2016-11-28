@@ -26,13 +26,6 @@ namespace SFA.DAS.Commitments.Api.Client
             return await PostCommitment(url, commitment);
         }
 
-        public async Task PutEmployerCommitment(long employerAccountId, long commitmentId, CommitmentStatus commitmentStatus)
-        {
-            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
-
-            await PutCommitment(url, commitmentStatus);
-        }
-
         public async Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
@@ -61,12 +54,6 @@ namespace SFA.DAS.Commitments.Api.Client
             await PatchCommitment(url, agreementStatus);
         }
 
-        public async Task PutProviderCommitment(long providerId, long commitmentId, CommitmentStatus commitmentStatus)
-        {
-            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
-
-            await PutCommitment(url, commitmentStatus);
-        }
 
         public async Task PatchProviderCommitment(long providerId, long commitmentId, AgreementStatus agreementStatus)
         {
