@@ -15,5 +15,6 @@ namespace SFA.DAS.Commitments.Api.Types
         public EditStatus EditStatus { get; set; }
         public int ApprenticeshipCount { get; set; }
         public AgreementStatus AgreementStatus { get; set; }
+        public LastAction LastAction { get; set; }
     }
 }
