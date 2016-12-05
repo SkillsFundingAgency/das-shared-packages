@@ -40,9 +40,9 @@ namespace SFA.DAS.Commitments.Api.Client
             return await GetCommitment(url);
         }
 
-        public async Task<Apprenticeship> GetEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId)
+        public async Task<Apprenticeship> GetEmployerApprenticeship(long employerAccountId, long apprenticeshipId)
         {
-            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}";
 
             return await GetApprenticeship(url);
         }
@@ -53,7 +53,6 @@ namespace SFA.DAS.Commitments.Api.Client
 
             await PatchCommitment(url, lastAction);
         }
-
 
         public async Task PatchProviderCommitment(long providerId, long commitmentId, LastAction lastAction)
         {
@@ -83,9 +82,9 @@ namespace SFA.DAS.Commitments.Api.Client
             await PatchApprenticeship(url, paymentStatus);
         }
 
-        public async Task<Apprenticeship> GetProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId)
+        public async Task<Apprenticeship> GetProviderApprenticeship(long providerId, long apprenticeshipId)
         {
-            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/{apprenticeshipId}";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
 
             return await GetApprenticeship(url);
         }
