@@ -80,6 +80,7 @@
     <Compile Include="Strategies\AuthenticateCoreStrategy.cs" />
     <Compile Include="Strategies\IApplyResponseChallengeStrategy.cs" />
     <Compile Include="Strategies\IAuthenticateCoreStrategy.cs" />
+    <Compile Include="TokenValidationMethod.cs" />
     <Compile Include="Validators\ISecurityTokenValidation.cs" />
     <Compile Include="Validators\SecurityTokenValidation.cs" />
   </ItemGroup>

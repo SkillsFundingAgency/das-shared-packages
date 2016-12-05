@@ -71,13 +71,13 @@ namespace SFA.DAS.OidcMiddleware.Strategies
         {
             if (!string.IsNullOrWhiteSpace(response.IdentityToken))
             {
-                var tokenClaims = _securityTokenValidation.ValidateToken(response.IdentityToken, nonce);
-                var claims = new List<Claim>();
+                var claims = _securityTokenValidation.ValidateToken(response.IdentityToken, nonce);
 
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
                 {
                     claims.AddRange(await _buildUserInfoClient.GetUserClaims(_options, response.AccessToken));
-                    claims.Add(new Claim(ClaimTypes.Name, claims.First(c => c.Type == "name").Value));
+                    //TODO: Check this is not used. Should be added in authentication callback
+                    //claims.Add(new Claim(ClaimTypes.Name, claims.First(c => c.Type == "name").Value));
                     claims.Add(new Claim("access_token", response.AccessToken));
                     claims.Add(new Claim("expires_at", (DateTime.UtcNow.ToEpochTime() + response.ExpiresIn).ToDateTimeFromEpoch().ToString()));
                 }
