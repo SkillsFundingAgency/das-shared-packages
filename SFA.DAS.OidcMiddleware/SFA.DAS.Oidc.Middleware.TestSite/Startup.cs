@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens;
+using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
@@ -36,7 +40,21 @@ namespace SFA.DAS.Oidc.Middleware.TestSite
                 TokenEndpoint = Constants.TokenEndpoint,
                 UserInfoEndpoint = Constants.UserInfoEndpoint,
                 AuthorizeEndpoint = Constants.AuthorizeEndpoint,
-                AuthenticatedCallback = identity => { identity.AddClaim(new Claim("CustomClaim", "new claim added")); }
+                AuthenticatedCallback = identity =>
+                {
+                    identity.AddClaim(new Claim("CustomClaim", "new claim added"));
+
+                    // This can be used to translate claims to known identifiers for the OTB ASP.NET MVC Template
+                    //identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, identity.Claims.First(c => c.Type == "user_id").Value));
+                    //identity.AddClaim(new Claim(ClaimTypes.Name, identity.Claims.First(c => c.Type == "display_name").Value));
+                },
+                TokenValidationMethod = TokenValidationMethod.BinarySecret,
+
+                // Implement this if TokenValidationMethod = TokenValidationMethod.SigningKey
+                //TokenSigningCertificateLoader = () =>
+                //{
+                //    return new X509Certificate2(@"[PATH_TO_YOUR_PFX]", "[YOUR_PFX_PASSWORD]");
+                //}
             });
         }
     }

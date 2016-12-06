@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataHandler;
 
@@ -25,5 +26,7 @@ namespace SFA.DAS.OidcMiddleware
         public string BaseUrl { get; set; }
         public string UserInfoEndpoint { get; set; }
         public Action<ClaimsIdentity> AuthenticatedCallback { get; set; }
+        public TokenValidationMethod TokenValidationMethod { get; set; } = TokenValidationMethod.BinarySecret;
+        public Func<X509Certificate2> TokenSigningCertificateLoader { get; set; }
     }
 }
