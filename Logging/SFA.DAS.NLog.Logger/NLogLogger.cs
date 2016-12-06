@@ -26,7 +26,7 @@ namespace SFA.DAS.NLog.Logger
 
         public void Trace(string message, ILogEntry logEntry)
         {
-            SendLog(message, LogLevel.Trace, new Dictionary<string, object> { { GetLogEntryName(logEntry), logEntry } });
+            SendLog(message, LogLevel.Trace, BuildProperties(logEntry));
         }
 
         public void Trace(string message, IDictionary<string, object> properties)
@@ -41,7 +41,7 @@ namespace SFA.DAS.NLog.Logger
 
         public void Debug(string message, ILogEntry logEntry)
         {
-            SendLog(message, LogLevel.Debug, new Dictionary<string, object> { { GetLogEntryName(logEntry), logEntry } });
+            SendLog(message, LogLevel.Debug, BuildProperties(logEntry));
         }
 
         public void Debug(string message, IDictionary<string, object> properties)
@@ -56,7 +56,7 @@ namespace SFA.DAS.NLog.Logger
 
         public void Info(string message, ILogEntry logEntry)
         {
-            SendLog(message, LogLevel.Info, new Dictionary<string, object> { { GetLogEntryName(logEntry), logEntry } });
+            SendLog(message, LogLevel.Info, BuildProperties(logEntry));
         }
 
         public void Info(string message, IDictionary<string, object> properties)
@@ -71,7 +71,7 @@ namespace SFA.DAS.NLog.Logger
 
         public void Warn(string message, ILogEntry logEntry)
         {
-            SendLog(message, LogLevel.Warn, new Dictionary<string, object> { { GetLogEntryName(logEntry), logEntry } });
+            SendLog(message, LogLevel.Warn, BuildProperties(logEntry));
         }
 
         public void Warn(string message, IDictionary<string, object> properties)
@@ -86,7 +86,7 @@ namespace SFA.DAS.NLog.Logger
 
         public void Warn(Exception ex, string message, ILogEntry logEntry)
         {
-            SendLog(message, LogLevel.Warn, new Dictionary<string, object> { { GetLogEntryName(logEntry), logEntry } }, ex);
+            SendLog(message, LogLevel.Warn, BuildProperties(logEntry));
         }
 
         public void Warn(Exception ex, string message, IDictionary<string, object> properties)
@@ -101,7 +101,7 @@ namespace SFA.DAS.NLog.Logger
 
         public void Error(Exception ex, string message, ILogEntry logEntry)
         {
-            SendLog(message, LogLevel.Error, new Dictionary<string, object> { { GetLogEntryName(logEntry), logEntry } }, ex);
+            SendLog(message, LogLevel.Error, BuildProperties(logEntry), ex);
         }
 
         public void Error(Exception ex, string message, IDictionary<string, object> properties)
@@ -116,7 +116,7 @@ namespace SFA.DAS.NLog.Logger
 
         public void Fatal(Exception ex, string message, ILogEntry logEntry)
         {
-            SendLog(message, LogLevel.Fatal, new Dictionary<string, object> { { GetLogEntryName(logEntry), logEntry } }, ex);
+            SendLog(message, LogLevel.Fatal, BuildProperties(logEntry), ex);
         }
 
         public void Fatal(Exception ex, string message, IDictionary<string, object> properties)
@@ -130,14 +130,28 @@ namespace SFA.DAS.NLog.Logger
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             return fileVersionInfo.ProductVersion;
         }
-        private static string GetLogEntryName(ILogEntry logEntry)
-        {
-            return logEntry.GetType().Name.Replace("LogEntry", string.Empty);
-        }
 
         private void SendLog(object message, LogLevel level, Exception exception = null)
         {
             SendLog(message, level, new Dictionary<string, object>(), exception);
+        }
+
+        private IDictionary<string, object> BuildProperties(ILogEntry entry)
+        {
+            if (entry == null) return null;
+
+            var entryProperties = entry.GetType().GetProperties();
+            var properties = new Dictionary<string, object>(entryProperties.Length);
+
+            foreach (var property in entryProperties)
+            {
+                var name = property.Name;
+                var value = property.GetValue(entry);
+
+                properties.Add(name, value);
+            }
+
+            return properties;
         }
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
