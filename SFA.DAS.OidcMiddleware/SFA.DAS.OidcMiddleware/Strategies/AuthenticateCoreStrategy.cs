@@ -71,7 +71,8 @@ namespace SFA.DAS.OidcMiddleware.Strategies
         {
             if (!string.IsNullOrWhiteSpace(response.IdentityToken))
             {
-                var claims = _securityTokenValidation.ValidateToken(response.IdentityToken, nonce);
+                _securityTokenValidation.ValidateToken(response.IdentityToken, nonce);
+                var claims = new List<Claim>();
 
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
                 {
