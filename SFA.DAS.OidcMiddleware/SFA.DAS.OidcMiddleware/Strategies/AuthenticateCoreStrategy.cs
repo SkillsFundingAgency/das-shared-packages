@@ -74,6 +74,11 @@ namespace SFA.DAS.OidcMiddleware.Strategies
                 _securityTokenValidation.ValidateToken(response.IdentityToken, nonce);
                 var claims = new List<Claim>();
 
+                if (!string.IsNullOrWhiteSpace(response.IdentityToken))
+                {
+                    claims.Add(new Claim("id_token", response.IdentityToken));
+                }
+
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
                 {
                     claims.AddRange(await _buildUserInfoClient.GetUserClaims(_options, response.AccessToken));
