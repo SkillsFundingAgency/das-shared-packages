@@ -16,5 +16,6 @@ namespace SFA.DAS.Commitments.Api.Types
         public int ApprenticeshipCount { get; set; }
         public AgreementStatus AgreementStatus { get; set; }
         public LastAction LastAction { get; set; }
+        public bool CanBeApproved { get; set; }
     }
 }

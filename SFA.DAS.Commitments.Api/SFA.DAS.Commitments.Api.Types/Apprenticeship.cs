@@ -24,6 +24,7 @@ namespace SFA.DAS.Commitments.Api.Types
         public AgreementStatus AgreementStatus { get; set; }
         public string EmployerRef { get; set; }
         public string ProviderRef { get; set; }
+        public bool CanBeApproved { get; set; }
 
         public string ApprenticeshipName => $"{FirstName} {LastName}";
     }
