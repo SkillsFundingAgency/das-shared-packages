@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="ILog.cs" />
     <Compile Include="ILogEntry.cs" />
-    <Compile Include="IRequestEntry.cs" />
+    <Compile Include="IRequestContext.cs" />
     <Compile Include="NLogLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
