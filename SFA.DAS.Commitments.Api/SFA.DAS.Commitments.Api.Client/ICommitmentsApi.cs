@@ -22,5 +22,6 @@ namespace SFA.DAS.Commitments.Api.Client
         Task CreateProviderApprenticeship(long providerId, long commitmentId, Apprenticeship apprenticeship);
         Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship);
         Task PatchProviderCommitment(long providerId, long commitmentId, LastAction lastAction);
+        Task BulkUploadApprenticeships(long providerId, long commitmentId, IList<Apprenticeship> apprenticeships);
     }
 }

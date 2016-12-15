@@ -117,6 +117,13 @@ namespace SFA.DAS.Commitments.Api.Client
             return await GetCommitment(url);
         }
 
+        public async Task BulkUploadApprenticeships(long providerId, long commitmentId, IList<Apprenticeship> apprenticeships)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/bulk";
+
+            await PostApprenticeships(url, apprenticeships);
+        }
+
         private async Task<Commitment> PostCommitment(string url, Commitment commitment)
         {
             var data = JsonConvert.SerializeObject(commitment);
@@ -173,6 +180,14 @@ namespace SFA.DAS.Commitments.Api.Client
         private async Task<Apprenticeship> PostApprenticeship(string url, Apprenticeship apprenticeship)
         {
             var data = JsonConvert.SerializeObject(apprenticeship);
+            var content = await PostAsync(url, data);
+
+            return JsonConvert.DeserializeObject<Apprenticeship>(content);
+        }
+
+        private async Task<Apprenticeship> PostApprenticeships(string url, IList<Apprenticeship> apprenticeships)
+        {
+            var data = JsonConvert.SerializeObject(apprenticeships);
             var content = await PostAsync(url, data);
 
             return JsonConvert.DeserializeObject<Apprenticeship>(content);
