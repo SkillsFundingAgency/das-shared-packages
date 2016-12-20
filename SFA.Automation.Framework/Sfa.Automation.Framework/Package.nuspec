@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
-<package >
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>Sfa.Automation.Framework</id>
-    <version>4.0.0</version>
-    <authors>DeleOdusanya</authors>
-    <owners>DeleOdusanya</owners>
+    <id>SFA.Automation.Framework</id>
+    <version>1.0.0</version>
+    <authors>Dele Odusanya</authors>
+    <owners>Dele Odusanya</owners>
+	<licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Web automation framework, using selenium, Specflow and NUnit.</description>
     <dependencies>
@@ -21,7 +23,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Sfa.Automation.Framework.dll" target="lib" />
-    <file src="bin\Release\Sfa.Automation.Framework.dll.config" target="lib" />
+    <file src="bin\Release\Sfa.Automation.Framework.dll" target="lib\net45\Sfa.Automation.Framework.dll" />
+    <file src="bin\Release\Sfa.Automation.Framework.dll.config" target="lib\net45\Sfa.Automation.Framework.dll.config" />
   </files>
 </package>
