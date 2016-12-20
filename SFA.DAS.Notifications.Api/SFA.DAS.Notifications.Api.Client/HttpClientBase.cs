@@ -13,112 +13,27 @@ namespace SFA.DAS.Notifications.Api.Client
         {
             _clientToken = clientToken;
         }
-
-        protected async Task<string> GetAsync(string url)
-        {
-            var content = "";
-
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
-
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw;
-            }
-
-            return content;
-        }
-
+        
         protected async Task<string> PostAsync(string url, string data)
         {
-            var content = "";
-
-            try
-            {
-                using (var client = new HttpClient())
-                {
-
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
-                    {
-                        Content = new StringContent(data, Encoding.UTF8, "application/json")
-                    };
-
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw;
-            }
-
-            return content;
+            return await GetValue(url, data, new HttpMethod(HttpMethod.Post.ToString()));
         }
+        
 
-        protected async Task<string> PutAsync(string url, string data)
+        private async Task<string> GetValue(string url, string data, HttpMethod method)
         {
-            var content = "";
-
-            try
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
+                var requestMessage = new HttpRequestMessage(method, url)
                 {
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Put, url)
-                    {
-                        Content = new StringContent(data, Encoding.UTF8, "application/json")
-                    };
+                    Content = new StringContent(data, Encoding.UTF8, "application/json")
+                };
 
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                var response = await client.SendAsync(requestMessage);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
             }
-            catch (HttpRequestException ex)
-            {
-                throw;
-            }
-
-            return content;
         }
-
-        protected async Task<string> PatchAsync(string url, string data)
-        {
-            var content = "";
-
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    var requestMessage = new HttpRequestMessage(new HttpMethod("PATCH"), url)
-                    {
-                        Content = new StringContent(data, Encoding.UTF8, "application/json")
-                    };
-
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
-                    var response = await client.SendAsync(requestMessage);
-                    content = await response.Content.ReadAsStringAsync();
-                    response.EnsureSuccessStatusCode();
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw;
-            }
-
-            return content;
-        }
-
     }
 }

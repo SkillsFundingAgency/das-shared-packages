@@ -22,14 +22,10 @@ namespace SFA.DAS.Notifications.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/email";
 
-            await PostEmail(url, email);
-        }
-
-        private async Task PostEmail(string url, Email email)
-        {
             var data = JsonConvert.SerializeObject(email);
 
             await PostAsync(url, data);
         }
+        
     }
 }
