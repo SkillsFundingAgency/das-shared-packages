@@ -39,6 +39,10 @@ namespace SFA.DAS.OidcMiddleware.Strategies
 
             var code = query.GetValues("code")[0];
             var tokenResponse = await _buildRequestAuthorisationCode.GetTokenResponse(_options.TokenEndpoint, _options.ClientId, _options.ClientSecret, code, context.Request.Uri);
+            if (tokenResponse.IsError)
+            {
+                throw new OidcAuthenticationException(tokenResponse.Error);
+            }
 
             var tempState = await GetTempStateAsync(context);
             if (tempState == null)
