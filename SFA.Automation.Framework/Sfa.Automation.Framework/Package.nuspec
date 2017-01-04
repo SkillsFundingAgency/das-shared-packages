@@ -12,12 +12,9 @@
     <dependencies>
       <dependency id="Selenium.Support" version="3.0.0" />
       <dependency id="Selenium.WebDriver" version="3.0.0" />
-      <dependency id="SpecRun.SpecFlow" version="1.5.2" />
-      <dependency id="SpecRun.NUnit" version="1.5.2" />
       <dependency id="Selenium.WebDriver.IEDriver" version="3.0.0" />
       <dependency id="Selenium.WebDriver.ChromeDriver" version="2.25.0" />
       <dependency id="NUnit" version="3.5.0" />
-      <dependency id="NUnit.Console" version="3.5.0" />
       <dependency id="WindowsAzure.Storage" version="7.2.1" />
       <dependency id="OWASPZAPDotNetAPI" version="1.0.0"/>
     </dependencies>
