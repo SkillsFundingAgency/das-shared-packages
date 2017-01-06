@@ -4,6 +4,6 @@ namespace SFA.DAS.Bus.Client
 {
     public interface IBusClient
     {
-        Task PublishAsync(object message);
+        Task PublishAsync<T>(T message);
     }
 }
