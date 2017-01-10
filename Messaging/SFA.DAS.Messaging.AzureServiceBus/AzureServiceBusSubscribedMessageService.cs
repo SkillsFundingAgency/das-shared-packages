@@ -3,20 +3,20 @@ using System.Threading.Tasks;
 using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 
-namespace SFA.DAS.Bus.Client.AzureServiceBus
+namespace SFA.DAS.Messaging.AzureServiceBus
 {
-    public class AzureServiceBusClient : IBusClient
+    public class AzureServiceBusSubscribedMessageService : ISubscribedMessagePublisher
     {
         private readonly string _connectionString;
-        
-        public AzureServiceBusClient(string connectionString)
+
+        public AzureServiceBusSubscribedMessageService(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public async Task PublishAsync<T>(T message)
+        public async Task PublishAsync(object message)
         {
-            var topic = GetTopic<T>();
+            var topic = GetTopic(message);
             CreateTopicIfItDoesNotExist(topic);
 
             var client = TopicClient.CreateFromConnectionString(_connectionString, topic);
@@ -28,9 +28,9 @@ namespace SFA.DAS.Bus.Client.AzureServiceBus
             await client.SendAsync(brokeredMessage);
         }
 
-        private string GetTopic<T>()
+        private string GetTopic(object message)
         {
-            return typeof(T).FullName;
+            return message.GetType().FullName;
         }
 
         private void CreateTopicIfItDoesNotExist(string topic)
