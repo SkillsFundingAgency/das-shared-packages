@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountEvent.cs" />
     <Compile Include="AgreementEvent.cs" />
+    <Compile Include="AccountEventView.cs" />
     <Compile Include="AgreementStatus.cs" />
     <Compile Include="ApprenticeshipEvent.cs" />
     <Compile Include="AgreementEventView.cs" />
