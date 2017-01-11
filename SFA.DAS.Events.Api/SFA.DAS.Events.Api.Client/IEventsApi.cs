@@ -14,5 +14,9 @@ namespace SFA.DAS.Events.Api.Client
         Task CreateAgreementEvent(AgreementEvent agreementEvent);
         Task<List<AgreementEventView>> GetAgreementEventsById(long fromEventId = 0, int pageSize = 1000, int pageNumber = 1);
         Task<List<AgreementEventView>> GetAgreementEventsByDateRange(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
+
+        Task CreateAccountEvent(AccountEvent accountEvent);
+        Task<List<AccountEventView>> GetAccountEventsById(long fromEventId = 0, int pageSize = 1000, int pageNumber = 1);
+        Task<List<AccountEventView>> GetAccountEventsByDateRange(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
     }
 }

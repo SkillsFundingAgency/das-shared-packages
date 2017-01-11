@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\IEventsApiClientConfiguration.cs" />
+    <Compile Include="EventsApi.Accounts.cs" />
     <Compile Include="EventsApi.Apprenticeships.cs" />
     <Compile Include="EventsApi.Agreements.cs" />
     <Compile Include="HttpClientBase.cs" />
