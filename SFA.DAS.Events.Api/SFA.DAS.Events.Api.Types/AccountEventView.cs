@@ -7,6 +7,6 @@ namespace SFA.DAS.Events.Api.Types
         public long Id { get; set; }
         public string Event { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string DasAccountId { get; set; }
+        public string EmployerAccountId { get; set; }
     }
 }
