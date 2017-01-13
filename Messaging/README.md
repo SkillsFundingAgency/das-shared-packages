@@ -40,13 +40,8 @@ IPollingMessageReceiver publisher = new AzureStorageQueueService("YOUR_CONNECTIO
 ```
 
 **Azure Service Bus**
-For messages with a single consumer
 ```csharp
 IPollingMessageReceiver publisher = new AzureServiceBusMessageService("YOUR_CONNECTION_STRING", "YOUR_QUEUE_NAME");
-```
-Or for messages with multiple consumers
-```csharp
-ISubscribedMessagePublisher publisher = new AzureServiceBusSubscribedMessageService("YOUR_CONNECTION_STRING");
 ```
 
 ### Publish a message

@@ -51,7 +51,6 @@
     <Compile Include="IEventingMessageReceiver.cs" />
     <Compile Include="IMessagePublisher.cs" />
     <Compile Include="IPollingMessageReceiver.cs" />
-    <Compile Include="ISubscribedMessagePublisher.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="PollingToEventSettings.cs" />
