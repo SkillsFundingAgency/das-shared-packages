@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SFA.DAS.Events.Api.Types;
 
 namespace SFA.DAS.Events.Api.Client
