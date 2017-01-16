@@ -7,17 +7,24 @@ using SFA.DAS.Events.Api.Types;
 
 namespace SFA.DAS.Events.Api.Client
 {
-    public partial class EventsApi : HttpClientBase, IEventsApi
+    public partial class EventsApi :  IEventsApi
     {
         private readonly IEventsApiClientConfiguration _configuration;
+        private readonly ISecureHttpClient _secureHttpClient;
 
-        public EventsApi(IEventsApiClientConfiguration configuration) : base(configuration.ClientToken)
+        public EventsApi(ISecureHttpClient secureHttpClient, IEventsApiClientConfiguration configuration)
         {
+            if (secureHttpClient == null)
+                throw new ArgumentNullException(nameof(secureHttpClient));
+
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
+            _secureHttpClient = secureHttpClient;
             _configuration = configuration;
         }
+
+        public EventsApi(IEventsApiClientConfiguration configuration) : this(new SecureHttpClient(), configuration) { }
 
         /// <summary>
         /// Creates a new ApprenticeshipEvent
@@ -66,12 +73,12 @@ namespace SFA.DAS.Events.Api.Client
         {
             var data = JsonConvert.SerializeObject(apprenticeshipEvent);
 
-            await PostAsync(url, data);
+            await _secureHttpClient.PostAsync(url, data, _configuration.ClientToken);
         }
 
         private async Task<List<ApprenticeshipEventView>> GetApprenticeshipEvents(string url)
         {
-            var content = await GetAsync(url);
+            var content = await _secureHttpClient.GetAsync(url, _configuration.ClientToken);
 
             return JsonConvert.DeserializeObject<List<ApprenticeshipEventView>>(content);
         }

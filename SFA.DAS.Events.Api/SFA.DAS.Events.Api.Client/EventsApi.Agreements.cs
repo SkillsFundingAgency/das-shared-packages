@@ -55,12 +55,12 @@ namespace SFA.DAS.Events.Api.Client
         {
             var data = JsonConvert.SerializeObject(agreementEvent);
 
-            await PostAsync(url, data);
+            await _secureHttpClient.PostAsync(url, data, _configuration.ClientToken);
         }
 
         private async Task<List<AgreementEventView>> GetAgreementEvents(string url)
         {
-            var content = await GetAsync(url);
+            var content = await _secureHttpClient.GetAsync(url, _configuration.ClientToken);
 
             return JsonConvert.DeserializeObject<List<AgreementEventView>>(content);
         }

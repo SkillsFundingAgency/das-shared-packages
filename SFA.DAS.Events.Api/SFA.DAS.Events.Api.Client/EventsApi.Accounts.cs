@@ -11,7 +11,7 @@ namespace SFA.DAS.Events.Api.Client
         /// <summary>
         /// Creates a new AccountEvent
         /// </summary>
-        /// <param name="agreementEvent">AccountEvent to create</param>
+        /// <param name="accountEvent">AccountEvent to create</param>
         /// <returns></returns>
         public async Task CreateAccountEvent(AccountEvent accountEvent)
         {
@@ -55,12 +55,12 @@ namespace SFA.DAS.Events.Api.Client
         {
             var data = JsonConvert.SerializeObject(accountEvent);
 
-            await PostAsync(url, data);
+            await _secureHttpClient.PostAsync(url, data, _configuration.ClientToken);
         }
 
         private async Task<List<AccountEventView>> GetAccountEvents(string url)
         {
-            var content = await GetAsync(url);
+            var content = await _secureHttpClient.GetAsync(url, _configuration.ClientToken);
 
             return JsonConvert.DeserializeObject<List<AccountEventView>>(content);
         }

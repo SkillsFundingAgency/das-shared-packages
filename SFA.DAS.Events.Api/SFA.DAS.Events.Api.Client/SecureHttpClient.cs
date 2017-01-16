@@ -1,21 +1,13 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Events.Api.Client
 {
-    public abstract class HttpClientBase
+    internal class SecureHttpClient : ISecureHttpClient
     {
-        private readonly string _clientToken;
-
-        protected HttpClientBase(string clientToken)
-        {
-            _clientToken = clientToken;
-        }
-
-        protected async Task<string> GetAsync(string url)
+        public async Task<string> GetAsync(string url, string clientToken)
         {
             string content;
 
@@ -23,7 +15,7 @@ namespace SFA.DAS.Events.Api.Client
             {
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", clientToken);
                 var response = await client.SendAsync(requestMessage);
                 content = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
@@ -32,7 +24,7 @@ namespace SFA.DAS.Events.Api.Client
             return content;
         }
 
-        protected async Task<string> PostAsync(string url, string data)
+        public async Task<string> PostAsync(string url, string data, string clientToken)
         {
             string content;
 
@@ -43,7 +35,7 @@ namespace SFA.DAS.Events.Api.Client
                     Content = new StringContent(data, Encoding.UTF8, "application/json")
                 };
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", clientToken);
                 var response = await client.SendAsync(requestMessage);
                 content = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
@@ -52,7 +44,7 @@ namespace SFA.DAS.Events.Api.Client
             return content;
         }
 
-        protected async Task<string> PutAsync(string url, string data)
+        public async Task<string> PutAsync(string url, string data, string clientToken)
         {
             string content;
 
@@ -63,7 +55,7 @@ namespace SFA.DAS.Events.Api.Client
                     Content = new StringContent(data, Encoding.UTF8, "application/json")
                 };
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", clientToken);
                 var response = await client.SendAsync(requestMessage);
                 content = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
@@ -72,7 +64,7 @@ namespace SFA.DAS.Events.Api.Client
             return content;
         }
 
-        protected async Task<string> PatchAsync(string url, string data)
+        public async Task<string> PatchAsync(string url, string data, string clientToken)
         {
             string content;
 
@@ -83,7 +75,7 @@ namespace SFA.DAS.Events.Api.Client
                     Content = new StringContent(data, Encoding.UTF8, "application/json")
                 };
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", clientToken);
                 var response = await client.SendAsync(requestMessage);
                 content = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();

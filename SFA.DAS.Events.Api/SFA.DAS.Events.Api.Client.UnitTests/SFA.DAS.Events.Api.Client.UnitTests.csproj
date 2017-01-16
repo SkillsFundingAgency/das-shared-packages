@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EDFBBFE6-1D47-45BF-8C84-51DD775EB495}</ProjectGuid>
+    <ProjectGuid>{26472431-8F69-42BD-8892-6EF1B2043759}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.Events.Api.Client</RootNamespace>
-    <AssemblyName>SFA.DAS.Events.Api.Client</AssemblyName>
+    <RootNamespace>SFA.DAS.Events.Api.Client.UnitTests</RootNamespace>
+    <AssemblyName>SFA.DAS.Events.Api.Client.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,8 +31,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentAssertions, Version=4.18.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.18.0\lib\net45\FluentAssertions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentAssertions.Core, Version=4.18.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.18.0\lib\net45\FluentAssertions.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Moq, Version=4.5.30.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -45,24 +65,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\IEventsApiClientConfiguration.cs" />
-    <Compile Include="EventsApi.Accounts.cs" />
-    <Compile Include="EventsApi.Apprenticeships.cs" />
-    <Compile Include="EventsApi.Agreements.cs" />
-    <Compile Include="SecureHttpClient.cs" />
-    <Compile Include="IEventsApi.cs" />
-    <Compile Include="ISecureHttpClient.cs" />
+    <Compile Include="EventsApiAccountTests\WhenIGetAccountEventsByDateRange.cs" />
+    <Compile Include="EventsApiAccountTests\WhenCreateAnAccountEvent.cs" />
+    <Compile Include="EventsApiAccountTests\WhenIGetAccountEventsById.cs" />
+    <Compile Include="EventsApiTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="SFA.DAS.Events.Api.nuspec" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Events.Api.Client\SFA.DAS.Events.Api.Client.csproj">
+      <Project>{EDFBBFE6-1D47-45BF-8C84-51DD775EB495}</Project>
+      <Name>SFA.DAS.Events.Api.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Events.Api.Types\SFA.DAS.Events.Api.Types.csproj">
-      <Project>{24f343c7-f39e-4267-b5ab-0972ec18be8c}</Project>
+      <Project>{24F343C7-F39E-4267-B5AB-0972EC18BE8C}</Project>
       <Name>SFA.DAS.Events.Api.Types</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
