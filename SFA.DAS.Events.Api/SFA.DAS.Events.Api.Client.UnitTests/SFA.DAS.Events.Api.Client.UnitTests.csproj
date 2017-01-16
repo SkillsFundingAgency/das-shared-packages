@@ -65,6 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventsApiAgreementsTests\WhenCreateAnAgreementEvent.cs" />
+    <Compile Include="EventsApiAgreementsTests\WhenIGetAgreementEventsByDateRange.cs" />
+    <Compile Include="EventsApiAgreementsTests\WhenIGetAgreementEventsById.cs" />
     <Compile Include="EventsApiAccountTests\WhenIGetAccountEventsByDateRange.cs" />
     <Compile Include="EventsApiAccountTests\WhenCreateAnAccountEvent.cs" />
     <Compile Include="EventsApiAccountTests\WhenIGetAccountEventsById.cs" />
