@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\ApprenticeshipEventViewBuilder.cs" />
+    <Compile Include="EventsApiApprenticeshipsTests\WhenBulkCreateApprenticeshipEvents.cs" />
     <Compile Include="EventsApiApprenticeshipsTests\WhenCreateAnApprenticeshipEvent.cs" />
     <Compile Include="EventsApiApprenticeshipsTests\WhenIGetApprenticeshipEventsByDateRange.cs" />
     <Compile Include="EventsApiApprenticeshipsTests\WhenIGetApprenticeshipEventsById.cs" />
