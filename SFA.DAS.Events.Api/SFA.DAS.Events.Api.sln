@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Events.Api.Client",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Events.Api.Types", "SFA.DAS.Events.Api.Types\SFA.DAS.Events.Api.Types.csproj", "{24F343C7-F39E-4267-B5AB-0972EC18BE8C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E31549BE-6F43-4663-B875-805DBB90E20B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Events.Api.Client.UnitTests", "SFA.DAS.Events.Api.Client.UnitTests\SFA.DAS.Events.Api.Client.UnitTests.csproj", "{26472431-8F69-42BD-8892-6EF1B2043759}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +31,15 @@ Global
 		{24F343C7-F39E-4267-B5AB-0972EC18BE8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24F343C7-F39E-4267-B5AB-0972EC18BE8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24F343C7-F39E-4267-B5AB-0972EC18BE8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26472431-8F69-42BD-8892-6EF1B2043759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26472431-8F69-42BD-8892-6EF1B2043759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26472431-8F69-42BD-8892-6EF1B2043759}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26472431-8F69-42BD-8892-6EF1B2043759}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{26472431-8F69-42BD-8892-6EF1B2043759} = {E31549BE-6F43-4663-B875-805DBB90E20B}
 	EndGlobalSection
 EndGlobal

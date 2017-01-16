@@ -49,8 +49,10 @@
     <Compile Include="EventsApi.Accounts.cs" />
     <Compile Include="EventsApi.Apprenticeships.cs" />
     <Compile Include="EventsApi.Agreements.cs" />
-    <Compile Include="HttpClientBase.cs" />
+    <Compile Include="EventsApi.cs" />
+    <Compile Include="SecureHttpClient.cs" />
     <Compile Include="IEventsApi.cs" />
+    <Compile Include="ISecureHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

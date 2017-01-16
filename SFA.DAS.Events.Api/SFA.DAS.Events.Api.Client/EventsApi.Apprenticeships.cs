@@ -1,24 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SFA.DAS.Events.Api.Client.Configuration;
 using SFA.DAS.Events.Api.Types;
 
 namespace SFA.DAS.Events.Api.Client
 {
-    public partial class EventsApi : HttpClientBase, IEventsApi
+    public partial class EventsApi :  IEventsApi
     {
-        private readonly IEventsApiClientConfiguration _configuration;
-
-        public EventsApi(IEventsApiClientConfiguration configuration) : base(configuration.ClientToken)
-        {
-            if (configuration == null)
-                throw new ArgumentNullException(nameof(configuration));
-
-            _configuration = configuration;
-        }
-
         /// <summary>
         /// Creates a new ApprenticeshipEvent
         /// </summary>
@@ -28,7 +16,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/events/apprenticeships";
 
-            await PostApprenticeshipEvent(url, apprenticeshipEvent);
+            await PostEvent(url, apprenticeshipEvent);
         }
 
         /// <summary>
@@ -42,7 +30,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/events/apprenticeships?fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetApprenticeshipEvents(url);
+            return await GetEvents<ApprenticeshipEventView>(url);
         }
 
         /// <summary>
@@ -59,37 +47,7 @@ namespace SFA.DAS.Events.Api.Client
 
             var url = $"{_configuration.BaseUrl}api/events/apprenticeships?{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetApprenticeshipEvents(url);
-        }
-
-        private async Task PostApprenticeshipEvent(string url, ApprenticeshipEvent apprenticeshipEvent)
-        {
-            var data = JsonConvert.SerializeObject(apprenticeshipEvent);
-
-            await PostAsync(url, data);
-        }
-
-        private async Task<List<ApprenticeshipEventView>> GetApprenticeshipEvents(string url)
-        {
-            var content = await GetAsync(url);
-
-            return JsonConvert.DeserializeObject<List<ApprenticeshipEventView>>(content);
-        }
-
-        private static string BuildDateQuery(DateTime? fromDate, DateTime? toDate)
-        {
-            var fromDateString = FormatDateTime(fromDate);
-            var toDateString = FormatDateTime(toDate);
-
-            if (string.IsNullOrWhiteSpace(fromDateString))
-                return string.IsNullOrWhiteSpace(toDateString) ? string.Empty : $"toDate={toDateString}&";
-
-            return string.IsNullOrWhiteSpace(toDateString) ? $"fromDate={fromDateString}&" : $"fromDate={fromDateString}&toDate={toDateString}&";
-        }
-
-        private static string FormatDateTime(DateTime? source)
-        {
-            return source.HasValue ? $"{source:yyyyMMddHHmmss}" : string.Empty;
+            return await GetEvents<ApprenticeshipEventView>(url);
         }
     }
 }

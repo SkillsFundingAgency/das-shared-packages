@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SFA.DAS.Events.Api.Types;
 
 namespace SFA.DAS.Events.Api.Client
@@ -17,7 +16,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/events/engagements";
 
-            await PostAgreementEvent(url, agreementEvent);
+            await PostEvent(url, agreementEvent);
         }
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/events/engagements?fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetAgreementEvents(url);
+            return await GetEvents<AgreementEventView>(url);
         }
 
         /// <summary>
@@ -48,21 +47,7 @@ namespace SFA.DAS.Events.Api.Client
 
             var url = $"{_configuration.BaseUrl}api/events/engagements?{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetAgreementEvents(url);
-        }
-
-        private async Task PostAgreementEvent(string url, AgreementEvent agreementEvent)
-        {
-            var data = JsonConvert.SerializeObject(agreementEvent);
-
-            await PostAsync(url, data);
-        }
-
-        private async Task<List<AgreementEventView>> GetAgreementEvents(string url)
-        {
-            var content = await GetAsync(url);
-
-            return JsonConvert.DeserializeObject<List<AgreementEventView>>(content);
+            return await GetEvents<AgreementEventView>(url);
         }
     }
 }

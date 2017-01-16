@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SFA.DAS.Events.Api.Types;
 
 namespace SFA.DAS.Events.Api.Client
@@ -11,13 +10,13 @@ namespace SFA.DAS.Events.Api.Client
         /// <summary>
         /// Creates a new AccountEvent
         /// </summary>
-        /// <param name="agreementEvent">AccountEvent to create</param>
+        /// <param name="accountEvent">AccountEvent to create</param>
         /// <returns></returns>
         public async Task CreateAccountEvent(AccountEvent accountEvent)
         {
             var url = $"{_configuration.BaseUrl}api/events/accounts";
 
-            await PostAccountEvent(url, accountEvent);
+            await PostEvent(url, accountEvent);
         }
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/events/accounts?fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetAccountEvents(url);
+            return await GetEvents<AccountEventView>(url);
         }
 
         /// <summary>
@@ -48,21 +47,7 @@ namespace SFA.DAS.Events.Api.Client
 
             var url = $"{_configuration.BaseUrl}api/events/accounts?{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetAccountEvents(url);
-        }
-
-        private async Task PostAccountEvent(string url, AccountEvent accountEvent)
-        {
-            var data = JsonConvert.SerializeObject(accountEvent);
-
-            await PostAsync(url, data);
-        }
-
-        private async Task<List<AccountEventView>> GetAccountEvents(string url)
-        {
-            var content = await GetAsync(url);
-
-            return JsonConvert.DeserializeObject<List<AccountEventView>>(content);
+            return await GetEvents<AccountEventView>(url);
         }
     }
 }
