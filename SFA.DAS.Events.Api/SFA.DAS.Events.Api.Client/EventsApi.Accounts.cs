@@ -17,7 +17,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/events/accounts";
 
-            await PostAccountEvent(url, accountEvent);
+            await PostEvent(url, accountEvent);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace SFA.DAS.Events.Api.Client
         {
             var url = $"{_configuration.BaseUrl}api/events/accounts?fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetAccountEvents(url);
+            return await GetEvents<AccountEventView>(url);
         }
 
         /// <summary>
@@ -48,21 +48,7 @@ namespace SFA.DAS.Events.Api.Client
 
             var url = $"{_configuration.BaseUrl}api/events/accounts?{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
 
-            return await GetAccountEvents(url);
-        }
-
-        private async Task PostAccountEvent(string url, AccountEvent accountEvent)
-        {
-            var data = JsonConvert.SerializeObject(accountEvent);
-
-            await _secureHttpClient.PostAsync(url, data, _configuration.ClientToken);
-        }
-
-        private async Task<List<AccountEventView>> GetAccountEvents(string url)
-        {
-            var content = await _secureHttpClient.GetAsync(url, _configuration.ClientToken);
-
-            return JsonConvert.DeserializeObject<List<AccountEventView>>(content);
+            return await GetEvents<AccountEventView>(url);
         }
     }
 }
