@@ -65,6 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\ApprenticeshipEventViewBuilder.cs" />
+    <Compile Include="EventsApiApprenticeshipsTests\WhenCreateAnApprenticeshipEvent.cs" />
+    <Compile Include="EventsApiApprenticeshipsTests\WhenIGetApprenticeshipEventsByDateRange.cs" />
+    <Compile Include="EventsApiApprenticeshipsTests\WhenIGetApprenticeshipEventsById.cs" />
     <Compile Include="EventsApiAgreementsTests\WhenCreateAnAgreementEvent.cs" />
     <Compile Include="EventsApiAgreementsTests\WhenIGetAgreementEventsByDateRange.cs" />
     <Compile Include="EventsApiAgreementsTests\WhenIGetAgreementEventsById.cs" />
