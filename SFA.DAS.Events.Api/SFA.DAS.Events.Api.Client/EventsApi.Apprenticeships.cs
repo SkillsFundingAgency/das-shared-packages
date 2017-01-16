@@ -20,6 +20,18 @@ namespace SFA.DAS.Events.Api.Client
         }
 
         /// <summary>
+        /// Creates a number of ApprenticeshipEvents
+        /// </summary>
+        /// <param name="apprenticeshipEvents">ApprenticeshipEvents to create</param>
+        /// <returns></returns>
+        public async Task BulkCreateApprenticeshipEvent(IList<ApprenticeshipEvent> apprenticeshipEvents)
+        {
+            var url = $"{_configuration.BaseUrl}api/events/apprenticeships/bulk";
+
+            await PostEvent(url, apprenticeshipEvents);
+        }
+
+        /// <summary>
         /// Get a list of ApprenticeshipEvents starting from the supplied Id
         /// </summary>
         /// <param name="fromEventId"></param>
