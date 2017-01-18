@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Messaging
 {
@@ -8,5 +9,6 @@ namespace SFA.DAS.Messaging
         event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
 
         void Start(CancellationToken cancellationToken);
+        Task RunAsync(CancellationToken cancellationToken);
     }
 }

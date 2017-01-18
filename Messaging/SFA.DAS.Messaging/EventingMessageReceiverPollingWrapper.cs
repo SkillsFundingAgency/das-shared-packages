@@ -19,12 +19,17 @@ namespace SFA.DAS.Messaging
 
         public void Start(CancellationToken cancellationToken)
         {
+            RunAsync(cancellationToken);
+        }
+
+        public async Task RunAsync(CancellationToken cancellationToken)
+        {
             if (MessageReceived == null)
             {
                 throw new InvalidOperationException("No event handler for MessageReceived");
             }
 
-            Task.Factory.StartNew(async () =>
+            await Task.Factory.StartNew(async () =>
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
