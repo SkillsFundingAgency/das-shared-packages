@@ -11,7 +11,7 @@
 
         Paused = 2,
 
-        Cancelled = 3,
+        Withdrawn = 3,
 
         Completed = 4,
 
