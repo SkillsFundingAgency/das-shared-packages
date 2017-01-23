@@ -18,6 +18,12 @@ namespace SFA.DAS.NLog.Logger
             _version = GetVersion();
         }
 
+        public NLogLogger(Type loggerType)
+        {
+            _loggerType = loggerType?.ToString() ?? "DefaultLogger";
+            _version = GetVersion();
+        }
+
         public NLogLogger(Type loggerType, IRequestContext context)
         {
             _loggerType = loggerType?.ToString() ?? "DefaultLogger";
@@ -162,9 +168,7 @@ namespace SFA.DAS.NLog.Logger
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
         {
-            IDictionary<string, object> propertiesLocal = null;
-
-            propertiesLocal = (properties == null) ? new Dictionary<string, object>() : properties;
+            var propertiesLocal = properties ?? new Dictionary<string, object>();
 
             if (_context != null)
                 propertiesLocal.Add("RequestCtx", _context);
