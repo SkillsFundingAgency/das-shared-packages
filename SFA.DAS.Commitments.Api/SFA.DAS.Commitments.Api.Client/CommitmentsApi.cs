@@ -82,6 +82,20 @@ namespace SFA.DAS.Commitments.Api.Client
             await PatchApprenticeship(url, paymentStatus);
         }
 
+        public async Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}";
+
+            await DeleteApprenticeship(url);
+        }
+
+        public async Task DeleteEmployerCommitment(long employerAccountId, long commitmentId)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
+
+            await DeleteCommitment(url);
+        }
+
         public async Task<Apprenticeship> GetProviderApprenticeship(long providerId, long apprenticeshipId)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
@@ -122,6 +136,20 @@ namespace SFA.DAS.Commitments.Api.Client
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/apprenticeships/bulk";
 
             await PostApprenticeships(url, apprenticeships);
+        }
+
+        public async Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
+
+            await DeleteApprenticeship(url);
+        }
+
+        public async Task DeleteProviderCommitment(long providerId, long commitmentId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
+
+            await DeleteCommitment(url);
         }
 
         private async Task<Commitment> PostCommitment(string url, Commitment commitment)
@@ -191,6 +219,16 @@ namespace SFA.DAS.Commitments.Api.Client
             var content = await PostAsync(url, data);
 
             return JsonConvert.DeserializeObject<Apprenticeship>(content);
+        }
+
+        private async Task DeleteApprenticeship(string url)
+        {
+            await DeleteAsync(url);
+        }
+
+        private async Task DeleteCommitment(string url)
+        {
+            await DeleteAsync(url);
         }
     }
 }
