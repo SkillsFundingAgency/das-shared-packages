@@ -1,19 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
-        <id>SFA.DAS.Events.Api.Types</id>
+        <id>SFA.DAS.Events.Dispatcher</id>
         <version>1.13.0</version>
         <authors>DAS</authors>
         <owners>DAS</owners>
         <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Provides types for the SFA.DAS.Events.Api service</description>
-        <summary>Types for the SFA.DAS.Events.Api service</summary>
+        <description>Provides a generic event dispatcher to take events and pass them to the relevant handler based on their type.</description>
+        <summary>Dispatcher for SFA.DAS.Events</summary>
         <releaseNotes />
-        <dependencies />
+      <dependencies>
+        <group targetFramework=".NETFramework4.5">
+          <dependency id="SFA.DAS.Events.Api.Types" version="1.13.0"/>
+        </group>
+      </dependencies>
     </metadata>
     <files>
-        <file src="bin\Release\SFA.DAS.Events.Api.Types.dll" target="lib\net45\SFA.DAS.Events.Api.Types.dll" />
+        <file src="bin\Release\SFA.DAS.Events.Dispatcher.dll" target="lib\net45\SFA.DAS.Events.Dispatcher.dll" />
     </files>
 </package>

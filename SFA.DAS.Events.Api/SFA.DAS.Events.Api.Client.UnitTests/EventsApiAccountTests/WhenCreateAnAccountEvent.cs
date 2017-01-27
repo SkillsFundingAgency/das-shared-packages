@@ -14,7 +14,7 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.EventsApiAccountTests
         {
             var url = $"{BaseUrl}api/events/accounts";
 
-            var @event = new AccountEvent {  EmployerAccountId = "ABC123", Event = "Test" };
+            var @event = new AccountEvent {  ResourceUri = "/api/accounts/ABC123", Event = "Test" };
             var expectedData = JsonConvert.SerializeObject(@event);
 
             await Api.CreateAccountEvent(@event);
