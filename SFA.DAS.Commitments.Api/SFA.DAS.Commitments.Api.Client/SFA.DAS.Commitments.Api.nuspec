@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>SFA.DAS.Commitments.Api.Client</id>
-    <version>1.18.0</version>
+    <version>1.19.0</version>
     <authors>DAS</authors>
     <owners>DAS</owners>
     <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
@@ -13,7 +13,7 @@
     <releaseNotes />
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="SFA.DAS.Commitments.Api.Types" version="1.18.0"/>
+        <dependency id="SFA.DAS.Commitments.Api.Types" version="1.19.0"/>
         <dependency id="Newtonsoft.Json" version="9.0.1" />
       </group>
     </dependencies>
