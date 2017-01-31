@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Events.Api.Types
 {
-    public class ApprenticeshipEventView
+    public class ApprenticeshipEventView : IEventView
     {
         public long Id { get; set; }
         public string Event { get; set; }

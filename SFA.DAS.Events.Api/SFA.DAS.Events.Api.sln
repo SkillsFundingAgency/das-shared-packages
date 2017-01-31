@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E31549BE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Events.Api.Client.UnitTests", "SFA.DAS.Events.Api.Client.UnitTests\SFA.DAS.Events.Api.Client.UnitTests.csproj", "{26472431-8F69-42BD-8892-6EF1B2043759}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Events.Dispatcher", "SFA.DAS.Events.Dispatcher\SFA.DAS.Events.Dispatcher.csproj", "{DB31EB7A-D3E4-4330-AB16-DECF69ABA9FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Events.Dispatcher.UnitTests", "SFA.DAS.Events.Dispatcher.UnitTests\SFA.DAS.Events.Dispatcher.UnitTests.csproj", "{A158875C-4162-47E2-9F1B-98ADE401E96A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,11 +39,20 @@ Global
 		{26472431-8F69-42BD-8892-6EF1B2043759}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26472431-8F69-42BD-8892-6EF1B2043759}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26472431-8F69-42BD-8892-6EF1B2043759}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB31EB7A-D3E4-4330-AB16-DECF69ABA9FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB31EB7A-D3E4-4330-AB16-DECF69ABA9FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB31EB7A-D3E4-4330-AB16-DECF69ABA9FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB31EB7A-D3E4-4330-AB16-DECF69ABA9FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A158875C-4162-47E2-9F1B-98ADE401E96A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A158875C-4162-47E2-9F1B-98ADE401E96A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A158875C-4162-47E2-9F1B-98ADE401E96A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A158875C-4162-47E2-9F1B-98ADE401E96A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{26472431-8F69-42BD-8892-6EF1B2043759} = {E31549BE-6F43-4663-B875-805DBB90E20B}
+		{A158875C-4162-47E2-9F1B-98ADE401E96A} = {E31549BE-6F43-4663-B875-805DBB90E20B}
 	EndGlobalSection
 EndGlobal
