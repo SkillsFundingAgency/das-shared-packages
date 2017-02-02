@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace SFA.DAS.Commitments.Api.Types
+﻿namespace SFA.DAS.Commitments.Api.Types
 {
-    public class CommitmentListItem
+    public sealed class CommitmentListItem
     {
         public long Id { get; set; }
         public string Reference { get; set; }
@@ -17,5 +15,7 @@ namespace SFA.DAS.Commitments.Api.Types
         public AgreementStatus AgreementStatus { get; set; }
         public LastAction LastAction { get; set; }
         public bool CanBeApproved { get; set; }
+        public LastUpdateInfo EmployerLastUpdateInfo { get; set; }
+        public LastUpdateInfo ProviderLastUpdateInfo { get; set; }
     }
 }

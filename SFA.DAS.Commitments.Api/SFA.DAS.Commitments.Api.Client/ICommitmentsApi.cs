@@ -10,7 +10,7 @@ namespace SFA.DAS.Commitments.Api.Client
         Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId);
         Task<Commitment> GetEmployerCommitment(long employerAccountId, long commitmentId);
         Task<Commitment> CreateEmployerCommitment(long employerAccountId, Commitment commitment);
-        Task PatchEmployerCommitment(long employerAccountId, long commitmentId, LastAction lastAction);
+        Task PatchEmployerCommitment(long employerAccountId, long commitmentId, CommitmentSubmission submission);
         Task<List<Apprenticeship>> GetEmployerApprenticeships(long employerAccountId);
         Task<Apprenticeship> GetEmployerApprenticeship(long employerAccountId, long apprenticeshipId);
         Task UpdateEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship);
@@ -25,7 +25,7 @@ namespace SFA.DAS.Commitments.Api.Client
         Task<Apprenticeship> GetProviderApprenticeship(long providerId, long apprenticeshipId);
         Task CreateProviderApprenticeship(long providerId, long commitmentId, Apprenticeship apprenticeship);
         Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship);
-        Task PatchProviderCommitment(long providerId, long commitmentId, LastAction lastAction);
+        Task PatchProviderCommitment(long providerId, long commitmentId, CommitmentSubmission submission);
         Task BulkUploadApprenticeships(long providerId, long commitmentId, IList<Apprenticeship> apprenticeships);
         Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId);
         Task DeleteProviderCommitment(long providerId, long commitmentId);

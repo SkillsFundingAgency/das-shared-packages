@@ -43,8 +43,10 @@
   <ItemGroup>
     <Compile Include="AgreementStatus.cs" />
     <Compile Include="Apprenticeship.cs" />
+    <Compile Include="CommitmentSubmission.cs" />
     <Compile Include="EditStatus.cs" />
     <Compile Include="LastAction.cs" />
+    <Compile Include="LastUpdateInfo.cs" />
     <Compile Include="PaymentStatus.cs" />
     <Compile Include="Commitment.cs" />
     <Compile Include="CommitmentListItem.cs" />
