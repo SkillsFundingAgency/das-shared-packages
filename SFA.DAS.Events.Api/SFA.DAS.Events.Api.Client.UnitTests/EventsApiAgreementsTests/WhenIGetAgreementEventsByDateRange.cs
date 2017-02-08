@@ -22,7 +22,7 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.EventsApiAgreementsTests
 
             var url = $"{BaseUrl}api/events/engagements?fromDate={fromDate:yyyyMMddHHmmss}&toDate={toDate:yyyyMMddHHmmss}&pageSize={pageSize}&pageNumber={pageNumber}";
             
-            var expectedEvents = new List<AgreementEventView> { new AgreementEventView { CreatedOn = DateTime.Now.AddDays(-1), EmployerAccountId = "ABC123", Event = "Test", Id = 87435, ProviderId = "ZZZ999" } };
+            var expectedEvents = new List<AgreementEventView> { new AgreementEventView { CreatedOn = DateTime.Now.AddDays(-1), ContractType = "MainProvider", Event = "Test", Id = 87435, ProviderId = "ZZZ999" } };
 
             SecureHttpClient.Setup(x => x.GetAsync(url, ClientToken)).ReturnsAsync(JsonConvert.SerializeObject(expectedEvents));
 

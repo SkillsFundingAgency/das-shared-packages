@@ -6,6 +6,6 @@ namespace SFA.DAS.Events.Api.Types
     {
         public string Event { get; set; }
         public string ProviderId { get; set; }
-        public string EmployerAccountId { get; set; }
+        public string ContractType { get; set; }
     }
 }

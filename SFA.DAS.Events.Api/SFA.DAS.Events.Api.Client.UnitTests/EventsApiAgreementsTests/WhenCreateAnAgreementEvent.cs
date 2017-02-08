@@ -14,7 +14,7 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.EventsApiAgreementsTests
         {
             var url = $"{BaseUrl}api/events/engagements";
 
-            var @event = new AgreementEvent { EmployerAccountId = "ABC123", Event = "Test", ProviderId = "ZZZ999" };
+            var @event = new AgreementEvent { ContractType = "MainProvider", Event = "Test", ProviderId = "ZZZ999" };
             var expectedData = JsonConvert.SerializeObject(@event);
 
             await Api.CreateAgreementEvent(@event);
