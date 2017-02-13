@@ -1,6 +1,11 @@
 # SFA Digital Apprenticeship Service Shared Packages
 
 ## Configuration
+
+![badge](https://sfa-gov-uk.visualstudio.com/_apis/public/build/definitions/c39e0c0b-7aff-4606-b160-3566f3bbce23/74/badge)
+
+[![NuGet Badge](https://buildstats.info/nuget/SFA.DAS.Configuration)](https://www.nuget.org/packages/SFA.DAS.Configuration/)
+
 A shared library for storing configuration.
 
 ### Configuration - Azure table storage
