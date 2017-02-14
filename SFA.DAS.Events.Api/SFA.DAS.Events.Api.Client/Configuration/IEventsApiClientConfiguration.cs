@@ -2,7 +2,7 @@
 {
     public interface IEventsApiClientConfiguration
     {
-        string BaseUrl { get; set; }
-        string ClientToken { get; set; }
+        string BaseUrl { get; }
+        string ClientToken { get; }
     }
 }
