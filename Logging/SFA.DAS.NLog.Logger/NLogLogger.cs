@@ -16,7 +16,7 @@ namespace SFA.DAS.NLog.Logger
         {
             _loggerType = loggerType?.ToString() ?? "DefaultLogger";
             _context = context;
-            _version = GetVersion(loggerType);
+            _version = GetVersion(loggerType ?? GetType());
         }
 
         public void Trace(string message)
