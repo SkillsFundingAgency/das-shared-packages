@@ -10,6 +10,8 @@
     [Target("Redis")]
     public sealed class RedisTarget : TargetWithLayout
     {
+        private const string AppNameKey = "app_Name";
+
         private RedisConnectionManager _redisConnectionManager;
         private string _key;
 
@@ -79,9 +81,9 @@
             properties.Add("message", message);
             properties.Add("level", logEvent.Level.Name);
             properties.Add("@timestamp", logEvent.TimeStamp);
-            if (!properties.ContainsKey("app_Name"))
+            if (!properties.ContainsKey(AppNameKey))
             {
-                properties.Add("app_Name", AppName);
+                properties.Add(AppNameKey, AppName);
             }
 
             if (!properties.ContainsKey("Environment") && !string.IsNullOrEmpty(EnvironmentKey))
