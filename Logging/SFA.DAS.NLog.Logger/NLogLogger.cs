@@ -31,6 +31,8 @@ namespace SFA.DAS.NLog.Logger
             _version = GetVersion();
         }
 
+        public string ApplicationName { get; set; }
+
         public void Trace(string message)
         {
             SendLog(message, LogLevel.Trace);
@@ -176,6 +178,10 @@ namespace SFA.DAS.NLog.Logger
             propertiesLocal.Add("LoggerType", _loggerType);
             propertiesLocal.Add("Version", _version);
             propertiesLocal.Add("LogTimestamp", DateTime.UtcNow.ToString("o"));
+            if (!string.IsNullOrEmpty(ApplicationName))
+            {
+                propertiesLocal.Add("app_Name", ApplicationName);
+            }
 
             var logEvent = new LogEventInfo(level, _loggerType, message.ToString());
             logEvent.Exception = exception;
