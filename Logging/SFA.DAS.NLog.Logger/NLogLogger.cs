@@ -12,23 +12,11 @@ namespace SFA.DAS.NLog.Logger
         private readonly string _loggerType;
         private readonly string _version;
 
-        public NLogLogger()
-        {
-            _loggerType = "DefaultLogger";
-            _version = GetVersion();
-        }
-
-        public NLogLogger(Type loggerType)
-        {
-            _loggerType = loggerType?.ToString() ?? "DefaultLogger";
-            _version = GetVersion();
-        }
-
-        public NLogLogger(Type loggerType, IRequestContext context)
+        public NLogLogger(Type loggerType = null, IRequestContext context = null)
         {
             _loggerType = loggerType?.ToString() ?? "DefaultLogger";
             _context = context;
-            _version = GetVersion();
+            _version = GetVersion(loggerType ?? GetType());
         }
 
         public void Trace(string message)
@@ -136,10 +124,10 @@ namespace SFA.DAS.NLog.Logger
             SendLog(message, LogLevel.Fatal, properties, ex);
         }
 
-        private string GetVersion()
+        private string GetVersion(Type callingType)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            var assembly = callingType.Assembly;
+            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             return fileVersionInfo.ProductVersion;
         }
 
