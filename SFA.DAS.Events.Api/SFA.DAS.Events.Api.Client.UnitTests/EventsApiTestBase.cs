@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Events.Api.Client.Configuration;
 
@@ -10,19 +11,25 @@ namespace SFA.DAS.Events.Api.Client.UnitTests
         protected const string BaseUrl = "http://test.com/";
 
         protected EventsApi Api;
-        protected Mock<IEventsApiClientConfiguration> Config;
+        protected ClientConfiguration Config;
         protected Mock<ISecureHttpClient> SecureHttpClient;
 
         [SetUp]
         public void Arrange()
         {
-            Config = new Mock<IEventsApiClientConfiguration>();
-            Config.SetupProperty(x => x.ClientToken, ClientToken);
-            Config.SetupProperty(x => x.BaseUrl, BaseUrl);
+            Config = new ClientConfiguration();
+            Config.ClientToken = ClientToken;
+            Config.BaseUrl = BaseUrl;
 
             SecureHttpClient = new Mock<ISecureHttpClient>();
 
-            Api = new EventsApi(SecureHttpClient.Object, Config.Object);
+            Api = new EventsApi(SecureHttpClient.Object, Config);
+        }
+
+        public class ClientConfiguration : IEventsApiClientConfiguration
+        {
+            public string BaseUrl { get; set; }
+            public string ClientToken { get; set; }
         }
     }
 }
