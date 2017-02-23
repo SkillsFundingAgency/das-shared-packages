@@ -45,6 +45,10 @@
     <Compile Include="Apprenticeship.cs" />
     <Compile Include="CommitmentSubmission.cs" />
     <Compile Include="EditStatus.cs" />
+    <Compile Include="History\ApprenticeshipChangeType.cs" />
+    <Compile Include="History\ApprenticeshipHistoryEntry.cs" />
+    <Compile Include="History\CommitmentChangeType.cs" />
+    <Compile Include="History\CommitmentHistoryEntry.cs" />
     <Compile Include="LastAction.cs" />
     <Compile Include="LastUpdateInfo.cs" />
     <Compile Include="PaymentStatus.cs" />
@@ -53,6 +57,7 @@
     <Compile Include="CommitmentStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrainingType.cs" />
+    <Compile Include="UserRole.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SFA.DAS.Commitments.Api.nuspec" />
