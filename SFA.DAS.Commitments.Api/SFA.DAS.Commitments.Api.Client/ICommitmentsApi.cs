@@ -8,25 +8,29 @@ namespace SFA.DAS.Commitments.Api.Client
     {
         Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId);
         Task<Commitment> GetEmployerCommitment(long employerAccountId, long commitmentId);
-        Task<Commitment> CreateEmployerCommitment(long employerAccountId, Commitment commitment);
-        Task PatchEmployerCommitment(long employerAccountId, long commitmentId, CommitmentSubmission submission);
         Task<List<Apprenticeship>> GetEmployerApprenticeships(long employerAccountId);
         Task<Apprenticeship> GetEmployerApprenticeship(long employerAccountId, long apprenticeshipId);
-        Task UpdateEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship);
-        Task PatchEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, PaymentStatus paymentStatus);
-        Task CreateEmployerApprenticeship(long employerAccountId, long commitmentId, Apprenticeship apprenticeship);
-        Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId);
-        Task DeleteEmployerCommitment(long employerAccountId, long commitmentId);
+
+        Task<Commitment> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment);
+        Task PatchEmployerCommitment(long employerAccountId, long commitmentId, CommitmentSubmission submission);
+        Task DeleteEmployerCommitment(long employerAccountId, long commitmentId, string userId);
+
+        Task CreateEmployerApprenticeship(long employerAccountId, long commitmentId, ApprenticeshipRequest apprenticeship);
+        Task UpdateEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, ApprenticeshipRequest apprenticeship);
+        Task PatchEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, ApprenticeshipSubmission apprenticeshipSubmission);
+        Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId, string userId);
 
         Task<List<CommitmentListItem>> GetProviderCommitments(long providerId);
         Task<Commitment> GetProviderCommitment(long providerId, long commitmentId);
         Task<List<Apprenticeship>> GetProviderApprenticeships(long providerId);
         Task<Apprenticeship> GetProviderApprenticeship(long providerId, long apprenticeshipId);
-        Task CreateProviderApprenticeship(long providerId, long commitmentId, Apprenticeship apprenticeship);
-        Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, Apprenticeship apprenticeship);
+
         Task PatchProviderCommitment(long providerId, long commitmentId, CommitmentSubmission submission);
-        Task BulkUploadApprenticeships(long providerId, long commitmentId, IList<Apprenticeship> apprenticeships);
-        Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId);
-        Task DeleteProviderCommitment(long providerId, long commitmentId);
+        Task DeleteProviderCommitment(long providerId, long commitmentId, string userId);
+
+        Task CreateProviderApprenticeship(long providerId, long commitmentId, ApprenticeshipRequest apprenticeship);
+        Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, ApprenticeshipRequest apprenticeship);
+        Task BulkUploadApprenticeships(long providerId, long commitmentId, IList<ApprenticeshipRequest> apprenticeships);
+        Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, string userId);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 
+using SFA.DAS.Commitments.Api.Types.History;
+
 namespace SFA.DAS.Commitments.Api.Types
 {
     public class Apprenticeship
@@ -27,5 +29,12 @@ namespace SFA.DAS.Commitments.Api.Types
         public bool CanBeApproved { get; set; }
 
         public string ApprenticeshipName => $"{FirstName} {LastName}";
+    }
+
+    public class ApprenticeshipRequest
+    {
+        public Apprenticeship Apprenticeship { get; set; }
+
+        public string UserId { get; set; }
     }
 }

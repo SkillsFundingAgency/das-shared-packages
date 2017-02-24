@@ -27,4 +27,11 @@ namespace SFA.DAS.Commitments.Api.Types
         public LastUpdateInfo EmployerLastUpdateInfo { get; set; }
         public LastUpdateInfo ProviderLastUpdateInfo { get; set; }
     }
+
+    public class CommitmentRequest
+    {
+        public Commitment Commitment { get; set; }
+
+        public string UserId { get; set; }
+    }
 }
