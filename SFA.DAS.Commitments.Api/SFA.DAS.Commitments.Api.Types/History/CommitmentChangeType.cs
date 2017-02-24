@@ -9,6 +9,6 @@ namespace SFA.DAS.Commitments.Api.Types.History
         EditApprenticeship = 4,
         SendForReview = 5,
         SendForApproval = 6,
-        FinalApproval = 7,
+        FinalApproval = 7
     }
 }
