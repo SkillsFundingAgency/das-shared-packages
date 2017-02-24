@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Api.Types;
-using SFA.DAS.Commitments.Api.Types.History;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
@@ -19,8 +17,6 @@ namespace SFA.DAS.Commitments.Api.Client
         Task CreateEmployerApprenticeship(long employerAccountId, long commitmentId, Apprenticeship apprenticeship);
         Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId);
         Task DeleteEmployerCommitment(long employerAccountId, long commitmentId);
-        Task<List<CommitmentHistoryItem>> GetEmployerCommitmentHistory(long employerAccountId, long commitmentId);
-        Task<List<ApprenticeshipHistoryItem>> GetEmployerApprenticeshipHistory(long employerAccountId, long apprenticeshipId);
 
         Task<List<CommitmentListItem>> GetProviderCommitments(long providerId);
         Task<Commitment> GetProviderCommitment(long providerId, long commitmentId);
@@ -32,7 +28,5 @@ namespace SFA.DAS.Commitments.Api.Client
         Task BulkUploadApprenticeships(long providerId, long commitmentId, IList<Apprenticeship> apprenticeships);
         Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId);
         Task DeleteProviderCommitment(long providerId, long commitmentId);
-        Task<List<CommitmentHistoryItem>> GetProviderCommitmentHistory(long providerId, long commitmentId);
-        Task<List<ApprenticeshipHistoryItem>> GetProviderApprenticeshipHistory(long providerId, long apprenticeshipId);
     }
 }

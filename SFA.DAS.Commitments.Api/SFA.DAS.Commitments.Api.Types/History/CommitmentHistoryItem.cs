@@ -6,7 +6,7 @@ namespace SFA.DAS.Commitments.Api.Types.History
     {
         public long CommitmentId { get; set; }
 
-        public long UpdaterId { get; set; }
+        public long UserId { get; set; }
 
         public UserRole UpdatedByRole { get; set; }
 

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Commitments.Api.Client.Configuration;
 using SFA.DAS.Commitments.Api.Types;
-using SFA.DAS.Commitments.Api.Types.History;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
@@ -104,18 +103,6 @@ namespace SFA.DAS.Commitments.Api.Client
             await DeleteCommitment(url);
         }
 
-        public async Task<List<CommitmentHistoryItem>> GetEmployerCommitmentHistory(long employerAccountId, long commitmentId)
-        {
-            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}/history";
-            return await GetCommitmentHistory(url);
-        }
-
-        public async Task<List<ApprenticeshipHistoryItem>> GetEmployerApprenticeshipHistory(long employerAccountId, long apprenticeshipId)
-        {
-            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}/history";
-            return await GetApprenticehipHistory(url);
-        }
-
         public async Task<List<Apprenticeship>> GetProviderApprenticeships(long providerId)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/";
@@ -177,17 +164,6 @@ namespace SFA.DAS.Commitments.Api.Client
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
             await DeleteCommitment(url);
-        }
-
-        public async Task<List<CommitmentHistoryItem>> GetProviderCommitmentHistory(long providerId, long commitmentId)
-        {
-            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}/history";
-            return await GetCommitmentHistory(url);
-        }
-        public async Task<List<ApprenticeshipHistoryItem>> GetProviderApprenticeshipHistory(long providerId, long apprenticeshipId)
-        {
-            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/history";
-            return await GetApprenticehipHistory(url);
         }
 
         private async Task<Commitment> PostCommitment(string url, Commitment commitment)
@@ -274,20 +250,6 @@ namespace SFA.DAS.Commitments.Api.Client
         private async Task DeleteCommitment(string url)
         {
             await DeleteAsync(url);
-        }
-
-        private async Task<List<CommitmentHistoryItem>> GetCommitmentHistory(string url)
-        {
-            var content = await GetAsync(url);
-
-            return JsonConvert.DeserializeObject<List<CommitmentHistoryItem>>(content);
-        }
-
-        private async Task<List<ApprenticeshipHistoryItem>> GetApprenticehipHistory(string url)
-        {
-            var content = await GetAsync(url);
-
-            return JsonConvert.DeserializeObject<List<ApprenticeshipHistoryItem>>(content);
         }
     }
 }
