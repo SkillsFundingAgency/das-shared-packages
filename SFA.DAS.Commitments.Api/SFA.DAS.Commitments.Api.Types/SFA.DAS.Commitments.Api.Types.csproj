@@ -52,6 +52,7 @@
     <Compile Include="CommitmentListItem.cs" />
     <Compile Include="CommitmentStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Relationship.cs" />
     <Compile Include="TrainingType.cs" />
   </ItemGroup>
   <ItemGroup>
