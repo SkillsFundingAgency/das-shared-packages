@@ -46,9 +46,9 @@
     <Compile Include="CommitmentSubmission.cs" />
     <Compile Include="EditStatus.cs" />
     <Compile Include="History\ApprenticeshipChangeType.cs" />
-    <Compile Include="History\ApprenticeshipHistoryEntry.cs" />
+    <Compile Include="History\ApprenticeshipHistoryItem.cs" />
     <Compile Include="History\CommitmentChangeType.cs" />
-    <Compile Include="History\CommitmentHistoryEntry.cs" />
+    <Compile Include="History\CommitmentHistoryItem.cs" />
     <Compile Include="LastAction.cs" />
     <Compile Include="LastUpdateInfo.cs" />
     <Compile Include="PaymentStatus.cs" />

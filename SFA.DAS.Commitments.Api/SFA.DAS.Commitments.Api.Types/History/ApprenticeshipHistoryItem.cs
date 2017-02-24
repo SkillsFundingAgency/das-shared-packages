@@ -12,6 +12,6 @@ namespace SFA.DAS.Commitments.Api.Types.History
 
         public ApprenticeshipChangeType ChangeType { get; set; }
 
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }
