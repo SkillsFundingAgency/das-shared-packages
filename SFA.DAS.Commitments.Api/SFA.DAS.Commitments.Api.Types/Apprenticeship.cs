@@ -30,11 +30,4 @@ namespace SFA.DAS.Commitments.Api.Types
 
         public string ApprenticeshipName => $"{FirstName} {LastName}";
     }
-
-    public class ApprenticeshipRequest
-    {
-        public Apprenticeship Apprenticeship { get; set; }
-
-        public string UserId { get; set; }
-    }
 }

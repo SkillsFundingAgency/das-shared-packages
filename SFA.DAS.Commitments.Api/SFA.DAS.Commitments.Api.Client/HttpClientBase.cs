@@ -92,11 +92,23 @@ namespace SFA.DAS.Commitments.Api.Client
             return content;
         }
 
-        protected async Task DeleteAsync(string url)
+        protected async Task DeleteAsync(string url, string data)
         {
             using (var client = new HttpClient())
             {
-                var requestMessage = new HttpRequestMessage(HttpMethod.Delete, url);
+                HttpRequestMessage requestMessage;
+
+                if (string.IsNullOrWhiteSpace(data))
+                {
+                    requestMessage = new HttpRequestMessage(HttpMethod.Delete, url);
+                }
+                else
+                {
+                    requestMessage = new HttpRequestMessage(HttpMethod.Delete, url)
+                    {
+                        Content = new StringContent(data, Encoding.UTF8, "application/json")
+                    };
+                }
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
                 var response = await client.SendAsync(requestMessage);

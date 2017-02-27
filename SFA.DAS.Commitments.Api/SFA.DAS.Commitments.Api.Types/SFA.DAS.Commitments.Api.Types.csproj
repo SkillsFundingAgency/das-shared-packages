@@ -43,7 +43,10 @@
   <ItemGroup>
     <Compile Include="AgreementStatus.cs" />
     <Compile Include="Apprenticeship.cs" />
+    <Compile Include="ApprenticeshipRequest.cs" />
     <Compile Include="ApprenticeshipSubmission.cs" />
+    <Compile Include="BulkApprenticeshipRequest.cs" />
+    <Compile Include="CommitmentRequest.cs" />
     <Compile Include="CommitmentSubmission.cs" />
     <Compile Include="EditStatus.cs" />
     <Compile Include="History\ApprenticeshipChangeType.cs" />

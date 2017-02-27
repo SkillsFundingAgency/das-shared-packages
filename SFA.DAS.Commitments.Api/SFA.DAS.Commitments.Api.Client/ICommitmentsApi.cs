@@ -30,7 +30,7 @@ namespace SFA.DAS.Commitments.Api.Client
 
         Task CreateProviderApprenticeship(long providerId, long commitmentId, ApprenticeshipRequest apprenticeship);
         Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, ApprenticeshipRequest apprenticeship);
-        Task BulkUploadApprenticeships(long providerId, long commitmentId, IList<ApprenticeshipRequest> apprenticeships);
+        Task BulkUploadApprenticeships(long providerId, long commitmentId, BulkApprenticeshipRequest bulkRequest);
         Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, string userId);
     }
 }
