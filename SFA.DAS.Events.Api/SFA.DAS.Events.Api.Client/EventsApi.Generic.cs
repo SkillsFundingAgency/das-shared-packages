@@ -27,7 +27,7 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <returns>List of GenericEvent</returns>
-        public async Task<List<GenericEvent>> GetAccountEventsById(string eventType, long fromEventId = 0, int pageSize = 1000, int pageNumber = 1)
+        public async Task<List<GenericEvent>> GetGenericEventsById(string eventType, long fromEventId = 0, int pageSize = 1000, int pageNumber = 1)
         {
             var url = $"{_configuration.BaseUrl}api/events/getSinceEvent?eventType={eventType}&fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
 
@@ -43,7 +43,7 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize">Maximum of 10,000</param>
         /// <param name="pageNumber"></param>
         /// <returns>List of GenericEvent</returns>
-        public async Task<List<GenericEvent>> GetAccountEventsByDateRange(string eventType, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
+        public async Task<List<GenericEvent>> GetGenericEventsByDateRange(string eventType, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
         {
             var dateString = BuildDateQuery(fromDate, toDate);
 
