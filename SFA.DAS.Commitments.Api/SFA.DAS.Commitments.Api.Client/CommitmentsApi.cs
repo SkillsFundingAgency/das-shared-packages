@@ -166,6 +166,18 @@ namespace SFA.DAS.Commitments.Api.Client
             await DeleteCommitment(url, userId);
         }
 
+        public async Task<Relationship> GetRelationship(long providerId, long employerAccountId, string legalEntityId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/relationships/{employerAccountId}/{legalEntityId}";
+            return await GetRelationship(url);
+        }
+
+        public async Task PatchRelationship(long providerId, long employerAccountId, string legalEntityId, RelationshipRequest relationshipRequest)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/relationships/{employerAccountId}/{legalEntityId}";
+            await PatchRelationship(url, relationshipRequest);
+        }
+
         private async Task<Commitment> PostCommitment(string url, CommitmentRequest commitment)
         {
             var data = JsonConvert.SerializeObject(commitment);
@@ -250,6 +262,18 @@ namespace SFA.DAS.Commitments.Api.Client
         private async Task DeleteCommitment(string url, string userId)
         {
             await DeleteAsync(url, userId);
+        }
+
+        private async Task<Relationship> GetRelationship(string url)
+        {
+            var content = await GetAsync(url);
+            return JsonConvert.DeserializeObject<Relationship>(content);
+        }
+
+        private async Task PatchRelationship(string url, RelationshipRequest relationshipRequest)
+        {
+            var data = JsonConvert.SerializeObject(relationshipRequest);
+            await PatchAsync(url, data);
         }
     }
 }
