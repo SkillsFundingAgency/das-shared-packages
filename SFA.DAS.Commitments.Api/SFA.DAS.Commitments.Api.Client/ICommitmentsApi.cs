@@ -33,6 +33,7 @@ namespace SFA.DAS.Commitments.Api.Client
         Task BulkUploadApprenticeships(long providerId, long commitmentId, BulkApprenticeshipRequest bulkRequest);
         Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, string userId);
         Task<Relationship> GetRelationship(long providerId, long employerAccountId, string legalEntityId);
+        Task<Relationship> GetRelationshipByCommitment(long providerId, long commitmentId);
         Task PatchRelationship(long providerId, long employerAccountId, string legalEntityId, RelationshipRequest relationshipRequest);
     }
 }
