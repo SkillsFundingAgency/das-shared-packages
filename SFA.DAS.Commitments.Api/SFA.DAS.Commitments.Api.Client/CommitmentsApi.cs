@@ -178,6 +178,12 @@ namespace SFA.DAS.Commitments.Api.Client
             await PatchRelationship(url, relationshipRequest);
         }
 
+        public async Task<Relationship> GetRelationshipByCommitment(long providerId, long commitmentId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/relationships/{commitmentId}";
+            return await GetRelationship(url);
+        }
+
         private async Task<Commitment> PostCommitment(string url, CommitmentRequest commitment)
         {
             var data = JsonConvert.SerializeObject(commitment);
