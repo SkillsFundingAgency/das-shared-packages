@@ -56,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventsApi.Generic.cs" />
     <None Include="packages.config" />
     <None Include="SFA.DAS.Events.Api.nuspec" />
   </ItemGroup>
