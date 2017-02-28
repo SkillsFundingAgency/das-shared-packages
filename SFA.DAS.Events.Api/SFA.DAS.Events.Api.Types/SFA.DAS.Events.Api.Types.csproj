@@ -48,6 +48,7 @@
     <Compile Include="ApprenticeshipEvent.cs" />
     <Compile Include="AgreementEventView.cs" />
     <Compile Include="ApprenticeshipEventView.cs" />
+    <Compile Include="GenericEvent.cs" />
     <Compile Include="IEventView.cs" />
     <Compile Include="PaymentStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
