@@ -55,6 +55,7 @@
     <Compile Include="History\CommitmentHistoryItem.cs" />
     <Compile Include="LastAction.cs" />
     <Compile Include="LastUpdateInfo.cs" />
+    <Compile Include="OrganisationType.cs" />
     <Compile Include="PaymentStatus.cs" />
     <Compile Include="Commitment.cs" />
     <Compile Include="CommitmentListItem.cs" />
