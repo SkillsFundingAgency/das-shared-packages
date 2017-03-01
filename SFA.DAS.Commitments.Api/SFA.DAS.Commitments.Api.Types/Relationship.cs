@@ -13,7 +13,7 @@ namespace SFA.DAS.Commitments.Api.Types
         public string LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public string LegalEntityAddress { get; set; }
-        public OrganisationType OrganisationType { get; set; }
+        public OrganisationType LegalEntityOrganisationType { get; set; }
         public long ProviderId { get; set; }
         public string ProviderName { get; set; }
         public bool? Verified { get; set; }
