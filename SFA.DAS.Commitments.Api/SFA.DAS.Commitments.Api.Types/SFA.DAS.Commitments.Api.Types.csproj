@@ -48,6 +48,7 @@
     <Compile Include="BulkApprenticeshipRequest.cs" />
     <Compile Include="CommitmentRequest.cs" />
     <Compile Include="CommitmentSubmission.cs" />
+    <Compile Include="DeleteRequest.cs" />
     <Compile Include="EditStatus.cs" />
     <Compile Include="History\ApprenticeshipChangeType.cs" />
     <Compile Include="History\ApprenticeshipHistoryItem.cs" />
