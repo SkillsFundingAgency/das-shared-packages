@@ -13,12 +13,12 @@ namespace SFA.DAS.Commitments.Api.Client
 
         Task<Commitment> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment);
         Task PatchEmployerCommitment(long employerAccountId, long commitmentId, CommitmentSubmission submission);
-        Task DeleteEmployerCommitment(long employerAccountId, long commitmentId, string userId);
+        Task DeleteEmployerCommitment(long employerAccountId, long commitmentId, DeleteRequest deleteRequest);
 
         Task CreateEmployerApprenticeship(long employerAccountId, long commitmentId, ApprenticeshipRequest apprenticeship);
         Task UpdateEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, ApprenticeshipRequest apprenticeship);
         Task PatchEmployerApprenticeship(long employerAccountId, long commitmentId, long apprenticeshipId, ApprenticeshipSubmission apprenticeshipSubmission);
-        Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId, string userId);
+        Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId, DeleteRequest deleteRequest);
 
         Task<List<CommitmentListItem>> GetProviderCommitments(long providerId);
         Task<Commitment> GetProviderCommitment(long providerId, long commitmentId);
@@ -26,12 +26,13 @@ namespace SFA.DAS.Commitments.Api.Client
         Task<Apprenticeship> GetProviderApprenticeship(long providerId, long apprenticeshipId);
 
         Task PatchProviderCommitment(long providerId, long commitmentId, CommitmentSubmission submission);
-        Task DeleteProviderCommitment(long providerId, long commitmentId, string userId);
+        Task DeleteProviderCommitment(long providerId, long commitmentId, DeleteRequest deleteRequest);
 
         Task CreateProviderApprenticeship(long providerId, long commitmentId, ApprenticeshipRequest apprenticeship);
         Task UpdateProviderApprenticeship(long providerId, long commitmentId, long apprenticeshipId, ApprenticeshipRequest apprenticeship);
         Task BulkUploadApprenticeships(long providerId, long commitmentId, BulkApprenticeshipRequest bulkRequest);
-        Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, string userId);
+        Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, DeleteRequest deleteRequest);
+
         Task<Relationship> GetRelationship(long providerId, long employerAccountId, string legalEntityId);
         Task<Relationship> GetRelationshipByCommitment(long providerId, long commitmentId);
         Task PatchRelationship(long providerId, long employerAccountId, string legalEntityId, RelationshipRequest relationshipRequest);
