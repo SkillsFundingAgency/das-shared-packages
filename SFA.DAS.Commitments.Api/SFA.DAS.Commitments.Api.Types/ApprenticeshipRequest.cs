@@ -6,9 +6,4 @@
 
         public string UserId { get; set; }
     }
-
-    public class DeleteRequest
-    {
-        public string UserId { get; set; }
-    }
 }
