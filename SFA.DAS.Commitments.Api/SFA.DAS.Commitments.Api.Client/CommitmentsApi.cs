@@ -89,18 +89,18 @@ namespace SFA.DAS.Commitments.Api.Client
             await PatchApprenticeship(url, apprenticeshipSubmission);
         }
 
-        public async Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId, string userId)
+        public async Task DeleteEmployerApprenticeship(long employerAccountId, long apprenticeshipId, DeleteRequest deleteRequest)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}";
 
-            await DeleteApprenticeship(url, userId);
+            await DeleteApprenticeship(url, deleteRequest);
         }
 
-        public async Task DeleteEmployerCommitment(long employerAccountId, long commitmentId, string userId)
+        public async Task DeleteEmployerCommitment(long employerAccountId, long commitmentId, DeleteRequest deleteRequest)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
 
-            await DeleteCommitment(url, userId);
+            await DeleteCommitment(url, deleteRequest);
         }
 
         public async Task<List<Apprenticeship>> GetProviderApprenticeships(long providerId)
@@ -152,18 +152,18 @@ namespace SFA.DAS.Commitments.Api.Client
             await PostApprenticeships(url, bulkRequest);
         }
 
-        public async Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, string userId)
+        public async Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, DeleteRequest deleteRequest)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
 
-            await DeleteApprenticeship(url, userId);
+            await DeleteApprenticeship(url, deleteRequest);
         }
 
-        public async Task DeleteProviderCommitment(long providerId, long commitmentId, string userId)
+        public async Task DeleteProviderCommitment(long providerId, long commitmentId, DeleteRequest deleteRequest)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
 
-            await DeleteCommitment(url, userId);
+            await DeleteCommitment(url, deleteRequest);
         }
 
         public async Task<Relationship> GetRelationship(long providerId, long employerAccountId, string legalEntityId)
@@ -260,14 +260,16 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<Apprenticeship>(content);
         }
 
-        private async Task DeleteApprenticeship(string url, string userId)
+        private async Task DeleteApprenticeship(string url, DeleteRequest deleteRequest)
         {
-            await DeleteAsync(url, userId);
+            var data = JsonConvert.SerializeObject(deleteRequest);
+            await DeleteAsync(url, data);
         }
 
-        private async Task DeleteCommitment(string url, string userId)
+        private async Task DeleteCommitment(string url, DeleteRequest deleteRequest)
         {
-            await DeleteAsync(url, userId);
+            var data = JsonConvert.SerializeObject(deleteRequest);
+            await DeleteAsync(url, data);
         }
 
         private async Task<Relationship> GetRelationship(string url)
