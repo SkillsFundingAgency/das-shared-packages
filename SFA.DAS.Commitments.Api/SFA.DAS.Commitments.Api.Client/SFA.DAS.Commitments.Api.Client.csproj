@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="HttpCommitmentHelper.cs" />
     <Compile Include="EmployerCommitmentApi.cs" />
+    <Compile Include="Interfaces\IHttpCommitmentHelper.cs" />
     <Compile Include="Interfaces\IEmployerCommitmentApi.cs" />
     <Compile Include="Interfaces\IReleationship.cs" />
     <Compile Include="Interfaces\IValidation.cs" />

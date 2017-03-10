@@ -3,49 +3,11 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
+using SFA.DAS.Commitments.Api.Client.Interfaces;
 using SFA.DAS.Commitments.Api.Types;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
-    public interface IHttpCommitmentHelper
-    {
-        Task<Commitment> PostCommitment(string url, CommitmentRequest commitment);
-
-        Task PatchCommitment(string url, CommitmentSubmission submision);
-
-        Task PutCommitment(string url, CommitmentStatus commitmentStatus);
-
-        Task PatchApprenticeship(string url, ApprenticeshipSubmission apprenticeshipSubmission);
-
-        Task<List<CommitmentListItem>> GetCommitments(string url);
-
-        Task<Commitment> GetCommitment(string url);
-
-        Task<List<Apprenticeship>> GetApprenticeships(string url);
-
-        Task<Apprenticeship> GetApprenticeship(string url);
-
-        Task PutApprenticeship(string url, ApprenticeshipRequest apprenticeship);
-
-        Task<Apprenticeship> PostApprenticeship(string url, ApprenticeshipRequest apprenticeship);
-
-        Task<Apprenticeship> PostApprenticeships(string url, BulkApprenticeshipRequest bulkRequest);
-
-        Task DeleteApprenticeship(string url, DeleteRequest deleteRequest);
-
-        Task DeleteCommitment(string url, DeleteRequest deleteRequest);
-
-        Task<string> GetAsync(string url);
-
-        Task<string> PostAsync(string url, string data);
-
-        Task<string> PutAsync(string url, string data);
-
-        Task<string> PatchAsync(string url, string data);
-
-        Task DeleteAsync(string url, string data);
-    }
-
     public class HttpCommitmentHelper : HttpClientBase, IHttpCommitmentHelper
     {
         public HttpCommitmentHelper(string clientToken)
