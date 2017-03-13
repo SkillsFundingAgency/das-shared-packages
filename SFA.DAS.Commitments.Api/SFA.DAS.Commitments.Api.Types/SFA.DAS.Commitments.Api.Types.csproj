@@ -66,6 +66,10 @@
     <Compile Include="RelationshipRequest.cs" />
     <Compile Include="Apprenticeship\Types\TrainingType.cs" />
     <Compile Include="History\Types\UserRole.cs" />
+    <Compile Include="Validation\ApprenticeshipOverlapValidationResult.cs" />
+    <Compile Include="Validation\ApprenticeshipOverlapValidationRequest.cs" />
+    <Compile Include="Validation\OverlappingApprenticeship.cs" />
+    <Compile Include="Validation\Types\ValidationFailReason.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SFA.DAS.Commitments.Api.nuspec" />
