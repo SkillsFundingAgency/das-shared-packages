@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Commitments.Api.Types
+﻿namespace SFA.DAS.Commitments.Api.Types.Apprenticeship.Types
 {
     public enum TrainingType
     {

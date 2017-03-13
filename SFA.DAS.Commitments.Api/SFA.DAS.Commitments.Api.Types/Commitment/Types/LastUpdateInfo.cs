@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Commitments.Api.Types
+﻿namespace SFA.DAS.Commitments.Api.Types.Commitment.Types
 {
     public sealed class LastUpdateInfo
     {

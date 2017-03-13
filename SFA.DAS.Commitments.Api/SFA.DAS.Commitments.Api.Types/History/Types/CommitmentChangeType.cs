@@ -1,4 +1,4 @@
-namespace SFA.DAS.Commitments.Api.Types.History
+namespace SFA.DAS.Commitments.Api.Types.History.Types
 {
     public enum CommitmentChangeType
     {
