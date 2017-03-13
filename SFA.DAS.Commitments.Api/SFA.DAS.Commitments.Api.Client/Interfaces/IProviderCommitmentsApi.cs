@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using SFA.DAS.Commitments.Api.Types;
+using SFA.DAS.Commitments.Api.Types.Apprenticeship;
+using SFA.DAS.Commitments.Api.Types.Commitment;
 
 namespace SFA.DAS.Commitments.Api.Client.Interfaces
 {
