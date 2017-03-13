@@ -8,7 +8,7 @@
 
         public long ProviderId { get; set; }
 
-        public long ProviderName { get; set; }
+        public string ProviderName { get; set; }
 
         public string LegalEntityName { get; set; }
 
