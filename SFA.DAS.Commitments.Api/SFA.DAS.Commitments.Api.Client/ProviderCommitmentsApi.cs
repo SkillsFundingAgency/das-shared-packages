@@ -10,21 +10,20 @@ using SFA.DAS.Commitments.Api.Types.Commitment;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
-    public class ProviderProviderCommitmentsApi : HttpClientBase, IProviderCommitmentsApi
+    public class ProviderCommitmentsApi : HttpClientBase, IProviderCommitmentsApi
     {
         private readonly ICommitmentsApiClientConfiguration _configuration;
 
         private readonly IHttpCommitmentHelper _commitmentHelper;
 
-        public ProviderProviderCommitmentsApi(ICommitmentsApiClientConfiguration configuration, IHttpCommitmentHelper commitmentHelper)
+        public ProviderCommitmentsApi(ICommitmentsApiClientConfiguration configuration)
             : base(configuration.ClientToken)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
-            if (commitmentHelper == null)
-                throw new ArgumentNullException(nameof(commitmentHelper));
             _configuration = configuration;
-            _commitmentHelper = commitmentHelper;
+
+            _commitmentHelper = new HttpCommitmentHelper(configuration.ClientToken);
         }
 
         public async Task PatchProviderCommitment(long providerId, long commitmentId, CommitmentSubmission submission)

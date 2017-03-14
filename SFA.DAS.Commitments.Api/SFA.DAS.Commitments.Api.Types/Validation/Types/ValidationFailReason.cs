@@ -1,10 +1,11 @@
-namespace SFA.DAS.Commitments.Api.Types.Validation
+namespace SFA.DAS.Commitments.Api.Types.Validation.Types
 {
     public enum ValidationFailReason
     {
-        OverlappingStartDate = 0,
-        OverlappingEndDate = 1,
-        DateEmbrace = 2,
-        DateWithin = 3
+        None = 0,
+        OverlappingStartDate = 1,
+        OverlappingEndDate = 2,
+        DateEmbrace = 3,
+        DateWithin = 4
     }
 }
