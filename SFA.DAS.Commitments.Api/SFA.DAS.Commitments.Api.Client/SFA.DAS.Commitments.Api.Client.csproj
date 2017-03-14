@@ -45,11 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommitmentsApi.cs" />
+    <Compile Include="HttpCommitmentHelper.cs" />
+    <Compile Include="EmployerCommitmentApi.cs" />
+    <Compile Include="Interfaces\IHttpCommitmentHelper.cs" />
+    <Compile Include="Interfaces\IEmployerCommitmentApi.cs" />
+    <Compile Include="Interfaces\IRelationshipApi.cs" />
+    <Compile Include="Interfaces\IValidationApi.cs" />
+    <Compile Include="ProviderCommitmentsApi.cs" />
     <Compile Include="Configuration\ICommitmentsApiClientConfiguration.cs" />
     <Compile Include="HttpClientBase.cs" />
-    <Compile Include="ICommitmentsApi.cs" />
+    <Compile Include="Interfaces\IProviderCommitmentsApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelationshipApi.cs" />
+    <Compile Include="ValidationApi.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Commitments.Api.Types\SFA.DAS.Commitments.Api.Types.csproj">

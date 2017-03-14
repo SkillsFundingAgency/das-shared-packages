@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Commitments.Api.Types
+﻿using SFA.DAS.Commitments.Api.Types.Apprenticeship.Types;
+
+namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
 {
     public sealed class ApprenticeshipSubmission
     {

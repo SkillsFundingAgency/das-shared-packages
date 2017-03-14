@@ -42,34 +42,39 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgreementStatus.cs" />
-    <Compile Include="Apprenticeship.cs" />
-    <Compile Include="ApprenticeshipRequest.cs" />
-    <Compile Include="ApprenticeshipSubmission.cs" />
+    <Compile Include="Apprenticeship\Apprenticeship.cs" />
+    <Compile Include="Apprenticeship\ApprenticeshipRequest.cs" />
+    <Compile Include="Apprenticeship\ApprenticeshipSubmission.cs" />
     <Compile Include="BulkApprenticeshipRequest.cs" />
-    <Compile Include="CommitmentRequest.cs" />
-    <Compile Include="CommitmentSubmission.cs" />
+    <Compile Include="Commitment\CommitmentRequest.cs" />
+    <Compile Include="Commitment\CommitmentSubmission.cs" />
     <Compile Include="DeleteRequest.cs" />
-    <Compile Include="EditStatus.cs" />
-    <Compile Include="History\ApprenticeshipChangeType.cs" />
+    <Compile Include="Commitment\Types\EditStatus.cs" />
+    <Compile Include="History\Types\ApprenticeshipChangeType.cs" />
     <Compile Include="History\ApprenticeshipHistoryItem.cs" />
-    <Compile Include="History\CommitmentChangeType.cs" />
+    <Compile Include="History\Types\CommitmentChangeType.cs" />
     <Compile Include="History\CommitmentHistoryItem.cs" />
-    <Compile Include="LastAction.cs" />
-    <Compile Include="LastUpdateInfo.cs" />
+    <Compile Include="Commitment\Types\LastAction.cs" />
+    <Compile Include="Commitment\Types\LastUpdateInfo.cs" />
     <Compile Include="OrganisationType.cs" />
-    <Compile Include="PaymentStatus.cs" />
-    <Compile Include="Commitment.cs" />
-    <Compile Include="CommitmentListItem.cs" />
-    <Compile Include="CommitmentStatus.cs" />
+    <Compile Include="Apprenticeship\Types\PaymentStatus.cs" />
+    <Compile Include="Commitment\Commitment.cs" />
+    <Compile Include="Commitment\CommitmentListItem.cs" />
+    <Compile Include="Commitment\Types\CommitmentStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Relationship.cs" />
     <Compile Include="RelationshipRequest.cs" />
-    <Compile Include="TrainingType.cs" />
-    <Compile Include="UserRole.cs" />
+    <Compile Include="Apprenticeship\Types\TrainingType.cs" />
+    <Compile Include="History\Types\UserRole.cs" />
+    <Compile Include="Validation\ApprenticeshipOverlapValidationResult.cs" />
+    <Compile Include="Validation\ApprenticeshipOverlapValidationRequest.cs" />
+    <Compile Include="Validation\OverlappingApprenticeship.cs" />
+    <Compile Include="Validation\Types\ValidationFailReason.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SFA.DAS.Commitments.Api.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

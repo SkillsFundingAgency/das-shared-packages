@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Commitments.Api.Types
+using SFA.DAS.Commitments.Api.Types.Commitment.Types;
+
+namespace SFA.DAS.Commitments.Api.Types.Commitment
 {
     public sealed class Commitment
     {
         public Commitment()
         {
-            Apprenticeships = new List<Apprenticeship>();
+            Apprenticeships = new List<Apprenticeship.Apprenticeship>();
             EmployerLastUpdateInfo = new LastUpdateInfo();
             ProviderLastUpdateInfo = new LastUpdateInfo();
         }
@@ -22,7 +24,7 @@ namespace SFA.DAS.Commitments.Api.Types
         public string ProviderName { get; set; }
         public CommitmentStatus CommitmentStatus { get; set; }
         public EditStatus EditStatus { get; set; }
-        public List<Apprenticeship> Apprenticeships { get; set; }
+        public List<Apprenticeship.Apprenticeship> Apprenticeships { get; set; }
         public AgreementStatus AgreementStatus { get; set; }
         public LastAction LastAction { get; set; }
         public bool CanBeApproved { get; set; }

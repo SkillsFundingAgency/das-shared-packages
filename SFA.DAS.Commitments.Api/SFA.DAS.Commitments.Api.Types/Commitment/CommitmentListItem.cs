@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Commitments.Api.Types
+﻿using SFA.DAS.Commitments.Api.Types.Commitment.Types;
+
+namespace SFA.DAS.Commitments.Api.Types.Commitment
 {
     public sealed class CommitmentListItem
     {

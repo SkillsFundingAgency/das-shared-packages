@@ -15,7 +15,7 @@ namespace SFA.DAS.Commitments.Api.Client
             _clientToken = clientToken;
         }
 
-        protected async Task<string> GetAsync(string url)
+        public async Task<string> GetAsync(string url)
         {
             string content;
 
@@ -32,7 +32,7 @@ namespace SFA.DAS.Commitments.Api.Client
             return content;
         }
 
-        protected async Task<string> PostAsync(string url, string data)
+        public async Task<string> PostAsync(string url, string data)
         {
             string content;
 
@@ -52,7 +52,7 @@ namespace SFA.DAS.Commitments.Api.Client
             return content;
         }
 
-        protected async Task<string> PutAsync(string url, string data)
+        public async Task<string> PutAsync(string url, string data)
         {
             string content;
 
@@ -72,7 +72,7 @@ namespace SFA.DAS.Commitments.Api.Client
             return content;
         }
 
-        protected async Task<string> PatchAsync(string url, string data)
+        public async Task<string> PatchAsync(string url, string data)
         {
             string content;
 
@@ -92,7 +92,7 @@ namespace SFA.DAS.Commitments.Api.Client
             return content;
         }
 
-        protected async Task DeleteAsync(string url, string data)
+        public async Task DeleteAsync(string url, string data)
         {
             using (var client = new HttpClient())
             {

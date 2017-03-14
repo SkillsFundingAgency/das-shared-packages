@@ -1,5 +1,7 @@
 using System;
 
+using SFA.DAS.Commitments.Api.Types.History.Types;
+
 namespace SFA.DAS.Commitments.Api.Types.History
 {
     public class ApprenticeshipHistoryItem
