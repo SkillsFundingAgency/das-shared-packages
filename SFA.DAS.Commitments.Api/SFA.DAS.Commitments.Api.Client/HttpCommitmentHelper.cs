@@ -11,9 +11,9 @@ using SFA.DAS.Commitments.Api.Types.Commitment.Types;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
-    internal class HttpCommitmentHelper : HttpClientBase, IHttpCommitmentHelper
+    public class HttpCommitmentHelper : HttpClientBase, IHttpCommitmentHelper
     {
-        internal HttpCommitmentHelper(string clientToken)
+        public HttpCommitmentHelper(string clientToken)
             : base(clientToken)
         {
         }
