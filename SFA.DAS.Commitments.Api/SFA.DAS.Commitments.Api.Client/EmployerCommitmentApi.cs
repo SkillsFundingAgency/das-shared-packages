@@ -16,15 +16,14 @@ namespace SFA.DAS.Commitments.Api.Client
 
         private readonly IHttpCommitmentHelper _commitmentHelper;
 
-        public EmployerCommitmentApi(ICommitmentsApiClientConfiguration configuration, IHttpCommitmentHelper commitmentHelper)
+        public EmployerCommitmentApi(ICommitmentsApiClientConfiguration configuration)
             : base(configuration.ClientToken)
         {
             if(configuration == null)
                 throw new ArgumentException(nameof(configuration));
-            if (commitmentHelper == null)
-                throw new ArgumentException(nameof(commitmentHelper));
             _configuration = configuration;
-            _commitmentHelper = commitmentHelper;
+
+            _commitmentHelper = new HttpCommitmentHelper(configuration.ClientToken);
         }
         public async Task<Commitment> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment)
         {

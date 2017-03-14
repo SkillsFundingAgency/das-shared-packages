@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Commitments.Api.Types.Validation
+﻿using SFA.DAS.Commitments.Api.Types.Validation.Types;
+
+namespace SFA.DAS.Commitments.Api.Types.Validation
 {
     public class OverlappingApprenticeship
     {
