@@ -24,13 +24,13 @@ namespace SFA.DAS.Commitments.Api.Client
 
         public Task<ApprenticeshipOverlapValidationResult> ValidateOverlapping(ApprenticeshipOverlapValidationRequest request)
         {
-            var url = $"{_configuration.BaseUrl}api/validation/apprenticeship";
+            var url = $"{_configuration.BaseUrl}api/validation/apprenticeships/overlapping";
             return GetValidation(url, request);
         }
 
         public Task<IEnumerable<ApprenticeshipOverlapValidationResult>> ValidateOverlapping(IEnumerable<ApprenticeshipOverlapValidationRequest> requests)
         {
-            var url = $"{_configuration.BaseUrl}api/validation/apprenticeship";
+            var url = $"{_configuration.BaseUrl}api/validation/apprenticeships/overlapping";
             return GetValidation(url, requests);
         }
 
