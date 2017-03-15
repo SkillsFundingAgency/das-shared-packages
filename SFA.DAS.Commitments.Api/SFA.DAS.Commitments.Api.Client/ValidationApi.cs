@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
@@ -22,23 +23,18 @@ namespace SFA.DAS.Commitments.Api.Client
             _configuration = configuration;
         }
 
-        public Task<ApprenticeshipOverlapValidationResult> ValidateOverlapping(ApprenticeshipOverlapValidationRequest request)
+        public async Task<ApprenticeshipOverlapValidationResult> ValidateOverlapping(ApprenticeshipOverlapValidationRequest request)
         {
+            var wrapper = new List<ApprenticeshipOverlapValidationRequest> { request };
             var url = $"{_configuration.BaseUrl}api/validation/apprenticeships/overlapping";
-            return GetValidation(url, request);
+            var wrappedResult = await GetValidation(url, wrapper);
+            return wrappedResult.SingleOrDefault();
         }
 
-        public Task<IEnumerable<ApprenticeshipOverlapValidationResult>> ValidateOverlapping(IEnumerable<ApprenticeshipOverlapValidationRequest> requests)
+        public async Task<IEnumerable<ApprenticeshipOverlapValidationResult>> ValidateOverlapping(IEnumerable<ApprenticeshipOverlapValidationRequest> requests)
         {
             var url = $"{_configuration.BaseUrl}api/validation/apprenticeships/overlapping";
-            return GetValidation(url, requests);
-        }
-
-        private async Task<ApprenticeshipOverlapValidationResult> GetValidation(string url, ApprenticeshipOverlapValidationRequest request)
-        {
-            var data = JsonConvert.SerializeObject(request);
-            var result = await PostAsync(url, data);
-            return JsonConvert.DeserializeObject<ApprenticeshipOverlapValidationResult>(result);
+            return await GetValidation(url, requests);
         }
 
         private async Task<IEnumerable<ApprenticeshipOverlapValidationResult>> GetValidation(string url, IEnumerable<ApprenticeshipOverlapValidationRequest> requests)
