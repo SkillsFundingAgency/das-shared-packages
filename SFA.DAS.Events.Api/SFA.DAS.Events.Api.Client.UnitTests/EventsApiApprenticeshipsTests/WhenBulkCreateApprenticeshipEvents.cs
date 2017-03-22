@@ -43,7 +43,10 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.EventsApiApprenticeshipsTests
                     TrainingId = "ABC123",
                     TrainingStartDate = DateTime.Now.AddYears(-1),
                     TrainingTotalCost = 10000.34m,
-                    TrainingType = TrainingTypes.Standard
+                    TrainingType = TrainingTypes.Standard,
+                    LegalEntityId = "LE ID 1",
+                    LegalEntityName = "LE Name 1",
+                    LegalEntityOrganisationType = "LE Org Type 1"
                 },
                 new ApprenticeshipEvent
                 {
@@ -59,7 +62,10 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.EventsApiApprenticeshipsTests
                     TrainingId = "ABC123",
                     TrainingStartDate = DateTime.Now.AddYears(-1),
                     TrainingTotalCost = 10000.34m,
-                    TrainingType = TrainingTypes.Standard
+                    TrainingType = TrainingTypes.Standard,
+                    LegalEntityId = "LE ID 2",
+                    LegalEntityName = "LE Name 2",
+                    LegalEntityOrganisationType = "LE Org Type 2"
                 }
             };
         }
