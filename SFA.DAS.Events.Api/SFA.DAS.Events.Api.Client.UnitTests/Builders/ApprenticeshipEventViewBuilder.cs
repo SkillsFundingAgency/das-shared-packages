@@ -20,6 +20,9 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.Builders
         private DateTime _trainingStartDate = DateTime.Now.AddYears(-1);
         private decimal _trainingTotalCost = 10000.34m;
         private TrainingTypes _trainingTypes = TrainingTypes.Standard;
+        private string _legalEntityId = "LE ID";
+        private string _legalEntityName = "LE Name";
+        private string _legalEntityOrganisationType = "LE Org Type";
 
         public ApprenticeshipEventView Build()
         {
@@ -39,7 +42,10 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.Builders
                 TrainingId = _trainingId,
                 TrainingStartDate = _trainingStartDate,
                 TrainingTotalCost = _trainingTotalCost,
-                TrainingType = _trainingTypes
+                TrainingType = _trainingTypes,
+                LegalEntityId = _legalEntityId,
+                LegalEntityName = _legalEntityName,
+                LegalEntityOrganisationType = _legalEntityOrganisationType
             };
         }
     }

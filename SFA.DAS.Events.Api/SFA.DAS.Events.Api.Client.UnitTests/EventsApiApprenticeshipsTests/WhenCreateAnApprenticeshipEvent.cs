@@ -29,7 +29,10 @@ namespace SFA.DAS.Events.Api.Client.UnitTests.EventsApiApprenticeshipsTests
                 TrainingId = "ABC123",
                 TrainingStartDate = DateTime.Now.AddYears(-1),
                 TrainingTotalCost = 10000.34m,
-                TrainingType = TrainingTypes.Standard
+                TrainingType = TrainingTypes.Standard,
+                LegalEntityId = "LE ID",
+                LegalEntityName = "LE Name",
+                LegalEntityOrganisationType = "LE Org Type"
             };
             var expectedData = JsonConvert.SerializeObject(@event);
 
