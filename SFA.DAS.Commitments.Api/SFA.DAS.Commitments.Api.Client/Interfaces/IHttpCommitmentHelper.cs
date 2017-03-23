@@ -45,5 +45,9 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         Task<string> PatchAsync(string url, string data);
 
         Task DeleteAsync(string url, string data);
+
+        Task PostApprenticeshipUpdate(string url, ApprenticeshipUpdateRequest apprenticeshipUpdate);
+
+        Task<ApprenticeshipUpdate> GetApprenticeshipUpdate(string url);
     }
 }

@@ -95,5 +95,19 @@ namespace SFA.DAS.Commitments.Api.Client
 
             await _commitmentHelper.DeleteCommitment(url, deleteRequest);
         }
+
+        public async Task CreateApprenticeshipUpdate(long providerId, ApprenticeshipUpdateRequest apprenticeshipUpdateRequest)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeshipupdate";
+
+            await _commitmentHelper.PostApprenticeshipUpdate(url, apprenticeshipUpdateRequest);
+        }
+
+        public async Task<ApprenticeshipUpdate> GetPendingApprenticeshipUpdate(long providerId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeshipupdate";
+
+            return await _commitmentHelper.GetApprenticeshipUpdate(url);
+        }
     }
 }
