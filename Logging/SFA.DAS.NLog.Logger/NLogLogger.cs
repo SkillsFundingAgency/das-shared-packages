@@ -6,7 +6,7 @@ using NLog;
 
 namespace SFA.DAS.NLog.Logger
 {
-    public sealed class NLogLogger : ILog
+    public class NLogLogger : ILog
     {
         private readonly IRequestContext _context;
         private readonly string _loggerType;
