@@ -10,16 +10,17 @@ namespace SFA.DAS.NLog.Logger
     {
         private readonly IRequestContext _context;
         private readonly string _loggerType;
-        private readonly string _version;
 
         public NLogLogger(Type loggerType = null, IRequestContext context = null)
         {
             _loggerType = loggerType?.ToString() ?? "DefaultLogger";
             _context = context;
-            _version = GetVersion(loggerType ?? GetType());
+            Version = GetVersion(loggerType ?? GetType());
         }
 
         public string ApplicationName { get; set; }
+
+        public string Version { get; set; }
 
         public void Trace(string message)
         {
@@ -164,7 +165,7 @@ namespace SFA.DAS.NLog.Logger
                 propertiesLocal.Add("RequestCtx", _context);
 
             propertiesLocal.Add("LoggerType", _loggerType);
-            propertiesLocal.Add("Version", _version);
+            propertiesLocal.Add("Version", Version);
             propertiesLocal.Add("LogTimestamp", DateTime.UtcNow.ToString("o"));
             if (!string.IsNullOrEmpty(ApplicationName))
             {
