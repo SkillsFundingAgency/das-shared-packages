@@ -9,5 +9,6 @@ namespace SFA.DAS.Events.Api.Types
         public DateTime CreatedOn { get; set; }
         public string ProviderId { get; set; }
         public string ContractType { get; set; }
+        public string Type => this.GetType().Name;
     }
 }

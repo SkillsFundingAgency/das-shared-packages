@@ -4,6 +4,6 @@
     {
         long Id { get; set; }
 
-        string Event { get; set; }
+        string Type { get; }
     }
 }

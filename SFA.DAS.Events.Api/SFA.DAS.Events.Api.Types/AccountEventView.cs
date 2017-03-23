@@ -8,5 +8,6 @@ namespace SFA.DAS.Events.Api.Types
         public string Event { get; set; }
         public DateTime CreatedOn { get; set; }
         public string ResourceUri { get; set; }
+        public string Type => this.GetType().Name;
     }
 }
