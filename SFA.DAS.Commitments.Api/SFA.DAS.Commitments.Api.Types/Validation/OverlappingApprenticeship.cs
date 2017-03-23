@@ -6,6 +6,8 @@ namespace SFA.DAS.Commitments.Api.Types.Validation
     {
         public Apprenticeship.Apprenticeship Apprenticeship { get; set; }
 
+        public long? RequestApprenticeshipId { get; set; }
+
         public long EmployerAccountId { get; set; }
 
         public long ProviderId { get; set; }
