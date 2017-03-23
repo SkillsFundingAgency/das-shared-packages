@@ -15,7 +15,7 @@ namespace SFA.DAS.NLog.Logger
         {
             _loggerType = loggerType?.ToString() ?? "DefaultLogger";
             _context = context;
-            Version = GetVersion(loggerType ?? GetType());
+            Version = loggerType == null ? null : GetVersion(loggerType);
         }
 
         public string ApplicationName { get; set; }
