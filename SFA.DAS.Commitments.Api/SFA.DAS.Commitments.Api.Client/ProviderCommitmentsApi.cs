@@ -105,7 +105,7 @@ namespace SFA.DAS.Commitments.Api.Client
 
         public async Task<ApprenticeshipUpdate> GetPendingApprenticeshipUpdate(long providerId, long apprenticeshipId)
         {
-            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeshipupdate";
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeshipupdate/{apprenticeshipId}";
 
             return await _commitmentHelper.GetApprenticeshipUpdate(url);
         }
