@@ -130,6 +130,8 @@ namespace SFA.DAS.NLog.Logger
 
         private string GetVersion(Type callingType)
         {
+            if (callingType == null) return null;
+
             var assembly = callingType.Assembly;
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             return fileVersionInfo.ProductVersion;
