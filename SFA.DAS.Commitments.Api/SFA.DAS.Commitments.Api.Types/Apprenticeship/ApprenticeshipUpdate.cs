@@ -9,10 +9,12 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public long ApprenticeshipId { get; set; }
         public Originator Originator { get; set; }
         public ApprenticeshipUpdateStatus Status { get; set; }
+        public string ULN { get; set; }
+        public string EmployerRef { get; set; }
+        public string ProviderRef { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string ULN { get; set; }
         public TrainingType? TrainingType { get; set; }
         public string TrainingCode { get; set; }
         public string TrainingName { get; set; }
