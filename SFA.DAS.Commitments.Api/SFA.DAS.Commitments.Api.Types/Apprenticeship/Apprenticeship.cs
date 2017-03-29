@@ -27,7 +27,7 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public string EmployerRef { get; set; }
         public string ProviderRef { get; set; }
         public bool CanBeApproved { get; set; }
-        public Originator Originator { get; set; }
+        public Originator? Originator { get; set; }
 
         public string ApprenticeshipName => $"{FirstName} {LastName}";
     }
