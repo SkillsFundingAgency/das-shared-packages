@@ -28,6 +28,8 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public string ProviderRef { get; set; }
         public bool CanBeApproved { get; set; }
         public Originator? PendingUpdateOriginator { get; set; }
+        public string ProviderName { get; set; }
+        public string LegalEntityName { get; set; }
 
         public string ApprenticeshipName => $"{FirstName} {LastName}";
     }
