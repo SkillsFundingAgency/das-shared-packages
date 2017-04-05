@@ -49,5 +49,7 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         Task PostApprenticeshipUpdate(string url, ApprenticeshipUpdateRequest apprenticeshipUpdate);
 
         Task<ApprenticeshipUpdate> GetApprenticeshipUpdate(string url);
+
+        Task PatchApprenticeshipUpdate(string url, ApprenticeshipUpdateSubmission submission);
     }
 }

@@ -109,5 +109,12 @@ namespace SFA.DAS.Commitments.Api.Client
 
             return await _commitmentHelper.GetApprenticeshipUpdate(url);
         }
+
+        public async Task PatchApprenticeshipUpdate(long providerId, long apprenticeshipId, ApprenticeshipUpdateSubmission submission)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/update";
+
+            await _commitmentHelper.PatchApprenticeshipUpdate(url, submission);
+        }
     }
 }

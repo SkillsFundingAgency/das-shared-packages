@@ -47,6 +47,7 @@
     <Compile Include="Apprenticeship\ApprenticeshipSubmission.cs" />
     <Compile Include="Apprenticeship\ApprenticeshipUpdate.cs" />
     <Compile Include="Apprenticeship\ApprenticeshipUpdateRequest.cs" />
+    <Compile Include="Apprenticeship\ApprenticeshipUpdateSubmission.cs" />
     <Compile Include="Apprenticeship\Types\Originator.cs" />
     <Compile Include="Apprenticeship\Types\ApprenticeshipUpdateStatus.cs" />
     <Compile Include="BulkApprenticeshipRequest.cs" />
@@ -76,7 +77,9 @@
     <Compile Include="Validation\Types\ValidationFailReason.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SFA.DAS.Commitments.Api.nuspec" />
+    <None Include="SFA.DAS.Commitments.Api.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

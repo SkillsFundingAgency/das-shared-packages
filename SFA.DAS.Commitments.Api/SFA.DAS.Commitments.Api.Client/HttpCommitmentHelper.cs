@@ -117,5 +117,11 @@ namespace SFA.DAS.Commitments.Api.Client
             var content = await GetAsync(url);
             return JsonConvert.DeserializeObject<ApprenticeshipUpdate>(content);
         }
+
+        public async Task PatchApprenticeshipUpdate(string url, ApprenticeshipUpdateSubmission submission)
+        {
+            var data = JsonConvert.SerializeObject(submission);
+            await PatchAsync(url, data);
+        }
     }
 }

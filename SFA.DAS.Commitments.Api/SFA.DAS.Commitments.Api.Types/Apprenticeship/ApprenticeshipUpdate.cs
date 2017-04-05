@@ -21,5 +21,7 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public decimal? Cost { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string ProviderName { get; set; }
+        public string LegalEntityName { get; set; }
     }
 }
