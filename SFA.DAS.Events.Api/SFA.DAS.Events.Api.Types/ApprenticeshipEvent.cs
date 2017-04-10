@@ -20,5 +20,7 @@ namespace SFA.DAS.Events.Api.Types
         public string LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public string LegalEntityOrganisationType { get; set; }
+        public DateTime? EffectiveFrom { get; set; }
+        public DateTime? EffectiveTo { get; set; }
     }
 }
