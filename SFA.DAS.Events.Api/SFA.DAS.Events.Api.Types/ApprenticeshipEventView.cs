@@ -25,5 +25,6 @@ namespace SFA.DAS.Events.Api.Types
         public string Type => this.GetType().Name;
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
+        public DateTime? DateOfBirth { get; set; }
     }
 }
