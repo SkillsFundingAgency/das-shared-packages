@@ -15,7 +15,7 @@ namespace SFA.DAS.Events.Api.Types
         public string TrainingId { get; set; }
         public DateTime TrainingStartDate { get; set; }
         public DateTime TrainingEndDate { get; set; }
-        public decimal TrainingTotalCost { get; set; }
+        public decimal? TrainingTotalCost { get; set; }
         public int PaymentOrder { get; set; }
         public string LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
