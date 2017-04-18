@@ -237,3 +237,4 @@ _Pvt_Extensions
 **/tools/**/*.*
 !**/tools/nuget/**/*.*
 SFA.DAS.CookieService/Tools/PhantomJS/tools/phantomjs/ChangeLog
+SFA.DAS.Learners/Tools/PhantomJS/tools/phantomjs/ChangeLog
