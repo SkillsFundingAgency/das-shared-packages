@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Learners.Validators
 {
-    public class UlnValidator
+    public class UlnValidator : IUlnValidator
     {
         public bool Validate(long uln)
         {
