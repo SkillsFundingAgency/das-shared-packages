@@ -9,5 +9,7 @@ namespace SFA.DAS.Commitments.Api.Types
         public LastUpdateInfo LastUpdatedByInfo { get; set; }
 
         public string UserId { get; set; }
+
+        public string Message { get; set; }
     }
 }

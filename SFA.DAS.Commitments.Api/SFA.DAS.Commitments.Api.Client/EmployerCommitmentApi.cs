@@ -25,7 +25,7 @@ namespace SFA.DAS.Commitments.Api.Client
 
             _commitmentHelper = new HttpCommitmentHelper(configuration.ClientToken);
         }
-        public async Task<Commitment> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment)
+        public async Task<CommitmentView> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.Commitments.Api.Client
             return await _commitmentHelper.GetCommitments(url);
         }
 
-        public async Task<Commitment> GetEmployerCommitment(long employerAccountId, long commitmentId)
+        public async Task<CommitmentView> GetEmployerCommitment(long employerAccountId, long commitmentId)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments/{commitmentId}";
 

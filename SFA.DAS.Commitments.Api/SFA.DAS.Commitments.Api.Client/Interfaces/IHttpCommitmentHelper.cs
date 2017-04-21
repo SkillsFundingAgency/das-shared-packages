@@ -10,7 +10,7 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
 {
     public interface IHttpCommitmentHelper
     {
-        Task<Commitment> PostCommitment(string url, CommitmentRequest commitment);
+        Task<CommitmentView> PostCommitment(string url, CommitmentRequest commitment);
 
         Task PatchCommitment(string url, CommitmentSubmission submision);
 
@@ -20,7 +20,7 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
 
         Task<List<CommitmentListItem>> GetCommitments(string url);
 
-        Task<Commitment> GetCommitment(string url);
+        Task<CommitmentView> GetCommitment(string url);
 
         Task<List<Apprenticeship>> GetApprenticeships(string url);
 

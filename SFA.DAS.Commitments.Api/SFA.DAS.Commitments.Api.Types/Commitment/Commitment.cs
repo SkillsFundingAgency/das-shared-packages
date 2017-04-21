@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using SFA.DAS.Commitments.Api.Types.Commitment.Types;
+﻿using SFA.DAS.Commitments.Api.Types.Commitment.Types;
 
 namespace SFA.DAS.Commitments.Api.Types.Commitment
 {
@@ -8,12 +6,10 @@ namespace SFA.DAS.Commitments.Api.Types.Commitment
     {
         public Commitment()
         {
-            Apprenticeships = new List<Apprenticeship.Apprenticeship>();
             EmployerLastUpdateInfo = new LastUpdateInfo();
             ProviderLastUpdateInfo = new LastUpdateInfo();
         }
 
-        public long Id { get; set; }
         public string Reference { get; set; }
         public long EmployerAccountId { get; set; }
         public string LegalEntityId { get; set; }
@@ -24,10 +20,6 @@ namespace SFA.DAS.Commitments.Api.Types.Commitment
         public string ProviderName { get; set; }
         public CommitmentStatus CommitmentStatus { get; set; }
         public EditStatus EditStatus { get; set; }
-        public List<Apprenticeship.Apprenticeship> Apprenticeships { get; set; }
-        public AgreementStatus AgreementStatus { get; set; }
-        public LastAction LastAction { get; set; }
-        public bool CanBeApproved { get; set; }
         public LastUpdateInfo EmployerLastUpdateInfo { get; set; }
         public LastUpdateInfo ProviderLastUpdateInfo { get; set; }
     }
