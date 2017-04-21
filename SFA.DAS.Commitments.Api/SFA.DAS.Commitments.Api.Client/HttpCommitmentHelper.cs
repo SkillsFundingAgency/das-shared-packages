@@ -18,12 +18,12 @@ namespace SFA.DAS.Commitments.Api.Client
         {
         }
 
-        public async Task<Commitment> PostCommitment(string url, CommitmentRequest commitment)
+        public async Task<CommitmentView> PostCommitment(string url, CommitmentRequest commitment)
         {
             var data = JsonConvert.SerializeObject(commitment);
             var content = await PostAsync(url, data);
 
-            return JsonConvert.DeserializeObject<Commitment>(content);
+            return JsonConvert.DeserializeObject<CommitmentView>(content);
         }
 
         public async Task PatchCommitment(string url, CommitmentSubmission submision)
@@ -51,11 +51,11 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<List<CommitmentListItem>>(content);
         }
 
-        public async Task<Commitment> GetCommitment(string url)
+        public async Task<CommitmentView> GetCommitment(string url)
         {
             var content = await GetAsync(url);
 
-            return JsonConvert.DeserializeObject<Commitment>(content);
+            return JsonConvert.DeserializeObject<CommitmentView>(content);
         }
 
         public async Task<List<Apprenticeship>> GetApprenticeships(string url)

@@ -51,8 +51,11 @@
     <Compile Include="Apprenticeship\Types\Originator.cs" />
     <Compile Include="Apprenticeship\Types\ApprenticeshipUpdateStatus.cs" />
     <Compile Include="BulkApprenticeshipRequest.cs" />
+    <Compile Include="Commitment\CommitmentView.cs" />
     <Compile Include="Commitment\CommitmentRequest.cs" />
     <Compile Include="Commitment\CommitmentSubmission.cs" />
+    <Compile Include="Commitment\MessageView.cs" />
+    <Compile Include="Commitment\Types\MessageCreator.cs" />
     <Compile Include="DeleteRequest.cs" />
     <Compile Include="Commitment\Types\EditStatus.cs" />
     <Compile Include="History\Types\ApprenticeshipChangeType.cs" />

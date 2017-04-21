@@ -10,11 +10,11 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
     public interface IEmployerCommitmentApi
     {
         Task<List<CommitmentListItem>> GetEmployerCommitments(long employerAccountId);
-        Task<Commitment> GetEmployerCommitment(long employerAccountId, long commitmentId);
+        Task<CommitmentView> GetEmployerCommitment(long employerAccountId, long commitmentId);
         Task<List<Apprenticeship>> GetEmployerApprenticeships(long employerAccountId);
         Task<Apprenticeship> GetEmployerApprenticeship(long employerAccountId, long apprenticeshipId);
 
-        Task<Commitment> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment);
+        Task<CommitmentView> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment);
         Task PatchEmployerCommitment(long employerAccountId, long commitmentId, CommitmentSubmission submission);
         Task DeleteEmployerCommitment(long employerAccountId, long commitmentId, DeleteRequest deleteRequest);
 

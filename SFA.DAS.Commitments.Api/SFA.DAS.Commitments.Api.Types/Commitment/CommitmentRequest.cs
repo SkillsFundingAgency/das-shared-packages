@@ -5,5 +5,7 @@
         public string UserId { get; set; }
 
         public Commitment Commitment { get; set; }
+
+        public string Message { get; set; }
     }
 }
