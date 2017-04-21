@@ -5,7 +5,7 @@ namespace SFA.DAS.Commitments.Api.Types.Commitment
 {
     public class MessageView
     {
-        public string AuthorUserId { get; set; }
+        public string Author { get; set; }
         public string Message { get; set; }
         public MessageCreator CreatedBy { get; set; }
         public DateTime CreatedDateTime { get; set; }
