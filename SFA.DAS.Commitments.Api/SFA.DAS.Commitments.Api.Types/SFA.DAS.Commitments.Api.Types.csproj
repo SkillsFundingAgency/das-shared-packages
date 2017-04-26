@@ -56,6 +56,10 @@
     <Compile Include="Commitment\CommitmentSubmission.cs" />
     <Compile Include="Commitment\MessageView.cs" />
     <Compile Include="Commitment\Types\MessageCreator.cs" />
+    <Compile Include="DataLock\DataLockStatus.cs" />
+    <Compile Include="DataLock\Types\DataLockErrorCode.cs" />
+    <Compile Include="DataLock\Types\Status.cs" />
+    <Compile Include="DataLock\Types\TriageStatus.cs" />
     <Compile Include="DeleteRequest.cs" />
     <Compile Include="Commitment\Types\EditStatus.cs" />
     <Compile Include="History\Types\ApprenticeshipChangeType.cs" />
