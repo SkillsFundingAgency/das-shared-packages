@@ -1,6 +1,7 @@
 ﻿using System;
 
 using SFA.DAS.Commitments.Api.Types.Apprenticeship.Types;
+using SFA.DAS.Commitments.Api.Types.DataLock.Types;
 
 namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
 {
@@ -30,6 +31,7 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public Originator? PendingUpdateOriginator { get; set; }
         public string ProviderName { get; set; }
         public string LegalEntityName { get; set; }
+        public TriageStatus DataLockTriageStatus { get; set;}
 
         public string ApprenticeshipName => $"{FirstName} {LastName}";
     }
