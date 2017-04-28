@@ -8,6 +8,6 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
     {
         Task<DataLockStatus> GetDataLock(long apprenticeshipId, long dataLockEventId);
         Task<List<DataLockStatus>> GetDataLocks(long apprenticeshipId);
-        Task PatchDataLock(long apprenticeshipId, DataLockStatus dataLock);
+        Task PatchDataLock(long apprenticeshipId, long dataLockEventId, DataLockTriageSubmission triageSubmission);
     }
 }

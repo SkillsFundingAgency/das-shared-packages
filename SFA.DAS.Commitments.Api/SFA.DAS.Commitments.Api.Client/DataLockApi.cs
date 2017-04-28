@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using SFA.DAS.Commitments.Api.Client.Configuration;
 using SFA.DAS.Commitments.Api.Client.Interfaces;
 using SFA.DAS.Commitments.Api.Types.DataLock;
+using SFA.DAS.Commitments.Api.Types.DataLock.Types;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
@@ -32,11 +33,10 @@ namespace SFA.DAS.Commitments.Api.Client
             return await GetDataLocks(url);
         }
 
-        public async Task PatchDataLock(long apprenticeshipId, DataLockStatus dataLock)
+        public async Task PatchDataLock(long apprenticeshipId, long dataLockEventId, DataLockTriageSubmission triageSubmission)
         {
-            var dataLockEventId = dataLock.DataLockEventId;
             var url = $"{_configuration.BaseUrl}api/apprenticeships/{apprenticeshipId}/datalocks/{dataLockEventId}";
-            await PatchDataLock(url, dataLock);
+            await PatchDataLock(url, triageSubmission);
         }
 
         private async Task<DataLockStatus> GetDataLock(string url)
@@ -51,9 +51,9 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<List<DataLockStatus>>(content);
         }
 
-        private async Task PatchDataLock(string url, DataLockStatus dataLock)
+        private async Task PatchDataLock(string url, DataLockTriageSubmission triageSubmission)
         {
-            var data = JsonConvert.SerializeObject(dataLock);
+            var data = JsonConvert.SerializeObject(triageSubmission);
             await PatchAsync(url, data);
         }
     }
