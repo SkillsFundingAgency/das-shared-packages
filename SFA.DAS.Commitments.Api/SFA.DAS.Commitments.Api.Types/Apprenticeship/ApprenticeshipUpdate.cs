@@ -23,5 +23,6 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public DateTime? EndDate { get; set; }
         public string ProviderName { get; set; }
         public string LegalEntityName { get; set; }
+        public UpdateOrigin UpdateOrigin { get; set; }
     }
 }
