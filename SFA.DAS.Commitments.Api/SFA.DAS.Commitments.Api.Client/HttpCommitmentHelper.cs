@@ -65,6 +65,14 @@ namespace SFA.DAS.Commitments.Api.Client
             return JsonConvert.DeserializeObject<List<Apprenticeship>>(content);
         }
 
+        public async Task<ApprenticeshipSearchResponse> GetApprenticeships(string url, ApprenticeshipSearchQuery apprenticeshipQuery)
+        {
+            var data = JsonConvert.SerializeObject(apprenticeshipQuery);
+            var result = await PostAsync(url, data);
+
+            return JsonConvert.DeserializeObject<ApprenticeshipSearchResponse>(result);
+        }
+
         public async Task<Apprenticeship> GetApprenticeship(string url)
         {
             var content = await GetAsync(url);

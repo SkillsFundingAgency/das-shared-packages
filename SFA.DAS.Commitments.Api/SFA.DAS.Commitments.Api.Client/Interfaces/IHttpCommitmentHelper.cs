@@ -24,6 +24,8 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
 
         Task<List<Apprenticeship>> GetApprenticeships(string url);
 
+        Task<ApprenticeshipSearchResponse> GetApprenticeships(string url, ApprenticeshipSearchQuery apprenticeshipQuery);
+
         Task<Apprenticeship> GetApprenticeship(string url);
 
         Task PutApprenticeship(string url, ApprenticeshipRequest apprenticeship);
