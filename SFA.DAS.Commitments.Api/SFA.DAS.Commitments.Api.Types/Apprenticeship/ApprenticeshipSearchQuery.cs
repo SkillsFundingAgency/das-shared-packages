@@ -14,6 +14,6 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
 
         public List<long> EmployerOrganisationIds { get; set; }
 
-        public List<string> TrainingCourses { get; set; }   
+        public List<string> TrainingCourses { get; set; }
     }
 }

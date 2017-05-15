@@ -1,6 +1,6 @@
 namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
 {
-    public class User
+    public class EmployerOrganisation
     {
         public long Id { get; set; }
 
