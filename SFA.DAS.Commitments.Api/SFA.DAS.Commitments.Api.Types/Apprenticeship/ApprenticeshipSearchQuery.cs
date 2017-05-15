@@ -10,10 +10,10 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
 
         public List<RecordStatus> RecordStatuses { get; set; }
 
-        public List<string> TrainingProviders { get; set; }
+        public List<long> TrainingProviderIds { get; set; }
 
-        public List<string> EmployerOrganisations { get; set; }
+        public List<long> EmployerOrganisationIds { get; set; }
 
-        public List<TrainingCourse> TrainingCourses { get; set; }
+        public List<string> TrainingCourses { get; set; }
     }
 }
