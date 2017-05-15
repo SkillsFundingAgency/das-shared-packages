@@ -2,10 +2,11 @@
 {
     public enum ApprenticeshipStatus
     {
-        WaitingToStart = 0,
-        Live = 1,
-        Paused = 2,
-        Stopped = 3,
-        Finished = 4
+        None = 0,
+        WaitingToStart = 1,
+        Live = 2,
+        Paused = 3,
+        Stopped = 4,
+        Finished = 5
     }
 }
