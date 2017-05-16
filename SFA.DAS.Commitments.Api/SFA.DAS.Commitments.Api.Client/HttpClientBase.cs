@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +9,12 @@ namespace SFA.DAS.Commitments.Api.Client
     {
         private readonly string _clientToken;
 
+        private readonly QueryStringHelper _queryStringHelper;
+
         protected HttpClientBase(string clientToken)
         {
             _clientToken = clientToken;
+            _queryStringHelper = new QueryStringHelper();
         }
 
         public async Task<string> GetAsync(string url)
@@ -41,7 +40,7 @@ namespace SFA.DAS.Commitments.Api.Client
 
             using (var client = new HttpClient())
             {
-                var queryString = GetQueryString(data);
+                var queryString = _queryStringHelper.GetQueryString(data);
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{url}{queryString}");
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _clientToken);
@@ -135,27 +134,6 @@ namespace SFA.DAS.Commitments.Api.Client
                 var response = await client.SendAsync(requestMessage);
                 response.EnsureSuccessStatusCode();
             }
-        }
-
-        public string GetQueryString(object obj)
-        {
-            var result = new List<string>();
-            var props = obj.GetType().GetProperties().Where(p => p.GetValue(obj, null) != null);
-            foreach (var p in props)
-            {
-                var value = p.GetValue(obj, null);
-                var enumerable = value as ICollection;
-                if (enumerable != null)
-                {
-                    result.AddRange(from object v in enumerable select $"{p.Name}={v}");
-                }
-                else
-                {
-                    result.Add($"{p.Name}={value}");
-                }
-            }
-
-            return string.Join("&", result.ToArray());
         }
     }
 }
