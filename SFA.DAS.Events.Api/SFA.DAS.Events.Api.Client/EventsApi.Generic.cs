@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Events.Api.Types;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.Events.Api.Client
 {
@@ -20,6 +22,22 @@ namespace SFA.DAS.Events.Api.Client
         }
 
         /// <summary>
+        /// Creates a new Generic Event
+        /// </summary>
+        /// <typeparam name="T">The type of the payload</typeparam>
+        /// <param name="payLoad">The body of the generic event</param>
+        /// <returns></returns>
+        public async Task CreateGenericEvent<T>(T payLoad)
+        {
+            var @event = new GenericEvent
+            {
+                Type = typeof(T).FullName,
+                Payload = JsonConvert.SerializeObject(payLoad, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })
+            };
+            await CreateGenericEvent(@event);
+        }
+
+        /// <summary>
         /// Get a list of GenericEvents starting from the supplied Id
         /// </summary>
         /// <param name="eventType"></param>
@@ -32,6 +50,28 @@ namespace SFA.DAS.Events.Api.Client
             var url = $"{_configuration.BaseUrl}api/events/getSinceEvent?eventType={eventType}&fromEventId={fromEventId}&pageSize={pageSize}&pageNumber={pageNumber}";
 
             return await GetEvents<GenericEvent>(url);
+        }
+
+        /// <summary>
+        /// Get a list of GenericEvents starting from the supplied Id
+        /// </summary>
+        /// <typeparam name="T">the type of the payload</typeparam>
+        /// <param name="fromEventId"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        public async Task<List<T>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
+            int pageNumber = 1)
+        {
+            var list = new List<T>();
+            var events = await GetGenericEventsById(typeof(T).FullName, fromEventId, pageSize, pageNumber);
+            foreach (var genericEvent in events)
+            {
+                var payload = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<T>(genericEvent.Payload));
+                list.Add(payload);
+            }
+
+            return list;
         }
 
         /// <summary>
@@ -50,6 +90,28 @@ namespace SFA.DAS.Events.Api.Client
             var url = $"{_configuration.BaseUrl}api/events/getByDateRange?eventType={eventType}&{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
 
             return await GetEvents<GenericEvent>(url);
+        }
+
+        /// <summary>
+        /// Get a list of GenericEvent by date range
+        /// </summary>
+        /// <typeparam name="T">the type of the payload</typeparam>
+        /// <param name="fromDate">If not supplied, will revert to start of time</param>
+        /// <param name="toDate">If not supplied, will revert to end of time</param>
+        /// <param name="pageSize">Maximum of 10,000</param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        public async Task<List<T>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
+        {
+            var list = new List<T>();
+            var genericEvents = await GetGenericEventsByDateRange(typeof(T).FullName, fromDate, toDate, pageSize, pageNumber);
+            foreach (var genericEvent in genericEvents)
+            {
+                var payload = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<T>(genericEvent.Payload));
+                list.Add(payload);
+            }
+
+            return list;
         }
     }
 }
