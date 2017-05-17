@@ -7,5 +7,7 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public IEnumerable<Apprenticeship> Apprenticeships { get; set; }
 
         public Facets Facets { get; set; }
+
+        public int TotalApprenticeships { get; set; }
     }
 }
