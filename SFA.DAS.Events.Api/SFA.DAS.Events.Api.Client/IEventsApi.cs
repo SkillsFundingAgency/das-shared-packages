@@ -42,7 +42,7 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
-        Task<List<T>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
+        Task<List<GenericEvent<T>>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
             int pageNumber = 1);
 
         /// <summary>
@@ -54,6 +54,6 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize">Maximum of 10,000</param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
-        Task<List<T>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
+        Task<List<GenericEvent<T>>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
     }
 }

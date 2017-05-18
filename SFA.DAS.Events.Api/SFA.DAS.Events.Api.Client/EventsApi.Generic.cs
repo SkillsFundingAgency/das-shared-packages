@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Events.Api.Types;
 using Newtonsoft.Json;
@@ -29,12 +28,12 @@ namespace SFA.DAS.Events.Api.Client
         /// <returns></returns>
         public async Task CreateGenericEvent<T>(T payLoad)
         {
-            var @event = new GenericEvent
+            var @event = new GenericEvent<T>
             {
-                Type = typeof(T).FullName,
-                Payload = JsonConvert.SerializeObject(payLoad, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })
+                Payload = payLoad
             };
-            await CreateGenericEvent(@event);
+            var genericEvent = GenericEventMapper.FromTyped(@event);
+            await CreateGenericEvent(genericEvent);
         }
 
         /// <summary>
@@ -60,15 +59,15 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
-        public async Task<List<T>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
+        public async Task<List<GenericEvent<T>>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
             int pageNumber = 1)
         {
-            var list = new List<T>();
+            var list = new List<GenericEvent<T>>();
             var events = await GetGenericEventsById(typeof(T).FullName, fromEventId, pageSize, pageNumber);
-            foreach (var genericEvent in events)
+            foreach (GenericEvent genericEvent in events)
             {
-                var payload = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<T>(genericEvent.Payload));
-                list.Add(payload);
+                var @event = await Task.Factory.StartNew(() => GenericEventMapper.ToTyped<T>(genericEvent));
+                list.Add(@event);
             }
 
             return list;
@@ -101,14 +100,14 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize">Maximum of 10,000</param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
-        public async Task<List<T>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
+        public async Task<List<GenericEvent<T>>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
         {
-            var list = new List<T>();
+            var list = new List<GenericEvent<T>>();
             var genericEvents = await GetGenericEventsByDateRange(typeof(T).FullName, fromDate, toDate, pageSize, pageNumber);
             foreach (var genericEvent in genericEvents)
             {
-                var payload = await Task.Factory.StartNew(() => JsonConvert.DeserializeObject<T>(genericEvent.Payload));
-                list.Add(payload);
+                var @event = await Task.Factory.StartNew(() => GenericEventMapper.ToTyped<T>(genericEvent));
+                list.Add(@event);
             }
 
             return list;
