@@ -50,6 +50,7 @@
     <Compile Include="EventsApi.Apprenticeships.cs" />
     <Compile Include="EventsApi.Agreements.cs" />
     <Compile Include="EventsApi.cs" />
+    <Compile Include="GenericEventMapper.cs" />
     <Compile Include="SecureHttpClient.cs" />
     <Compile Include="IEventsApi.cs" />
     <Compile Include="ISecureHttpClient.cs" />
