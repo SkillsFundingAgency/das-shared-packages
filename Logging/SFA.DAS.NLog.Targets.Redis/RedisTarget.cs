@@ -103,10 +103,10 @@
 
                     if (logEvent.Exception.InnerException != null)
                     {
-                        innerException = new { message = logEvent.Exception.InnerException.Message, source = logEvent.Exception.InnerException.Source, stackTrace = logEvent.Exception.InnerException.StackTrace };
+                        innerException = new { message = logEvent.Exception.InnerException.Message, source = logEvent.Exception.InnerException.Source, stackTrace = logEvent.Exception.InnerException.StackTrace, type = logEvent.Exception.InnerException.GetType().Name };
                     }
 
-                    properties.Add("Exception", new { message = logEvent.Exception.Message, source = logEvent.Exception.Source, innerException = innerException, stackTrace = logEvent.Exception.StackTrace });
+                    properties.Add("Exception", new { message = logEvent.Exception.Message, source = logEvent.Exception.Source, innerException = innerException, stackTrace = logEvent.Exception.StackTrace, type = logEvent.Exception.GetType().Name });
                 }
             }
 
