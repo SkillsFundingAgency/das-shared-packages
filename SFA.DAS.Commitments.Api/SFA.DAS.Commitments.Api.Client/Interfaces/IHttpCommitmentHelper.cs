@@ -55,5 +55,7 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         Task PatchApprenticeshipUpdate(string url, ApprenticeshipUpdateSubmission submission);
 
         Task<IList<ProviderPaymentPriorityItem>> GetPaymentPriorityOrder(string url);
+
+        Task PutPaymentPriorityOrder(string url, ProviderPaymentPrioritySubmission submission);
     }
 }

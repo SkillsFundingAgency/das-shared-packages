@@ -7,6 +7,7 @@ using SFA.DAS.Commitments.Api.Types.Commitment.Types;
 using SFA.DAS.Commitments.Api.Types.ProviderPayment;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
@@ -134,6 +135,12 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var content = await GetAsync(url);
             return JsonConvert.DeserializeObject<List<ProviderPaymentPriorityItem>>(content);
+        }
+
+        public async Task PutPaymentPriorityOrder(string url, ProviderPaymentPrioritySubmission submission)
+        {
+            var data = JsonConvert.SerializeObject(submission);
+            await PutAsync(url, data);
         }
     }
 }

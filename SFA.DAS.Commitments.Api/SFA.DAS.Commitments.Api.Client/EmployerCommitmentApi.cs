@@ -136,5 +136,12 @@ namespace SFA.DAS.Commitments.Api.Client
 
             return await _commitmentHelper.GetPaymentPriorityOrder(url);
         }
+
+        public async Task UpdateCustomProviderPaymentPriority(long employerAccountId, ProviderPaymentPrioritySubmission submission)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/customproviderpaymentpriority/";
+
+            await _commitmentHelper.PutPaymentPriorityOrder(url, submission);
+        }
     }
 }

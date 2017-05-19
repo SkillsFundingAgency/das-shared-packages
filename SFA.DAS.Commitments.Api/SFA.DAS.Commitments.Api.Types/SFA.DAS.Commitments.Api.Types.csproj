@@ -85,6 +85,8 @@
     <Compile Include="Commitment\CommitmentListItem.cs" />
     <Compile Include="Commitment\Types\CommitmentStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProviderPayment\ProviderPaymentPriorityUpdateItem.cs" />
+    <Compile Include="ProviderPayment\ProviderPaymentPrioritySubmission.cs" />
     <Compile Include="ProviderPayment\ProviderPaymentPriorityItem.cs" />
     <Compile Include="Relationship.cs" />
     <Compile Include="RelationshipRequest.cs" />
