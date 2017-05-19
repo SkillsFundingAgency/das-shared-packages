@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using Newtonsoft.Json;
-
+﻿using Newtonsoft.Json;
 using SFA.DAS.Commitments.Api.Client.Interfaces;
-using SFA.DAS.Commitments.Api.Types.Commitment;
 using SFA.DAS.Commitments.Api.Types;
-using SFA.DAS.Commitments.Api.Types.Commitment.Types;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
+using SFA.DAS.Commitments.Api.Types.Commitment;
+using SFA.DAS.Commitments.Api.Types.Commitment.Types;
+using SFA.DAS.Commitments.Api.Types.ProviderPayment;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
@@ -129,6 +128,12 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             var data = JsonConvert.SerializeObject(submission);
             await PatchAsync(url, data);
+        }
+
+        public async Task<IList<ProviderPaymentPriorityItem>> GetPaymentPriorityOrder(string url)
+        {
+            var content = await GetAsync(url);
+            return JsonConvert.DeserializeObject<List<ProviderPaymentPriorityItem>>(content);
         }
     }
 }

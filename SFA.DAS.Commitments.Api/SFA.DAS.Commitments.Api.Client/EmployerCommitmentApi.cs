@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 using SFA.DAS.Commitments.Api.Client.Configuration;
 using SFA.DAS.Commitments.Api.Client.Interfaces;
 using SFA.DAS.Commitments.Api.Types;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using SFA.DAS.Commitments.Api.Types.Commitment;
+using SFA.DAS.Commitments.Api.Types.ProviderPayment;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
@@ -128,6 +128,13 @@ namespace SFA.DAS.Commitments.Api.Client
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}/update";
 
             await _commitmentHelper.PatchApprenticeshipUpdate(url, submission);
+        }
+
+        public async Task<IList<ProviderPaymentPriorityItem>> GetCustomProviderPaymentPriority(long employerAccountId)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/customproviderpaymentpriority/";
+
+            return await _commitmentHelper.GetPaymentPriorityOrder(url);
         }
     }
 }
