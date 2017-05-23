@@ -30,6 +30,7 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public bool CanBeApproved { get; set; }
         public Originator? PendingUpdateOriginator { get; set; }
         public string ProviderName { get; set; }
+        public string LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public TriageStatus? DataLockTriageStatus { get; set;}
         public DataLockErrorCode DataLockErrorCode { get; set; }
