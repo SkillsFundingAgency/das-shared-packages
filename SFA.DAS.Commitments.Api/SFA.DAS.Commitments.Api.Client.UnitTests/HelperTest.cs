@@ -70,7 +70,7 @@ namespace SFA.DAS.Commitments.Api.Client.UnitTests
             {
                 ApprenticeshipStatuses = new List<ApprenticeshipStatus>(),
                 RecordStatuses = new List<RecordStatus>(),
-                EmployerOrganisationIds = new List<long>(),
+                EmployerOrganisationIds = new List<string>(),
                 TrainingCourses = new List<string>(),
                 TrainingProviderIds = null
             };
