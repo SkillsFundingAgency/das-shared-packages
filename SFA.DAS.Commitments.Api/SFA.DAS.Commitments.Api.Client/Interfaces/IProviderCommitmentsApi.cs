@@ -23,6 +23,9 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         Task BulkUploadApprenticeships(long providerId, long commitmentId, BulkApprenticeshipRequest bulkRequest);
         Task DeleteProviderApprenticeship(long providerId, long apprenticeshipId, DeleteRequest deleteRequest);
 
+        Task<long> BulkUploadFile(long providerId, BulkUploadFileRequest bulkUploadFileRequest);
+        Task<string> BulkUploadFile(long providerId, long bulkUploadFileId);
+
         Task CreateApprenticeshipUpdate(long providerId, long apprenticeshipId, ApprenticeshipUpdateRequest apprenticeshipUpdateRequest);
         Task<ApprenticeshipUpdate> GetPendingApprenticeshipUpdate(long providerId, long apprenticeshipId);
         Task PatchApprenticeshipUpdate(long providerId, long apprenticeshipId, ApprenticeshipUpdateSubmission submission);

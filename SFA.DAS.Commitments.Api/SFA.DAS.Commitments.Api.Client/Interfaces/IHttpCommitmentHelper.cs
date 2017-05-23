@@ -57,5 +57,9 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         Task<IList<ProviderPaymentPriorityItem>> GetPaymentPriorityOrder(string url);
 
         Task PutPaymentPriorityOrder(string url, ProviderPaymentPrioritySubmission submission);
+
+        Task<long> PostBulkuploadFile(string url, BulkUploadFileRequest bulkUploadFileRequest);
+
+        Task<string> GetBulkuploadFile(string url);
     }
 }

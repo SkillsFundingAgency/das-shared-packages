@@ -142,5 +142,18 @@ namespace SFA.DAS.Commitments.Api.Client
             var data = JsonConvert.SerializeObject(submission);
             await PutAsync(url, data);
         }
+
+        public async Task<long> PostBulkuploadFile(string url, BulkUploadFileRequest bulkUploadFileRequest)
+        {
+            var data = JsonConvert.SerializeObject(bulkUploadFileRequest);
+            var content = await PostAsync(url, data);
+
+            return JsonConvert.DeserializeObject<long>(content);
+        }
+
+        public Task<string> GetBulkuploadFile(string url)
+        {
+            return GetAsync(url);
+        }
     }
 }

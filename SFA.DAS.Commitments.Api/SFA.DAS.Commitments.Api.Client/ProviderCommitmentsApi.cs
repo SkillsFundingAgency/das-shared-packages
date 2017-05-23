@@ -96,6 +96,18 @@ namespace SFA.DAS.Commitments.Api.Client
             await _commitmentHelper.DeleteApprenticeship(url, deleteRequest);
         }
 
+        public async Task<long> BulkUploadFile(long providerId, BulkUploadFileRequest bulkUploadFileRequest)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/bulkupload";
+            return await _commitmentHelper.PostBulkuploadFile(url, bulkUploadFileRequest);
+        }
+
+        public async Task<string> BulkUploadFile(long providerId, long bulkUploadFileId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/bulkupload/{bulkUploadFileId}";
+            return await _commitmentHelper.GetBulkuploadFile(url);
+        }
+
         public async Task DeleteProviderCommitment(long providerId, long commitmentId, DeleteRequest deleteRequest)
         {
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/commitments/{commitmentId}";
