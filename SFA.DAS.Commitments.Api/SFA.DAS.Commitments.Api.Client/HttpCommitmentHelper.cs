@@ -155,5 +155,12 @@ namespace SFA.DAS.Commitments.Api.Client
         {
             return GetAsync(url);
         }
+
+        public async Task<List<ApprenticeshipStatusSummary>> GetEmployerAccountSummary(string url)
+        {
+            var content = await GetAsync(url);
+
+            return JsonConvert.DeserializeObject<List<ApprenticeshipStatusSummary>>(content);
+        }
     }
 }

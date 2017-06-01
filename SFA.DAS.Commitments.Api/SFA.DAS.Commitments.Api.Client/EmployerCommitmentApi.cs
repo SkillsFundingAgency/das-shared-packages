@@ -25,6 +25,14 @@ namespace SFA.DAS.Commitments.Api.Client
 
             _commitmentHelper = new HttpCommitmentHelper(configuration.ClientToken);
         }
+
+        public async Task<List<ApprenticeshipStatusSummary>> GetEmployerAccountSummary(long employerAccountId)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/";
+
+            return await _commitmentHelper.GetEmployerAccountSummary(url);
+        }
+
         public async Task<CommitmentView> CreateEmployerCommitment(long employerAccountId, CommitmentRequest commitment)
         {
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/commitments";

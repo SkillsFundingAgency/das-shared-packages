@@ -61,5 +61,7 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         Task<long> PostBulkuploadFile(string url, BulkUploadFileRequest bulkUploadFileRequest);
 
         Task<string> GetBulkuploadFile(string url);
+
+        Task<List<ApprenticeshipStatusSummary>> GetEmployerAccountSummary(string url);
     }
 }
