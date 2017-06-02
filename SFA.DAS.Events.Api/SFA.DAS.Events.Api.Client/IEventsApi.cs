@@ -21,10 +21,11 @@ namespace SFA.DAS.Events.Api.Client
         Task<List<AccountEventView>> GetAccountEventsByDateRange(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
 
         Task CreateGenericEvent(GenericEvent genericEvent);
-        Task<List<GenericEvent>> GetGenericEventsById(string eventType, long fromEventId = 0, int pageSize = 1000,
-            int pageNumber = 1);
-        Task<List<GenericEvent>> GetGenericEventsByDateRange(string eventType, DateTime? fromDate = null,
-            DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
+        Task<List<GenericEvent>> GetGenericEventsById(string eventType, long fromEventId = 0, int pageSize = 1000, int pageNumber = 1);
+        Task<List<GenericEvent>> GetGenericEventsByDateRange(string eventType, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
+
+        Task<List<GenericEvent>> GetGenericEventsByResourceId(string resourceType, string resourceId, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
+        Task<List<GenericEvent>> GetGenericEventsByResourceUri(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
 
         /// <summary>
         /// Creates a new Generic Event
@@ -42,8 +43,7 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
-        Task<List<GenericEvent<T>>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
-            int pageNumber = 1);
+        Task<List<GenericEvent<T>>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000, int pageNumber = 1);
 
         /// <summary>
         /// Get a list of GenericEvent by date range
@@ -55,5 +55,8 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageNumber"></param>
         /// <returns></returns>
         Task<List<GenericEvent<T>>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
+
+        Task<List<GenericEvent<T>>> GetGenericEventsByResourceId<T>(string resourceType, string resourceId, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
+        Task<List<GenericEvent<T>>> GetGenericEventsByResourceUri<T>(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1);
     }
 }

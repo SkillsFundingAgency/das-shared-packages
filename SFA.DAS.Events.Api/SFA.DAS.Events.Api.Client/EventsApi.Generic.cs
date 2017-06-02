@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Events.Api.Types;
 using Newtonsoft.Json;
@@ -111,6 +112,38 @@ namespace SFA.DAS.Events.Api.Client
             }
 
             return list;
+        }
+
+        public async Task<List<GenericEvent>> GetGenericEventsByResourceId(string resourceType, string resourceId, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000,
+            int pageNumber = 1)
+        {
+            var dateString = BuildDateQuery(fromDate, toDate);
+
+            var url = $"{_configuration.BaseUrl}api/events/getByResourceId?resourceType={resourceType}&resourceId={resourceId}&{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
+
+            return await GetEvents<GenericEvent>(url);
+        }
+
+        public async Task<List<GenericEvent>> GetGenericEventsByResourceUri(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
+        {
+            var dateString = BuildDateQuery(fromDate, toDate);
+
+            var url = $"{_configuration.BaseUrl}api/events/getByResourceUri?resourceUri={resourceUri}&{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
+
+            return await GetEvents<GenericEvent>(url);
+        }
+
+        public async Task<List<GenericEvent<T>>> GetGenericEventsByResourceId<T>(string resourceType, string resourceId, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000,
+            int pageNumber = 1)
+        {
+            var genericEvents = await GetGenericEventsByResourceId(resourceType, resourceId, fromDate, toDate, pageSize, pageNumber);
+            return genericEvents.Select(GenericEventMapper.ToTyped<T>).ToList();
+        }
+
+        public async Task<List<GenericEvent<T>>> GetGenericEventsByResourceUri<T>(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
+        {
+            var genericEvents = await GetGenericEventsByResourceUri(resourceUri, fromDate, toDate, pageSize, pageNumber);
+            return genericEvents.Select(GenericEventMapper.ToTyped<T>).ToList();
         }
     }
 }
