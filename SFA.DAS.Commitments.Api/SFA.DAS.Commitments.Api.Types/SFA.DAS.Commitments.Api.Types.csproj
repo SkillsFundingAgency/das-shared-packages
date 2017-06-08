@@ -50,6 +50,7 @@
     <Compile Include="Apprenticeship\EmployerOrganisation.cs" />
     <Compile Include="Apprenticeship\FacetItem.cs" />
     <Compile Include="Apprenticeship\Facets.cs" />
+    <Compile Include="Apprenticeship\PriceHistory.cs" />
     <Compile Include="Apprenticeship\TrainingCourse.cs" />
     <Compile Include="Apprenticeship\Types\ApprenticeshipStatus.cs" />
     <Compile Include="Apprenticeship\ApprenticeshipSubmission.cs" />
