@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
@@ -22,11 +23,11 @@ namespace SFA.DAS.Commitments.Api.Client
             _configuration = configuration;
         }
 
-        public async Task<PriceHistory> GetPriceHistory(long apprenticeshipId)
+        public async Task<IEnumerable<PriceHistory>> GetPriceHistory(long apprenticeshipId)
         {
             var url = $"{_configuration.BaseUrl}api/apprenticeships/{apprenticeshipId}/prices";
             var content = await GetAsync(url);
-            return JsonConvert.DeserializeObject<PriceHistory>(content);
+            return JsonConvert.DeserializeObject<IEnumerable<PriceHistory>>(content);
         }
 
     }
