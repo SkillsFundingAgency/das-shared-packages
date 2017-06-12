@@ -2,7 +2,7 @@ namespace SFA.DAS.Commitments.Api.Types.DataLock.Types
 {
     public enum DataLockUpdateType
     {
-        ApproceChanges = 1,
-        RejectChanges = 2
+        ApproveChanges = 0,
+        RejectChanges = 1
     }
 }
