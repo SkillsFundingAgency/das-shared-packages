@@ -70,7 +70,10 @@
     <Compile Include="Commitment\MessageView.cs" />
     <Compile Include="Commitment\Types\MessageCreator.cs" />
     <Compile Include="DataLock\DataLockStatus.cs" />
+    <Compile Include="DataLock\DataLocksTriageSubmission.cs" />
+    <Compile Include="DataLock\DataLockSummary.cs" />
     <Compile Include="DataLock\DataLockTriageSubmission.cs" />
+    <Compile Include="DataLock\Types\DataLockUpdateType.cs" />
     <Compile Include="DataLock\Types\DataLockErrorCode.cs" />
     <Compile Include="DataLock\Types\Status.cs" />
     <Compile Include="DataLock\Types\TriageStatus.cs" />
