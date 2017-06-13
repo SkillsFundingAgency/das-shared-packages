@@ -15,7 +15,7 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         /// </summary>
         /// <param name="apprenticeshipId"></param>
         /// <returns></returns>
-        Task<List<DataLockSummary>> GetDataLockSummary(long apprenticeshipId);
+        Task<DataLockSummary> GetDataLockSummary(long apprenticeshipId);
 
         Task PatchDataLock(long apprenticeshipId, long dataLockEventId, DataLockTriageSubmission triageSubmission);
 

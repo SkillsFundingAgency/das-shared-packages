@@ -32,10 +32,10 @@ namespace SFA.DAS.Commitments.Api.Client
             return await GetData<List<DataLockStatus>>(url);
         }
 
-        public async Task<List<DataLockSummary>> GetDataLockSummary(long apprenticeshipId)
+        public async Task<DataLockSummary> GetDataLockSummary(long apprenticeshipId)
         {
             var url = $"{_configuration.BaseUrl}api/apprenticeships/{apprenticeshipId}/datalocksummary";
-            return await GetData<List<DataLockSummary>>(url);
+            return await GetData<DataLockSummary>(url);
         }
 
         public async Task PatchDataLock(long apprenticeshipId, long dataLockEventId, DataLockTriageSubmission triageSubmission)
