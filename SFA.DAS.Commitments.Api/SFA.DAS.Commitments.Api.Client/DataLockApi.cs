@@ -52,7 +52,7 @@ namespace SFA.DAS.Commitments.Api.Client
 
         public async Task PatchDataLocks(long apprenticeshipId, DataLocksTriageResolutionSubmission submission)
         {
-            var url = $"{_configuration.BaseUrl}api/apprenticeships/{apprenticeshipId}/datalocks";
+            var url = $"{_configuration.BaseUrl}api/apprenticeships/{apprenticeshipId}/datalocks/resolve";
             await PatchModel(url, submission);
         }
 
