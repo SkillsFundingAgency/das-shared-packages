@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataLockApi.cs" />
+    <Compile Include="ApprenticeshipApi.cs" />
+    <Compile Include="Interfaces\IApprenticeshipApi.cs" />
     <Compile Include="QueryStringHelper.cs" />
     <Compile Include="HttpCommitmentHelper.cs" />
     <Compile Include="EmployerCommitmentApi.cs" />

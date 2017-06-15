@@ -50,6 +50,7 @@
     <Compile Include="Apprenticeship\EmployerOrganisation.cs" />
     <Compile Include="Apprenticeship\FacetItem.cs" />
     <Compile Include="Apprenticeship\Facets.cs" />
+    <Compile Include="Apprenticeship\PriceHistory.cs" />
     <Compile Include="Apprenticeship\TrainingCourse.cs" />
     <Compile Include="Apprenticeship\Types\ApprenticeshipStatus.cs" />
     <Compile Include="Apprenticeship\ApprenticeshipSubmission.cs" />
@@ -69,7 +70,10 @@
     <Compile Include="Commitment\MessageView.cs" />
     <Compile Include="Commitment\Types\MessageCreator.cs" />
     <Compile Include="DataLock\DataLockStatus.cs" />
+    <Compile Include="DataLock\DataLocksTriageResolutionSubmission.cs" />
+    <Compile Include="DataLock\DataLockSummary.cs" />
     <Compile Include="DataLock\DataLockTriageSubmission.cs" />
+    <Compile Include="DataLock\Types\DataLockUpdateType.cs" />
     <Compile Include="DataLock\Types\DataLockErrorCode.cs" />
     <Compile Include="DataLock\Types\Status.cs" />
     <Compile Include="DataLock\Types\TriageStatus.cs" />
