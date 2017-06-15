@@ -26,12 +26,18 @@ namespace SFA.DAS.Events.Api.Client
         /// </summary>
         /// <typeparam name="T">The type of the payload</typeparam>
         /// <param name="payLoad">The body of the generic event</param>
+        /// <param name="resourceUri">The uri of the resource</param>
+        /// <param name="resourceType">The type of the resource</param>
+        /// <param name="resourceId">The identifier of the resource</param>
         /// <returns></returns>
-        public async Task CreateGenericEvent<T>(T payLoad)
+        public async Task CreateGenericEvent<T>(T payLoad, string resourceUri = null, string resourceType = null, string resourceId = null)
         {
             var @event = new GenericEvent<T>
             {
-                Payload = payLoad
+                Payload = payLoad,
+                ResourceUri = resourceUri,
+                ResourceType = resourceType,
+                ResourceId = resourceId
             };
             var genericEvent = GenericEventMapper.FromTyped(@event);
             await CreateGenericEvent(genericEvent);

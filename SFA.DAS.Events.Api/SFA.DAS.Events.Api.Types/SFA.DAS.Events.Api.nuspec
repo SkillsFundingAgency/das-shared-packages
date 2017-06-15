@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>SFA.DAS.Events.Api.Types</id>
-        <version>1.25.0</version>
+        <version>1.26.0</version>
         <authors>DAS</authors>
         <owners>DAS</owners>
         <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>

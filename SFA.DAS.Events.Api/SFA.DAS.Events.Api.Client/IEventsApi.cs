@@ -32,8 +32,11 @@ namespace SFA.DAS.Events.Api.Client
         /// </summary>
         /// <typeparam name="T">The type of the payload</typeparam>
         /// <param name="payLoad">The body of the generic event</param>
+        /// <param name="resourceUri">The uri of the resource</param>
+        /// <param name="resourceType">The type of the resource</param>
+        /// <param name="resourceId">The identifier of the resource</param>
         /// <returns></returns>
-        Task CreateGenericEvent<T>(T payLoad);
+        Task CreateGenericEvent<T>(T payLoad, string resourceUri = null, string resourceType = null, string resourceId = null);
 
         /// <summary>
         /// Get a list of GenericEvents starting from the supplied Id
