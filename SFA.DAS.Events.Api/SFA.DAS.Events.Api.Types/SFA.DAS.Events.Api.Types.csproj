@@ -52,6 +52,7 @@
     <Compile Include="GenericEvent{T}.cs" />
     <Compile Include="IEventView.cs" />
     <Compile Include="PaymentStatus.cs" />
+    <Compile Include="PriceHistory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrainingTypes.cs" />
   </ItemGroup>
