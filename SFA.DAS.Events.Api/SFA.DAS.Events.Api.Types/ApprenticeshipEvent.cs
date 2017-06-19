@@ -24,6 +24,6 @@ namespace SFA.DAS.Events.Api.Types
         public DateTime? EffectiveFrom { get; set; }
         public DateTime? EffectiveTo { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public List<PriceHistory> PriceHistory { get; set; }
+        public IEnumerable<PriceHistory> PriceHistory { get; set; }
     }
 }
