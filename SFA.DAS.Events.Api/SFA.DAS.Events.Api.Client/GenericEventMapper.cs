@@ -5,7 +5,7 @@ namespace SFA.DAS.Events.Api.Client
 {
     internal static class GenericEventMapper
     {
-        public static GenericEvent FromTyped<T>(GenericEvent<T> source)
+        public static GenericEvent FromTyped<T>(IGenericEvent<T> source)
         {
             return new GenericEvent
             {
@@ -21,7 +21,7 @@ namespace SFA.DAS.Events.Api.Client
             };
         }
 
-        public static GenericEvent<T> ToTyped<T>(GenericEvent source)
+        public static IGenericEvent<T> ToTyped<T>(GenericEvent source)
         {
             return new GenericEvent<T>
             {
