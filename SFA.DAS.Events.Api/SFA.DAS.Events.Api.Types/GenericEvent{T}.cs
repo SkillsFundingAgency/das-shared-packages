@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class GenericEvent<T> : IEventView
+    public class GenericEvent<T> : IGenericEvent<T>
     {
         public long Id { get; set; }
         public DateTime CreatedOn { get; set; }

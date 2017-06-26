@@ -25,15 +25,11 @@ namespace SFA.DAS.Events.Api.Client
         /// Creates a new Generic Event
         /// </summary>
         /// <typeparam name="T">The type of the payload</typeparam>
-        /// <param name="payLoad">The body of the generic event</param>
+        /// <param name="event">The generic event to create</param>
         /// <returns></returns>
-        public async Task CreateGenericEvent<T>(T payLoad)
+        public async Task CreateGenericEvent<T>(IGenericEvent<T> @event)
         {
-            var @event = new GenericEvent<T>
-            {
-                Payload = payLoad
-            };
-            var genericEvent = GenericEventMapper.FromTyped(@event);
+            var genericEvent = GenericEventMapper.FromTyped<T>(@event);
             await CreateGenericEvent(genericEvent);
         }
 
@@ -60,10 +56,10 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
-        public async Task<List<GenericEvent<T>>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
+        public async Task<List<IGenericEvent<T>>> GetGenericEventsById<T>(long fromEventId = 0, int pageSize = 1000,
             int pageNumber = 1)
         {
-            var list = new List<GenericEvent<T>>();
+            var list = new List<IGenericEvent<T>>();
             var events = await GetGenericEventsById(typeof(T).FullName, fromEventId, pageSize, pageNumber);
             foreach (GenericEvent genericEvent in events)
             {
@@ -101,9 +97,9 @@ namespace SFA.DAS.Events.Api.Client
         /// <param name="pageSize">Maximum of 10,000</param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
-        public async Task<List<GenericEvent<T>>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
+        public async Task<List<IGenericEvent<T>>> GetGenericEventsByDateRange<T>(DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
         {
-            var list = new List<GenericEvent<T>>();
+            var list = new List<IGenericEvent<T>>();
             var genericEvents = await GetGenericEventsByDateRange(typeof(T).FullName, fromDate, toDate, pageSize, pageNumber);
             foreach (var genericEvent in genericEvents)
             {
@@ -133,14 +129,14 @@ namespace SFA.DAS.Events.Api.Client
             return await GetEvents<GenericEvent>(url);
         }
 
-        public async Task<List<GenericEvent<T>>> GetGenericEventsByResourceId<T>(string resourceType, string resourceId, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000,
+        public async Task<List<IGenericEvent<T>>> GetGenericEventsByResourceId<T>(string resourceType, string resourceId, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000,
             int pageNumber = 1)
         {
             var genericEvents = await GetGenericEventsByResourceId(resourceType, resourceId, fromDate, toDate, pageSize, pageNumber);
             return genericEvents.Select(GenericEventMapper.ToTyped<T>).ToList();
         }
 
-        public async Task<List<GenericEvent<T>>> GetGenericEventsByResourceUri<T>(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
+        public async Task<List<IGenericEvent<T>>> GetGenericEventsByResourceUri<T>(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
         {
             var genericEvents = await GetGenericEventsByResourceUri(resourceUri, fromDate, toDate, pageSize, pageNumber);
             return genericEvents.Select(GenericEventMapper.ToTyped<T>).ToList();
