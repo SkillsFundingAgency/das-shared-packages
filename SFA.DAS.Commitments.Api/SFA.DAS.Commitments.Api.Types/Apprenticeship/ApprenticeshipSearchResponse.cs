@@ -9,5 +9,11 @@ namespace SFA.DAS.Commitments.Api.Types.Apprenticeship
         public Facets Facets { get; set; }
 
         public int TotalApprenticeships { get; set; }
+
+        public int PageNumber { get; set; }
+
+        public int PageSize { get; set; }
+
+        public int TotalPages => (TotalApprenticeships + PageSize - 1) / PageSize;
     }
 }
