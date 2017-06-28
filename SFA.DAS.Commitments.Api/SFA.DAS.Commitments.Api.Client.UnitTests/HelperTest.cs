@@ -21,12 +21,12 @@ namespace SFA.DAS.Commitments.Api.Client.UnitTests
         }
 
         [Test]
-        public void TestEmptyQuery()
+        public void TestDefaultQuery()
         {
             var query = new ApprenticeshipSearchQuery();
             var queryString = _sut.GetQueryString(query);
 
-            queryString.Should().Be("");
+            queryString.Should().Be("?PageNumber=1&PageSize=25");
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace SFA.DAS.Commitments.Api.Client.UnitTests
 
             var queryString = _sut.GetQueryString(query);
 
-            queryString.Should().Be("?ApprenticeshipStatuses=Finished&ApprenticeshipStatuses=Paused");
+            queryString.Should().Be("?ApprenticeshipStatuses=Finished&ApprenticeshipStatuses=Paused&PageNumber=1&PageSize=25");
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace SFA.DAS.Commitments.Api.Client.UnitTests
 
             var queryString = _sut.GetQueryString(query);
 
-            queryString.Should().Be("?RecordStatuses=ChangeRequested&RecordStatuses=ChangesPending");
+            queryString.Should().Be("?RecordStatuses=ChangeRequested&RecordStatuses=ChangesPending&PageNumber=1&PageSize=25");
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace SFA.DAS.Commitments.Api.Client.UnitTests
 
             var queryString = _sut.GetQueryString(query);
 
-            queryString.Should().Be("");
+            queryString.Should().Be("?PageNumber=1&PageSize=25");
         }
     }
 }
