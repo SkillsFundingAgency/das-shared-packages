@@ -8,6 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
+using SFA.DAS.Commitments.Api.Types.DataLock;
+
 namespace SFA.DAS.Commitments.Api.Client
 {
     public class EmployerCommitmentApi : HttpClientBase, IEmployerCommitmentApi
@@ -150,6 +154,31 @@ namespace SFA.DAS.Commitments.Api.Client
             var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/customproviderpaymentpriority/";
 
             await _commitmentHelper.PutPaymentPriorityOrder(url, submission);
+        }
+
+        public async Task<IEnumerable<PriceHistory>> GetPriceHistory(long employerAccountId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}/prices";
+            var content = await GetAsync(url);
+            return JsonConvert.DeserializeObject<IEnumerable<PriceHistory>>(content);
+        }
+
+        public async Task<List<DataLockStatus>> GetDataLocks(long employerAccountId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}/datalocks";
+            return await GetData<List<DataLockStatus>>(url);
+        }
+
+        public async Task<DataLockSummary> GetDataLockSummary(long employerAccountId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}/datalocksummary";
+            return await GetData<DataLockSummary>(url);
+        }
+
+        public async Task PatchDataLocks(long employerAccountId, long apprenticeshipId, DataLocksTriageResolutionSubmission submission)
+        {
+            var url = $"{_configuration.BaseUrl}api/employer/{employerAccountId}/apprenticeships/{apprenticeshipId}/datalocks/resolve";
+            await PatchModel(url, submission);
         }
     }
 }

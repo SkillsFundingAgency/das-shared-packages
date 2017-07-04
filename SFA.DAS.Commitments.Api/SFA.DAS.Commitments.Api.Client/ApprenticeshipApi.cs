@@ -23,12 +23,12 @@ namespace SFA.DAS.Commitments.Api.Client
             _configuration = configuration;
         }
 
+        [Obsolete("Moved to provider / employer API")]
         public async Task<IEnumerable<PriceHistory>> GetPriceHistory(long apprenticeshipId)
         {
             var url = $"{_configuration.BaseUrl}api/apprenticeships/{apprenticeshipId}/prices";
             var content = await GetAsync(url);
             return JsonConvert.DeserializeObject<IEnumerable<PriceHistory>>(content);
         }
-
     }
 }

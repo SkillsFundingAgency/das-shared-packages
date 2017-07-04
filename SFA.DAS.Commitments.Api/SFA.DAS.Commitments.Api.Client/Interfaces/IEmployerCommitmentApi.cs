@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Commitments.Api.Types;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using SFA.DAS.Commitments.Api.Types.Commitment;
+using SFA.DAS.Commitments.Api.Types.DataLock;
 using SFA.DAS.Commitments.Api.Types.ProviderPayment;
 
 namespace SFA.DAS.Commitments.Api.Client.Interfaces
@@ -32,5 +33,11 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
 
         Task<IList<ProviderPaymentPriorityItem>> GetCustomProviderPaymentPriority(long employerAccountId);
         Task UpdateCustomProviderPaymentPriority(long employerAccountId, ProviderPaymentPrioritySubmission submission);
+
+        Task<IEnumerable<PriceHistory>> GetPriceHistory(long employerAccountId, long apprenticeshipId);
+
+        Task<List<DataLockStatus>> GetDataLocks(long employerAccountId, long apprenticeshipId);
+        Task<DataLockSummary> GetDataLockSummary(long employerAccountId, long apprenticeshipId);
+        Task PatchDataLocks(long employerAccountId, long apprenticeshipId, DataLocksTriageResolutionSubmission submission);
     }
 }
