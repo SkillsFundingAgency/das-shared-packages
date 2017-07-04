@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Commitments.Api.Types;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using SFA.DAS.Commitments.Api.Types.Commitment;
+using SFA.DAS.Commitments.Api.Types.DataLock;
 
 namespace SFA.DAS.Commitments.Api.Client.Interfaces
 {
@@ -29,5 +30,12 @@ namespace SFA.DAS.Commitments.Api.Client.Interfaces
         Task CreateApprenticeshipUpdate(long providerId, long apprenticeshipId, ApprenticeshipUpdateRequest apprenticeshipUpdateRequest);
         Task<ApprenticeshipUpdate> GetPendingApprenticeshipUpdate(long providerId, long apprenticeshipId);
         Task PatchApprenticeshipUpdate(long providerId, long apprenticeshipId, ApprenticeshipUpdateSubmission submission);
+
+        Task<IEnumerable<PriceHistory>> GetPriceHistory(long providerId, long apprenticeshipId);
+
+        Task<List<DataLockStatus>> GetDataLocks(long providerId, long apprenticeshipId);
+        Task<DataLockSummary> GetDataLockSummary(long providerId, long apprenticeshipId);
+        Task PatchDataLock(long providerId, long apprenticeshipId, long dataLockEventId, DataLockTriageSubmission triageSubmission);
+        Task PatchDataLocks(long providerId, long apprenticeshipId, DataLockTriageSubmission triageSubmission);
     }
 }

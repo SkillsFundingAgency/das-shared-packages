@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 using SFA.DAS.Commitments.Api.Client.Configuration;
 using SFA.DAS.Commitments.Api.Client.Interfaces;
 using SFA.DAS.Commitments.Api.Types;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using SFA.DAS.Commitments.Api.Types.Commitment;
+using SFA.DAS.Commitments.Api.Types.DataLock;
 
 namespace SFA.DAS.Commitments.Api.Client
 {
@@ -134,6 +137,37 @@ namespace SFA.DAS.Commitments.Api.Client
             var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/update";
 
             await _commitmentHelper.PatchApprenticeshipUpdate(url, submission);
+        }
+
+        public async Task<IEnumerable<PriceHistory>> GetPriceHistory(long providerId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/prices";
+            var content = await GetAsync(url);
+            return JsonConvert.DeserializeObject<IEnumerable<PriceHistory>>(content);
+        }
+
+        public async Task<List<DataLockStatus>> GetDataLocks(long providerId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/datalocks";
+            return await GetData<List<DataLockStatus>>(url);
+        }
+
+        public async Task<DataLockSummary> GetDataLockSummary(long providerId, long apprenticeshipId)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/datalocksummary";
+            return await GetData<DataLockSummary>(url);
+        }
+
+        public async Task PatchDataLock(long providerId, long apprenticeshipId, long dataLockEventId, DataLockTriageSubmission triageSubmission)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/datalocks/{dataLockEventId}";
+            await PatchModel(url, triageSubmission);
+        }
+
+        public async Task PatchDataLocks(long providerId, long apprenticeshipId, DataLockTriageSubmission triageSubmission)
+        {
+            var url = $"{_configuration.BaseUrl}api/provider/{providerId}/apprenticeships/{apprenticeshipId}/datalocks";
+            await PatchModel(url, triageSubmission);
         }
     }
 }

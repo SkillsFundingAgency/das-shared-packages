@@ -3,6 +3,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 namespace SFA.DAS.Commitments.Api.Client
 {
     public abstract class HttpClientBase
@@ -134,6 +136,18 @@ namespace SFA.DAS.Commitments.Api.Client
                 var response = await client.SendAsync(requestMessage);
                 response.EnsureSuccessStatusCode();
             }
+        }
+
+        protected async Task<T> GetData<T>(string url)
+        {
+            var content = await GetAsync(url);
+            return JsonConvert.DeserializeObject<T>(content);
+        }
+
+        protected async Task PatchModel<T>(string url, T obj)
+        {
+            var data = JsonConvert.SerializeObject(obj);
+            await PatchAsync(url, data);
         }
     }
 }
