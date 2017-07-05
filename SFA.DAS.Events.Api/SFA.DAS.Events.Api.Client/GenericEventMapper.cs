@@ -15,7 +15,6 @@ namespace SFA.DAS.Events.Api.Client
                 Payload =
                     JsonConvert.SerializeObject(source.Payload,
                         new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore}),
-                ResourceUri = source.ResourceUri,
                 ResourceId = source.ResourceId,
                 ResourceType = source.ResourceType
             };
@@ -28,7 +27,6 @@ namespace SFA.DAS.Events.Api.Client
                 Payload = JsonConvert.DeserializeObject<T>(source.Payload),
                 Id = source.Id,
                 CreatedOn = source.CreatedOn,
-                ResourceUri = source.ResourceUri,
                 ResourceId = source.ResourceId,
                 ResourceType = source.ResourceType
             };

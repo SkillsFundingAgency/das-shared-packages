@@ -120,25 +120,10 @@ namespace SFA.DAS.Events.Api.Client
             return await GetEvents<GenericEvent>(url);
         }
 
-        public async Task<List<GenericEvent>> GetGenericEventsByResourceUri(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
-        {
-            var dateString = BuildDateQuery(fromDate, toDate);
-
-            var url = $"{_configuration.BaseUrl}api/events/getByResourceUri?resourceUri={resourceUri}&{dateString}pageSize={pageSize}&pageNumber={pageNumber}";
-
-            return await GetEvents<GenericEvent>(url);
-        }
-
         public async Task<List<IGenericEvent<T>>> GetGenericEventsByResourceId<T>(string resourceType, string resourceId, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000,
             int pageNumber = 1)
         {
             var genericEvents = await GetGenericEventsByResourceId(resourceType, resourceId, fromDate, toDate, pageSize, pageNumber);
-            return genericEvents.Select(GenericEventMapper.ToTyped<T>).ToList();
-        }
-
-        public async Task<List<IGenericEvent<T>>> GetGenericEventsByResourceUri<T>(string resourceUri, DateTime? fromDate = null, DateTime? toDate = null, int pageSize = 1000, int pageNumber = 1)
-        {
-            var genericEvents = await GetGenericEventsByResourceUri(resourceUri, fromDate, toDate, pageSize, pageNumber);
             return genericEvents.Select(GenericEventMapper.ToTyped<T>).ToList();
         }
     }
