@@ -2,7 +2,7 @@
 {
     public interface IEventView
     {
-        long Id { get; set; }
+        long Id { get; }
 
         string Type { get; }
     }
