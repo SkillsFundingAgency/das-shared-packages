@@ -11,19 +11,6 @@ namespace SFA.DAS.Http.UnitTests.MessageHandlers
     public class WhenAddingDefaultHeaders
     {
         [Test]
-        public async Task ThenApiVersionHeaderShouldBeAdded()
-        {
-            var handler = new DefaultHeadersHandler { InnerHandler = new StubResponseHandler() };
-
-            var client = new HttpClient(handler);
-
-            var response = await client.GetAsync("http://localhost/test");
-
-            response.RequestMessage.Headers.Contains("api-version").Should().BeTrue();
-            response.RequestMessage.Headers.GetValues("api-version").Single().Should().Be("1");
-        }
-
-        [Test]
         public async Task ThenAcceptHeaderShouldBeAdded()
         {
             var handler = new DefaultHeadersHandler { InnerHandler = new StubResponseHandler() };

@@ -8,7 +8,6 @@ namespace SFA.DAS.Http.MessageHandlers
     {
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)
         {
-            message.Headers.Add("api-version", "1");
             message.Headers.Add("accept", "application/json");
 
             return await base.SendAsync(message, cancellationToken);
