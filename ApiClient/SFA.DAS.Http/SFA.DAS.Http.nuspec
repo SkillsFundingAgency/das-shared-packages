@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SFA.DAS.Http</id>
+    <version>1.0.0</version>
+    <authors>DAS</authors>
+    <owners>DAS</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides classes for Api connectivity</description>
+    <summary>Provides classes for Api connectivity</summary>
+    <releaseNotes />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="Newtonsoft.Json" version="10.0.3" />
+        <dependency id="Microsoft.IdentityModel.Clients.ActiveDirectory" version="3.14.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SFA.DAS.Http.dll" target="lib\net45\SFA.DAS.Http.dll" />
+  </files>
+</package>
