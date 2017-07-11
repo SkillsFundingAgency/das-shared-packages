@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Http", "SFA.DAS.SecureHttpClient\SFA.DAS.Http.csproj", "{0C939C1F-B833-4048-9B72-668359A6ED86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Http.UnitTests", "SFA.DAS.Http.UnitTests\SFA.DAS.Http.UnitTests.csproj", "{42582BF0-6ECE-4388-88DC-A6AFA17B4756}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Http", "SFA.DAS.Http\SFA.DAS.Http.csproj", "{0C939C1F-B833-4048-9B72-668359A6ED86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,6 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42582BF0-6ECE-4388-88DC-A6AFA17B4756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42582BF0-6ECE-4388-88DC-A6AFA17B4756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42582BF0-6ECE-4388-88DC-A6AFA17B4756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42582BF0-6ECE-4388-88DC-A6AFA17B4756}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C939C1F-B833-4048-9B72-668359A6ED86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C939C1F-B833-4048-9B72-668359A6ED86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C939C1F-B833-4048-9B72-668359A6ED86}.Release|Any CPU.ActiveCfg = Release|Any CPU
