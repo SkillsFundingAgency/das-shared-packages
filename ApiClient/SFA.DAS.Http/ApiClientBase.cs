@@ -15,7 +15,7 @@ namespace SFA.DAS.Http
             _queryStringHelper = new QueryStringHelper();
         }
 
-        protected async Task<string> GetAsync(string url)
+        protected async virtual Task<string> GetAsync(string url)
         {
             string content;
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.Http
             return content;
         }
 
-        protected async Task<string> GetAsync(string url, object data)
+        protected async virtual Task<string> GetAsync(string url, object data)
         {
             string content;
 
@@ -43,7 +43,7 @@ namespace SFA.DAS.Http
             return content;
         }
 
-        protected async Task<string> PostAsync(string url, string data)
+        protected async virtual Task<string> PostAsync(string url, string data)
         {
             string content;
 
@@ -59,7 +59,7 @@ namespace SFA.DAS.Http
             return content;
         }
 
-        protected async Task<string> PutAsync(string url, string data)
+        protected async virtual Task<string> PutAsync(string url, string data)
         {
             string content;
 
@@ -75,7 +75,7 @@ namespace SFA.DAS.Http
             return content;
         }
 
-        protected async Task<string> PatchAsync(string url, string data)
+        protected async virtual Task<string> PatchAsync(string url, string data)
         {
             string content;
 
@@ -91,7 +91,7 @@ namespace SFA.DAS.Http
             return content;
         }
 
-        protected async Task DeleteAsync(string url, string data)
+        protected async virtual Task DeleteAsync(string url, string data)
         {
             HttpRequestMessage requestMessage;
 
