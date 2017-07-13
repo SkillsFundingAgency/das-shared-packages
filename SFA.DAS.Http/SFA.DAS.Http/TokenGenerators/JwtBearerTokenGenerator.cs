@@ -6,7 +6,7 @@ namespace SFA.DAS.Http.TokenGenerators
     {
         private string _jwtToken;
 
-        public JwtBearerTokenGenerator(IApiClientConfiguration configuration)
+        public JwtBearerTokenGenerator(IJwtClientConfiguration configuration)
         {
             _jwtToken = configuration.ClientToken;
         }

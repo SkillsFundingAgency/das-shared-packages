@@ -50,9 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IJwtClientConfiguration.cs" />
     <Compile Include="TokenGenerators\AzureADBearerTokenGenerator.cs" />
     <Compile Include="HttpClientBuilder.cs" />
-    <Compile Include="IApiClientConfiguration.cs" />
+    <Compile Include="IAzureADClientConfiguration.cs" />
     <Compile Include="TokenGenerators\IGenerateBearerToken.cs" />
     <Compile Include="TokenGenerators\JwtBearerTokenGenerator.cs" />
     <Compile Include="QueryStringHelper.cs" />

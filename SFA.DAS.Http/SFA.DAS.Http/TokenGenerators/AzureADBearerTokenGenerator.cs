@@ -5,9 +5,9 @@ namespace SFA.DAS.Http.TokenGenerators
 {
     public class AzureADBearerTokenGenerator : IGenerateBearerToken
     {
-        IApiClientConfiguration _config;
+        IAzureADClientConfiguration _config;
 
-        public AzureADBearerTokenGenerator(IApiClientConfiguration configuration)
+        public AzureADBearerTokenGenerator(IAzureADClientConfiguration configuration)
         {
             _config = configuration;
         }
