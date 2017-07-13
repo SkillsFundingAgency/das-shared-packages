@@ -100,3 +100,7 @@ You are then able to use the [Authorize] attrbiute on any Controller Actions tha
 Provides a common interface to work with messaging sub-systems. Includes various implementations.
 
 See [messaging readme](Messaging/README.md)!
+
+## Http
+
+[link to README](SFA.DAS.Http/README.md)
