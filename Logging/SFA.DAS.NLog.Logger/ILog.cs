@@ -5,6 +5,8 @@ namespace SFA.DAS.NLog.Logger
 {
     public interface ILog
     {
+        string GetMappedDiagnosticsLogicalContext(string name);
+
         void Trace(string message);
         void Trace(string message, IDictionary<string, object> properties);
         void Trace(string message, ILogEntry logEntry);

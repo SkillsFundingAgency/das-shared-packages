@@ -23,6 +23,11 @@ namespace SFA.DAS.NLog.Logger
 
         public string ApplicationName { get; set; }
 
+        public string GetMappedDiagnosticsLogicalContext(string name)
+        {
+            return MappedDiagnosticsLogicalContext.Get(name);
+        }
+
         public void Trace(string message)
         {
             SendLog(message, LogLevel.Trace);
@@ -144,7 +149,15 @@ namespace SFA.DAS.NLog.Logger
 
         private IDictionary<string, object> BuildProperties(ILogEntry entry)
         {
-            if (entry == null) return null;
+            var properties = BuilPropertiesFromEntry(entry);
+            AddPropertiesFromContext(properties);
+            return properties;
+        }
+
+        private static Dictionary<string, object> BuilPropertiesFromEntry(ILogEntry entry)
+        {
+            if (entry == null)
+                return new Dictionary<string, object>();
 
             var entryProperties = entry.GetType().GetProperties();
             var properties = new Dictionary<string, object>(entryProperties.Length);
@@ -156,8 +169,13 @@ namespace SFA.DAS.NLog.Logger
 
                 properties.Add(name, value);
             }
-
             return properties;
+        }
+
+        private void AddPropertiesFromContext(Dictionary<string, object> properties)
+        {
+            var correlationId = MappedDiagnosticsLogicalContext.Get("CorrelationId");
+            if (!string.IsNullOrEmpty(correlationId)) properties.Add("CorrelationId", correlationId);
         }
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
