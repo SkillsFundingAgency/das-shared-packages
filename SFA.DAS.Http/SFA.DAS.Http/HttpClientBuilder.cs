@@ -28,6 +28,15 @@ namespace SFA.DAS.Http
             return this;
         }
 
+        public HttpClientBuilder WithHeaders(IGenerateRequestHeader requestHeader)
+        {
+            var newHandler = new RequestHeaderHandler(requestHeader);
+
+            AddHandlerToChain(newHandler);
+
+            return this;
+        }
+
         public HttpClientBuilder WithBearerAuthorisationHeader(IGenerateBearerToken tokenGenerator)
         {
             var newHandler = new SecurityMessageHandler(tokenGenerator);

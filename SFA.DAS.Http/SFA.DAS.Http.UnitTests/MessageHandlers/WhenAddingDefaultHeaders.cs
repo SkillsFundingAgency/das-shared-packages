@@ -21,6 +21,5 @@ namespace SFA.DAS.Http.UnitTests.MessageHandlers
 
             response.RequestMessage.Headers.Accept.Any(x => x.MediaType == "application/json").Should().BeTrue();
         }
-
     }
 }
