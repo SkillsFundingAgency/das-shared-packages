@@ -174,8 +174,11 @@ namespace SFA.DAS.NLog.Logger
 
         private void AddPropertiesFromContext(Dictionary<string, object> properties)
         {
-            var correlationId = MappedDiagnosticsLogicalContext.Get("CorrelationId");
-            if (!string.IsNullOrEmpty(correlationId)) properties.Add("CorrelationId", correlationId);
+            var correlationId = MappedDiagnosticsLogicalContext.Get(Constants.CorrelationId);
+            if (!string.IsNullOrEmpty(correlationId)) properties.Add(Constants.CorrelationId, correlationId);
+
+            var requestUri = MappedDiagnosticsLogicalContext.Get(Constants.RequestUri);
+            if (!string.IsNullOrEmpty(requestUri)) properties.Add(Constants.RequestUri, requestUri);
         }
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
