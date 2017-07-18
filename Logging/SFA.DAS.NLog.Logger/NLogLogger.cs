@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+
 using NLog;
 
 namespace SFA.DAS.NLog.Logger
@@ -22,11 +22,6 @@ namespace SFA.DAS.NLog.Logger
         }
 
         public string ApplicationName { get; set; }
-
-        public string GetMappedDiagnosticsLogicalContext(string name)
-        {
-            return MappedDiagnosticsLogicalContext.Get(name);
-        }
 
         public void Trace(string message)
         {
@@ -176,9 +171,6 @@ namespace SFA.DAS.NLog.Logger
         {
             var correlationId = MappedDiagnosticsLogicalContext.Get(Constants.CorrelationId);
             if (!string.IsNullOrEmpty(correlationId)) properties.Add(Constants.CorrelationId, correlationId);
-
-            var requestUri = MappedDiagnosticsLogicalContext.Get(Constants.RequestUri);
-            if (!string.IsNullOrEmpty(requestUri)) properties.Add(Constants.RequestUri, requestUri);
         }
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)

@@ -56,9 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageHandlers\FakeResponseHandler.cs" />
-    <Compile Include="MessageHandlers\IFakeLogHeaderGenerator.cs" />
     <Compile Include="MessageHandlers\StubResponseHandler.cs" />
-    <Compile Include="MessageHandlers\WhenAddingAHeader.cs" />
     <Compile Include="MessageHandlers\WhenAddingSecurityHeader.cs" />
     <Compile Include="MessageHandlers\WhenAddingDefaultHeaders.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

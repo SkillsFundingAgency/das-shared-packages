@@ -8,7 +8,7 @@ using NLog;
 
 namespace SFA.DAS.NLog.Logger.Web
 {
-    public class CorrelationIdMessageHandler : DelegatingHandler
+    public class CorrelationIdMessageHandler : System.Net.Http.DelegatingHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request, CancellationToken cancellationToken)
@@ -21,7 +21,7 @@ namespace SFA.DAS.NLog.Logger.Web
                 var values = request.Headers.GetValues(headerName).ToArray();
                 if (values.Any())
                     id = values.First();
-            }
+            }   
 
             MappedDiagnosticsLogicalContext.Set(headerName, id);
 

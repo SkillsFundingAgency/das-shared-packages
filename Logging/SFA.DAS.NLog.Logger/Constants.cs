@@ -3,6 +3,5 @@
     public static class Constants
     {
         public const string CorrelationId = "CorrelationId";
-        public const string RequestUri = "RequestUri";
     }
 }

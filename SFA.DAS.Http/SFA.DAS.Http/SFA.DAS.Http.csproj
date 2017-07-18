@@ -51,8 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IJwtClientConfiguration.cs" />
-    <Compile Include="MessageHandlers\IGenerateRequestHeader.cs" />
-    <Compile Include="MessageHandlers\RequestHeaderHandler.cs" />
     <Compile Include="TokenGenerators\AzureADBearerTokenGenerator.cs" />
     <Compile Include="HttpClientBuilder.cs" />
     <Compile Include="IAzureADClientConfiguration.cs" />

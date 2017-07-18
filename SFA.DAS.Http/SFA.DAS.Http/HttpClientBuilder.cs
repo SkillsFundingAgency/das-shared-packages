@@ -28,11 +28,10 @@ namespace SFA.DAS.Http
             return this;
         }
 
-        public HttpClientBuilder WithHeaders(IGenerateRequestHeader requestHeader)
-        {
-            var newHandler = new RequestHeaderHandler(requestHeader);
 
-            AddHandlerToChain(newHandler);
+        public HttpClientBuilder WithHandler(DelegatingHandler handler)
+        {
+            AddHandlerToChain(handler);
 
             return this;
         }
