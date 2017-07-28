@@ -28,6 +28,14 @@ namespace SFA.DAS.Http
             return this;
         }
 
+
+        public HttpClientBuilder WithHandler(DelegatingHandler handler)
+        {
+            AddHandlerToChain(handler);
+
+            return this;
+        }
+
         public HttpClientBuilder WithBearerAuthorisationHeader(IGenerateBearerToken tokenGenerator)
         {
             var newHandler = new SecurityMessageHandler(tokenGenerator);

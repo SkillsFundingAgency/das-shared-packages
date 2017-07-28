@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+
 using NLog;
 
 namespace SFA.DAS.NLog.Logger
@@ -144,7 +144,15 @@ namespace SFA.DAS.NLog.Logger
 
         private IDictionary<string, object> BuildProperties(ILogEntry entry)
         {
-            if (entry == null) return null;
+            var properties = BuilPropertiesFromEntry(entry);
+            AddPropertiesFromContext(properties);
+            return properties;
+        }
+
+        private static Dictionary<string, object> BuilPropertiesFromEntry(ILogEntry entry)
+        {
+            if (entry == null)
+                return new Dictionary<string, object>();
 
             var entryProperties = entry.GetType().GetProperties();
             var properties = new Dictionary<string, object>(entryProperties.Length);
@@ -156,8 +164,19 @@ namespace SFA.DAS.NLog.Logger
 
                 properties.Add(name, value);
             }
-
             return properties;
+        }
+
+        private void AddPropertiesFromContext(Dictionary<string, object> properties)
+        {
+            var requestCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameRequestCorrelationId);
+            var sessionCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameSessionCorrelationId);
+
+            if (!string.IsNullOrEmpty(requestCorrelationId))
+                properties.Add(Constants.HeaderNameRequestCorrelationId, requestCorrelationId);
+
+            if (!string.IsNullOrEmpty(sessionCorrelationId))
+                properties.Add(Constants.HeaderNameSessionCorrelationId, sessionCorrelationId);
         }
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
