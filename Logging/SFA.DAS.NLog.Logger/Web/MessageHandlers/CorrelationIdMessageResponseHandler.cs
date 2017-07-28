@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 using NLog;
 
-namespace SFA.DAS.NLog.Logger.Web
+namespace SFA.DAS.NLog.Logger.Web.MessageHandlers
 {
-    public class CorrelationIdMessageHandler : System.Net.Http.DelegatingHandler
+    public class CorrelationIdMessageResponseHandler : DelegatingHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var headerName = Constants.RequestCorrelationId;
+            var headerName = Constants.HeaderNameRequestCorrelationId;
             var id = $"{Guid.NewGuid()}";
 
             if (request.Headers.Contains(headerName))
