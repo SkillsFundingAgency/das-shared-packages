@@ -13,7 +13,7 @@ namespace SFA.DAS.NLog.Logger.Web
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var headerName = Constants.CorrelationId;
+            var headerName = Constants.RequestCorrelationId;
             var id = $"{Guid.NewGuid()}";
 
             if (request.Headers.Contains(headerName))

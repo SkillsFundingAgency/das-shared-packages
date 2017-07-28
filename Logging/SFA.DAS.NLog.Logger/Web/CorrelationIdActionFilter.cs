@@ -9,7 +9,7 @@ namespace SFA.DAS.NLog.Logger.Web
     {
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            MappedDiagnosticsLogicalContext.Set(Constants.CorrelationId, Guid.NewGuid());
+            MappedDiagnosticsLogicalContext.Set(Constants.RequestCorrelationId, Guid.NewGuid());
         }
 
         public void OnActionExecuted(ActionExecutedContext filterContext)

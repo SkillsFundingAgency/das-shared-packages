@@ -2,6 +2,7 @@
 {
     public static class Constants
     {
-        public const string CorrelationId = "CorrelationId";
+        public const string RequestCorrelationId = "RequestCorrelationId";
+        public const string SessionCorrelationId = "SessionCorrelationId";
     }
 }

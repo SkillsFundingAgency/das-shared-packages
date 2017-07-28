@@ -12,8 +12,8 @@ namespace SFA.DAS.NLog.Logger.Web.DelegatingHandler
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var id = MappedDiagnosticsLogicalContext.Get(Constants.CorrelationId);
-            request.Headers.Add(Constants.CorrelationId, id);
+            var id = MappedDiagnosticsLogicalContext.Get(Constants.RequestCorrelationId);
+            request.Headers.Add(Constants.RequestCorrelationId, id);
 
             return base.SendAsync(request, cancellationToken);
         }
