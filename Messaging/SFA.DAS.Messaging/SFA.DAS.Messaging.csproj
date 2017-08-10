@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\QueueAttribute.cs" />
     <Compile Include="EventingMessageReceiverPollingWrapper.cs" />
     <Compile Include="FileSystem\FileSystemMessage.cs" />
     <Compile Include="FileSystem\FileSystemMessageService.cs" />
