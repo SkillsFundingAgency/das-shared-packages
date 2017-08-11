@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B0F2744B-BE9A-4329-BE89-B7D17BFE8F53}</ProjectGuid>
+    <ProjectGuid>{C96E7515-28E2-434E-BDAA-468BC60AA442}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.Messaging</RootNamespace>
-    <AssemblyName>SFA.DAS.Messaging</AssemblyName>
+    <RootNamespace>SFA.DAS.CookieService</RootNamespace>
+    <AssemblyName>SFA.DAS.CookieService</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,13 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,21 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\QueueAttribute.cs" />
-    <Compile Include="EventingMessageReceiverPollingWrapper.cs" />
-    <Compile Include="FileSystem\FileSystemMessage.cs" />
-    <Compile Include="FileSystem\FileSystemMessageService.cs" />
-    <Compile Include="IEventingMessageReceiver.cs" />
-    <Compile Include="IMessagePublisher.cs" />
-    <Compile Include="IPollingMessageReceiver.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="MessageReceivedEventArgs.cs" />
-    <Compile Include="PollingToEventSettings.cs" />
+    <Compile Include="HttpCookieService.cs" />
+    <Compile Include="ICookieService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="SFA.DAS.Messaging.nuspec" />
+    <None Include="SFA.DAS.CookieService.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

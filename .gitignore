@@ -236,3 +236,5 @@ _Pvt_Extensions
 .fake/
 **/tools/**/*.*
 !**/tools/nuget/**/*.*
+SFA.DAS.CookieService/Tools/PhantomJS/tools/phantomjs/ChangeLog
+SFA.DAS.Learners/Tools/PhantomJS/tools/phantomjs/ChangeLog

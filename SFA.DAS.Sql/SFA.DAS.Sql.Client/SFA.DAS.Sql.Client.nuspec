@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>SFA.DAS.Sql.Client</id>
+        <version>1.0.0</version>
+        <authors>Das</authors>
+        <owners>Das</owners>
+        <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>SQL Server Client classes</description>
+        <summary>SQL Server Client classes</summary>
+        <dependencies>
+            <group targetFramework=".NETFramework4.5">
+              <dependency id="NLog" version="4.3.7" />
+              <dependency id="Polly" version="5.1.0" />
+              <dependency id="SFA.DAS.NLog.Logger" version="1.0.0.26805" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\Release\SFA.DAS.Sql.Client.dll" target="lib\net45\SFA.DAS.Sql.Client.dll" />
+    </files>
+</package>

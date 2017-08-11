@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+
 using NLog;
 
 namespace SFA.DAS.NLog.Logger
 {
-    public sealed class NLogLogger : ILog
+    public class NLogLogger : ILog
     {
         private readonly IRequestContext _context;
-        private readonly string _loggerType;
+        private readonly IDictionary<string, object> _properties;
         private readonly string _version;
+        private readonly string _loggerType;
 
-        public NLogLogger(Type loggerType = null, IRequestContext context = null)
+        public NLogLogger(Type loggerType = null, IRequestContext context = null, IDictionary<string, object> properties = null)
         {
             _loggerType = loggerType?.ToString() ?? "DefaultLogger";
             _context = context;
-            _version = GetVersion(loggerType ?? GetType());
+            _properties = properties;
+            _version = GetVersion(loggerType);
         }
 
         public string ApplicationName { get; set; }
@@ -128,6 +130,8 @@ namespace SFA.DAS.NLog.Logger
 
         private string GetVersion(Type callingType)
         {
+            if (callingType == null) return null;
+
             var assembly = callingType.Assembly;
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             return fileVersionInfo.ProductVersion;
@@ -140,7 +144,15 @@ namespace SFA.DAS.NLog.Logger
 
         private IDictionary<string, object> BuildProperties(ILogEntry entry)
         {
-            if (entry == null) return null;
+            var properties = BuilPropertiesFromEntry(entry);
+            AddPropertiesFromContext(properties);
+            return properties;
+        }
+
+        private static Dictionary<string, object> BuilPropertiesFromEntry(ILogEntry entry)
+        {
+            if (entry == null)
+                return new Dictionary<string, object>();
 
             var entryProperties = entry.GetType().GetProperties();
             var properties = new Dictionary<string, object>(entryProperties.Length);
@@ -152,21 +164,52 @@ namespace SFA.DAS.NLog.Logger
 
                 properties.Add(name, value);
             }
-
             return properties;
+        }
+
+        private void AddPropertiesFromContext(Dictionary<string, object> properties)
+        {
+            var requestCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameRequestCorrelationId);
+            var sessionCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameSessionCorrelationId);
+
+            if (!string.IsNullOrEmpty(requestCorrelationId))
+                properties.Add(Constants.HeaderNameRequestCorrelationId, requestCorrelationId);
+
+            if (!string.IsNullOrEmpty(sessionCorrelationId))
+                properties.Add(Constants.HeaderNameSessionCorrelationId, sessionCorrelationId);
         }
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
         {
             var propertiesLocal = properties ?? new Dictionary<string, object>();
 
+            foreach (var property in _properties ?? new Dictionary<string, object>())
+            {
+                if (!propertiesLocal.ContainsKey(property.Key))
+                {
+                    propertiesLocal.Add(property);
+                }
+            }
+
             if (_context != null)
                 propertiesLocal.Add("RequestCtx", _context);
 
-            propertiesLocal.Add("LoggerType", _loggerType);
-            propertiesLocal.Add("Version", _version);
-            propertiesLocal.Add("LogTimestamp", DateTime.UtcNow.ToString("o"));
-            if (!string.IsNullOrEmpty(ApplicationName))
+            if (!propertiesLocal.ContainsKey("LoggerType"))
+            {
+                propertiesLocal.Add("LoggerType", _loggerType);
+            }
+
+            if (!propertiesLocal.ContainsKey("Version"))
+            {
+                propertiesLocal.Add("Version", _version);
+            }
+
+            if (!propertiesLocal.ContainsKey("LogTimestamp"))
+            {
+                propertiesLocal.Add("LogTimestamp", DateTime.UtcNow.ToString("o"));
+            }
+
+            if (!propertiesLocal.ContainsKey("app_Name") && !string.IsNullOrEmpty(ApplicationName))
             {
                 propertiesLocal.Add("app_Name", ApplicationName);
             }
