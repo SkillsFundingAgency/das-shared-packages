@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Messaging
 {
-    interface IMessageProcessor
+    public interface IMessageProcessor
     {
         Task RunAsync(CancellationToken cancellationToken);
     }
