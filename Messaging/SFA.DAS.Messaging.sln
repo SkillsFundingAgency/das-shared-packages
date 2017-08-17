@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubSubSampleGui", "PubSubSa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.AzureStorageQueue", "SFA.DAS.Messaging.AzureStorageQueue\SFA.DAS.Messaging.AzureStorageQueue.csproj", "{95699E7A-2024-43FD-A27E-20EE3E15E515}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.Tests", "SFA.DAS.Messaging.Tests\SFA.DAS.Messaging.Tests.csproj", "{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{95699E7A-2024-43FD-A27E-20EE3E15E515}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95699E7A-2024-43FD-A27E-20EE3E15E515}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95699E7A-2024-43FD-A27E-20EE3E15E515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +88,6 @@ Global
 		{41E0AA5B-3231-4080-99BA-725E30711788} = {D6739033-3147-445F-B287-18789BD28AF3}
 		{F8D90401-F19A-4BF0-B1B8-38E641B1D994} = {AA04D4A9-7217-4E88-B933-36E9C1A2E08F}
 		{7AA08F8D-9915-4498-B7CB-6771F8D2D858} = {AA04D4A9-7217-4E88-B933-36E9C1A2E08F}
+		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E} = {D6739033-3147-445F-B287-18789BD28AF3}
 	EndGlobalSection
 EndGlobal

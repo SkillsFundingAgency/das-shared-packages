@@ -39,7 +39,7 @@ namespace SFA.DAS.Messaging.FileSystem
             }
         }
 
-        public async Task<Message<T>> ReceiveAsAsync<T>() where T : new()
+        public async Task<IMessage<T>> ReceiveAsAsync<T>() where T : new()
         {
             var nextFile = GetAvailableMessages().FirstOrDefault();
             if (nextFile == null)
@@ -49,7 +49,7 @@ namespace SFA.DAS.Messaging.FileSystem
 
             return await FileSystemMessage<T>.Lock(nextFile);
         }
-        public async Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
+        public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
         {
             var availableMessageFiles = GetAvailableMessages().Take(batchSize).ToArray();
             if (!availableMessageFiles.Any())

@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B0F2744B-BE9A-4329-BE89-B7D17BFE8F53}</ProjectGuid>
+    <ProjectGuid>{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.Messaging</RootNamespace>
-    <AssemblyName>SFA.DAS.Messaging</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>SFA.DAS.Messaging.Tests</RootNamespace>
+    <AssemblyName>SFA.DAS.Messaging.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,12 +30,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Moq, Version=4.5.10.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.5.10\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SFA.DAS.NLog.Logger, Version=1.0.0.37051, Culture=neutral, processorArchitecture=MSIL">
@@ -43,7 +51,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -53,24 +60,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\QueueAttribute.cs" />
-    <Compile Include="EventingMessageReceiverPollingWrapper.cs" />
-    <Compile Include="FileSystem\FileSystemMessage.cs" />
-    <Compile Include="FileSystem\FileSystemMessageService.cs" />
-    <Compile Include="IEventingMessageReceiver.cs" />
-    <Compile Include="IMessage.cs" />
-    <Compile Include="IMessageProcessor.cs" />
-    <Compile Include="IMessagePublisher.cs" />
-    <Compile Include="IPollingMessageReceiver.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="MessageProcessor.cs" />
-    <Compile Include="MessageReceivedEventArgs.cs" />
-    <Compile Include="PollingToEventSettings.cs" />
+    <Compile Include="MessageProcessorTests\WhenAMessageIsReceived.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="SFA.DAS.Messaging.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Messaging\SFA.DAS.Messaging.csproj">
+      <Project>{B0F2744B-BE9A-4329-BE89-B7D17BFE8F53}</Project>
+      <Name>SFA.DAS.Messaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

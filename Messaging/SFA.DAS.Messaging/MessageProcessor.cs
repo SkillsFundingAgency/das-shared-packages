@@ -10,7 +10,7 @@ namespace SFA.DAS.Messaging
         private readonly IPollingMessageReceiver _pollingMessageReceiver;
         protected readonly ILog Log;
 
-        internal MessageProcessor(IPollingMessageReceiver pollingMessageReceiver, ILog log)
+        protected MessageProcessor(IPollingMessageReceiver pollingMessageReceiver, ILog log)
         {
             _pollingMessageReceiver = pollingMessageReceiver;
             Log = log;
@@ -50,7 +50,7 @@ namespace SFA.DAS.Messaging
 
         protected abstract Task ProcessMessage(T messageContent);
 
-        protected virtual async Task OnError(Message<T> message)
+        protected virtual async Task OnError(IMessage<T> message)
         {
             
         }
