@@ -34,6 +34,14 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SFA.DAS.NLog.Logger, Version=1.0.0.37051, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.NLog.Logger.1.0.0.37051\lib\net45\SFA.DAS.NLog.Logger.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -50,9 +58,11 @@
     <Compile Include="FileSystem\FileSystemMessage.cs" />
     <Compile Include="FileSystem\FileSystemMessageService.cs" />
     <Compile Include="IEventingMessageReceiver.cs" />
+    <Compile Include="IMessageProcessor.cs" />
     <Compile Include="IMessagePublisher.cs" />
     <Compile Include="IPollingMessageReceiver.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="PollingToEventSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
