@@ -29,7 +29,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             await client.SendAsync(brokeredMessage);
         }
 
-        public async Task<Message<T>> ReceiveAsAsync<T>() where T : new()
+        public async Task<IMessage<T>> ReceiveAsAsync<T>() where T : new()
         {
             var client = QueueClient.CreateFromConnectionString(_connectionString, !string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name);
             var brokeredMessage = await client.ReceiveAsync();
@@ -40,7 +40,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
             return new AzureServiceBusMessage<T>(brokeredMessage);
         }
-        public async Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
+        public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
         {
             var client = QueueClient.CreateFromConnectionString(_connectionString, !string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name);
             var batch = await client.ReceiveBatchAsync(batchSize);
