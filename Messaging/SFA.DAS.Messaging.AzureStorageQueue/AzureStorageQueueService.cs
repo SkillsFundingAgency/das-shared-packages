@@ -26,7 +26,7 @@ namespace SFA.DAS.Messaging.AzureStorageQueue
             await queue.AddMessageAsync(new CloudQueueMessage(content));
         }
 
-        public async Task<Message<T>> ReceiveAsAsync<T>() where T : new()
+        public async Task<IMessage<T>> ReceiveAsAsync<T>() where T : new()
         {
             var queue = GetQueue();
             var message = await queue.GetMessageAsync();
@@ -37,7 +37,7 @@ namespace SFA.DAS.Messaging.AzureStorageQueue
 
             return new AzureStorageQueueMessage<T>(message, queue);
         }
-        public async Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
+        public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
         {
             var queue = GetQueue();
             var batch = await queue.GetMessagesAsync(batchSize);

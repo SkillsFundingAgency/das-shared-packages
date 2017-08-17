@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Messaging
 {
-    public abstract class Message<T>
+    public abstract class Message<T> : IMessage<T>
     {
         protected Message(T content)
         {

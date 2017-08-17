@@ -5,7 +5,7 @@ namespace SFA.DAS.Messaging
 {
     public interface IPollingMessageReceiver
     {
-        Task<Message<T>> ReceiveAsAsync<T>() where T : new();
-        Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new();
+        Task<IMessage<T>> ReceiveAsAsync<T>() where T : new();
+        Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new();
     }
 }
