@@ -78,7 +78,7 @@
       <Name>SFA.DAS.Messaging.AzureServiceBus</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Messaging.AzureStorageQueue\SFA.DAS.Messaging.AzureStorageQueue.csproj">
-      <Project>{95699E7A-2024-43FD-A27E-20EE3E15E515}</Project>
+      <Project>{95699e7a-2024-43fd-a27e-20ee3e15e515}</Project>
       <Name>SFA.DAS.Messaging.AzureStorageQueue</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Messaging.Syndication.SqlServer\SFA.DAS.Messaging.Syndication.SqlServer.csproj">

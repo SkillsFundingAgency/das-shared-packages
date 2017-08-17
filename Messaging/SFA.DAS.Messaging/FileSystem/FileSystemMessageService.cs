@@ -10,14 +10,12 @@ namespace SFA.DAS.Messaging.FileSystem
     public class FileSystemMessageService : IMessagePublisher, IPollingMessageReceiver
     {
         private readonly string _storageDirectory;
+        private readonly string _queueName;
 
-        public FileSystemMessageService(string storageDirectory)
+        public FileSystemMessageService(string storageDirectory, string queueName = "")
         {
             _storageDirectory = storageDirectory;
-            if (!Directory.Exists(_storageDirectory))
-            {
-                Directory.CreateDirectory(_storageDirectory);
-            }
+            _queueName = queueName;
         }
 
 
@@ -25,9 +23,10 @@ namespace SFA.DAS.Messaging.FileSystem
         {
             var json = JsonConvert.SerializeObject(message);
 
-            if (!Directory.Exists(_storageDirectory))
+            var directoryName = Path.Combine(_storageDirectory, !string.IsNullOrEmpty(_queueName) ? _queueName : message.GetType().Name);
+            if (!Directory.Exists(directoryName))
             {
-                Directory.CreateDirectory(_storageDirectory);
+                Directory.CreateDirectory(directoryName);
             }
 
             var path = Path.Combine(_storageDirectory, Guid.NewGuid() + ".json");
@@ -41,7 +40,7 @@ namespace SFA.DAS.Messaging.FileSystem
 
         public async Task<Message<T>> ReceiveAsAsync<T>() where T : new()
         {
-            var nextFile = GetAvailableMessages().FirstOrDefault();
+            var nextFile = GetAvailableMessages(!string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name).FirstOrDefault();
             if (nextFile == null)
             {
                 return null;
@@ -49,9 +48,10 @@ namespace SFA.DAS.Messaging.FileSystem
 
             return await FileSystemMessage<T>.Lock(nextFile);
         }
+
         public async Task<IEnumerable<Message<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
         {
-            var availableMessageFiles = GetAvailableMessages().Take(batchSize).ToArray();
+            var availableMessageFiles = GetAvailableMessages(!string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name).Take(batchSize).ToArray();
             if (!availableMessageFiles.Any())
             {
                 return new Message<T>[0];
@@ -66,9 +66,9 @@ namespace SFA.DAS.Messaging.FileSystem
         }
 
 
-        private IEnumerable<FileInfo> GetAvailableMessages()
+        private IEnumerable<FileInfo> GetAvailableMessages(string messagePath)
         {
-            var directory = new DirectoryInfo(_storageDirectory);
+            var directory = new DirectoryInfo(Path.Combine(_storageDirectory, messagePath));
             if (!directory.Exists)
             {
                 return new FileInfo[0];
@@ -80,5 +80,6 @@ namespace SFA.DAS.Messaging.FileSystem
                 .Where(jf => !lockFiles.Any(lf => lf.Name.StartsWith(jf.Name)))
                 .OrderByDescending(jf => jf.LastWriteTimeUtc);
         }
+        
     }
 }
