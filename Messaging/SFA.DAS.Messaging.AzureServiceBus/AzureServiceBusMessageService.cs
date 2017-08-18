@@ -11,7 +11,8 @@ namespace SFA.DAS.Messaging.AzureServiceBus
         private readonly string _connectionString;
         private readonly string _queueName;
 
-        public AzureServiceBusMessageService(string connectionString, string queueName)
+
+        public AzureServiceBusMessageService(string connectionString, string queueName = "")
         {
             _connectionString = connectionString;
             _queueName = queueName;
@@ -19,7 +20,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
         public async Task PublishAsync(object message)
         {
-            var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
+            var client = QueueClient.CreateFromConnectionString(_connectionString, !string.IsNullOrEmpty(_queueName) ? _queueName : message.GetType().Name);
             var brokeredMessage = new BrokeredMessage(message)
             {
                 MessageId = Guid.NewGuid().ToString()
@@ -30,7 +31,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
         public async Task<IMessage<T>> ReceiveAsAsync<T>() where T : new()
         {
-            var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
+            var client = QueueClient.CreateFromConnectionString(_connectionString, !string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name);
             var brokeredMessage = await client.ReceiveAsync();
             if (brokeredMessage == null)
             {
@@ -41,9 +42,10 @@ namespace SFA.DAS.Messaging.AzureServiceBus
         }
         public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
         {
-            var client = QueueClient.CreateFromConnectionString(_connectionString, _queueName);
+            var client = QueueClient.CreateFromConnectionString(_connectionString, !string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name);
             var batch = await client.ReceiveBatchAsync(batchSize);
             return batch.Select(m => new AzureServiceBusMessage<T>(m));
         }
+        
     }
 }
