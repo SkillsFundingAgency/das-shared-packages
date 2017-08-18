@@ -29,7 +29,7 @@ namespace SFA.DAS.Messaging.FileSystem
                 Directory.CreateDirectory(directoryName);
             }
 
-            var path = Path.Combine(_storageDirectory, Guid.NewGuid() + ".json");
+            var path = Path.Combine(directoryName, Guid.NewGuid() + ".json");
             using (var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write))
             using (var writer = new StreamWriter(stream))
             {
