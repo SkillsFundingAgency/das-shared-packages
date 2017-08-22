@@ -238,3 +238,4 @@ _Pvt_Extensions
 !**/tools/nuget/**/*.*
 SFA.DAS.CookieService/Tools/PhantomJS/tools/phantomjs/ChangeLog
 SFA.DAS.Learners/Tools/PhantomJS/tools/phantomjs/ChangeLog
+Messaging/SFA.DAS.Messaging.v3.ncrunchsolution
