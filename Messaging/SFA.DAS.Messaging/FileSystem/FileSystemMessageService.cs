@@ -43,6 +43,7 @@ namespace SFA.DAS.Messaging.FileSystem
             var nextFile = GetAvailableMessages(!string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name).FirstOrDefault();
             if (nextFile == null)
             {
+                await Task.Delay(5000);
                 return null;
             }
 
