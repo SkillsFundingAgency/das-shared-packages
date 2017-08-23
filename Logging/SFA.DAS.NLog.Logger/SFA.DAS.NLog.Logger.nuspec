@@ -13,6 +13,7 @@
         <dependencies>
             <group targetFramework=".NETFramework4.5">
               <dependency id="NLog" version="4.3.7" />
+              <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />
             </group>
         </dependencies>
     </metadata>
