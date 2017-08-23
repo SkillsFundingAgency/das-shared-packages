@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Web\SessionIdActionFilter.cs" />
     <Compile Include="Web\CorrelationIdActionFilter.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="ILogEntry.cs" />
