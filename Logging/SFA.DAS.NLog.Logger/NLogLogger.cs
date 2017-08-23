@@ -145,7 +145,6 @@ namespace SFA.DAS.NLog.Logger
         private IDictionary<string, object> BuildProperties(ILogEntry entry)
         {
             var properties = BuilPropertiesFromEntry(entry);
-            AddPropertiesFromContext(properties);
             return properties;
         }
 
@@ -167,7 +166,7 @@ namespace SFA.DAS.NLog.Logger
             return properties;
         }
 
-        private void AddPropertiesFromContext(Dictionary<string, object> properties)
+        private void AddPropertiesFromContext(IDictionary<string, object> properties)
         {
             var requestCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameRequestCorrelationId);
             var sessionCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameSessionCorrelationId);
@@ -182,6 +181,7 @@ namespace SFA.DAS.NLog.Logger
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
         {
             var propertiesLocal = properties ?? new Dictionary<string, object>();
+            AddPropertiesFromContext(propertiesLocal);
 
             foreach (var property in _properties ?? new Dictionary<string, object>())
             {
