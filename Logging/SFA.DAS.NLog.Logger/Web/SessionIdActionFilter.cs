@@ -6,6 +6,10 @@ using NLog;
 
 namespace SFA.DAS.NLog.Logger.Web
 {
+    /// <summary>
+    /// Setting session id to the logger context from either the session cookie or creating a new session cookie
+    /// Use in to GlobalFilterCollection in MVC application
+    /// </summary>
     public class SessionIdActionFilter : IActionFilter
     {
         private readonly HttpContext _httpContext;

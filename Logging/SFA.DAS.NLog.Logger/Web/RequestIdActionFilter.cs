@@ -5,7 +5,11 @@ using NLog;
 
 namespace SFA.DAS.NLog.Logger.Web
 {
-    public class CorrelationIdActionFilter : IActionFilter
+    /// <summary>
+    /// Setting new request id to the logger context
+    /// Use in to GlobalFilterCollection in MVC application
+    /// </summary>
+    public class RequestIdActionFilter : IActionFilter
     {
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
