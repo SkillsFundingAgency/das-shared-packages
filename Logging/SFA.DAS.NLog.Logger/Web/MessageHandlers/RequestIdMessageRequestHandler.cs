@@ -6,9 +6,12 @@ using NLog;
 
 namespace SFA.DAS.NLog.Logger.Web.MessageHandlers
 {
-    public class CorrelationIdMessageRequestHandler : DelegatingHandler
+    /// <summary>
+    /// DelegatingHandler that is adding (web app) request id from NLog context to request header
+    /// </summary>
+    public class RequestIdMessageRequestHandler : DelegatingHandler
     {
-        protected CorrelationIdMessageRequestHandler(HttpMessageHandler innerHandler) : base(innerHandler) {}
+        protected RequestIdMessageRequestHandler(HttpMessageHandler innerHandler) : base(innerHandler) {}
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
