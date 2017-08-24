@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SFA.DAS.Messaging.Attributes;
 
 namespace SFA.DAS.Messaging.FileSystem
 {
@@ -21,9 +22,18 @@ namespace SFA.DAS.Messaging.FileSystem
 
         public async Task PublishAsync(object message)
         {
+            var queueNameAttributeValue = message.GetType()
+                                            .CustomAttributes.FirstOrDefault(c => c.AttributeType == typeof(QueueNameAttribute))
+                                            ?.ConstructorArguments.FirstOrDefault().Value;
+            var queueName = message.GetType().Name;
+            if (queueNameAttributeValue != null)
+            {
+                queueName = queueNameAttributeValue.ToString();
+            }
+
             var json = JsonConvert.SerializeObject(message);
 
-            var directoryName = Path.Combine(_storageDirectory, !string.IsNullOrEmpty(_queueName) ? _queueName : message.GetType().Name);
+            var directoryName = Path.Combine(_storageDirectory, !string.IsNullOrEmpty(_queueName) ? _queueName : queueName);
             if (!Directory.Exists(directoryName))
             {
                 Directory.CreateDirectory(directoryName);
@@ -40,7 +50,9 @@ namespace SFA.DAS.Messaging.FileSystem
 
         public async Task<IMessage<T>> ReceiveAsAsync<T>() where T : new()
         {
-            var nextFile = GetAvailableMessages(!string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name).FirstOrDefault();
+            var queueName = GetQueueName<T>();
+
+            var nextFile = GetAvailableMessages(!string.IsNullOrEmpty(_queueName) ? _queueName : queueName).FirstOrDefault();
             if (nextFile == null)
             {
                 await Task.Delay(5000);
@@ -52,7 +64,9 @@ namespace SFA.DAS.Messaging.FileSystem
 
         public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
         {
-            var availableMessageFiles = GetAvailableMessages(!string.IsNullOrEmpty(_queueName) ? _queueName : typeof(T).Name).Take(batchSize).ToArray();
+            var queueName = GetQueueName<T>();
+
+            var availableMessageFiles = GetAvailableMessages(!string.IsNullOrEmpty(_queueName) ? _queueName : queueName).Take(batchSize).ToArray();
             if (!availableMessageFiles.Any())
             {
                 return new Message<T>[0];
@@ -81,6 +95,18 @@ namespace SFA.DAS.Messaging.FileSystem
                 .Where(jf => !lockFiles.Any(lf => lf.Name.StartsWith(jf.Name)))
                 .OrderByDescending(jf => jf.LastWriteTimeUtc);
         }
-        
+        private static string GetQueueName<T>() where T : new()
+        {
+            var queueNameAttributeValue =
+                typeof(T).CustomAttributes.FirstOrDefault(c => c.AttributeType == typeof(QueueNameAttribute))
+                    ?.ConstructorArguments.FirstOrDefault().Value;
+
+            var queueName = typeof(T).Name;
+            if (queueNameAttributeValue != null)
+            {
+                queueName = queueNameAttributeValue.ToString();
+            }
+            return queueName;
+        }
     }
 }
