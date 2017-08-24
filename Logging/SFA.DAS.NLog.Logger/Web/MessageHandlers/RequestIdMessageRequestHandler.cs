@@ -11,7 +11,11 @@ namespace SFA.DAS.NLog.Logger.Web.MessageHandlers
     /// </summary>
     public class RequestIdMessageRequestHandler : DelegatingHandler
     {
-        protected RequestIdMessageRequestHandler(HttpMessageHandler innerHandler) : base(innerHandler) {}
+        public RequestIdMessageRequestHandler()
+        {
+        }
+
+        public RequestIdMessageRequestHandler(HttpMessageHandler innerHandler) : base(innerHandler) {}
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
