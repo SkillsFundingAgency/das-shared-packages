@@ -15,17 +15,15 @@ namespace SFA.DAS.NLog.Logger.Web
     {
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            var id = $"{Guid.NewGuid()}";
+            IEnumerable<string> headers;
 
-            IEnumerable<string> list;
-
-            if (actionContext.Request.Headers.TryGetValues(Constants.HeaderNameSessionCorrelationId, out list))
+            if (actionContext.Request.Headers.TryGetValues(Constants.HeaderNameSessionCorrelationId, out headers))
             {
-                var value = list.FirstOrDefault();
-                if (value != null) id = value;
+                var value = headers.FirstOrDefault();
+                if (value != null)
+                    MappedDiagnosticsLogicalContext.Set(Constants.HeaderNameSessionCorrelationId, value);
             }
 
-            MappedDiagnosticsLogicalContext.Set(Constants.HeaderNameSessionCorrelationId, id);
 
             base.OnActionExecuting(actionContext);
         }
