@@ -2,6 +2,6 @@
 {
     public interface IUlnValidator
     {
-        bool Validate(long uln);
+        UlnValidationResult Validate(string uln);
     }
 }

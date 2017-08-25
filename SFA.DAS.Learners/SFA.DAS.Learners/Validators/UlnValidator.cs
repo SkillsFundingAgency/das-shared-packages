@@ -1,24 +1,41 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SFA.DAS.Learners.Validators
 {
     public class UlnValidator : IUlnValidator
     {
-        public bool Validate(long uln)
+        public UlnValidationResult Validate(string uln)
         {
-            if (uln < 0)
+            if (string.IsNullOrEmpty(uln))
             {
-                return false;
+                return UlnValidationResult.IsEmptyUlnNumber;
             }
 
-            if (uln.ToString().Length != 10)
+            var regex = new Regex("^[1-9]{1}[0-9]{9}$");
+            if (!regex.IsMatch(uln))
             {
-                return false;
+                return UlnValidationResult.IsInValidTenDigitUlnNumber;
             }
 
-            var ulnCheckArray = uln.ToString()
-                                    .ToCharArray()
-                                    .Select(c => int.Parse(c.ToString()))
+            var ulnNumber = long.Parse(uln);
+            if (ulnNumber < 0)
+            {
+                return UlnValidationResult.IsInValidTenDigitUlnNumber;
+            }
+
+            if(!IsValidCheckSum(uln))
+            {
+                return UlnValidationResult.IsInvalidUln;
+            }
+
+            return UlnValidationResult.Success;
+        }
+
+        private bool IsValidCheckSum(string uln)
+        {
+            var ulnCheckArray = uln.ToCharArray()
+                                    .Select(c => long.Parse(c.ToString()))
                                     .ToList();
 
             var multiplier = 10;
