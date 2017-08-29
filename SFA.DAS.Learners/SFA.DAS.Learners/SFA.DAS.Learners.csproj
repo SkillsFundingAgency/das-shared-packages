@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validators\IUlnValidator.cs" />
+    <Compile Include="Validators\UlnValidationResult.cs" />
     <Compile Include="Validators\UlnValidator.cs" />
   </ItemGroup>
   <ItemGroup />
