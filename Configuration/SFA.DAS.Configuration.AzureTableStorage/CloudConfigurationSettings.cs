@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.Azure;
 using Microsoft.WindowsAzure;
 
 namespace SFA.DAS.Configuration.AzureTableStorage

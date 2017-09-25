@@ -42,9 +42,8 @@
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Storage, Version=4.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.4.3.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
@@ -55,6 +54,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
@@ -70,10 +70,16 @@
   <ItemGroup>
     <Compile Include="AzureTableStorageConfigurationRepository.cs" />
     <Compile Include="CloudConfigurationSettings.cs" />
+    <Compile Include="Environment\ConfigurationInfo.cs" />
     <Compile Include="ConfigurationItem.cs" />
+    <Compile Include="Environment\IConfigurationInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Configuration.FileStorage\SFA.DAS.Configuration.FileStorage.csproj">
+      <Project>{6DF8D733-71BF-4652-8294-CE5AF2AC73DF}</Project>
+      <Name>SFA.DAS.Configuration.FileStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Configuration\SFA.DAS.Configuration.csproj">
       <Project>{01489492-DC61-4F97-8047-1A8BC6CC399B}</Project>
       <Name>SFA.DAS.Configuration</Name>
