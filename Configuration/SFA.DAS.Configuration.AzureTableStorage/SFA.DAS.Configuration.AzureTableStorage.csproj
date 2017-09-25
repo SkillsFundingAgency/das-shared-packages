@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureTableStorageConfigurationRepository.cs" />
+    <Compile Include="CloudConfigurationSettings.cs" />
     <Compile Include="ConfigurationItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
