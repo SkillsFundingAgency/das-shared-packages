@@ -86,7 +86,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleRequestContext.cs" />
+    <Compile Include="BaseRequestContext.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="WebRequestContext.cs" />
     <Compile Include="Web\SessionIdHttpActionFilter.cs" />
     <Compile Include="Web\RequestIdHttpActionFilter.cs" />
     <Compile Include="Web\MessageHandlers\SessionIdMessageRequestHandler.cs" />
