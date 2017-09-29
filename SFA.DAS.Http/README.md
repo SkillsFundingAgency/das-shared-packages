@@ -52,6 +52,9 @@ This class builds a HttpClient with specified configuration:
 ### `WithDefaultHeaders()`
 Adds default headers such as Accept header.
 
+### `WithHandler(DelegatingHandler)`
+Adds a handler that inherits from _System.Net.Http._`DelegatingHandler`
+
 ### `WithBearerTokenHeader(IGenerateBearerToken)`
 Adds a Bearer header with the value provided by the implementation of `IGenerateBearerToken` interface that is passed in. Currently two generators are provided:
 * `JwtBearerTokenGenerator`

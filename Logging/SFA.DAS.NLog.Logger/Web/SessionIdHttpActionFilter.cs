@@ -24,7 +24,6 @@ namespace SFA.DAS.NLog.Logger.Web
                     MappedDiagnosticsLogicalContext.Set(Constants.HeaderNameSessionCorrelationId, value);
             }
 
-
             base.OnActionExecuting(actionContext);
         }
     }
