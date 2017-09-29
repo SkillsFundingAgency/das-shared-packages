@@ -5,5 +5,6 @@ namespace SFA.DAS.NLog.Logger
     {
         string Url { get; }
         string IpAddress { get; }
+        string ApplicationName { get; }
     }
 }
