@@ -9,11 +9,12 @@
       
         public HashingService(string allowedCharacters, string hashstring)
         {
-            if (string.IsNullOrEmpty(allowedCharacters) || string.IsNullOrEmpty(hashstring))
-            {
-                throw new ArgumentException("Hash String or Allowed Characters cannot be null or empty");
-            }
-            
+            if (string.IsNullOrEmpty(allowedCharacters))
+                throw new ArgumentException("AllowedCharacters cannot be null", nameof(allowedCharacters));
+
+            if (string.IsNullOrEmpty(hashstring))
+                throw new ArgumentException("Hashstring cannot be null", nameof(hashstring));
+
             _hashIds = new Hashids(hashstring, 6, allowedCharacters);
         }
 

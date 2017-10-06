@@ -1,11 +1,7 @@
-﻿using HashidsNet;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 {
@@ -19,20 +15,35 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
         public void When_AllowedCharacter_IsEmpty_Should_Throw_Exception()
         {
             //Act
-            ActualValueDelegate<object> testDelegate = () => new HashingService(string.Empty, Hashstring);
+            Action testDelegate = () => new HashingService(string.Empty, Hashstring);
 
             //Assert
-            Assert.That(testDelegate, Throws.TypeOf<ArgumentException>());
+            testDelegate.ShouldThrow<ArgumentException>();
         }
 
         [Test]
         public void When_Hashstring_IsEmpty_Should_Throw_Exception()
         {
             //Act
-            ActualValueDelegate<object> testDelegate = () => new HashingService(AllowedCharacters, string.Empty);
+            Action testDelegate = () => new HashingService(AllowedCharacters, string.Empty);
 
             //Assert
-            Assert.That(testDelegate, Throws.TypeOf<ArgumentException>());
+            testDelegate.ShouldThrow<ArgumentException>();
+        }
+
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        public void Given_Invalid_Decode_Hash_Should_ThrowException(string valueToDecode)
+        {
+            // Arrange 
+            var _sut = new HashingService(AllowedCharacters, Hashstring);
+
+            //Act
+            Action testDelegate = () => _sut.DecodeValue(valueToDecode);
+
+            //Assert
+            testDelegate.ShouldThrow<IndexOutOfRangeException>();
         }
 
         [TestCase(123456)]
@@ -41,17 +52,17 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
         [TestCase(333333)]
         [TestCase(444444)]
         [TestCase(0)]
-        public void Then_HashValue_Should_Equal_DecodeValue(long valueToHash)
+        public void Then_HashValue_Should_Equal_DecodeValue(long expectTedValue)
         {
             // Arrange 
             var _sut = new HashingService(AllowedCharacters, Hashstring);
 
             //Act
-            var hash = _sut.HashValue(valueToHash);
+            var hash = _sut.HashValue(expectTedValue);
             var actualValue = _sut.DecodeValue(hash);
 
             //Assert
-            Assert.AreEqual(valueToHash, actualValue);
+           expectTedValue.Should().Be(actualValue);
         }
 
     }

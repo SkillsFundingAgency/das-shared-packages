@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.HashingService", "SFA.DAS.HashingService\SFA.DAS.HashingService.csproj", "{7AC04D74-BA8F-404D-A49C-FEEB87F0FDE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.HashingService.UnitTest", "SFA.DAS.HashingService.UnitTest\SFA.DAS.HashingService.UnitTest.csproj", "{04C818FB-65CF-429A-8354-5254C70AE36D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.HashingService.UnitTests", "SFA.DAS.HashingService.UnitTest\SFA.DAS.HashingService.UnitTests.csproj", "{04C818FB-65CF-429A-8354-5254C70AE36D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
