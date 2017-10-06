@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureServiceBusMessage.cs" />
-    <Compile Include="AzureServiceBusMessageService.cs" />
     <Compile Include="TopicMessagePublisher.cs" />
     <Compile Include="TopicMessageSubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

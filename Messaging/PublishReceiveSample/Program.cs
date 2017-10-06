@@ -26,8 +26,8 @@ namespace PublishReceiveSample
 
             try
             {
-                IMessagePublisher publisher;
-                IPollingMessageReceiver receiver;
+                IMessagePublisher<SampleEvent> publisher;
+                IMessageSubscriber<SampleEvent> receiver;
                 LoadSubsystem(out publisher, out receiver);
                 if (publisher == null)
                 {
@@ -56,7 +56,9 @@ namespace PublishReceiveSample
             }
         }
 
-        private static void LoadSubsystem(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+        private static void LoadSubsystem<T>(
+            out IMessagePublisher<T> publisher, 
+            out IMessageSubscriber<T> receiver) where T : new()
         {
             publisher = null;
             receiver = null;
@@ -101,20 +103,25 @@ namespace PublishReceiveSample
                 }
             }
         }
-        private static void LoadFileSystem(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+        private static void LoadFileSystem<T>(
+            out IMessagePublisher<T> publisher, 
+            out IMessageSubscriber<T> receiver) where T : new()
         {
             WriteColoredText("Storage dir (%temp%/[Guid]): ");
             var dir = Console.ReadLine();
+
             if (string.IsNullOrWhiteSpace(dir))
             {
                 dir = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), Guid.NewGuid().ToString());
             }
 
-            var fs = new FileSystemMessageService(dir);
-            publisher = fs;
-            receiver = fs;
+            publisher = new FileSystemMessagePublisher<T>(dir);
+            receiver = new FileSystemMessageSubscriber<T>(dir);
         }
-        private static void LoadAzureStorageQueue(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+
+        private static void LoadAzureStorageQueue<T>(
+            out IMessagePublisher<T> publisher, 
+            out IMessageSubscriber<T> receiver) where T : new()
         {
             WriteColoredText("Connection string (Blank for dev storage): ");
             var connectionString = Console.ReadLine();
@@ -126,23 +133,30 @@ namespace PublishReceiveSample
             WriteColoredText("Queue name: ");
             var queueName = Console.ReadLine();
 
-            var asq = new AzureStorageQueueService(connectionString, queueName);
-            publisher = asq;
-            receiver = asq;
+            publisher = new QueueMessagePublisher<T>(connectionString, queueName);
+            receiver = new QueueMessageSubscriber<T>(connectionString, queueName);
         }
-        private static void LoadAzureServiceBus(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+
+        private static void LoadAzureServiceBus<T>(
+            out IMessagePublisher<T> publisher, 
+            out IMessageSubscriber<T> receiver) where T : new()
         {
             WriteColoredText("Connection string: ");
             var connectionString = Console.ReadLine();
 
-            WriteColoredText("Queue name: ");
-            var queueName = Console.ReadLine();
+            WriteColoredText("Topic Name: ");
+            var topicName = Console.ReadLine();
 
-            var asb = new AzureServiceBusMessageService(connectionString, queueName);
-            publisher = asb;
-            receiver = asb;
+            WriteColoredText("Subscription name: ");
+            var subscriptionName = Console.ReadLine();
+
+            publisher = new TopicMessagePublisher<T>(connectionString, topicName);
+            receiver = new TopicMessageSubscriber<T>(connectionString, topicName, subscriptionName);
         }
-        private static void LoadHalJson(out IMessagePublisher publisher, out IPollingMessageReceiver receiver)
+
+        private static void LoadHalJson<T>(
+            out IMessagePublisher<T> publisher, 
+            out IMessageSubscriber<T> receiver) where T : new()
         {
             var connectionString = "server=.;database=scratchpad;trusted_connection=true;";
             var pubStoreSproc = "usp_StoreMessage";
@@ -165,15 +179,17 @@ namespace PublishReceiveSample
             //WriteColoredText("Receive update sproc: ");
             //var subUpdateSproc = Console.ReadLine();
 
-            publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc, 10));
+            publisher = new SyndicationMessagePublisher<T>(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc, 10));
 
             var feedPositionRepo = new SqlServerFeedPositionRepository(connectionString, subGetSproc, subUpdateSproc);
-            receiver = new SyndicationPollingMessageReceiver(
+            receiver = new SyndicationPollingMessageReceiver<T>(
                 new HalJsonMessageClient(feedPositionRepo, new HttpClientWrapper("http://localhost:16972/"), new MessageIdentifierFactory()),
                 feedPositionRepo);
         }
 
-        private static bool PerformAction(IMessagePublisher publisher, IPollingMessageReceiver receiver)
+        private static bool PerformAction(
+             IMessagePublisher<SampleEvent> publisher,
+             IMessageSubscriber<SampleEvent> receiver)
         {
             while (true)
             {
@@ -185,6 +201,7 @@ namespace PublishReceiveSample
                 WriteColoredText("Enter selection: ");
 
                 var input = Console.ReadLine().Trim();
+
                 switch (input)
                 {
                     case "1":
@@ -205,15 +222,16 @@ namespace PublishReceiveSample
                 }
             }
         }
-        private static void Publish(IMessagePublisher publisher)
+        private static void Publish(IMessagePublisher<SampleEvent> publisher)
         {
             var message = new SampleEvent();
             publisher.PublishAsync(message).Wait();
             WriteColoredLine($"Published message with id {message.Id} at {message.Timestamp}", DetailsColor);
         }
-        private static void Receive(IPollingMessageReceiver receiver)
+
+        private static void Receive(IMessageSubscriber<SampleEvent> receiver)
         {
-            var message = receiver.ReceiveAsAsync<SampleEvent>().Result;
+            var message = receiver.ReceiveAsAsync().Result;
             if (message == null)
             {
                 WriteColoredLine("No messages waiting for processing", DetailsColor);
@@ -224,9 +242,10 @@ namespace PublishReceiveSample
                 WriteColoredLine($"Received message with id {message.Content.Id} published at {message.Content.Timestamp}", DetailsColor);
             }
         }
-        private static void ReceiveBatch(IPollingMessageReceiver receiver)
+
+        private static void ReceiveBatch(IMessageSubscriber<SampleEvent> receiver)
         {
-            var messages = receiver.ReceiveBatchAsAsync<SampleEvent>(10).Result?.ToArray();
+            var messages = receiver.ReceiveBatchAsAsync(10).Result?.ToArray();
             if (messages == null || !messages.Any())
             {
                 WriteColoredLine("No messages waiting for processing", DetailsColor);

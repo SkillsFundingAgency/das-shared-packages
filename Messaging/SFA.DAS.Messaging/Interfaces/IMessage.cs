@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Messaging
 {
-    public interface IMessage<T>
+    public interface IMessage<out T>
     {
         T Content { get; }
         Task CompleteAsync();

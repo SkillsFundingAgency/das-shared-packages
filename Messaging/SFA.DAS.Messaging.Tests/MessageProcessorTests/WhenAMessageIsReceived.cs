@@ -3,9 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Messaging.Interfaces;
 using SFA.DAS.NLog.Logger;
+using Timer = System.Timers.Timer;
 
-namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
+namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
 {
     [TestFixture]
     public class WhenAMessageIsReceived
@@ -16,7 +18,7 @@ namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
 
         internal class TestMessageProcessor : MessageProcessor<MessageType>
         {
-            internal TestMessageProcessor(IPollingMessageReceiver messageReceiver, ILog logger) : base(messageReceiver, logger)
+            internal TestMessageProcessor(IMessageSubscriberFactory<MessageType> messageSubscriberFactory, ILog logger) : base(messageSubscriberFactory, logger)
             {
             }
 
@@ -39,23 +41,27 @@ namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
             }
         }
 
-        private Mock<IPollingMessageReceiver> _messageReceiver;
+        private Mock<IMessageSubscriberFactory<MessageType>> _messageSubscriberFactory;
+        private Mock<IMessageSubscriber<MessageType>> _messageSubscriber;
         private Mock<ILog> _logger;
         private TestMessageProcessor _messageProcessor;
 
         [SetUp]
         public void Arrange()
         {
-            _messageReceiver = new Mock<IPollingMessageReceiver>();
+            _messageSubscriber = new Mock<IMessageSubscriber<MessageType>>();
+            _messageSubscriberFactory = new Mock<IMessageSubscriberFactory<MessageType>>();
             _logger = new Mock<ILog>();
 
-            _messageProcessor = new TestMessageProcessor(_messageReceiver.Object, _logger.Object);
+            _messageSubscriberFactory.Setup(x => x.GetSubscriber()).Returns(_messageSubscriber.Object);
+
+            _messageProcessor = new TestMessageProcessor(_messageSubscriberFactory.Object, _logger.Object);
         }
 
         [Test]
         public void AndTheMessageIsNullThenNoProcessingIsDone()
         {
-            _messageReceiver.Setup(x => x.ReceiveAsAsync<MessageType>()).ReturnsAsync(null);
+            _messageSubscriber.Setup(x => x.ReceiveAsAsync()).ReturnsAsync(null);
 
             ProcessMessage(() => !_messageProcessor.MessageProcessed);
             
@@ -66,7 +72,7 @@ namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
         public void AndTheMessageHasNoContentThenNoProcessingIsDoneAndTheMessageIsCompleted()
         {
             var message = new Mock<IMessage<MessageType>>();
-            _messageReceiver.Setup(x => x.ReceiveAsAsync<MessageType>()).ReturnsAsync(message.Object);
+            _messageSubscriber.Setup(x => x.ReceiveAsAsync()).ReturnsAsync(message.Object);
 
             ProcessMessage(() => !_messageProcessor.MessageProcessed);
 
@@ -79,7 +85,8 @@ namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
         {
             var message = new Mock<IMessage<MessageType>>();
             message.SetupGet(x => x.Content).Returns(new MessageType());
-            _messageReceiver.Setup(x => x.ReceiveAsAsync<MessageType>()).ReturnsAsync(message.Object);
+
+            _messageSubscriber.Setup(x => x.ReceiveAsAsync()).ReturnsAsync(message.Object);
 
             ProcessMessage(() => _messageProcessor.MessageProcessed);
 
@@ -93,7 +100,7 @@ namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
             _messageProcessor.ThrowException = true;
             var message = new Mock<IMessage<MessageType>>();
             message.SetupGet(x => x.Content).Returns(new MessageType());
-            _messageReceiver.Setup(x => x.ReceiveAsAsync<MessageType>()).ReturnsAsync(message.Object);
+            _messageSubscriber.Setup(x => x.ReceiveAsAsync()).ReturnsAsync(message.Object);
 
             ProcessMessage(() => _messageProcessor.ExceptionHandled);
 
@@ -105,8 +112,10 @@ namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
 
         private void ProcessMessage(Func<bool> condition)
         {
+            var resetEvent=  new ManualResetEvent(false);
             var cancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => _messageProcessor.RunAsync(cancellationTokenSource.Token));
+            Task.Run(() => _messageProcessor.RunAsync(cancellationTokenSource.Token), cancellationTokenSource.Token)
+                .ContinueWith(task => resetEvent.Set());
 
             var timeout = DateTime.Now.AddSeconds(1);
             while (DateTime.Now <= timeout)
@@ -117,6 +126,10 @@ namespace SFA.DAS.Messaging.Tests.MessageProcessorTests
                     break;
                 }
             }
+
+            cancellationTokenSource.Cancel();
+
+            resetEvent.WaitOne(1000);
         }
     }
 }
