@@ -10,10 +10,10 @@
         public HashingService(string allowedCharacters, string hashstring)
         {
             if (string.IsNullOrEmpty(allowedCharacters))
-                throw new ArgumentException("AllowedCharacters cannot be null", nameof(allowedCharacters));
+                throw new ArgumentException("Value cannot be null", nameof(allowedCharacters));
 
             if (string.IsNullOrEmpty(hashstring))
-                throw new ArgumentException("Hashstring cannot be null", nameof(hashstring));
+                throw new ArgumentException("Value cannot be null", nameof(hashstring));
 
             _hashIds = new Hashids(hashstring, 6, allowedCharacters);
         }
