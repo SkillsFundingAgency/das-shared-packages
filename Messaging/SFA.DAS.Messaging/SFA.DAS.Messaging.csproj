@@ -62,6 +62,9 @@
     <Compile Include="IMessageProcessor.cs" />
     <Compile Include="IMessagePublisher.cs" />
     <Compile Include="IPollingMessageReceiver.cs" />
+    <Compile Include="FileSystem\FileSystemMessagePublisher.cs" />
+    <Compile Include="FileSystem\FileSystemMessageSubscriber.cs" />
+    <Compile Include="FileSystem\FileSystemMessageSubscriberFactory.cs" />
     <Compile Include="Interfaces\IMessagePublisher.cs" />
     <Compile Include="Interfaces\IMessageSubscriber.cs" />
     <Compile Include="Interfaces\IMessageSubscriberFactory.cs" />
