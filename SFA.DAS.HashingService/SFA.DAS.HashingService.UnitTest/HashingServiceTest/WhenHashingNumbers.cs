@@ -34,7 +34,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
-        public void Given_Invalid_Decode_Hash_Should_ThrowException(string valueToDecode)
+        public void When_Decode_HashId_IsNullOrEmpty_Should_ThrowException(string valueToDecode)
         {
             // Arrange 
             var _sut = new HashingService(AllowedCharacters, Hashstring);
@@ -43,7 +43,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             Action testDelegate = () => _sut.DecodeValue(valueToDecode);
 
             //Assert
-            testDelegate.ShouldThrow<IndexOutOfRangeException>();
+            testDelegate.ShouldThrow<ArgumentException>();
         }
 
         [TestCase(123456)]
@@ -63,6 +63,25 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 
             //Assert
            expectTedValue.Should().Be(actualValue);
+        }
+
+
+        [TestCase("ABCDERT")]
+        [TestCase("E12345")]
+        [TestCase("ZZZ464")]
+        [TestCase("1WQ@")]
+        [TestCase("A|?.<>")]
+        [TestCase("Z")]
+        public void Then_Invalid_Decode_HashId_Should_ThrowException(string hashId)
+        {
+            // Arrange 
+            var _sut = new HashingService(AllowedCharacters, Hashstring);
+
+            //Act
+            Action testDelegate = () => _sut.DecodeValue(hashId);
+
+            //Assert
+            testDelegate.ShouldThrow<IndexOutOfRangeException>();
         }
 
     }

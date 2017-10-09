@@ -25,6 +25,10 @@
 
         public long DecodeValue(string id)
         {
+
+            if (string.IsNullOrEmpty(id?.Trim()))
+                throw new ArgumentException("Invalid hash Id", nameof(id));
+
             return _hashIds.DecodeLong(id)[0];
         }
     }
