@@ -8,8 +8,8 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
     [TestFixture]
     public class WhenHashingNumbers
     {
-        private const string Hashstring = "SFA: digital apprenticeship service";
-        private const string AllowedCharacters = "46789BCDFGHJKLMNPRSTVWXY";
+        private const string Hashstring = "TEST: Dummy hash code London is a city in UK";
+        private const string AllowedCharacters = "12345QWERTYUIOPNDGHAK";
 
         [Test]
         public void When_AllowedCharacter_IsEmpty_Should_Throw_Exception()
