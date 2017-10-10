@@ -41,6 +41,7 @@ namespace SFA.DAS.Messaging
 
                         await message.CompleteAsync();
                         Log.Info($"Completed message {typeof(T).FullName}");
+                        
                     }
                     catch (Exception ex)
                     {

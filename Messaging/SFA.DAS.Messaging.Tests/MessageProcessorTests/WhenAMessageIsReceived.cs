@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Messaging.Interfaces;
 using SFA.DAS.NLog.Logger;
-using Timer = System.Timers.Timer;
 
 namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
 {
@@ -105,6 +104,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
             ProcessMessage(() => _messageProcessor.ExceptionHandled);
 
             _logger.Verify(x => x.Error(It.IsAny<Exception>(), $"Failed to process message {typeof(MessageType).FullName}"));
+
             Assert.IsTrue(_messageProcessor.ExceptionHandled);
             Assert.IsFalse(_messageProcessor.MessageProcessed);
             message.Verify(x => x.CompleteAsync(), Times.Never);
@@ -128,7 +128,6 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
             }
 
             cancellationTokenSource.Cancel();
-
             resetEvent.WaitOne(1000);
         }
     }
