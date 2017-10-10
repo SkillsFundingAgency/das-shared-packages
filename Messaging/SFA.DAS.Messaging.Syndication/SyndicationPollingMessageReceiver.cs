@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Messaging.Syndication
 {
-    public class SyndicationPollingMessageReceiver : IPollingMessageReceiver
+    public class SyndicationPollingMessageReceiver<T> : IMessageSubscriber<T> where T : new()
     {
         private readonly IMessageClient _messageClient;
         private readonly IFeedPositionRepository _feedPositionRepository;
@@ -15,7 +15,7 @@ namespace SFA.DAS.Messaging.Syndication
             _feedPositionRepository = feedPositionRepository;
         }
 
-        public async Task<IMessage<T>> ReceiveAsAsync<T>() where T : new()
+        public async Task<IMessage<T>> ReceiveAsAsync() 
         {
             var clientMessage = await _messageClient.GetNextUnseenMessage<T>();
             if (clientMessage == null)
@@ -25,7 +25,7 @@ namespace SFA.DAS.Messaging.Syndication
 
             return new SyndicationMessage<T>(clientMessage.Message, clientMessage.Identifier, _feedPositionRepository);
         }
-        public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync<T>(int batchSize) where T : new()
+        public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync(int batchSize) 
         {
             var batch = (await _messageClient.GetBatchOfUnseenMessages<T>(batchSize))?.ToArray();
             if (batch == null || !batch.Any())
@@ -34,6 +34,11 @@ namespace SFA.DAS.Messaging.Syndication
             }
 
             return batch.Select(cm => new SyndicationMessage<T>(cm.Message, cm.Identifier, _feedPositionRepository));
+        }
+
+        public void Dispose()
+        {
+            //No clean up required
         }
     }
 }

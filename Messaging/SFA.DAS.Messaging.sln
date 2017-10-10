@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging", "SFA.DAS.Messaging\SFA.DAS.Messaging.csproj", "{B0F2744B-BE9A-4329-BE89-B7D17BFE8F53}"
 EndProject
@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubSubSampleGui", "PubSubSa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.AzureStorageQueue", "SFA.DAS.Messaging.AzureStorageQueue\SFA.DAS.Messaging.AzureStorageQueue.csproj", "{95699E7A-2024-43FD-A27E-20EE3E15E515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.Tests", "SFA.DAS.Messaging.Tests\SFA.DAS.Messaging.Tests.csproj", "{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.UnitTests", "SFA.DAS.Messaging.Tests\SFA.DAS.Messaging.UnitTests.csproj", "{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,5 +89,8 @@ Global
 		{F8D90401-F19A-4BF0-B1B8-38E641B1D994} = {AA04D4A9-7217-4E88-B933-36E9C1A2E08F}
 		{7AA08F8D-9915-4498-B7CB-6771F8D2D858} = {AA04D4A9-7217-4E88-B933-36E9C1A2E08F}
 		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E} = {D6739033-3147-445F-B287-18789BD28AF3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3BFC577E-77D0-44DF-BC8C-2A958FBF75CC}
 	EndGlobalSection
 EndGlobal

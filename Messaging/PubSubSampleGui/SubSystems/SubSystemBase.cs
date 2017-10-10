@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Messaging;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace PubSubSampleGui.SubSystems
 {
@@ -9,8 +10,8 @@ namespace PubSubSampleGui.SubSystems
     {
         public event EventHandler<SampleMessageReceivedEventArgs> SampleMessageReceived;
 
-        private IMessagePublisher _publisher;
-        private IPollingMessageReceiver _pollingReciever;
+        private IMessagePublisher<SampleMessage> _publisher;
+        private IMessageSubscriberFactory<SampleMessage> _subscriberFactory;
         private Func<IEventingMessageReceiver<SampleMessage>> _eventingReceiverFactory;
         private CancellationTokenSource _cancellationSource;
         
@@ -23,13 +24,19 @@ namespace PubSubSampleGui.SubSystems
         }
         public virtual async Task<SampleMessage> PollAsync()
         {
-            var message = await _pollingReciever.ReceiveAsAsync<SampleMessage>();
-            if (message == null)
+            using (var subscriber = _subscriberFactory.GetSubscriber())
             {
-                return null;
+                var message = await subscriber.ReceiveAsAsync();
+
+                if (message == null)
+                {
+                    return null;
+                }
+
+                await message.CompleteAsync();
+
+                return message.Content;
             }
-            await message.CompleteAsync();
-            return message.Content;
         }
         public virtual void StartListening()
         {
@@ -54,12 +61,12 @@ namespace PubSubSampleGui.SubSystems
         }
 
         protected void Init(
-            IMessagePublisher publisher,
-            IPollingMessageReceiver pollingReciever,
+            IMessagePublisher<SampleMessage> publisher,
+            IMessageSubscriberFactory<SampleMessage> subscriberFactory,
             Func<IEventingMessageReceiver<SampleMessage>> eventingReceiverFactory = null)
         {
             _publisher = publisher;
-            _pollingReciever = pollingReciever;
+            _subscriberFactory = subscriberFactory;
             _eventingReceiverFactory = eventingReceiverFactory
                                        ?? DefaultEventingReceiverFactory;
         }
@@ -75,7 +82,7 @@ namespace PubSubSampleGui.SubSystems
         }
         private IEventingMessageReceiver<SampleMessage> DefaultEventingReceiverFactory()
         {
-            return new EventingMessageReceiverPollingWrapper<SampleMessage>(_pollingReciever,
+            return new EventingMessageReceiverPollingWrapper<SampleMessage>(_subscriberFactory,
                 new PollingToEventSettings
                 {
                     PollingInterval = 2000

@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Messaging.Syndication
 {
-    public class SyndicationMessagePublisher : IMessagePublisher
+    public class SyndicationMessagePublisher<T> : IMessagePublisher<T> where T : new()
     {
         private readonly IMessageRepository _messageRepository;
 
@@ -11,7 +11,7 @@ namespace SFA.DAS.Messaging.Syndication
             _messageRepository = messageRepository;
         }
 
-        public async Task PublishAsync(object message)
+        public async Task PublishAsync(T message)
         {
             await _messageRepository.StoreAsync(message);
         }

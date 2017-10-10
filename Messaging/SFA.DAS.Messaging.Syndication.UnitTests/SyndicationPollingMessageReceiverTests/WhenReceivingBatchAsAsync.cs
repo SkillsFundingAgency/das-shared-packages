@@ -10,7 +10,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.SyndicationPollingMessageRecei
     {
         private Mock<IMessageClient> _messageClient;
         private Mock<IFeedPositionRepository> _feedPositionRepository;
-        private SyndicationPollingMessageReceiver _receiver;
+        private SyndicationPollingMessageReceiver<TestMessage> _receiver;
 
         [SetUp]
         public void Arrange()
@@ -19,14 +19,14 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.SyndicationPollingMessageRecei
 
             _feedPositionRepository = new Mock<IFeedPositionRepository>();
 
-            _receiver = new SyndicationPollingMessageReceiver(_messageClient.Object, _feedPositionRepository.Object);
+            _receiver = new SyndicationPollingMessageReceiver<TestMessage>(_messageClient.Object, _feedPositionRepository.Object);
         }
 
         [Test]
         public async Task ThenItShouldReturnEmptyEnumerableWhenNoMessages()
         {
             // Act
-            var actual = await _receiver.ReceiveBatchAsAsync<TestMessage>(10);
+            var actual = await _receiver.ReceiveBatchAsAsync(10);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -47,7 +47,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.SyndicationPollingMessageRecei
                 }));
 
             // Act
-            var actual = (await _receiver.ReceiveBatchAsAsync<TestMessage>(10)).ToArray();
+            var actual = (await _receiver.ReceiveBatchAsAsync(10)).ToArray();
 
             // Assert
             Assert.IsNotNull(actual);

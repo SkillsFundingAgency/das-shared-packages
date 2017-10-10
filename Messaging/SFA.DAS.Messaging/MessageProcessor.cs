@@ -1,50 +1,60 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Messaging.Interfaces;
 using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Messaging
 {
     public abstract class MessageProcessor<T> : IMessageProcessor where T : new()
     {
-        private readonly IPollingMessageReceiver _pollingMessageReceiver;
+        private readonly IMessageSubscriberFactory<T> _messageSubscriberFactory;
         protected readonly ILog Log;
 
-        protected MessageProcessor(IPollingMessageReceiver pollingMessageReceiver, ILog log)
+        protected MessageProcessor(IMessageSubscriberFactory<T> subscriberFactory, ILog log)
         {
-            _pollingMessageReceiver = pollingMessageReceiver;
+            _messageSubscriberFactory = subscriberFactory;
             Log = log;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            using (var subscriber = _messageSubscriberFactory.GetSubscriber())
             {
-                var message = await _pollingMessageReceiver.ReceiveAsAsync<T>();
-                try
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    if (message == null)
+                    var message = await subscriber.ReceiveAsAsync();
+                    try
                     {
-                        continue;
-                    }
+                        if (message == null)
+                        {
+                            continue;
+                        }
 
-                    if (message.Content == null)
-                    {
+                        if (message.Content == null)
+                        {
+                            await message.CompleteAsync();
+                            continue;
+                        }
+
+                        await ProcessMessage(message.Content);
+
                         await message.CompleteAsync();
-                        continue;
+                        Log.Info($"Completed message {typeof(T).FullName}");
+                        
                     }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, $"Failed to process message {typeof(T).FullName}");
 
-                    await ProcessMessage(message.Content);
+                        if (message != null && message.Content != null)
+                        {
+                            await message.AbortAsync();
+                        }
 
-                    await message.CompleteAsync();
-                    Log.Info($"Completed message {typeof(T).FullName}");
+                        await OnError(message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, $"Failed to process message {typeof(T).FullName}");
-                    await OnError(message);
-                }
-
             }
         }
 

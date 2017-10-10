@@ -8,7 +8,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.SyndicationPollingMessageRecei
     {
         private Mock<IMessageClient> _messageClient;
         private Mock<IFeedPositionRepository> _feedPositionRepository;
-        private SyndicationPollingMessageReceiver _receiver;
+        private SyndicationPollingMessageReceiver<TestMessage> _receiver;
 
         [SetUp]
         public void Arrange()
@@ -17,14 +17,14 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.SyndicationPollingMessageRecei
 
             _feedPositionRepository = new Mock<IFeedPositionRepository>();
 
-            _receiver = new SyndicationPollingMessageReceiver(_messageClient.Object, _feedPositionRepository.Object);
+            _receiver = new SyndicationPollingMessageReceiver<TestMessage>(_messageClient.Object, _feedPositionRepository.Object);
         }
 
         [Test]
         public async Task ThenItShouldReturnNullWhenNoMessages()
         {
             // Act
-            var actual = await _receiver.ReceiveAsAsync<TestMessage>();
+            var actual = await _receiver.ReceiveAsAsync();
 
             // Assert
             Assert.IsNull(actual);
@@ -39,7 +39,7 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.SyndicationPollingMessageRecei
                 .Returns(Task.FromResult(new ClientMessage<TestMessage> { Identifier = "MSG123", Message = expectedContent }));
 
             // Act
-            var actual = await _receiver.ReceiveAsAsync<TestMessage>();
+            var actual = await _receiver.ReceiveAsAsync();
 
             // Assert
             Assert.IsNotNull(actual);
