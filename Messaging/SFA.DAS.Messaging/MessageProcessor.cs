@@ -8,18 +8,18 @@ namespace SFA.DAS.Messaging
 {
     public abstract class MessageProcessor<T> : IMessageProcessor where T : new()
     {
-        private readonly IMessageSubscriberFactory<T> _messageSubscriberFactoryFactory;
+        private readonly IMessageSubscriberFactory<T> _messageSubscriberFactory;
         protected readonly ILog Log;
 
-        protected MessageProcessor(IMessageSubscriberFactory<T> subscriberFactoryFactory, ILog log)
+        protected MessageProcessor(IMessageSubscriberFactory<T> subscriberFactory, ILog log)
         {
-            _messageSubscriberFactoryFactory = subscriberFactoryFactory;
+            _messageSubscriberFactory = subscriberFactory;
             Log = log;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            using (var subscriber = _messageSubscriberFactoryFactory.GetSubscriber())
+            using (var subscriber = _messageSubscriberFactory.GetSubscriber())
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
