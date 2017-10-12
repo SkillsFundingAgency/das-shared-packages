@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.FileSystem
 {

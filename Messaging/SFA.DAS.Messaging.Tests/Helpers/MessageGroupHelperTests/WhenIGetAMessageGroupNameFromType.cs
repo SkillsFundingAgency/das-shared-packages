@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.Messaging.Attributes;
-using SFA.DAS.Messaging.Helper;
+using SFA.DAS.Messaging.Helpers;
 
 namespace SFA.DAS.Messaging.UnitTests.Helpers.MessageGroupHelperTests
 {

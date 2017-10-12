@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.AzureServiceBus
 {

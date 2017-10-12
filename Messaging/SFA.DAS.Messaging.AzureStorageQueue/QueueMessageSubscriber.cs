@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.AzureStorageQueue
 {

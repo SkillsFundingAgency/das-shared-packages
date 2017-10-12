@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SFA.DAS.Messaging.Helper;
+using SFA.DAS.Messaging.Helpers;
 using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.FileSystem
