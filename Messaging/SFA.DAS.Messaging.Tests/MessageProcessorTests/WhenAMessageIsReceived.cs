@@ -17,7 +17,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
 
         internal class TestMessageProcessor : MessageProcessor<MessageType>
         {
-            internal TestMessageProcessor(IMessageSubscriberFactory<MessageType> messageSubscriberFactory, ILog logger) : base(messageSubscriberFactory, logger)
+            internal TestMessageProcessor(IMessageSubscriberFactory messageSubscriberFactory, ILog logger) : base(messageSubscriberFactory, logger)
             {
             }
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
             }
         }
 
-        private Mock<IMessageSubscriberFactory<MessageType>> _messageSubscriberFactory;
+        private Mock<IMessageSubscriberFactory> _messageSubscriberFactory;
         private Mock<IMessageSubscriber<MessageType>> _messageSubscriber;
         private Mock<ILog> _logger;
         private TestMessageProcessor _messageProcessor;
@@ -49,10 +49,10 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
         public void Arrange()
         {
             _messageSubscriber = new Mock<IMessageSubscriber<MessageType>>();
-            _messageSubscriberFactory = new Mock<IMessageSubscriberFactory<MessageType>>();
+            _messageSubscriberFactory = new Mock<IMessageSubscriberFactory>();
             _logger = new Mock<ILog>();
 
-            _messageSubscriberFactory.Setup(x => x.GetSubscriber()).Returns(_messageSubscriber.Object);
+            _messageSubscriberFactory.Setup(x => x.GetSubscriber<MessageType>()).Returns(_messageSubscriber.Object);
 
             _messageProcessor = new TestMessageProcessor(_messageSubscriberFactory.Object, _logger.Object);
         }

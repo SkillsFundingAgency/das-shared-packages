@@ -2,9 +2,9 @@
 
 namespace SFA.DAS.Messaging.Attributes
 {
-    public class QueueNameAttribute : Attribute
+    public class MessageGroupAttribute : Attribute
     {
-        public QueueNameAttribute(string queueName = "")
+        public MessageGroupAttribute(string name = "")
         {
             
         }
