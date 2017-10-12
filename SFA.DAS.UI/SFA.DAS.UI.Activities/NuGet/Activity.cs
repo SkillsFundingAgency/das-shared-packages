@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Models
+namespace NuGet
 {
     public class Activity
     {

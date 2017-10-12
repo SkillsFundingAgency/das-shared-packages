@@ -144,7 +144,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\ActivitiesList\ActivitiesListAreaRegistration.cs" />
     <Compile Include="Areas\ActivitiesList\Controllers\DefaultController.cs" />
-    <Compile Include="Areas\ActivitiesList\Models\Activity.cs" />
+    <Compile Include="Areas\ActivitiesList\Models\ActivityModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -212,6 +212,16 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NuGet\NuGet.csproj">
+      <Project>{948f920f-180e-4dab-b4a7-2eac7a72accb}</Project>
+      <Name>NuGet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.UI.Activities.DataAccess\SFA.DAS.UI.Activities.DataAccess.csproj">
+      <Project>{f31d9e4c-f714-4e91-8692-1285428efa4c}</Project>
+      <Name>SFA.DAS.UI.Activities.DataAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -12,9 +12,9 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
         // GET: ActivitiesList/Default
         public ActionResult Index()
         {
-            var messages = new List<Activity>();
-            messages.Add(new Activity("acc1", "activityType1","Description 1", "url",DateTime.Now.ToString("O")));
-            messages.Add(new Activity("acc2", "activityType1", "Description 2", "url", DateTime.Now.ToString("O")));
+            var messages = new List<ActivityModel>();
+            messages.Add(new ActivityModel("acc1", "activityType1","Description 1", "url",DateTime.Now.ToString("O")));
+            messages.Add(new ActivityModel("acc2", "activityType1", "Description 2", "url", DateTime.Now.ToString("O")));
             return PartialView(messages);
         }
     }
