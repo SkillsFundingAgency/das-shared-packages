@@ -15,11 +15,12 @@
 <div>
     <p>This is shared content</p>
     <p>Model name is:</p>
+    @Model.Count.ToString() items
     <table>
         @foreach (var item in Model)
         {
             <tr>
-                @*@Html.DisplayFor(a=>item)*@
+                @Html.DisplayFor(a=>item)
             </tr>
         }
     </table>

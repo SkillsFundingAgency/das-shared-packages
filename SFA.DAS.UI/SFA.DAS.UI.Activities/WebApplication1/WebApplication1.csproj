@@ -51,7 +51,7 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="SFA.DAS.UI.Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.3\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.6\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -163,8 +163,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\ActivitiesList\Views\_ViewStart.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\web.config" />
+    <Content Include="Areas\ActivitiesList\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Index.cshtml" />
+    <Content Include="Areas\ActivitiesList\Views\Shared\Activity.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

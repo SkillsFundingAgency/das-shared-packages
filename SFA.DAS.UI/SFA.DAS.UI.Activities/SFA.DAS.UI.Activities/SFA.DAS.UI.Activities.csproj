@@ -165,6 +165,9 @@
     </Content>
     <Content Include="Areas\ActivitiesList\Views\web.config" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Index.cshtml" />
+    <Content Include="Areas\ActivitiesList\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\ActivitiesList\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\ActivitiesList\Views\Shared\Activity.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
