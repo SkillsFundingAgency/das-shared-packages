@@ -59,7 +59,7 @@
     <Compile Include="FileSystem\FileSystemMessagePublisher.cs" />
     <Compile Include="FileSystem\FileSystemMessageSubscriber.cs" />
     <Compile Include="FileSystem\FileSystemMessageSubscriberFactory.cs" />
-    <Compile Include="Helper\MessageGroupHelper.cs" />
+    <Compile Include="Helpers\MessageGroupHelper.cs" />
     <Compile Include="Interfaces\IEventingMessageReceiver.cs" />
     <Compile Include="Interfaces\IMessage.cs" />
     <Compile Include="Interfaces\IMessageProcessor.cs" />

@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.AzureStor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.UnitTests", "SFA.DAS.Messaging.Tests\SFA.DAS.Messaging.UnitTests.csproj", "{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.AzureServiceBus.UnitTests", "SFA.DAS.Messaging.AzureServiceBus.UnitTests\SFA.DAS.Messaging.AzureServiceBus.UnitTests.csproj", "{FF233FB3-41FE-4089-B9BE-F7276637D0CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF233FB3-41FE-4089-B9BE-F7276637D0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF233FB3-41FE-4089-B9BE-F7276637D0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF233FB3-41FE-4089-B9BE-F7276637D0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF233FB3-41FE-4089-B9BE-F7276637D0CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{F8D90401-F19A-4BF0-B1B8-38E641B1D994} = {AA04D4A9-7217-4E88-B933-36E9C1A2E08F}
 		{7AA08F8D-9915-4498-B7CB-6771F8D2D858} = {AA04D4A9-7217-4E88-B933-36E9C1A2E08F}
 		{DE681B8B-B889-4E4E-B8C1-6BA41520A26E} = {D6739033-3147-445F-B287-18789BD28AF3}
+		{FF233FB3-41FE-4089-B9BE-F7276637D0CF} = {D6739033-3147-445F-B287-18789BD28AF3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BFC577E-77D0-44DF-BC8C-2A958FBF75CC}
