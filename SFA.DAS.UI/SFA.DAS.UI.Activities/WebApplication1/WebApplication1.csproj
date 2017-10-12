@@ -51,7 +51,7 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="SFA.DAS.UI.Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.6\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.7\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
