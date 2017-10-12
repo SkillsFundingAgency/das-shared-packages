@@ -4,7 +4,7 @@ using SFA.DAS.Messaging.Helper;
 
 namespace SFA.DAS.Messaging.UnitTests.Helpers.MessageGroupHelperTests
 {
-    public class WhenIGetAMessageGroupName
+    public class WhenIGetAMessageGroupNameFromObject
     {
         [Test]
         public void ShouldGetGroupNameIfOneExists()
@@ -29,6 +29,8 @@ namespace SFA.DAS.Messaging.UnitTests.Helpers.MessageGroupHelperTests
 
             Assert.AreEqual(nameof(TestClassWithEmptyGroupName), groupName);
         }
+
+
 
         [MessageGroup("Test")]
         private class TestClassWithGroupName

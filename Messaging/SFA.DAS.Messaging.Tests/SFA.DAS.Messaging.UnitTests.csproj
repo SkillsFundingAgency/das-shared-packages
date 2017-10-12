@@ -61,7 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\MessageGroupHelperTests\WhenIGetAMessageGroupName.cs" />
+    <Compile Include="Helpers\MessageGroupHelperTests\WhenIGetAMessageGroupNameFromType.cs" />
+    <Compile Include="Helpers\MessageGroupHelperTests\WhenIGetAMessageGroupNameFromObject.cs" />
     <Compile Include="MessageProcessorTests\WhenAMessageIsReceived.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

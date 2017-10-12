@@ -9,7 +9,7 @@ namespace PubSubSampleGui.SubSystems
         public FileSystemSubSystem(string storageDir = null)
         {
             var publisher = new FileSystemMessagePublisher(storageDir ?? GetDefaultStorageDir());
-            var subscriberFactory = new FileSystemMessageSubscriberFactory<SampleMessage>(storageDir ?? GetDefaultStorageDir(), "Sample");
+            var subscriberFactory = new FileSystemMessageSubscriberFactory(storageDir ?? GetDefaultStorageDir());
 
             Init(publisher, subscriberFactory);
         }

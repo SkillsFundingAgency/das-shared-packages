@@ -11,7 +11,7 @@ namespace PubSubSampleGui.SubSystems
         public event EventHandler<SampleMessageReceivedEventArgs> SampleMessageReceived;
 
         private IMessagePublisher _publisher;
-        private IMessageSubscriberFactory<SampleMessage> _subscriberFactory;
+        private IMessageSubscriberFactory _subscriberFactory;
         private Func<IEventingMessageReceiver<SampleMessage>> _eventingReceiverFactory;
         private CancellationTokenSource _cancellationSource;
         
@@ -24,7 +24,7 @@ namespace PubSubSampleGui.SubSystems
         }
         public virtual async Task<SampleMessage> PollAsync()
         {
-            using (var subscriber = _subscriberFactory.GetSubscriber())
+            using (var subscriber = _subscriberFactory.GetSubscriber<SampleMessage>())
             {
                 var message = await subscriber.ReceiveAsAsync();
 
@@ -62,7 +62,7 @@ namespace PubSubSampleGui.SubSystems
 
         protected void Init(
             IMessagePublisher publisher,
-            IMessageSubscriberFactory<SampleMessage> subscriberFactory,
+            IMessageSubscriberFactory subscriberFactory,
             Func<IEventingMessageReceiver<SampleMessage>> eventingReceiverFactory = null)
         {
             _publisher = publisher;
