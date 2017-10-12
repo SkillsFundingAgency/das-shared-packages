@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using SFA.DAS.Messaging.Attributes;
 
-namespace SFA.DAS.Messaging.Helper
+namespace SFA.DAS.Messaging.Helpers
 {
     public class MessageGroupHelper
     {

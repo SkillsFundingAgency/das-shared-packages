@@ -2,7 +2,7 @@
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
-using SFA.DAS.Messaging.Helper;
+using SFA.DAS.Messaging.Helpers;
 using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.AzureStorageQueue
