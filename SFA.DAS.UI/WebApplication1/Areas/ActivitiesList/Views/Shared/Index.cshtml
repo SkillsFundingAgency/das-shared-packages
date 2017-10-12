@@ -1,0 +1,27 @@
+﻿@model List<SFA.DAS.Activities.UI.Areas.ActivitiesList.Models.Activity>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div>
+        <p>This is shared content</p>
+        <p>Model name is:</p>
+        <table>
+            @foreach (var item in Model)
+            {
+                <tr>
+                   @Html.DisplayFor(a=>item)
+                </tr>
+            }
+        </table>
+    </div>
+</body>
+</html>

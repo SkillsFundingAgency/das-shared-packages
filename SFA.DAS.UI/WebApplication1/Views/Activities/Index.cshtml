@@ -1,0 +1,21 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div>
+        <p>This is the real view</p>
+        <div style="background-color: red">
+            <p>@Html.Action("Index", "Default", new { Area = "ActivitiesList" })</p>
+        </div>
+    </div>
+</body>
+</html>
