@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.Syndication
 {
-    public class SyndicationMessagePublisher<T> : IMessagePublisher<T> where T : new()
+    public class SyndicationMessagePublisher: IMessagePublisher
     {
         private readonly IMessageRepository _messageRepository;
 
@@ -11,7 +12,7 @@ namespace SFA.DAS.Messaging.Syndication
             _messageRepository = messageRepository;
         }
 
-        public async Task PublishAsync(T message)
+        public async Task PublishAsync(object message)
         {
             await _messageRepository.StoreAsync(message);
         }

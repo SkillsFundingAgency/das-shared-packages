@@ -8,7 +8,7 @@ namespace PubSubSampleGui.SubSystems
     {
         public FileSystemSubSystem(string storageDir = null)
         {
-            var publisher = new FileSystemMessagePublisher<SampleMessage>(storageDir ?? GetDefaultStorageDir());
+            var publisher = new FileSystemMessagePublisher(storageDir ?? GetDefaultStorageDir());
             var subscriberFactory = new FileSystemMessageSubscriberFactory<SampleMessage>(storageDir ?? GetDefaultStorageDir(), "Sample");
 
             Init(publisher, subscriberFactory);

@@ -2,25 +2,27 @@
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SFA.DAS.Messaging.Helper;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.FileSystem
 {
-    public class FileSystemMessagePublisher<T> : IMessagePublisher<T> where T : new()
+    public class FileSystemMessagePublisher : IMessagePublisher
     {
         private readonly string _storageDirectory;
-        private readonly string _topicName;
 
-        public FileSystemMessagePublisher(string storageDirectory, string topicName = "")
+        public FileSystemMessagePublisher(string storageDirectory)
         {
             _storageDirectory = storageDirectory;
-            _topicName = topicName;
         }
 
-        public async Task PublishAsync(T message)
+        public async Task PublishAsync(object message)
         {
+            var messageGroupName = MessageGroupHelper.GetMessageGroupName(message);
+
             var json = JsonConvert.SerializeObject(message);
 
-            var directoryName = Path.Combine(_storageDirectory, _topicName);
+            var directoryName = Path.Combine(_storageDirectory, messageGroupName);
             if (!Directory.Exists(directoryName))
             {
                 Directory.CreateDirectory(directoryName);

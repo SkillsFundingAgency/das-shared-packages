@@ -10,7 +10,7 @@ namespace PubSubSampleGui.SubSystems
     {
         public event EventHandler<SampleMessageReceivedEventArgs> SampleMessageReceived;
 
-        private IMessagePublisher<SampleMessage> _publisher;
+        private IMessagePublisher _publisher;
         private IMessageSubscriberFactory<SampleMessage> _subscriberFactory;
         private Func<IEventingMessageReceiver<SampleMessage>> _eventingReceiverFactory;
         private CancellationTokenSource _cancellationSource;
@@ -61,7 +61,7 @@ namespace PubSubSampleGui.SubSystems
         }
 
         protected void Init(
-            IMessagePublisher<SampleMessage> publisher,
+            IMessagePublisher publisher,
             IMessageSubscriberFactory<SampleMessage> subscriberFactory,
             Func<IEventingMessageReceiver<SampleMessage>> eventingReceiverFactory = null)
         {
