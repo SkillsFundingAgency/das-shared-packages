@@ -40,10 +40,6 @@
 
         public Guid DecodeValueToGuid(string id)
         {
-
-            if (string.IsNullOrEmpty(id?.Trim()))
-                throw new ArgumentException("Invalid hash Id", nameof(id));
-
             return new Guid(_hashIds.Decode(id).Select(Convert.ToByte).ToArray());
         }
 

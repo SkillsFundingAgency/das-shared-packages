@@ -85,7 +85,27 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             expectTedValue.Should().Be(actualValue);
         }
 
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        [TestCase("ABCDERT")]
+        [TestCase("E12345")]
+        [TestCase("ZZZ464")]
+        [TestCase("1WQ@")]
+        [TestCase("A|?.<>")]
+        [TestCase("Z")]
+        public void When_DecodeingToGuid_Invalid_HashId_Should_ThrowException(string valueToDecode)
+        {
+            // Arrange 
+            var _sut = new HashingService(AllowedCharacters, Hashstring);
 
+            //Act
+            Action testDelegate = () => _sut.DecodeValueToGuid(valueToDecode);
+
+            //Assert
+            testDelegate.ShouldThrow<ArgumentException>();
+        }
+            
         [TestCase("ABCDERT")]
         [TestCase("E12345")]
         [TestCase("ZZZ464")]
