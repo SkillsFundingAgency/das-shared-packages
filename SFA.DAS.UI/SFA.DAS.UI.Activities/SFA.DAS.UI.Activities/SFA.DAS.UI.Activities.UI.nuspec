@@ -3,7 +3,7 @@
   <metadata>
   <id>SFA.DAS.Activities.UI</id>
   <version>1.0.9</version>
-  <title>>SFA.DAS.Activities.UI</title>
+  <title>SFA.DAS.Activities.UI</title>
   <authors>DAS</authors>
   <description>The UI components for showing and interacting with Activities</description>
     <dependencies>

@@ -9,23 +9,28 @@ namespace NuGet
 {
     public class Activity
     {
-        public Activity(string accountId, string activityType, string description, string url, string postedDate)
+        public Activity()
         {
-            AccountId = accountId;
-            ActivityType = activityType;
-            Description = description;
-            Url = url;
-            PostedDateTime = DateTime.Parse(postedDate, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            
         }
 
-        public string AccountId { get; }
+        //public Activity(string ownerId, string activityType, string description, string url, string postedDate)
+        //{
+        //    OwnerId = ownerId;
+        //    ActivityType = activityType;
+        //    Description = description;
+        //    Url = url;
+        //    PostedDateTime = DateTime.Parse(postedDate, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        //}
 
-        public string ActivityType { get; }
+        public string OwnerId { get; internal set; }
 
-        public string Description { get; }
+        public string ActivityType { get; internal set; }
 
-        public string Url { get; }
+        public string Description { get; internal set; }
 
-        public DateTime PostedDateTime { get; }
+        public string Url { get; internal set; }
+
+        public DateTime PostedDateTime { get; internal set; }
     }
 }
