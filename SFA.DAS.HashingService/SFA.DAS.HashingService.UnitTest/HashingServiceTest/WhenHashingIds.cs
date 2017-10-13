@@ -72,7 +72,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             var _sut = new HashingService(AllowedCharacters, Hashstring);
 
             //Act
-            Guid.TryParse(hashValue, out Guid expectTedValue);
+          Guid expectTedValue  = Guid.Parse(hashValue);
             var hash = _sut.HashValue(expectTedValue);
             var actualValue = _sut.DecodeValueToGuid(hash);
 
