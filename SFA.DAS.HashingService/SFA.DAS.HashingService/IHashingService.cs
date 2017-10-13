@@ -6,7 +6,6 @@ namespace SFA.DAS.HashingService
     {
         string HashValue(long id);
         string HashValue(Guid id);
-
         long DecodeValue(string id);
         Guid DecodeValueToGuid(string id);
     }

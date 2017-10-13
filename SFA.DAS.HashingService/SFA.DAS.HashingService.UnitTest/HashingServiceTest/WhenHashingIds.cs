@@ -52,7 +52,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
         [TestCase(333333)]
         [TestCase(444444)]
         [TestCase(0)]
-        public void Then_Numric_HashValue_Should_Equal_DecodeValue(long expectTedValue)
+        public void Then_Numeric_HashValue_Should_Equal_DecodeValue(long expectTedValue)
         {
             // Arrange 
             var _sut = new HashingService(AllowedCharacters, Hashstring);
@@ -94,7 +94,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
         [TestCase("1WQ@")]
         [TestCase("A|?.<>")]
         [TestCase("Z")]
-        public void When_DecodeingToGuid_Invalid_HashId_Should_ThrowException(string valueToDecode)
+        public void When_DecodingToGuid_Invalid_HashId_Should_ThrowException(string valueToDecode)
         {
             // Arrange 
             var _sut = new HashingService(AllowedCharacters, Hashstring);
