@@ -6,7 +6,7 @@ using System;
 namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 {
     [TestFixture]
-    public class WhenHashingNumbers
+    public class WhenHashingIds
     {
         private const string Hashstring = "TEST: Dummy hash code London is a city in UK";
         private const string AllowedCharacters = "12345QWERTYUIOPNDGHAK";
@@ -52,7 +52,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
         [TestCase(333333)]
         [TestCase(444444)]
         [TestCase(0)]
-        public void Then_HashValue_Should_Equal_DecodeValue(long expectTedValue)
+        public void Then_Numric_HashValue_Should_Equal_DecodeValue(long expectTedValue)
         {
             // Arrange 
             var _sut = new HashingService(AllowedCharacters, Hashstring);
@@ -63,6 +63,26 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 
             //Assert
            expectTedValue.Should().Be(actualValue);
+        }
+        
+        [TestCase("b262ecd2-7512-4e7a-abe2-2f880a7d5294")]
+        [TestCase("{3A5CBD18-2FF4-4A94-850F-88D1FB5B9048}")]
+        [TestCase("{0039a928-33ea-492e-a798-79df52f941cf}")]
+        [TestCase("947127c479c44c2e85d3ea1a8bf24bdb")]
+        [TestCase("{B68D6D5DAD1E4DECAF72C35DE4FC21A6}")]
+        [TestCase("ddb8bb604d0b4f529f2a7b7833762d2f")]
+        public void Then_Guid_HashValue_Should_Equal_DecodeValue(string hashValue)
+        {
+            // Arrange 
+            var _sut = new HashingService(AllowedCharacters, Hashstring);
+
+            //Act
+            Guid.TryParse(hashValue, out Guid expectTedValue);
+            var hash = _sut.HashValue(expectTedValue);
+            var actualValue = _sut.DecodeValueToGuid(hash);
+
+            //Assert
+            expectTedValue.Should().Be(actualValue);
         }
 
 
