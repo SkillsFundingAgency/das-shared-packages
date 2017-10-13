@@ -62,9 +62,13 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             var actualValue = _sut.DecodeValue(hash);
 
             //Assert
-           expectTedValue.Should().Be(actualValue);
+            expectTedValue.Should().Be(actualValue);
         }
-        
+
+        [TestCase("b262ecd2-7512-4e7a-abe2-2f880a7d5294")]
+        [TestCase("{3A5CBD18-2FF4-4A94-850F-88D1FB5B9048}")]
+        [TestCase("{0039a928-33ea-492e-a798-79df52f941cf}")]
+        [TestCase("947127c479c44c2e85d3ea1a8bf24bdb")]
         [TestCase("ddb8bb604d0b4f529f2a7b7833762d2f")]
         public void Then_Guid_HashValue_Should_Equal_DecodeValue(string hashValue)
         {
@@ -72,12 +76,15 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             var _sut = new HashingService(AllowedCharacters, Hashstring);
 
             //Act
-          Guid expectTedValue  = Guid.Parse(hashValue);
-            var hash = _sut.HashValue(expectTedValue);
+            Guid.TryParse(hashValue, out Guid expectedValue);
+
+            var hash = _sut.HashValue(expectedValue);
             var actualValue = _sut.DecodeValueToGuid(hash);
 
             //Assert
-            expectTedValue.Should().Be(actualValue);
+            expectedValue.Should().Be(actualValue);
+
+
         }
 
         [TestCase("")]
@@ -100,7 +107,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             //Assert
             testDelegate.ShouldThrow<ArgumentException>();
         }
-            
+
         [TestCase("ABCDERT")]
         [TestCase("E12345")]
         [TestCase("ZZZ464")]
