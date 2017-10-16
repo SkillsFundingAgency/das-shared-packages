@@ -17,7 +17,8 @@ namespace SFA.DAS.Sql.Dapper
 
             return (x, y) =>
             {
-                if (!lookup.TryGetValue(parentIdentifierProperty.Invoke(x), out var parent))
+                TParent parent;
+                if (!lookup.TryGetValue(parentIdentifierProperty.Invoke(x), out parent))
                 {
                     lookup.Add(parentIdentifierProperty.Invoke(x), parent = x);
                 }
