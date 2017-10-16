@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using SFA.DAS.Messaging.AzureServiceBus.Attributes;
 
 namespace SFA.DAS.Messaging.AzureServiceBus.Helpers
@@ -17,11 +18,16 @@ namespace SFA.DAS.Messaging.AzureServiceBus.Helpers
 
         public static string GetMessageGroupName<T>()
         {
-            var subscriptionName = (string)typeof(T).CustomAttributes
+            return GetMessageGroupName(typeof(T));
+        }
+
+        public static string GetMessageGroupName(Type type)
+        {
+            var subscriptionName = (string)type.CustomAttributes
                 .FirstOrDefault(att => att.AttributeType.Name == nameof(TopicSubscriptionAttribute))
                 ?.ConstructorArguments.FirstOrDefault().Value;
 
-            return string.IsNullOrEmpty(subscriptionName) ? typeof(T).Name : subscriptionName;
+            return string.IsNullOrEmpty(subscriptionName) ? type.Name : subscriptionName;
         }
     }
 }
