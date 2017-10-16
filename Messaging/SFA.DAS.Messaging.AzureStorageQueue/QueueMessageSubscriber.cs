@@ -35,7 +35,7 @@ namespace SFA.DAS.Messaging.AzureStorageQueue
         {
             var queue = GetQueue();
             var batch = await queue.GetMessagesAsync(batchSize);
-            return batch.Select(m => new AzureStorageQueueMessage<T>(m, queue));
+            return batch?.Select(m => new AzureStorageQueueMessage<T>(m, queue));
         }
 
         public void Dispose()
