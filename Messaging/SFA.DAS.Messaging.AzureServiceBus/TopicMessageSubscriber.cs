@@ -19,14 +19,14 @@ namespace SFA.DAS.Messaging.AzureServiceBus
         {
             var brokeredMessage = await _client.ReceiveAsync();
 
-            return new AzureServiceBusMessage<T>(brokeredMessage);
+            return brokeredMessage == null ? null : new AzureServiceBusMessage<T>(brokeredMessage);
         }
 
         public async Task<IEnumerable<IMessage<T>>> ReceiveBatchAsAsync(int batchSize)
         {
             var brokerMessages = await _client.ReceiveBatchAsync(batchSize);
 
-            return brokerMessages.Select(msg => new AzureServiceBusMessage<T>(msg)).ToArray();
+            return brokerMessages?.Select(msg => new AzureServiceBusMessage<T>(msg)).ToArray();
         }
 
         public void Dispose()
