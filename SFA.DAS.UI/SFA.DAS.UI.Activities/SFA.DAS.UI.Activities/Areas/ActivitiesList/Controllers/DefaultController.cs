@@ -16,12 +16,12 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
     {
         private readonly IActivitiesUiRepository _repository;
 
-        public DefaultController(IActivitiesUiRepository repository)
+        public DefaultController()
         {
-            if (repository == null)
+            //if (repository == null)
                 _repository = new ActivitiesRepository();
-            else
-                _repository = _repository;
+            //else
+                //_repository = _repository;
 
         }
 

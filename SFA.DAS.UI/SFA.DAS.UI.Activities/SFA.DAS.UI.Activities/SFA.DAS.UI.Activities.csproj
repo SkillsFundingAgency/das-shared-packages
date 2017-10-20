@@ -199,7 +199,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="SFA.DAS.UI.Activities.UI.nuspec" />
+    <Content Include="SFA.DAS.UI.Activities.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
