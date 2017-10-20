@@ -41,7 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activity.cs" />
+    <Compile Include="Messages\CohortApproved.cs" />
+    <Compile Include="Messages\ApprenticeChangesRequested.cs" />
+    <Compile Include="Messages\ApprenticeChangesApproved.cs" />
+    <Compile Include="Messages\CommitmentHasBeenApproved.cs" />
     <Compile Include="FluentActivity.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

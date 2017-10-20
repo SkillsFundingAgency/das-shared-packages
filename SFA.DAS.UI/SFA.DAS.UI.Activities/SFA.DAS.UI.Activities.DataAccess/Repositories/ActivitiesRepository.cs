@@ -35,5 +35,20 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
             return searchResponse.Documents;
         }
+
+        //public async Task<IEnumerable<Activity>> GetLatestActivitiesGrouped(string ownerId)
+        //{
+        //    var searchResponse = await _elasticClient.SearchAsync<Activity>(s => s
+        //        .From(0)
+        //        .Size(10)
+        //        .Aggregations(a=>a.ValueCount("name",c=>c.Field(p=>p.Type)
+            
+        //            )
+        //        ) )
+        //    );
+
+        //    return searchResponse.Documents;
+        //}
+
     }
 }

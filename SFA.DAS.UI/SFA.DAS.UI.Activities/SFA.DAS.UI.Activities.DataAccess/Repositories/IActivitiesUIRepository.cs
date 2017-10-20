@@ -1,14 +1,14 @@
-﻿using NuGet;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Nest;
+using NuGet;
 
-namespace SFA.DAS.UI.Activities.Domain
+namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 {
     public interface IActivitiesUiRepository
     {
         Task<IEnumerable<Activity>> GetActivities(string ownerId);
+
     }
 }

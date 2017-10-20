@@ -1,11 +1,11 @@
-﻿@model List<SFA.DAS.UI.Activities.Areas.ActivitiesList.Models.ActivityModel>
+﻿@model SFA.DAS.UI.Activities.Areas.ActivitiesList.Models.ActivitiesListModel
     
 <div>
     <p>This is shared content</p>
     <p>Model name is:</p>
-    @Model.Count.ToString() items
+    @Model.Activities.Count.ToString() items
     <table>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Activities)
         {
             <tr>
                 @Html.DisplayFor(a=>item)

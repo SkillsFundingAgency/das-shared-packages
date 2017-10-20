@@ -144,7 +144,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\ActivitiesList\ActivitiesListAreaRegistration.cs" />
     <Compile Include="Areas\ActivitiesList\Controllers\DefaultController.cs" />
-    <Compile Include="Areas\ActivitiesList\Models\ActivityModel.cs" />
+    <Compile Include="Areas\ActivitiesList\Mappers\ActivityMapper.cs" />
+    <Compile Include="Areas\ActivitiesList\Models\ActivitiesListModel.cs" />
+    <Compile Include="Areas\ActivitiesList\Models\ActivitiesGroupedModel.cs" />
+    <Compile Include="Areas\ActivitiesPage\ActivitiesPageAreaRegistration.cs" />
+    <Compile Include="Areas\ActivitiesPage\Controllers\DefaultController.cs" />
+    <Compile Include="Areas\ActivitiesPage\Models\ActivitiesListModel.cs" />
+    <Compile Include="Areas\ActivitiesPage\Models\ActivityModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -165,9 +171,9 @@
     </Content>
     <Content Include="Areas\ActivitiesList\Views\web.config" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Index.cshtml" />
-    <Content Include="Areas\ActivitiesList\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\ActivitiesList\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Activity.cshtml" />
+    <Content Include="Areas\ActivitiesPage\Views\web.config" />
+    <Content Include="Areas\ActivitiesPage\Views\Shared\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -198,6 +204,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\ActivitiesList\Views\Default\" />
+    <Folder Include="Areas\ActivitiesPage\Views\Default\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +228,10 @@
     <ProjectReference Include="..\SFA.DAS.UI.Activities.DataAccess\SFA.DAS.UI.Activities.DataAccess.csproj">
       <Project>{f31d9e4c-f714-4e91-8692-1285428efa4c}</Project>
       <Name>SFA.DAS.UI.Activities.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.UI.Activities.Domain\SFA.DAS.UI.Activities.Domain.csproj">
+      <Project>{E5999BE1-784F-4BA1-B707-68849F3FBD2D}</Project>
+      <Name>SFA.DAS.UI.Activities.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

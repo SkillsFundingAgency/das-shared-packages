@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet", "NuGet\NuGet.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UI.Activities.Domain", "SFA.DAS.UI.Activities.Domain\SFA.DAS.UI.Activities.Domain.csproj", "{E5999BE1-784F-4BA1-B707-68849F3FBD2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAS.UI.Activities.Web.Tests", "DAS.UI.Activities.Web.Tests\DAS.UI.Activities.Web.Tests.csproj", "{90D493AF-D9C9-4452-8185-0C74F14B4AFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E5999BE1-784F-4BA1-B707-68849F3FBD2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5999BE1-784F-4BA1-B707-68849F3FBD2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5999BE1-784F-4BA1-B707-68849F3FBD2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90D493AF-D9C9-4452-8185-0C74F14B4AFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D493AF-D9C9-4452-8185-0C74F14B4AFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D493AF-D9C9-4452-8185-0C74F14B4AFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D493AF-D9C9-4452-8185-0C74F14B4AFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
