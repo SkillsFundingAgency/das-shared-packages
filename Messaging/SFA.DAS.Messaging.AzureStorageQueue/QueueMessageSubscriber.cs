@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.AzureStorageQueue
 {
@@ -34,7 +35,7 @@ namespace SFA.DAS.Messaging.AzureStorageQueue
         {
             var queue = GetQueue();
             var batch = await queue.GetMessagesAsync(batchSize);
-            return batch.Select(m => new AzureStorageQueueMessage<T>(m, queue));
+            return batch?.Select(m => new AzureStorageQueueMessage<T>(m, queue));
         }
 
         public void Dispose()

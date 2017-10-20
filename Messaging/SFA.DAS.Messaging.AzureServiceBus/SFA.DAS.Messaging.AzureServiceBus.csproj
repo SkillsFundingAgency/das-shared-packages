@@ -46,7 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\TopicSubscriptionAttribute.cs" />
     <Compile Include="AzureServiceBusMessage.cs" />
+    <Compile Include="Helpers\TopicSubscriptionHelper.cs" />
     <Compile Include="TopicMessagePublisher.cs" />
     <Compile Include="TopicMessageSubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

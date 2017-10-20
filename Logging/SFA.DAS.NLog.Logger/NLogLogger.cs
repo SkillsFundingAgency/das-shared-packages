@@ -8,12 +8,12 @@ namespace SFA.DAS.NLog.Logger
 {
     public class NLogLogger : ILog
     {
-        private readonly IRequestContext _context;
+        private readonly ILoggingContext _context;
         private readonly IDictionary<string, object> _properties;
         private readonly string _version;
         private readonly string _loggerType;
 
-        public NLogLogger(Type loggerType = null, IRequestContext context = null, IDictionary<string, object> properties = null)
+        public NLogLogger(Type loggerType = null, ILoggingContext context = null, IDictionary<string, object> properties = null)
         {
             _loggerType = loggerType?.ToString() ?? "DefaultLogger";
             _context = context;

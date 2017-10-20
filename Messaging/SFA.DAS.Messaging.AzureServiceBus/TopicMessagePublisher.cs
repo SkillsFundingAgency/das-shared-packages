@@ -1,27 +1,28 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
+using SFA.DAS.Messaging.Helpers;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.AzureServiceBus
 {
-    public class TopicMessagePublisher<T> : IMessagePublisher<T> where T : new()
+    public class TopicMessagePublisher : IMessagePublisher
     {
         private readonly string _connectionString;
-        private readonly string _topicName;
 
-
-        public TopicMessagePublisher(string connectionString, string topicName)
+        public TopicMessagePublisher(string connectionString)
         {
             _connectionString = connectionString;
-            _topicName = topicName;
         }
 
-        public async Task PublishAsync(T message)
+        public async Task PublishAsync(object message)
         {
+            var messageGroupName = MessageGroupHelper.GetMessageGroupName(message);
+
             TopicClient client = null;
 
             try
             {
-                client = TopicClient.CreateFromConnectionString(_connectionString, _topicName);
+                client = TopicClient.CreateFromConnectionString(_connectionString, messageGroupName);
                 await client.SendAsync(new BrokeredMessage(message));
             }
             finally

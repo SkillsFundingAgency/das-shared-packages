@@ -1,7 +1,9 @@
 ﻿using System;
+using SFA.DAS.Messaging.Attributes;
 
 namespace PublishReceiveSample
 {
+    [MessageGroup("sample-event")]
     public class SampleEvent
     {
         public SampleEvent()

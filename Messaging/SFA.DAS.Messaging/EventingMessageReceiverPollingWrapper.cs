@@ -9,10 +9,10 @@ namespace SFA.DAS.Messaging
     {
         public event EventHandler<MessageReceivedEventArgs<T>> MessageReceived;
         
-        private readonly IMessageSubscriberFactory<T> _messageSubscriberFactory;
+        private readonly IMessageSubscriberFactory _messageSubscriberFactory;
         private readonly PollingToEventSettings _settings;
 
-        public EventingMessageReceiverPollingWrapper(IMessageSubscriberFactory<T> messageSubscriberFactory, PollingToEventSettings settings)
+        public EventingMessageReceiverPollingWrapper(IMessageSubscriberFactory messageSubscriberFactory, PollingToEventSettings settings)
         {
             _messageSubscriberFactory = messageSubscriberFactory;
             _settings = settings;
@@ -32,7 +32,7 @@ namespace SFA.DAS.Messaging
 
             await Task.Factory.StartNew(async () =>
             {
-                using (var subscriber = _messageSubscriberFactory.GetSubscriber())
+                using (var subscriber = _messageSubscriberFactory.GetSubscriber<T>())
                 {
                     while (!cancellationToken.IsCancellationRequested)
                     {

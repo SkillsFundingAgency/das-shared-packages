@@ -6,6 +6,7 @@ using SFA.DAS.Messaging;
 using SFA.DAS.Messaging.AzureServiceBus;
 using SFA.DAS.Messaging.AzureStorageQueue;
 using SFA.DAS.Messaging.FileSystem;
+using SFA.DAS.Messaging.Interfaces;
 using SFA.DAS.Messaging.Syndication;
 using SFA.DAS.Messaging.Syndication.Hal.Json;
 using SFA.DAS.Messaging.Syndication.Http;
@@ -24,10 +25,12 @@ namespace PublishReceiveSample
         {
             DefaultColor = Console.ForegroundColor;
 
+            IMessageSubscriber<SampleEvent> receiver = null;
+
             try
             {
-                IMessagePublisher<SampleEvent> publisher;
-                IMessageSubscriber<SampleEvent> receiver;
+                IMessagePublisher publisher;
+
                 LoadSubsystem(out publisher, out receiver);
                 if (publisher == null)
                 {
@@ -54,14 +57,18 @@ namespace PublishReceiveSample
                 WriteColoredLine("Press any key to exit");
                 Console.ReadKey();
             }
+            finally
+            {
+                receiver?.Dispose();
+            }
         }
 
         private static void LoadSubsystem<T>(
-            out IMessagePublisher<T> publisher, 
-            out IMessageSubscriber<T> receiver) where T : new()
+            out IMessagePublisher publisher, 
+            out IMessageSubscriber<T> subscriber) where T : new()
         {
             publisher = null;
-            receiver = null;
+            subscriber = null;
 
             var validSelection = false;
             while (!validSelection)
@@ -78,19 +85,19 @@ namespace PublishReceiveSample
                 switch (input)
                 {
                     case "1":
-                        LoadFileSystem(out publisher, out receiver);
+                        LoadFileSystem(out publisher, out subscriber);
                         validSelection = true;
                         break;
                     case "2":
-                        LoadAzureStorageQueue(out publisher, out receiver);
+                        LoadAzureStorageQueue(out publisher, out subscriber);
                         validSelection = true;
                         break;
                     case "3":
-                        LoadAzureServiceBus(out publisher, out receiver);
+                        LoadAzureServiceBus(out publisher, out subscriber);
                         validSelection = true;
                         break;
                     case "4":
-                        LoadHalJson(out publisher, out receiver);
+                        LoadHalJson(out publisher, out subscriber);
                         validSelection = true;
                         break;
                     case "0":
@@ -104,8 +111,8 @@ namespace PublishReceiveSample
             }
         }
         private static void LoadFileSystem<T>(
-            out IMessagePublisher<T> publisher, 
-            out IMessageSubscriber<T> receiver) where T : new()
+            out IMessagePublisher publisher, 
+            out IMessageSubscriber<T> subscriber) where T : new()
         {
             WriteColoredText("Storage dir (%temp%/[Guid]): ");
             var dir = Console.ReadLine();
@@ -115,13 +122,15 @@ namespace PublishReceiveSample
                 dir = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), Guid.NewGuid().ToString());
             }
 
-            publisher = new FileSystemMessagePublisher<T>(dir);
-            receiver = new FileSystemMessageSubscriber<T>(dir);
+            publisher = new FileSystemMessagePublisher(dir);
+
+            var subscriberFactory = new FileSystemMessageSubscriberFactory(dir);
+            subscriber = subscriberFactory.GetSubscriber<T>();
         }
 
         private static void LoadAzureStorageQueue<T>(
-            out IMessagePublisher<T> publisher, 
-            out IMessageSubscriber<T> receiver) where T : new()
+            out IMessagePublisher publisher, 
+            out IMessageSubscriber<T> subscriber) where T : new()
         {
             WriteColoredText("Connection string (Blank for dev storage): ");
             var connectionString = Console.ReadLine();
@@ -130,33 +139,31 @@ namespace PublishReceiveSample
                 connectionString = "UseDevelopmentStorage=true;";
             }
 
-            WriteColoredText("Queue name: ");
-            var queueName = Console.ReadLine();
+            publisher = new QueueMessagePublisher(connectionString);
 
-            publisher = new QueueMessagePublisher<T>(connectionString, queueName);
-            receiver = new QueueMessageSubscriber<T>(connectionString, queueName);
+            var subscriberFactory = new QueueMessageSubscriberFactory(connectionString);
+            subscriber = subscriberFactory.GetSubscriber<T>();
         }
 
         private static void LoadAzureServiceBus<T>(
-            out IMessagePublisher<T> publisher, 
-            out IMessageSubscriber<T> receiver) where T : new()
+            out IMessagePublisher publisher, 
+            out IMessageSubscriber<T> subscriber) where T : new()
         {
             WriteColoredText("Connection string: ");
             var connectionString = Console.ReadLine();
 
-            WriteColoredText("Topic Name: ");
-            var topicName = Console.ReadLine();
-
             WriteColoredText("Subscription name: ");
             var subscriptionName = Console.ReadLine();
 
-            publisher = new TopicMessagePublisher<T>(connectionString, topicName);
-            receiver = new TopicMessageSubscriber<T>(connectionString, topicName, subscriptionName);
+            publisher = new TopicMessagePublisher(connectionString);
+
+            var subscriberFactory = new TopicSubscriberFactory(connectionString, subscriptionName);
+            subscriber = subscriberFactory.GetSubscriber<T>();
         }
 
         private static void LoadHalJson<T>(
-            out IMessagePublisher<T> publisher, 
-            out IMessageSubscriber<T> receiver) where T : new()
+            out IMessagePublisher publisher, 
+            out IMessageSubscriber<T> subscriber) where T : new()
         {
             var connectionString = "server=.;database=scratchpad;trusted_connection=true;";
             var pubStoreSproc = "usp_StoreMessage";
@@ -179,16 +186,16 @@ namespace PublishReceiveSample
             //WriteColoredText("Receive update sproc: ");
             //var subUpdateSproc = Console.ReadLine();
 
-            publisher = new SyndicationMessagePublisher<T>(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc, 10));
+            publisher = new SyndicationMessagePublisher(new SqlServerMessageRepository(connectionString, pubStoreSproc, pubReceiveSproc, 10));
 
             var feedPositionRepo = new SqlServerFeedPositionRepository(connectionString, subGetSproc, subUpdateSproc);
-            receiver = new SyndicationPollingMessageReceiver<T>(
+            subscriber = new SyndicationPollingMessageReceiver<T>(
                 new HalJsonMessageClient(feedPositionRepo, new HttpClientWrapper("http://localhost:16972/"), new MessageIdentifierFactory()),
                 feedPositionRepo);
         }
 
         private static bool PerformAction(
-             IMessagePublisher<SampleEvent> publisher,
+             IMessagePublisher publisher,
              IMessageSubscriber<SampleEvent> receiver)
         {
             while (true)
@@ -222,7 +229,7 @@ namespace PublishReceiveSample
                 }
             }
         }
-        private static void Publish(IMessagePublisher<SampleEvent> publisher)
+        private static void Publish(IMessagePublisher publisher)
         {
             var message = new SampleEvent();
             publisher.PublishAsync(message).Wait();

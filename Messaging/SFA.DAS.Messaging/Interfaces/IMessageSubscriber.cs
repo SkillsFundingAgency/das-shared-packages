@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Messaging
+namespace SFA.DAS.Messaging.Interfaces
 {
     public interface IMessageSubscriber<T> : IDisposable where T : new()
     {

@@ -7,14 +7,14 @@ namespace SFA.DAS.Messaging.Syndication.UnitTests.SyndicationMessagePublisherTes
     public class WhenPublishing
     {
         private Mock<IMessageRepository> _messageRepository;
-        private SyndicationMessagePublisher<TestMessage> _publisher;
+        private SyndicationMessagePublisher _publisher;
 
         [SetUp]
         public void Arrange()
         {
             _messageRepository = new Mock<IMessageRepository>();
 
-            _publisher = new SyndicationMessagePublisher<TestMessage>(_messageRepository.Object);
+            _publisher = new SyndicationMessagePublisher(_messageRepository.Object);
         }
 
         [Test]

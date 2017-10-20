@@ -1,7 +1,7 @@
 ﻿namespace SFA.DAS.Messaging.Interfaces
 {
-    public interface IMessageSubscriberFactory<T> where T : new()
+    public interface IMessageSubscriberFactory 
     {
-        IMessageSubscriber<T> GetSubscriber();
+        IMessageSubscriber<T> GetSubscriber<T>() where T : new();
     }
 }

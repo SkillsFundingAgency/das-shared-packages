@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace SFA.DAS.Messaging
+namespace SFA.DAS.Messaging.Interfaces
 {
-    public interface IMessagePublisher<in T> where T : new()
+    public interface IMessagePublisher
     {
-        Task PublishAsync(T message);
+        Task PublishAsync(object message);
     }
 }
