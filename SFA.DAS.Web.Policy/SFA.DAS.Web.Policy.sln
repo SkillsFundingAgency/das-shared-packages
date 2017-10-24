@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Web.Policy.UnitTests", "SFA.DAS.Web.Policy.UnitTests\SFA.DAS.Web.Policy.UnitTests.csproj", "{B8F958A8-DA70-4ADA-A8DE-1A1FC2E86610}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Web.Policy", "SFA.DAS.Web.Policy\SFA.DAS.Web.Policy.csproj", "{D74E69DE-5C61-4205-9DFB-991DFA333F1F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E06A557-9912-49D2-890D-502F99454117}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.txt = Readme.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B8F958A8-DA70-4ADA-A8DE-1A1FC2E86610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8F958A8-DA70-4ADA-A8DE-1A1FC2E86610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8F958A8-DA70-4ADA-A8DE-1A1FC2E86610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8F958A8-DA70-4ADA-A8DE-1A1FC2E86610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D74E69DE-5C61-4205-9DFB-991DFA333F1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D74E69DE-5C61-4205-9DFB-991DFA333F1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D74E69DE-5C61-4205-9DFB-991DFA333F1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D74E69DE-5C61-4205-9DFB-991DFA333F1F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CC61E289-B102-4FAF-9985-02DCD1228B68}
+	EndGlobalSection
+EndGlobal
