@@ -1,9 +1,17 @@
-﻿This solution provides a common Web Policy provider for applying best practice to http request/Response.
+﻿# SFA.DAS.Web.Policy
 
-Example:
+![badge](https://sfa-gov-uk.visualstudio.com/DefaultCollection/_apis/public/build/definitions/c39e0c0b-7aff-4606-b160-3566f3bbce23/405/badge)
 
-Instead of writing and maintaining;
+[![NuGet Badge](https://buildstats.info/nuget/SFA.DAS.Http)](https://www.nuget.org/packages/SFA.DAS.Http/)
 
+Library containing Web policy provider and related policy implementation classes.
+
+
+### Example Usage
+
+Instead of writing and maintaining something like inside every web application;
+
+```csharp
 protected void Application_PreSendRequestHeaders(object sender, EventArgs e)
 {
     var headersToRemove = new string[] {
@@ -18,15 +26,19 @@ protected void Application_PreSendRequestHeaders(object sender, EventArgs e)
     }
 }
 
-Inside every web application
+```
 
+The ResponseHeaderRestrictionPolicy class performs this action.
 
-The ResponseHeaderRestrictionPolicy performs this action.
+Configuring and Injecting the HttpContextPolicyProvider class provides a common library of policies to apply to the HttpContext at any stage of the pipeline.
+
+E.g.
+
+```csharp
 
 protected void Application_PreSendRequestHeaders(object sender, EventArgs e)
 {
-	_webPolicyProvider.Apply(
+	_httpContextPolicyProvider.Apply(
 			new System.Web.HttpContextWrapper(HttpContext.Current), PolicyConcerns.HttpResponse);
 }
-
-now the headers and all other web policies are managed by one code change and a refresh of the shared packages!
+```
