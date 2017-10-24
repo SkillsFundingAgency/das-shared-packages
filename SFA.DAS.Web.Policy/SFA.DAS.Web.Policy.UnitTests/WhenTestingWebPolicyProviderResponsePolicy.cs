@@ -6,7 +6,7 @@ namespace SFA.DAS.Web.Policy.UnitTests
     {
 
         [Test]
-        public void ItShouldModifyTheResponse()
+        public void ItShouldApplyItsPolicy()
         {
             var context = HttpContextManager.Current;
 

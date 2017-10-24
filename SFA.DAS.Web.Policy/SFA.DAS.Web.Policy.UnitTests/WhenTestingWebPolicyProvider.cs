@@ -17,7 +17,7 @@ namespace SFA.DAS.Web.Policy.UnitTests
         protected NameValueCollection _responseHeaders;
 
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             Unit = new HttpContextPolicyProvider(new List<IHttpContextPolicy>()
             {
