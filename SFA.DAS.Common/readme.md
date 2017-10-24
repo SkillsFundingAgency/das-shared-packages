@@ -1,4 +1,4 @@
-﻿#SFA.DAS.Common
+﻿# SFA.DAS.Common
 
 This solution is in response to AML-1613  https://skillsfundingagency.atlassian.net/browse/AML-1613
 
