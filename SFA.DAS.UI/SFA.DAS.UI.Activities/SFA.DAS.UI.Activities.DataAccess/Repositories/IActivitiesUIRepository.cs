@@ -8,7 +8,7 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 {
     public interface IActivitiesUiRepository
     {
-        Task<IEnumerable<Activity>> GetActivities(string ownerId);
+        IEnumerable<Activity> GetActivities(string ownerId);
 
     }
 }

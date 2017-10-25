@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NuGet
 {
     public abstract class Message
     {
+        protected Message()
+        {
+            PostedDatedTime=DateTime.Now;
+        }
+
         public string OwnerId { get; set; }
 
-        public string Url { get; set; }
+        public string HashedAccountId { get; set; }
 
         public DateTime PostedDatedTime { get; set; }
     }

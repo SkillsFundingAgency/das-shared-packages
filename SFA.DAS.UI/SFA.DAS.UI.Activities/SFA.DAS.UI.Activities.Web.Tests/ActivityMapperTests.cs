@@ -1,26 +1,19 @@
-﻿
-using System;
-using System.CodeDom;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
-using Moq;
 using NuGet;
 using NUnit.Framework;
-using SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers;
+using SFA.DAS.UI.Activities.Areas.ActivitiesList.Mappers;
 using SFA.DAS.UI.Activities.Areas.ActivitiesList.Models;
-using SFA.DAS.UI.Activities.DataAccess.Repositories;
 
-namespace DAS.UI.Activities.Web.Tests.ActivitiesList
+namespace SFA.DAS.UI.Activities.Web.Tests
 {
-
-    public class DefaultControllerTests
+    public class ActivityMapperTests
     {
-        private DefaultController _controller;
-        private Mock<IActivitiesUiRepository> _mockRepository;
+        private ActivityMapper _mapper;
+
         private DateTime _testTime;
-        private ActionResult _result;
-        private PartialViewResult _viewResult;
+        private List<ActivitiesGroupedModel> _result;
 
         private DateTime _today13;
         private DateTime _today12;
@@ -61,53 +54,27 @@ namespace DAS.UI.Activities.Web.Tests.ActivitiesList
         private DateTime _twoDaysAgo03;
         private DateTime _twoDaysAgo02;
 
-
-
         [SetUp]
         public void Init()
         {
+            _mapper=new ActivityMapper();
+
             SetupTimes();
 
             var activities = MakeSomeActivities();
 
-            _mockRepository = new Mock<IActivitiesUiRepository>();
-
-            _mockRepository.Setup(a => a.GetActivities(It.IsAny<string>()))
-                .Returns(activities);
-
-            _controller =new DefaultController();
-
-            _result =  _controller.Index().Result;
-            _viewResult = _result as PartialViewResult;
-        }
-
-
-        [Test]
-        public void ThenThereAreFourTypes()
-        {
-            Assert.IsNotNull(_viewResult);
-            Assert.AreEqual(_viewResult.Model.GetType(), typeof(ActivitiesListModel));
+            _result = _mapper.SummariseCollections(activities).ToList();
         }
 
         [Test]
-        public void ThenActivityOneIsNotIncluded()
+        public void TheTheGroupingsAreOnePerType()
         {
-            Assert.IsFalse(((ActivitiesListModel)_viewResult.Model).Activities.Any(a=>a.ActivityType==Activity.ActivityType.ActivityOne));
-        }
-
-        [Test]
-        public void ThenActivityTwoThreeFourAndFiveAreIncluded()
-        {
-            Assert.IsTrue(((ActivitiesListModel)_viewResult.Model).Activities.Any(a => a.ActivityType == Activity.ActivityType.ActivityTwo));
-            Assert.IsTrue(((ActivitiesListModel)_viewResult.Model).Activities.Any(a => a.ActivityType == Activity.ActivityType.ActivityThree));
-            Assert.IsTrue(((ActivitiesListModel)_viewResult.Model).Activities.Any(a => a.ActivityType == Activity.ActivityType.ActivityFour));
-            Assert.IsTrue(((ActivitiesListModel)_viewResult.Model).Activities.Any(a => a.ActivityType == Activity.ActivityType.ActivityFive));
-        }
-
-        [Test]
-        public void ThenTheListIsOrderedByLatestTime()
-        {
-            Assert.AreEqual(Activity.ActivityType.ActivityOne, ((ActivitiesListModel)_viewResult.Model).Activities.First().ActivityType);
+            Assert.AreEqual(5,_result.Count);
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityOne));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityTwo));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityThree));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFour));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFive));
         }
 
         private List<Activity> MakeSomeActivities()
@@ -194,15 +161,5 @@ namespace DAS.UI.Activities.Web.Tests.ActivitiesList
             _twoDaysAgo03 = _testTime.Subtract(new TimeSpan(2, 11, 0, 0));
             _twoDaysAgo02 = _testTime.Subtract(new TimeSpan(2, 12, 0, 0));
         }
-        //private DateTime Today(int hours, int mins)
-        //{
-        //    return _testTime.
-        //}
-
-        //private enum When
-        //{
-        //    Today,
-        //    Yesterday,
-        //}
     }
 }

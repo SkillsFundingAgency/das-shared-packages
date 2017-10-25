@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -9,22 +10,9 @@ namespace NuGet
 {
     public class Activity
     {
-        public Activity()
-        {
-            
-        }
-
-        //public Activity(string ownerId, string activityType, string description, string url, string postedDate)
-        //{
-        //    OwnerId = ownerId;
-        //    ActivityType = activityType;
-        //    Description = description;
-        //    Url = url;
-        //    PostedDateTime = DateTime.Parse(postedDate, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-        //}
-
         public string OwnerId { get; internal set; }
 
+        
         public ActivityType Type { get; internal set; }
 
         public string DescriptionFull { get; internal set; }
@@ -45,6 +33,8 @@ namespace NuGet
 
         public DateTime PostedDateTime { get; internal set; }
 
+        public string HashedAccountId { get; internal set; }
+
         public enum ActivityType
         {
             ActivityOne,
@@ -53,8 +43,9 @@ namespace NuGet
             ActivityFour,
             ActivityFive,
             ChangeHistory,
-            CommitmentHasBeenApproved,
-            ApprenticeChangesApproved
+            ApprenticeChangesApproved,
+            ApprenticeChangesRequested,
+            CohortApproved
         }
     }
 }

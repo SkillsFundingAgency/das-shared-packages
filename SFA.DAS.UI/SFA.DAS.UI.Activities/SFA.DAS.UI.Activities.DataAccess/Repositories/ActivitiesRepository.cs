@@ -14,27 +14,40 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
         public ActivitiesRepository(ActivitiesConfiguration configuration)
         {
-            //var elasticSettings = new ConnectionSettings(new Uri("http://localhost:9200"));
-            var elasticSettings = new ConnectionSettings(new Uri(configuration.ElasticServerBaseUrl));
+            var elasticSettings = new ConnectionSettings(new Uri("http://localhost:9200")).DefaultIndex("activities");
+            //var elasticSettings = new ConnectionSettings(new Uri(configuration.ElasticServerBaseUrl));
+
+            //var descriptor = new CreateIndexDescriptor("activity")
+            //    .Mappings(ms => ms
+            //        .Map<Activity>(m => m
+            //        .Properties(ps=>ps
+            //        .Text(s=>s.Name(a=>a.OwnerId)
+            //        ()))
+            //    );
             _elasticClient = new ElasticClient(elasticSettings);
 
+
         }
 
-        public async Task<IEnumerable<Activity>> GetActivities(string ownerId)
+        public IEnumerable<Activity> GetActivities(string ownerId)
         {
-            var searchResponse = await _elasticClient.SearchAsync<Activity>(s => s
-                .From(0)
-                .Size(10)
-                .Query(q => q
-                    .Match(m => m
-                        .Field(f => f.OwnerId)
-                        .Query(ownerId)
-                    )
-                )
+            var searchResponse = _elasticClient.Search<dynamic>(s => s
+            .Index("activitiestest")
+            .Type(typeof(Activity))
+            .MatchAll()
+                //.Query(q => q
+                //    .Match(m => m
+                //        .Field(f => f.OwnerId)
+                //        .Query(ownerId)
+                //    )
+                //)
             );
 
-            return searchResponse.Documents;
+            var a = searchResponse.Documents;
+
+            return new List<Activity>();
         }
+
 
         //public async Task<IEnumerable<Activity>> GetLatestActivitiesGrouped(string ownerId)
         //{

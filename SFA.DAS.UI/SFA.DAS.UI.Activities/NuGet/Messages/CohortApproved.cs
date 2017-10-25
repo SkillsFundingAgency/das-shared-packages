@@ -6,6 +6,7 @@ namespace NuGet.Messages
 {
     public class CohortApproved : Message
     {
+
         public void AddApprentice(string apprenticeName)
         {
             Apprentices.Add(apprenticeName);

@@ -1,5 +1,4 @@
-﻿using SFA.DAS.UI.Activities.Areas.ActivitiesList.Models;
-using SFA.DAS.UI.Activities.Domain;
+﻿using SFA.DAS.UI.Activities.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,10 @@ using System.Web.Mvc;
 using SFA.DAS.UI.Activities.Areas.ActivitiesList.Mappers;
 using SFA.DAS.UI.Activities.DataAccess.Repositories;
 using NuGet;
+using SFA.DAS.UI.Activities.Areas.ActivitiesList.Models;
+using SFA.DAS.UI.Activities.Areas.ActivitiesPage.Models;
+using SFA.DAS.UI.Activities.Domain.Configurations;
+using ActivitiesListModel = SFA.DAS.UI.Activities.Areas.ActivitiesList.Models.ActivitiesListModel;
 
 namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
 {
@@ -19,22 +22,22 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
         public DefaultController()
         {
             //if (repository == null)
-                _repository = new ActivitiesRepository();
+                _repository = new ActivitiesRepository(new ActivitiesConfiguration());
             //else
-                //_repository = _repository;
+                //_repository = repo;
 
         }
 
         // GET: ActivitiesList/Default
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var messages = await _repository.GetActivities("ownerId");
+            var messages = _repository.GetActivities("OwnerId");
             //var activitiesGroupedByType = messages.GroupBy(a => a.Type);
             var summarisedActivities=new ActivityMapper().SummariseCollections(messages);
-            
-            //var activityViewModels = activitiesGroupedByType.Select(activityMapper.SummariseCollections);
-            //messages.Add(new ActivityModel("acc1", "activityType1","Description 1", "url",DateTime.Now.ToString("O")));
-            //messages.Add(new ActivityModel("acc2", "activityType1", "Description 2", "url", DateTime.Now.ToString("O")));
+
+            //var activitiesView = messages.Select(activityMapper.SummariseCollections);
+            //activitiesView.Add(new ActivityModel("acc1", "activityType1","Description 1", "url",DateTime.Now.ToString("O")));
+            //activitiesView.Add(new ActivityModel("acc2", "activityType1", "Description 2", "url", DateTime.Now.ToString("O")));
             var activitiesView=new ActivitiesListModel(summarisedActivities.ToList());
             return PartialView(activitiesView);
         }
@@ -44,38 +47,38 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
         //    return model.Activities.Where(a => a.PostedDateTime.).GroupBy(a => a.ActivityType);
         //}
 
-        private class ActivitiesRepository : IActivitiesUiRepository
-        {
-            public async Task<IEnumerable<Activity>> GetActivities(string ownerId)
-            {
+        //private class ActivitiesRepository : IActivitiesUiRepository
+        //{
+        //    public async Task<IEnumerable<Activity>> GetActivities(string ownerId)
+        //    {
 
-                    var rtn = new List<Activity>()
-                    {
-                        MakeActivity(Activity.ActivityType.ActivityOne, DateTime.Now.AddHours(-1)),
-                        MakeActivity(Activity.ActivityType.ActivityTwo, DateTime.Now.AddHours(-3)),
-                        MakeActivity(Activity.ActivityType.ActivityTwo, DateTime.Now.AddHours(-4)),
-                        MakeActivity(Activity.ActivityType.ActivityThree, DateTime.Now.AddHours(-9)),
-                        MakeActivity(Activity.ActivityType.ActivityOne, DateTime.Now.AddHours(-8)),
-                        MakeActivity(Activity.ActivityType.ActivityTwo, DateTime.Now.AddHours(-20)),
-                        MakeActivity(Activity.ActivityType.ActivityFour, DateTime.Now.AddHours(-10)),
-                        MakeActivity(Activity.ActivityType.ActivityThree, DateTime.Now.AddHours(-40))
-                    };
+        //            var rtn = new List<Activity>()
+        //            {
+        //                MakeActivity(Activity.ActivityType.ActivityOne, DateTime.Now.AddHours(-1)),
+        //                MakeActivity(Activity.ActivityType.ActivityTwo, DateTime.Now.AddHours(-3)),
+        //                MakeActivity(Activity.ActivityType.ActivityTwo, DateTime.Now.AddHours(-4)),
+        //                MakeActivity(Activity.ActivityType.ActivityThree, DateTime.Now.AddHours(-9)),
+        //                MakeActivity(Activity.ActivityType.ActivityOne, DateTime.Now.AddHours(-8)),
+        //                MakeActivity(Activity.ActivityType.ActivityTwo, DateTime.Now.AddHours(-20)),
+        //                MakeActivity(Activity.ActivityType.ActivityFour, DateTime.Now.AddHours(-10)),
+        //                MakeActivity(Activity.ActivityType.ActivityThree, DateTime.Now.AddHours(-40))
+        //            };
                 
-                return rtn;
-            }
+        //        return rtn;
+        //    }
 
-            private Activity MakeActivity(Activity.ActivityType type, DateTime timeAdded)
-            {
-                return new FluentActivity()
-                    .ActivityType(type)
-                    .DescriptionFull("desc full")
-                    .DescriptionPlural("things added")
-                    .DescriptionSingular("thing added")
-                    .OwnerId("Me")
-                    .PostedDateTime(timeAdded)
-                    .Url("http...")
-                    .Object();
-            }
-        }
+        //    private Activity MakeActivity(Activity.ActivityType type, DateTime timeAdded)
+        //    {
+        //        return new FluentActivity()
+        //            .ActivityType(type)
+        //            .DescriptionFull("desc full")
+        //            .DescriptionPlural("things added")
+        //            .DescriptionSingular("thing added")
+        //            .OwnerId("Me")
+        //            .PostedDateTime(timeAdded)
+        //            .Url("http...")
+        //            .Object();
+        //    }
+        //}
     }
 }
