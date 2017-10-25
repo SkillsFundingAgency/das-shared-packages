@@ -12,6 +12,7 @@
         <summary>Dapper helper classes</summary>
         <dependencies>
             <group targetFramework=".NETFramework4.5">
+              <dependency id="Dapper" version="1.50.0" />
             </group>
         </dependencies>
     </metadata>
