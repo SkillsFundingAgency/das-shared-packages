@@ -18,7 +18,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Mappers
             return activitiesGroupedByType.Select(SummariseACollection);
         }
 
-        private ActivitiesGroupedModel SummariseACollection(IGrouping<Activity.ActivityType, Activity> activitiesOfSameType)
+        private ActivitiesGroupedModel SummariseACollection(IGrouping<string, Activity> activitiesOfSameType)
         {
             var firstOfType = activitiesOfSameType.First();
             var description = activitiesOfSameType.Count() > 1

@@ -5,19 +5,19 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Models
 {
     public class ActivitiesGroupedModel
     {
-        public ActivitiesGroupedModel(Activity.ActivityType activityType,  string description) : this(activityType,description,null)
+        public ActivitiesGroupedModel(string activityType,  string description) : this(activityType,description,null)
         {
 
         }
 
-        public ActivitiesGroupedModel(Activity.ActivityType activityType, string description, string byWhomText)
+        public ActivitiesGroupedModel(string activityType, string description, string byWhomText)
         {
             ActivityType = activityType;
             Description = description;
             ByWhomText = byWhomText;
         }
 
-        public Activity.ActivityType ActivityType { get; }
+        public string ActivityType { get; }
 
         public string Description { get; }
 

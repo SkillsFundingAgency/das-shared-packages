@@ -8,7 +8,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesPage.Models
 {
     public class ActivityModel
     {
-        public ActivityModel(Activity.ActivityType type, string byWhomText, string description, string url)
+        public ActivityModel(string type, string byWhomText, string description, string url)
         {
             Type = type;
             ByWhomText = byWhomText;
@@ -16,7 +16,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesPage.Models
             Url = url;
         }
 
-        public Activity.ActivityType Type { get;  }
+        public string Type { get;  }
 
         public string ByWhomText { get; }
 

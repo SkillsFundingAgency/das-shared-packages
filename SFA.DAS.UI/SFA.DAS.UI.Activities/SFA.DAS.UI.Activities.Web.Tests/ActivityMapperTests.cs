@@ -109,7 +109,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests
             return rtn;
         }
 
-        private Activity MakeActivity(Activity.ActivityType type, DateTime postedDateTime)
+        private Activity MakeActivity(string type, DateTime postedDateTime)
         {
             return new FluentActivity()
                 .ActivityType(type)

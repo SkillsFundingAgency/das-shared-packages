@@ -31,8 +31,8 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
         public IEnumerable<Activity> GetActivities(string ownerId)
         {
-            var searchResponse = _elasticClient.Search<dynamic>(s => s
-            .Index("activitiestest")
+            var searchResponse = _elasticClient.Search<Activity>(s => s
+            .Index("activities")
             .Type(typeof(Activity))
             .MatchAll()
                 //.Query(q => q
@@ -45,7 +45,7 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
             var a = searchResponse.Documents;
 
-            return new List<Activity>();
+            return searchResponse.Documents;
         }
 
 
