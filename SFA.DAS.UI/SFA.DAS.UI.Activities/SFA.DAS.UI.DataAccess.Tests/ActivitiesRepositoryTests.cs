@@ -19,7 +19,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         }
 
         [Test]
-        public void EightActivitiesAreReturnsPopulatedAsExprected()
+        public void TenActivitiesAreReturnsPopulatedAsExprected()
         {
             var result = _repo.GetActivities("OwnerId").ToList();
             Assert.AreEqual(10, result.Count);

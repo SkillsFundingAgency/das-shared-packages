@@ -50,16 +50,15 @@ namespace NuGet
 
         public static class ActivityType
         {
-            public const string AccountAdded = "AccountAdded";
+            public const string AccountCreated = "AccountCreated";
+            public const string AgreementCreated = "AgreementCreated";
+            public const string AgreementSigned = "AgreementSigned";
             public const string ApprenticeChangesApproved = "ApprenticeChangesApproved";
-            public const string ApprenticeChangesRequested = "ApprenticeChangesRequested";
+            public const string ApprenticeChangesRequested = "Apprentice Changes Requested";
             public const string CohortApproved = "CohortApproved";
-
-            public const string ActivityOne = "ActivityOne";
-            public const string ActivityTwo = "ActivityTwo";
-            public const string ActivityThree = "ActivityThree";
-            public const string ActivityFour = "ActivityFour";
-            public const string ActivityFive = "ActivityFive";
+            public const string LegalEntityRemoved = "LegalEntityRemoved";
+            public const string PayeSchemeCreatedy = "PayeSchemeCreated";
+            public const string PayeSchemeDeleted = "PayeSchemeDeleted";
         }
     }
 }

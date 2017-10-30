@@ -16,7 +16,7 @@
     <RootNamespace>WebApplication1</RootNamespace>
     <AssemblyName>WebApplication1</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <MvcBuildViews>false</MvcBuildViews>
+    <MvcBuildViews>true</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
@@ -59,14 +59,17 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NuGet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.3.2\lib\net45\NuGet.dll</HintPath>
+    </Reference>
     <Reference Include="SFA.DAS.UI.Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.3.0\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.3.2\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities.DataAccess, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.3.0\lib\net45\SFA.DAS.UI.Activities.DataAccess.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.3.2\lib\net45\SFA.DAS.UI.Activities.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.3.0\lib\net45\SFA.DAS.UI.Activities.Domain.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.3.2\lib\net45\SFA.DAS.UI.Activities.Domain.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

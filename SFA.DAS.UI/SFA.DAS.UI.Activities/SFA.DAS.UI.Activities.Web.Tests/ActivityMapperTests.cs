@@ -67,15 +67,29 @@ namespace SFA.DAS.UI.Activities.Web.Tests
         }
 
         [Test]
-        public void TheTheGroupingsAreOnePerType()
+        public void ThenThereAreThreeGroupsForToday()
         {
-            Assert.AreEqual(5,_result.Count);
+            //Assert.AreEqual(5,_result.Where(a=>a.));
             Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityOne));
             Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityTwo));
             Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityThree));
             Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFour));
             Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFive));
         }
+
+        [Test]
+        public void ThenThereIsOneGroupingPerType()
+        {
+            Assert.AreEqual(5, _result.Count);
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityOne));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityTwo));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityThree));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFour));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFive));
+        }
+
+        //[Test]
+        //private void Then
 
         private List<Activity> MakeSomeActivities()
         {

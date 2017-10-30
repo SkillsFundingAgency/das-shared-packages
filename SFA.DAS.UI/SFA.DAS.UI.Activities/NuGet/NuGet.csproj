@@ -41,11 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activity.cs" />
-    <Compile Include="Messages\AccountCreated.cs" />
-    <Compile Include="Messages\UserJoined.cs" />
-    <Compile Include="Messages\CohortApproved.cs" />
-    <Compile Include="Messages\ApprenticeChangesRequested.cs" />
-    <Compile Include="Messages\ApprenticeChangesApproved.cs" />
+    <Compile Include="Messages\AccountCreatedMessage.cs" />
+    <Compile Include="Messages\AgreementCreatedMessage.cs" />
+    <Compile Include="Messages\AgreementSignedMessage.cs" />
+    <Compile Include="Messages\LegalEntityRemovedMessage.cs" />
+    <Compile Include="Messages\PayeSchemeCreatedMessage.cs" />
+    <Compile Include="Messages\PayeSchemeDeletedMessage.cs" />
+    <Compile Include="Messages\CohortApprovedMessage.cs" />
+    <Compile Include="Messages\ApprenticeChangesRequestedMessage.cs" />
+    <Compile Include="Messages\ApprenticeChangesApprovedMessage.cs" />
     <Compile Include="FluentActivity.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

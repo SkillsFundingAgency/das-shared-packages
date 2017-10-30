@@ -48,6 +48,25 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return searchResponse.Documents;
         }
 
+        public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string ownerId)
+        {
+            var searchResponse = _elasticClient.Search<Activity>(s => s
+                    .Index("activities")
+                    .Type(typeof(Activity))
+                    .MatchAll()
+                //.Query(q => q
+                //    .Match(m => m
+                //        .Field(f => f.OwnerId)
+                //        .Query(ownerId)
+                //    )
+                //)
+            );
+
+            var a = searchResponse.Documents;
+
+            return searchResponse.Documents;
+        }
+
 
         //public async Task<IEnumerable<Activity>> GetLatestActivitiesGrouped(string ownerId)
         //{
@@ -55,7 +74,7 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
         //        .From(0)
         //        .Size(10)
         //        .Aggregations(a=>a.ValueCount("name",c=>c.Field(p=>p.Type)
-            
+
         //            )
         //        ) )
         //    );
