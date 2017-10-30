@@ -50,6 +50,7 @@
     <Compile Include="ResponseHeaderRestrictionPolicy.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="SFA.DAS.Web.Policy.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
