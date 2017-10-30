@@ -54,6 +54,12 @@ namespace SFA.DAS.UI.Activities.Web.Tests
         private DateTime _twoDaysAgo03;
         private DateTime _twoDaysAgo02;
 
+        private const string ActivityOne = "a1";
+        private const string ActivityTwo = "a2";
+        private const string ActivityThree = "a3";
+        private const string ActivityFour = "a4";
+        private const string ActivityFive= "a5";
+
         [SetUp]
         public void Init()
         {
@@ -70,22 +76,22 @@ namespace SFA.DAS.UI.Activities.Web.Tests
         public void ThenThereAreThreeGroupsForToday()
         {
             //Assert.AreEqual(5,_result.Where(a=>a.));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityOne));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityTwo));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityThree));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFour));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFive));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityOne));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityTwo));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityThree));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityFour));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityFive));
         }
 
         [Test]
         public void ThenThereIsOneGroupingPerType()
         {
             Assert.AreEqual(5, _result.Count);
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityOne));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityTwo));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityThree));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFour));
-            Assert.IsTrue(_result.Exists(a => a.ActivityType == Activity.ActivityType.ActivityFive));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityOne));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityTwo));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityThree));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityFour));
+            Assert.IsTrue(_result.Exists(a => a.ActivityType == ActivityFive));
         }
 
         //[Test]
@@ -95,25 +101,25 @@ namespace SFA.DAS.UI.Activities.Web.Tests
         {
             List<Activity> rtn = new List<Activity>
             {
-                MakeActivity(Activity.ActivityType.ActivityOne, _today02),
-                MakeActivity(Activity.ActivityType.ActivityOne, _today03),
-                MakeActivity(Activity.ActivityType.ActivityOne, _today02),
-                MakeActivity(Activity.ActivityType.ActivityOne, _today03),
+                MakeActivity(ActivityOne, _today02),
+                MakeActivity(ActivityOne, _today03),
+                MakeActivity(ActivityOne, _today02),
+                MakeActivity(ActivityOne, _today03),
 
-                MakeActivity(Activity.ActivityType.ActivityTwo, _today10),
-                MakeActivity(Activity.ActivityType.ActivityTwo, _today03),
-                MakeActivity(Activity.ActivityType.ActivityTwo, _today04),
+                MakeActivity(ActivityTwo, _today10),
+                MakeActivity(ActivityTwo, _today03),
+                MakeActivity(ActivityTwo, _today04),
 
-                MakeActivity(Activity.ActivityType.ActivityThree, _today13),
-                MakeActivity(Activity.ActivityType.ActivityThree, _today03),
-                MakeActivity(Activity.ActivityType.ActivityThree, _twoDaysAgo12),
-                MakeActivity(Activity.ActivityType.ActivityThree, _twoDaysAgo03),
+                MakeActivity(ActivityThree, _today13),
+                MakeActivity(ActivityThree, _today03),
+                MakeActivity(ActivityThree, _twoDaysAgo12),
+                MakeActivity(ActivityThree, _twoDaysAgo03),
 
-                MakeActivity(Activity.ActivityType.ActivityFour, _today12),
-                MakeActivity(Activity.ActivityType.ActivityFour, _today03),
+                MakeActivity(ActivityFour, _today12),
+                MakeActivity(ActivityFour, _today03),
 
-                MakeActivity(Activity.ActivityType.ActivityFive, _yesterday11),
-                MakeActivity(Activity.ActivityType.ActivityFive, _today13),
+                MakeActivity(ActivityFive, _yesterday11),
+                MakeActivity(ActivityFive, _today13),
 
 
             };

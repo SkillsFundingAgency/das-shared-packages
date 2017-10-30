@@ -23,7 +23,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         {
             var result = _repo.GetActivities("OwnerId").ToList();
             Assert.AreEqual(10, result.Count);
-            Assert.AreEqual(Activity.ActivityType.ActivityOne, result.First().Type);
+            Assert.AreEqual("ActivityOne", result.First().Type);
             //Assert.IsTrue(result.All(a=>a.Type!=result.First().Type));
             Assert.AreEqual(4, result.GroupBy(a=>a.Type).Count());
         }
