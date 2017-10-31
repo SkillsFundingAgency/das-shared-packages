@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging", "SFA.DAS.Messaging\SFA.DAS.Messaging.csproj", "{B0F2744B-BE9A-4329-BE89-B7D17BFE8F53}"
 EndProject
@@ -34,6 +34,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.UnitTests", "SFA.DAS.Messaging.Tests\SFA.DAS.Messaging.UnitTests.csproj", "{DE681B8B-B889-4E4E-B8C1-6BA41520A26E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.AzureServiceBus.UnitTests", "SFA.DAS.Messaging.AzureServiceBus.UnitTests\SFA.DAS.Messaging.AzureServiceBus.UnitTests.csproj", "{FF233FB3-41FE-4089-B9BE-F7276637D0CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Messaging.AzureServiceBus.StructureMap", "SFA.DAS.Messaging.AzureServiceBus.StructureMap\SFA.DAS.Messaging.AzureServiceBus.StructureMap.csproj", "{662452E6-9DC6-459C-9209-9389FC4F0DD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{FF233FB3-41FE-4089-B9BE-F7276637D0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF233FB3-41FE-4089-B9BE-F7276637D0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF233FB3-41FE-4089-B9BE-F7276637D0CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{662452E6-9DC6-459C-9209-9389FC4F0DD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{662452E6-9DC6-459C-9209-9389FC4F0DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{662452E6-9DC6-459C-9209-9389FC4F0DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{662452E6-9DC6-459C-9209-9389FC4F0DD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
