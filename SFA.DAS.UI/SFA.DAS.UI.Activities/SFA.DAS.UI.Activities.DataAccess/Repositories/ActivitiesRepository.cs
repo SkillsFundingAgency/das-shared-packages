@@ -29,40 +29,170 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
         }
 
-        public IEnumerable<Activity> GetActivities(string ownerId)
+        public IEnumerable<Activity> GetActivities(string accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
-            .Index("activities")
-            .Type(typeof(Activity))
-            .MatchAll()
-                //.Query(q => q
-                //    .Match(m => m
-                //        .Field(f => f.OwnerId)
-                //        .Query(ownerId)
-                //    )
-                //)
+                .Index("activities")
+                .Type(typeof(Activity))
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.OwnerId)
+                        .Query(accountId)
+                    )
+                )
             );
-
-            var a = searchResponse.Documents;
 
             return searchResponse.Documents;
         }
 
-        public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string ownerId)
+        public IReadOnlyCollection<Hit<Activity>> GetAggregations(string accountId)
+        {
+            var searchResponse = _elasticClient.Search<Activity>(s => s
+                .Index("activities")
+                .Type(typeof(Activity))
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.OwnerId)
+                        .Query(accountId)
+                    )
+                )
+                .Aggregations(agg => 
+                    agg.TopHits("top_tags", b => b.Field(f => "typeOfActivityKeyword")
+                .Size(3)
+                ))
+            );
+
+            if (searchResponse.DebugInformation.Contains("Invalid"))
+                throw new InvalidOperationException();
+
+            var things = searchResponse.Aggs.TopHits("top_tags");
+
+            return things.Hits<Activity>();
+        }
+
+        public ISearchResponse<Activity> GetAggregations2(string accountId)
+        {
+            var searchResponse = _elasticClient.Search<Activity>(s => s
+                .Index("activities")
+                .Type(typeof(Activity))
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.OwnerId)
+                        .Query(accountId)
+                    )
+                )
+                .Aggregations(agg => agg
+                    .Terms("groupId", b => b.
+                        Field(f => "typeOfActivityKeyword")
+                        //.MinimumDocumentCount(0)))
+                        .Size(0)))
+                        .Aggregations(tagdaggs=> tagdaggs
+                            .TopHits("top_tag_hits", thagd => thagd
+                            .Sort(a=>a
+                                .Field(p=>p.PostedDateTimeKeyword)
+                                .Order(SortOrder.Descending)
+                                )
+                  ))
+            );
+
+            if (searchResponse.DebugInformation.Contains("Invalid"))
+                throw new InvalidOperationException();
+
+
+            return searchResponse;
+        }
+
+        public ISearchResponse<Activity> GetAggregations3(string accountId)
+        {
+            var searchResponse = _elasticClient.Search<Activity>(s => s
+                .Index("activities")
+                .Type(typeof(Activity))
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.OwnerId)
+                        .Query(accountId)
+                    )
+                )
+                .Aggregations(a => a
+                    .Terms("states", t => t
+                        .Field(p => p.TypeOfActivityKeyword)
+                        .Aggregations(aa => aa
+                            .TopHits("top_state_hits", th => th
+                                .Sort(srt => srt
+                                    .Field(p => p.PostedDateTimeKeyword)
+                                    .Order(SortOrder.Descending)
+                                )
+                                //.Source(src => src
+                                //    .Includes(fs => fs
+                                //        .Field(p => p.OwnerId)
+                                //        //.Field(p => p.)
+                                //    )
+                                //)
+                                //.Size(1)
+                                //.Version()
+                                //.Explain()
+                                //.FielddataFields(fd => fd
+                                //    .Field(p => p.State)
+                                //    .Field(p => p.NumberOfCommits)
+                                //)
+                                //.Highlight(h => h
+                                //    .Fields(
+                                //        hf => hf.Field(p => p.Tags),
+                                //        hf => hf.Field(p => p.Description)
+                                //    )
+                                //)
+                                //.ScriptFields(sfs => sfs
+                                //    .ScriptField("commit_factor", sf => sf
+                                //        .Inline("doc['numberOfCommits'].value * 2")
+                                //        .Lang("groovy")
+                                //    )
+                                //)
+                            )
+                        )
+                    )
+                ));
+
+            if (searchResponse.DebugInformation.Contains("Invalid"))
+                throw new InvalidOperationException();
+
+
+            return searchResponse;
+        }
+
+        //public IReadOnlyCollection<Nest.KeyedBucket<string>> GetAggregations2(string accountId)
+        //{
+        //    var searchResponse = _elasticClient.Search<Activity>(s => s
+        //        .Index("activities")
+        //        .Type(typeof(Activity))
+        //        .MatchAll()
+        //        .Aggregations(agg => agg.Terms("whatIcallType", b => b.Field(f => "type")
+        //            .Size(10)))
+        //    );
+
+        //    if (searchResponse.DebugInformation.Contains("Invalid"))
+        //        throw new InvalidOperationException();
+
+        //    var things = searchResponse.Aggs.Terms("whatIcallType");
+
+        //    return searchResponse.Aggregations.
+        //}
+
+        public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                     .Index("activities")
                     .Type(typeof(Activity))
-                    .MatchAll()
-                //.Query(q => q
-                //    .Match(m => m
-                //        .Field(f => f.OwnerId)
-                //        .Query(ownerId)
-                //    )
-                //)
+                    .Query(q => q
+                        .Match(m => m
+                            .Field(f => f.OwnerId)
+                            .Query(accountId)
+                        )
+                    )
+                    .Aggregations(agg => agg.Terms("Type", b => b.Field(f => "typeOfActivityKeyword")))
             );
 
-            var a = searchResponse.Documents;
+            if (searchResponse.DebugInformation.Contains("Invalid"))
+                throw new InvalidOperationException();
 
             return searchResponse.Documents;
         }

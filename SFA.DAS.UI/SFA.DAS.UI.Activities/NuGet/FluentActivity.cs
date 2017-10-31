@@ -39,7 +39,7 @@ namespace NuGet
 
         public FluentActivity ActivityType(string activityType)
         {
-            _activity.Type = activityType.ToString();
+            _activity.TypeOfActivity = activityType.ToString();
             return this;
         }
 

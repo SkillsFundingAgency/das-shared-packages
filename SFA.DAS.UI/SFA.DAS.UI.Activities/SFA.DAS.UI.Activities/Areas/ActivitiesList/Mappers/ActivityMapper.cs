@@ -10,7 +10,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Mappers
     {
         public IEnumerable<ActivitiesGroupedModel> SummariseCollections(IEnumerable<Activity> activities)
         {
-            var activitiesGroupedByType = activities.GroupBy(a => a.Type).ToList();
+            var activitiesGroupedByType = activities.GroupBy(a => a.TypeOfActivity).ToList();
             foreach (var grouping in activitiesGroupedByType)
             {
                 SummariseACollection(grouping);
@@ -28,7 +28,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Mappers
                 ? string.Empty
                 : $"By {firstOfType.OwnerId}";
 
-            return new ActivitiesGroupedModel(activitiesOfSameType.First().Type, description, byWhom, DateTime.Now);
+            return new ActivitiesGroupedModel(activitiesOfSameType.First().TypeOfActivity, description, byWhom, DateTime.Now);
         }
 
     }

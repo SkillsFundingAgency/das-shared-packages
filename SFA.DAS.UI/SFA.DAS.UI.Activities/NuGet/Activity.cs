@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Nest;
 
 namespace NuGet
 {
@@ -13,7 +14,10 @@ namespace NuGet
         public string OwnerId { get; set; }
 
         
-        public string Type { get; set; }
+        public string TypeOfActivity { get; set; }
+
+        [Keyword(NullValue = "null")]
+        public string TypeOfActivityKeyword => TypeOfActivity;
 
         public string DescriptionFull { get; set; }
 
@@ -32,6 +36,9 @@ namespace NuGet
         public string Url { get; set; }
 
         public DateTime PostedDateTime { get;  set; }
+
+        [Keyword(NullValue = "null")]
+        public DateTime PostedDateTimeKeyword => PostedDateTime;
 
         public string HashedAccountId { get;  set; }
 
