@@ -1,15 +1,7 @@
-﻿using SFA.DAS.UI.Activities.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using SFA.DAS.UI.Activities.Areas.ActivitiesList.Mappers;
 using SFA.DAS.UI.Activities.DataAccess.Repositories;
-using NuGet;
-using SFA.DAS.UI.Activities.Areas.ActivitiesList.Models;
-using SFA.DAS.UI.Activities.Areas.ActivitiesPage.Models;
 using SFA.DAS.UI.Activities.Domain.Configurations;
 using ActivitiesListModel = SFA.DAS.UI.Activities.Areas.ActivitiesList.Models.ActivitiesListModel;
 
@@ -31,9 +23,9 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
         // GET: ActivitiesList/Default
         public ActionResult Index()
         {
-            var messages = _repository.GetActivities("OwnerId");
+            var activities = _repository.GetActivities("OwnerId");
             //var activitiesGroupedByType = messages.GroupBy(a => a.Type);
-            var summarisedActivities=new ActivityMapper().SummariseCollections(messages);
+            var summarisedActivities=new ActivityMapper().SummariseCollections(activities);
 
             //var activitiesView = messages.Select(activityMapper.SummariseCollections);
             //activitiesView.Add(new ActivityModel("acc1", "activityType1","Description 1", "url",DateTime.Now.ToString("O")));

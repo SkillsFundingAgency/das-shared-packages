@@ -19,7 +19,9 @@ namespace NuGet
         [Keyword(NullValue = "null")]
         public string TypeOfActivityKeyword => TypeOfActivity;
 
-        public string DescriptionFull { get; set; }
+        public string DescriptionOne { get; set; }
+
+        public string DescriptionTwo { get; set; }
 
         /// <summary>
         /// The description to be used  in for instance '1 thing happened'. The value here should be 'thing happened'

@@ -25,9 +25,15 @@ namespace NuGet
             return this;
         }
 
-        public FluentActivity DescriptionFull(string description)
+        public FluentActivity DescriptionOne(string description)
         {
-            _activity.DescriptionFull = description;
+            _activity.DescriptionOne = description;
+            return this;
+        }
+
+        public FluentActivity DescriptionTwo(string description)
+        {
+            _activity.DescriptionTwo = description;
             return this;
         }
 
