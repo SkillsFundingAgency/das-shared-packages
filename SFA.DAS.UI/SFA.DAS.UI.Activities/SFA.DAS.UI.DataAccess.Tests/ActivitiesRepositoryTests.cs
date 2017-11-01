@@ -13,12 +13,13 @@ namespace SFA.DAS.UI.DataAccess.Tests
     public class ActivitiesRepositoryTests
     {
         private IActivitiesUiRepository _repo;
+        
 
         [SetUp]
         public void Init()
         {
             _repo=new ActivitiesRepository(new ActivitiesConfiguration());
-            
+            var elasticPopulator = new ElasticPopulator();
         }
 
         [Test]

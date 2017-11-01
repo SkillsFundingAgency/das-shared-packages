@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivitiesRepositoryTests.cs" />
+    <Compile Include="ActivitySource.cs" />
+    <Compile Include="ElasticPopulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
