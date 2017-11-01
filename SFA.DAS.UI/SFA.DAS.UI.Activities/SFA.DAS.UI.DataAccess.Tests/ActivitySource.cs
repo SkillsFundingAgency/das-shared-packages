@@ -8,6 +8,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
     {
         private DateTime _testTime;
 
+        private DateTime _today14;
         private DateTime _today13;
         private DateTime _today12;
         private DateTime _today11;
@@ -20,6 +21,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         private DateTime _today04;
         private DateTime _today03;
         private DateTime _today02;
+
 
         private DateTime _yesterday13;
         private DateTime _yesterday12;
@@ -87,6 +89,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
                 MakeActivity(ActivityTwo, _today03),
                 MakeActivity(ActivityTwo, _today04),
                 MakeActivity(ActivityTwo, _today02),
+                MakeActivity(ActivityFive, _today14),
 
                 //yesterday:
 
@@ -159,9 +162,10 @@ namespace SFA.DAS.UI.DataAccess.Tests
 
         private void SetupTimes()
         {
-            _testTime = DateTime.Parse("2017/10/20")
+            _testTime = DateTime.Parse($"{DateTime.Now.Year}/{DateTime.Now.Month}/{DateTime.Now.Day}")
                 .AddHours(14);
 
+            _today14 = _testTime.Subtract(new TimeSpan(0, 0, 0, 0));
             _today13 = _testTime.Subtract(new TimeSpan(0, 1, 0, 0));
             _today12 = _testTime.Subtract(new TimeSpan(0, 2, 0, 0));
             _today11 = _testTime.Subtract(new TimeSpan(0, 3, 0, 0));

@@ -114,7 +114,7 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
                     )
                 )
                 .Aggregations(a => a
-                    .Terms("states", t => t
+                    .Terms("keywords", t => t
                         .Field(p => p.TypeOfActivityKeyword)
                         .Aggregations(aa => aa
                             .TopHits("top_state_hits", th => th
@@ -158,6 +158,31 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
             return searchResponse;
         }
+
+        //Equivalent for postman
+        //{
+        //    "aggs": {
+        //        "states": {
+        //            "terms": {
+        //                "field": "typeOfActivityKeyword"
+        //            },
+        //            "aggs": {
+        //                "top_state_hits": {
+        //                    "top_hits": {
+        //                        "sort": [
+        //                        {
+        //                            "postedDateTimeKeyword": {
+        //                                "order": "desc"
+        //                            }
+        //                        }
+        //                        ]
+            
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         //public IReadOnlyCollection<Nest.KeyedBucket<string>> GetAggregations2(string accountId)
         //{
