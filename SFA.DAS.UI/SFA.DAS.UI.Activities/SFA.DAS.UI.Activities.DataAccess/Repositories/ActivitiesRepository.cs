@@ -114,13 +114,11 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
                     )
                 )
                 .Aggregations(a => a
-                    .Terms("keywords", t => t
+                    .Terms("keywordsBuckets", t => t
                         .Field(p => p.TypeOfActivityKeyword)
                         .Aggregations(aa => aa
-                            .TopHits("top_state_hits", th => th
-                                .Sort(srt => srt
+                            .Terms("dateBuckets", th => th
                                     .Field(p => p.PostedDateTimeKeyword)
-                                    .Order(SortOrder.Descending)
                                 )
                                 //.Source(src => src
                                 //    .Includes(fs => fs
@@ -150,7 +148,7 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
                             )
                         )
                     )
-                ));
+                );
 
             if (searchResponse.DebugInformation.Contains("Invalid"))
                 throw new InvalidOperationException();
@@ -161,48 +159,43 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
         //Equivalent for postman
         //{
+        //    "size" : 0,
         //    "aggs": {
-        //        "states": {
+        //        "activity": {
         //            "terms": {
         //                "field": "typeOfActivityKeyword"
         //            },
         //            "aggs": {
-        //                "top_state_hits": {
-        //                    "top_hits": {
-        //                        "sort": [
-        //                        {
-        //                            "postedDateTimeKeyword": {
-        //                                "order": "desc"
-        //                            }
-        //                        }
-        //                        ]
-            
+        //                "date": {
+        //                    "terms": {
+        //                        "field": "postedDateKeyword"
         //                    }
         //                }
         //            }
+    
         //        }
         //    }
         //}
 
-        //public IReadOnlyCollection<Nest.KeyedBucket<string>> GetAggregations2(string accountId)
-        //{
-        //    var searchResponse = _elasticClient.Search<Activity>(s => s
-        //        .Index("activities")
-        //        .Type(typeof(Activity))
-        //        .MatchAll()
-        //        .Aggregations(agg => agg.Terms("whatIcallType", b => b.Field(f => "type")
-        //            .Size(10)))
-        //    );
+    //public IReadOnlyCollection<Nest.KeyedBucket<string>> GetAggregations2(string accountId)
+    //{
+    //    var searchResponse = _elasticClient.Search<Activity>(s => s
+    //        .Index("activities")
+    //        .Type(typeof(Activity))
+    //        .MatchAll()
+    //        .Aggregations(agg => agg.Terms("whatIcallType", b => b.Field(f => "type")
+    //            .Size(10)))
+    //    );
 
-        //    if (searchResponse.DebugInformation.Contains("Invalid"))
-        //        throw new InvalidOperationException();
+    //    if (searchResponse.DebugInformation.Contains("Invalid"))
+    //        throw new InvalidOperationException();
 
-        //    var things = searchResponse.Aggs.Terms("whatIcallType");
+    //    var things = searchResponse.Aggs.Terms("whatIcallType");
 
-        //    return searchResponse.Aggregations.
-        //}
+    //    return searchResponse.Aggregations.
+    //}
 
-        public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string accountId)
+    public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                     .Index("activities")

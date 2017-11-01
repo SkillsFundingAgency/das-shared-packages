@@ -90,22 +90,19 @@ namespace SFA.DAS.UI.DataAccess.Tests
             var response = _repo.GetAggregations3("OwnerId");
 
            // response.IsValid.Should().BeTrue();
-            var states = response.Aggs.Terms("keywords");
+            var states = response.Aggs.Terms("keywordsBuckets");
             //states.Should().NotBeNull();
             //states.Buckets.Should().NotBeNullOrEmpty();
-            foreach (var state in states.Buckets)
+            foreach (var dateBucket in states.Buckets)
             {
+                
                 //state.Key.Should().NotBeNullOrEmpty();
                 //state.DocCount.Should().BeGreaterThan(0);
-                var topStateHits = state.TopHits("top_state_hits");
+                var dateBuckets = dateBucket.Terms("dateBuckets").Buckets;
                 //topStateHits.Should().NotBeNull();
-                Assert.IsNotNull(topStateHits);
+                Assert.IsNotNull(dateBuckets);
                 //topStateHits.Total.Should().BeGreaterThan(0);
-                Assert.IsTrue(topStateHits.Total>0);
-                var hits = topStateHits.Hits<Activity>();
                 //hits.Should().NotBeNullOrEmpty();
-                Assert.IsNotNull(hits);
-                Assert.IsTrue(hits.Any());
                 //hits.All(h => h.Explanation != null).Should().BeTrue();
                 //Assert.True(hits.All(h => h.Explanation != null));
                 //hits.All(h => h.Version.HasValue).Should().BeTrue();
@@ -114,7 +111,6 @@ namespace SFA.DAS.UI.DataAccess.Tests
                 //hits.All(h => h.Fields.ValuesOf<int>("numberOfCommits").Any()).Should().BeTrue()
                 //hits.All(h => h.Fields.ValuesOf<int>("commit_factor").Any()).Should().BeTrue();
                 //topStateHits.Documents<Project>().Should().NotBeEmpty();
-                Assert.IsNotNull(topStateHits.Documents<Activity>());
                 //mine
             }
 

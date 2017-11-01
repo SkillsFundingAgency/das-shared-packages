@@ -40,6 +40,9 @@ namespace NuGet
         [Keyword(NullValue = "null")]
         public DateTime PostedDateTimeKeyword => PostedDateTime;
 
+        [Keyword(NullValue = "null")]
+        public DateTime PostedDateKeyword => PostedDateTime.Date;
+
         public string HashedAccountId { get;  set; }
 
         //public enum ActivityType
