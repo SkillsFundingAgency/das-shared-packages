@@ -12,6 +12,12 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesPage.Controllers
     {
         private readonly IActivitiesUiRepository _repository;
 
+
+        public DefaultController(IActivitiesUiRepository repository)
+        {
+            _repository = repository;
+        }
+
         public DefaultController()
         {
             _repository = new ActivitiesRepository(new ActivitiesConfiguration());
@@ -25,19 +31,12 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesPage.Controllers
             var activityModels = new List<ActivityModel>();
             foreach (var activity  in activities)
             {
-                activityModels.Add(new ActivityModel(activity.DescriptionOne, activity.DescriptionTwo,activity.Url, CreateDayText(activity.PostedDateTime)));
+                activityModels.Add(new ActivityModel(activity.DescriptionOne, activity.DescriptionTwo,activity.Url, DateFormatter.CreateDayText(activity.PostedDateTime)));
             }
             var viewModel = new ActivitiesListModel(activityModels);
             return View(viewModel);
         }
 
-        private string CreateDayText(DateTime datetime)
-        {
-            if (datetime.Date == DateTime.Now.Date)
-                return "Today";
-            if (datetime.Date == DateTime.Now.Subtract(new TimeSpan(1,0,0,0)))
-                return "Yesterday";
-            return datetime.ToString("d/mm/yyyy");
-        }
+
     }
 }

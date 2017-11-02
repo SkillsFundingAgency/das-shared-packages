@@ -161,6 +161,7 @@
     <Compile Include="Areas\ActivitiesList\Models\ActivitiesGroupedModel.cs" />
     <Compile Include="Areas\ActivitiesPage\ActivitiesPageAreaRegistration.cs" />
     <Compile Include="Areas\ActivitiesPage\Controllers\DefaultController.cs" />
+    <Compile Include="Areas\ActivitiesPage\DateFormatter.cs" />
     <Compile Include="Areas\ActivitiesPage\Models\ActivitiesListModel.cs" />
     <Compile Include="Areas\ActivitiesPage\Models\ActivityModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />

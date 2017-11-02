@@ -7,7 +7,7 @@ using SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers;
 
 namespace WebApplication1.Controllers
 {
-    public class ActivitiesController : Controller
+    public class ActivitiesGroupedController : Controller
     {
         // GET: Activities
         public ActionResult Index()
