@@ -10,10 +10,7 @@ using Nest;
 namespace NuGet
 {
     public class Activity
-    {
-        public string OwnerId { get; set; }
-
-        
+    { 
         public string TypeOfActivity { get; set; }
 
         [Keyword(NullValue = "null")]
@@ -60,17 +57,19 @@ namespace NuGet
         //    CohortApproved
         //}
 
-        public static class ActivityType
+
+
+        public static class ActivityTypeStrings
         {
+            public const string UserJoined = "UserJoined";
+            public const string UserInvited = "UserInvited";
             public const string AccountCreated = "AccountCreated";
-            public const string AgreementCreated = "AgreementCreated";
-            public const string AgreementSigned = "AgreementSigned";
-            public const string ApprenticeChangesApproved = "ApprenticeChangesApproved";
-            public const string ApprenticeChangesRequested = "Apprentice Changes Requested";
-            public const string CohortApproved = "CohortApproved";
-            public const string LegalEntityRemoved = "LegalEntityRemoved";
             public const string PayeSchemeCreatedy = "PayeSchemeCreated";
             public const string PayeSchemeDeleted = "PayeSchemeDeleted";
+            public const string AgreementCreated = "AgreementCreated";
+            public const string AgreementSigned = "AgreementSigned";
+            public const string AccountNameChanged = "AccountNameChanged";
+            public const string LevyPaymentRecieved = "LevyPaymentRecieved";
         }
     }
 }

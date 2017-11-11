@@ -50,21 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activity.cs" />
-    <Compile Include="Messages\AccountCreatedMessage.cs" />
-    <Compile Include="Messages\AgreementCreatedMessage.cs" />
-    <Compile Include="Messages\AgreementSignedMessage.cs" />
-    <Compile Include="Messages\LegalEntityRemovedMessage.cs" />
-    <Compile Include="Messages\PayeSchemeCreatedMessage.cs" />
-    <Compile Include="Messages\PayeSchemeDeletedMessage.cs" />
-    <Compile Include="Messages\CohortApprovedMessage.cs" />
-    <Compile Include="Messages\ApprenticeChangesRequestedMessage.cs" />
-    <Compile Include="Messages\ApprenticeChangesApprovedMessage.cs" />
     <Compile Include="FluentActivity.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messages\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

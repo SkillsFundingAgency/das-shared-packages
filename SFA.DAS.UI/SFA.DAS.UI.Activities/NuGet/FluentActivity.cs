@@ -7,12 +7,6 @@ namespace NuGet
     {
         private Activity _activity=new Activity();
 
-        public FluentActivity OwnerId(string ownerId)
-        {
-            _activity.OwnerId = ownerId;
-            return this;
-        }
-
         public FluentActivity DescriptionSingular(string description)
         {
             _activity.DescriptionSingular = description;

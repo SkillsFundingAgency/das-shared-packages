@@ -19,7 +19,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests.ActivitiesPage
         private List<Activity> _activities;
         private DefaultController _controller;
 
-        private const string OwnerId = "OwnerId";
+        private const string HashedAccountId = "hashedAccountId";
 
         [SetUp]
         public void Init()
@@ -28,7 +28,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests.ActivitiesPage
             _activities = MakeActivities();
 
             _mockRepository =new Mock<IActivitiesUiRepository>();
-            _mockRepository.Setup(a => a.GetActivities(OwnerId)).Returns(_activities);
+            _mockRepository.Setup(a => a.GetActivities(HashedAccountId)).Returns(_activities);
 
             _controller = new DefaultController(_mockRepository.Object);
         }
@@ -64,7 +64,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests.ActivitiesPage
         private Activity MakeActivity(int numberOf)
         {
             return new FluentActivity()
-                .OwnerId(OwnerId)
+                .HashedAccountId(HashedAccountId)
                 .DescriptionOne($"description1_{numberOf}")
                 .DescriptionTwo($"description2_{numberOf}")
                 .PostedDateTime(DateTime.Now)

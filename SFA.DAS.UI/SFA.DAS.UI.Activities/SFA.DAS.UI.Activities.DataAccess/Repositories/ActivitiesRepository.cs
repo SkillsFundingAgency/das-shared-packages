@@ -29,15 +29,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
         }
 
-        public IEnumerable<Activity> GetActivities(string accountId)
+        public IEnumerable<Activity> GetActivities(string hashedAccountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.OwnerId)
-                        .Query(accountId)
+                        .Field(f => f.HashedAccountId)
+                        .Query(hashedAccountId)
                     )
                 )
             );
@@ -45,15 +45,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return searchResponse.Documents;
         }
 
-        public IReadOnlyCollection<Hit<Activity>> GetAggregations(string accountId)
+        public IReadOnlyCollection<Hit<Activity>> GetAggregations(string hashedAccountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.OwnerId)
-                        .Query(accountId)
+                        .Field(f => f.HashedAccountId)
+                        .Query(hashedAccountId)
                     )
                 )
                 .Aggregations(agg => 
@@ -70,15 +70,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return things.Hits<Activity>();
         }
 
-        public ISearchResponse<Activity> GetAggregations2(string accountId)
+        public ISearchResponse<Activity> GetAggregations2(string hashedAccountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.OwnerId)
-                        .Query(accountId)
+                        .Field(f => f.HashedAccountId)
+                        .Query(hashedAccountId)
                     )
                 )
                 .Aggregations(agg => agg
@@ -102,15 +102,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return searchResponse;
         }
 
-        public ISearchResponse<Activity> GetAggregations3(string accountId)
+        public ISearchResponse<Activity> GetAggregations3(string hashedAccountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.OwnerId)
-                        .Query(accountId)
+                        .Field(f => f.HashedAccountId)
+                        .Query(hashedAccountId)
                     )
                 )
                 .Aggregations(a => a
@@ -195,15 +195,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
     //    return searchResponse.Aggregations.
     //}
 
-    public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string accountId)
+    public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string hashedAccountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                     .Index("activities")
                     .Type(typeof(Activity))
                     .Query(q => q
                         .Match(m => m
-                            .Field(f => f.OwnerId)
-                            .Query(accountId)
+                            .Field(f => f.HashedAccountId)
+                            .Query(hashedAccountId)
                         )
                     )
                     .Aggregations(agg => agg.Terms("Type", b => b.Field(f => "typeOfActivityKeyword")))

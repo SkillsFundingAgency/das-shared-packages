@@ -157,7 +157,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
                 .AddAssociatedThing("associated thing")
                 .AddAssociatedThings(new[] { "dog", "cat", "horse" })
                 .Url("todo")
-                .OwnerId("OwnerId")
+                .HashedAccountId("hashedAccountId")
                 .Object();
         }
 
