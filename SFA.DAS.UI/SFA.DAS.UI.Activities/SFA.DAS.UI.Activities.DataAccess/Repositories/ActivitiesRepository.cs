@@ -29,15 +29,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
         }
 
-        public IEnumerable<Activity> GetActivities(string hashedAccountId)
+        public IEnumerable<Activity> GetActivities(long accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.HashedAccountId)
-                        .Query(hashedAccountId)
+                        .Field(f => f.AccountId)
+                        .Query(accountId.ToString())
                     )
                 )
             );
@@ -45,15 +45,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return searchResponse.Documents;
         }
 
-        public IReadOnlyCollection<Hit<Activity>> GetAggregations(string hashedAccountId)
+        public IReadOnlyCollection<Hit<Activity>> GetAggregations(long accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.HashedAccountId)
-                        .Query(hashedAccountId)
+                        .Field(f => f.AccountId)
+                        .Query(accountId.ToString())
                     )
                 )
                 .Aggregations(agg => 
@@ -70,15 +70,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return things.Hits<Activity>();
         }
 
-        public ISearchResponse<Activity> GetAggregations2(string hashedAccountId)
+        public ISearchResponse<Activity> GetAggregations2(long accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.HashedAccountId)
-                        .Query(hashedAccountId)
+                        .Field(f => f.AccountId)
+                        .Query(accountId.ToString())
                     )
                 )
                 .Aggregations(agg => agg
@@ -102,15 +102,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return searchResponse;
         }
 
-        public ISearchResponse<Activity> GetAggregations3(string hashedAccountId)
+        public ISearchResponse<Activity> GetAggregations3(long accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                 .Index("activities")
                 .Type(typeof(Activity))
                 .Query(q => q
                     .Match(m => m
-                        .Field(f => f.HashedAccountId)
-                        .Query(hashedAccountId)
+                        .Field(f => f.AccountId)
+                        .Query(accountId.ToString())
                     )
                 )
                 .Aggregations(a => a
@@ -195,15 +195,15 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
     //    return searchResponse.Aggregations.
     //}
 
-    public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(string hashedAccountId)
+    public IEnumerable<Activity> GetActivitiesGroupedByDayAndType(long accountId)
         {
             var searchResponse = _elasticClient.Search<Activity>(s => s
                     .Index("activities")
                     .Type(typeof(Activity))
                     .Query(q => q
                         .Match(m => m
-                            .Field(f => f.HashedAccountId)
-                            .Query(hashedAccountId)
+                            .Field(f => f.AccountId)
+                            .Query(accountId.ToString())
                         )
                     )
                     .Aggregations(agg => agg.Terms("Type", b => b.Field(f => "typeOfActivityKeyword")))

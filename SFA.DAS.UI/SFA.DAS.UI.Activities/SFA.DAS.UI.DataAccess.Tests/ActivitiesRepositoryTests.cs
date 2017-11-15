@@ -13,6 +13,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
     public class ActivitiesRepositoryTests
     {
         private IActivitiesUiRepository _repo;
+        private const long AccountId = 1234;
         
 
         [SetUp]
@@ -25,9 +26,9 @@ namespace SFA.DAS.UI.DataAccess.Tests
         [Test]
         public void TenActivitiesAreReturnsPopulatedAsExprected()
         {
-            var result = _repo.GetActivities("OwnerId").ToList();
+            var result = _repo.GetActivities(AccountId).ToList();
             Assert.AreEqual(10, result.Count);
-            Assert.AreEqual("a4", result.First().TypeOfActivity);
+            Assert.AreEqual(Activity.ActivityTypeStrings.PayeSchemeCreated, result.First().TypeOfActivity);
             //Assert.IsTrue(result.All(a=>a.Type!=result.First().Type));
             Assert.AreEqual(4, result.GroupBy(a=>a.TypeOfActivity).Count());
         }
@@ -35,7 +36,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         [Test]
         public void Aggregations()
         {
-            var result = _repo.GetAggregations("OwnerId");
+            var result = _repo.GetAggregations(AccountId);
             var result2 = result.ToList();
             Assert.IsFalse(result2.Count==0);
            // Assert.AreEqual(4, result2.Count);
@@ -45,7 +46,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         public void Aggregations2Aggregation()
         {
             var levelAggregationName = "top_tags";
-            var results = _repo.GetAggregations2("OwnerId");
+            var results = _repo.GetAggregations2(AccountId);
 
             Assert.AreEqual(10,results.Hits.Count);
             Assert.AreEqual(10, results.Documents.Count);
@@ -63,7 +64,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         public void Aggregations2Agg()
         {
             var levelAggregationName = "top_tags";
-            var results = _repo.GetAggregations2("OwnerId");
+            var results = _repo.GetAggregations2(AccountId);
 
             Assert.AreEqual(10, results.Hits.Count);
 
@@ -87,7 +88,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         [Test]
         public void Aggregations3Agg()
         {
-            var response = _repo.GetAggregations3("OwnerId");
+            var response = _repo.GetAggregations3(AccountId);
 
            // response.IsValid.Should().BeTrue();
             var states = response.Aggs.Terms("keywordsBuckets");
@@ -116,19 +117,19 @@ namespace SFA.DAS.UI.DataAccess.Tests
 
             //Assert.AreEqual(5, states.Buckets.Count);
 
-            var bucketA1 = states.Buckets.Single(a => a.Key == "a1");
+            var bucketA1 = states.Buckets.Single(a => a.Key == Activity.ActivityTypeStrings.AgreementSigned);
             Assert.AreEqual(24, bucketA1.DocCount);//actually expect 12
 
-            var bucketA2 = states.Buckets.Single(a => a.Key == "a2");
+            var bucketA2 = states.Buckets.Single(a => a.Key == Activity.ActivityTypeStrings.AccountCreated);
             Assert.AreEqual(20, bucketA2.DocCount);//actually expect 10
 
-            var bucketA3 = states.Buckets.Single(a => a.Key == "a3");
+            var bucketA3 = states.Buckets.Single(a => a.Key == Activity.ActivityTypeStrings.AgreementCreated);
             Assert.AreEqual(12, bucketA3.DocCount);//actually expect 6
 
-            var bucketA4 = states.Buckets.Single(a => a.Key == "a4");
+            var bucketA4 = states.Buckets.Single(a => a.Key == Activity.ActivityTypeStrings.PayeSchemeCreated);
             Assert.AreEqual(12, bucketA4.DocCount);//actually expect 6
 
-            var bucketA5 = states.Buckets.Single(a => a.Key == "a5");
+            var bucketA5 = states.Buckets.Single(a => a.Key == Activity.ActivityTypeStrings.UserInvited);
             Assert.AreEqual(14, bucketA5.DocCount);//actually expect 7
 
         }
@@ -136,9 +137,9 @@ namespace SFA.DAS.UI.DataAccess.Tests
         [Test]
         public void TenActivitiesAreGroupedAsExprected()
         {
-            var result = _repo.GetActivitiesGroupedByDayAndType("OwnerId").ToList();
+            var result = _repo.GetActivitiesGroupedByDayAndType(AccountId).ToList();
             Assert.AreEqual(10, result.Count);
-            Assert.AreEqual("a1", result.First().TypeOfActivity);
+            Assert.AreEqual(Activity.ActivityTypeStrings.AgreementSigned, result.First().TypeOfActivity);
             //Assert.IsTrue(result.All(a=>a.Type!=result.First().Type));
             Assert.AreEqual(4, result.GroupBy(a => a.TypeOfActivity).Count());
         }

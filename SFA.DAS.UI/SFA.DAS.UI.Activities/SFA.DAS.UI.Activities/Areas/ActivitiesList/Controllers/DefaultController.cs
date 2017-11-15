@@ -23,7 +23,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
         // GET: ActivitiesList/Default
         public ActionResult Index()
         {
-            var activities = _repository.GetActivities("OwnerId");
+            var activities = _repository.GetActivities(1234);
             //var activitiesGroupedByType = messages.GroupBy(a => a.Type);
             var summarisedActivities=new ActivityMapper().SummariseCollections(activities);
 

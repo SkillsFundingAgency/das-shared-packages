@@ -26,7 +26,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Mappers
                 : $"1 {firstOfType.DescriptionSingular}";
             var byWhom = activitiesOfSameType.Count() > 1
                 ? string.Empty
-                : $"By {firstOfType.HashedAccountId}";
+                : $"By {firstOfType.AccountId}";
 
             return new ActivitiesGroupedModel(activitiesOfSameType.First().TypeOfActivity, description, byWhom, DateTime.Now);
         }

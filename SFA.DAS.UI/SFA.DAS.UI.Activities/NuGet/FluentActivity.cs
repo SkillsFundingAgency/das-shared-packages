@@ -64,9 +64,9 @@ namespace NuGet
             return this;
         }
 
-        public FluentActivity HashedAccountId(string hashedAccountId)
+        public FluentActivity AccountId(long AccountId)
         {
-            _activity.HashedAccountId = hashedAccountId;
+            _activity.AccountId = AccountId;
             return this;
         }
 

@@ -58,11 +58,11 @@ namespace SFA.DAS.UI.DataAccess.Tests
         private DateTime _fourDaysAgo02;
         private DateTime _fourDaysAgo01;
 
-        private const string ActivityOne = "a1";
-        private const string ActivityTwo = "a2";
-        private const string ActivityThree = "a3";
-        private const string ActivityFour = "a4";
-        private const string ActivityFive = "a5";
+        private const string ActivityOne = Activity.ActivityTypeStrings.AgreementSigned;
+        private const string ActivityTwo = Activity.ActivityTypeStrings.AccountCreated;
+        private const string ActivityThree = Activity.ActivityTypeStrings.AgreementCreated;
+        private const string ActivityFour = Activity.ActivityTypeStrings.PayeSchemeCreated;
+        private const string ActivityFive = Activity.ActivityTypeStrings.UserInvited;
 
         public ActivitySource()
         {
@@ -157,7 +157,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
                 .AddAssociatedThing("associated thing")
                 .AddAssociatedThings(new[] { "dog", "cat", "horse" })
                 .Url("todo")
-                .HashedAccountId("hashedAccountId")
+                .AccountId(1234)
                 .Object();
         }
 

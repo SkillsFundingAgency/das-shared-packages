@@ -26,7 +26,7 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesPage.Controllers
         // GET: ActivitiesPage/Default
         public ActionResult Index()
         {
-            var activities = _repository.GetActivities("OwnerId");
+            var activities = _repository.GetActivities(1234);
 
             var activityModels = new List<ActivityModel>();
             foreach (var activity  in activities)
