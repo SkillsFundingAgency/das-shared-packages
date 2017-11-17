@@ -215,6 +215,7 @@
     <Content Include="SFA.DAS.UI.Activities.nuspec">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Views\Home\Grouped.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

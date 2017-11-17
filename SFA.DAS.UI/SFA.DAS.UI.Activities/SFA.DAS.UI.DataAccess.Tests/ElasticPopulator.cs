@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Nest;
 using NuGet;
 
@@ -14,8 +11,8 @@ namespace SFA.DAS.UI.DataAccess.Tests
         public ElasticPopulator()
         {
             var indexName = "activities";
-            //var elasticSettings = new ConnectionSettings(new Uri(configuration.ElasticServerBaseUrl));
-            var elasticSettings = new ConnectionSettings(new Uri("http://localhost:9200")).DefaultIndex(indexName);
+            var elasticSettings = new ConnectionSettings(new Uri("http://activities_app:3t&98Fo5Z00r@localhost:9200")).DefaultIndex(indexName);
+
             _elasticClient = new ElasticClient(elasticSettings);
 
             _elasticClient.DeleteIndex(indexName);

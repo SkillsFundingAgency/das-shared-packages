@@ -13,6 +13,11 @@ namespace SFA.DAS.UI.Activities.Controllers
             return View();
         }
 
+        public ActionResult Grouped()
+        {
+            return View();
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
