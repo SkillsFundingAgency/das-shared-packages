@@ -1,0 +1,21 @@
+﻿@model SFA.DAS.UI.Activities.Areas.ActivitiesPage.Models.ActivitiesListModel
+    
+<table>
+    <thead>
+    <tr>
+        <th>Activity Type</th><th>Description</th>
+    </tr>
+    </thead>
+    @foreach (var activity in Model.Activities)
+    {
+        <tr>
+            <td>
+                @activity.DayText
+            </td>
+            <td>
+                <p><b>@activity.LineOne</b></p>
+                @activity.LineTwo
+            </td>
+        </tr>
+    }
+</table>

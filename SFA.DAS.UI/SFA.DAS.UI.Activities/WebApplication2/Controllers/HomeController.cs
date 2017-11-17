@@ -4,17 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace SFA.DAS.UI.Activities.Controllers
+namespace WebApplication2.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            return View();
-        }
-
-        public ActionResult Grouped()
-        {
+            //var thing = new SFA.DAS.UI.Activities.Areas.ActivitiesPage.Controllers.DogController();
             return View();
         }
 

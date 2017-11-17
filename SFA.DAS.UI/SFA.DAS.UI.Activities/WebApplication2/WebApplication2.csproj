@@ -9,12 +9,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2CDF8F0C-8606-4AD7-8B8C-6A3AF212A458}</ProjectGuid>
+    <ProjectGuid>{10C7787B-30F6-482F-9C52-84C7E2F275F9}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.UI.Activities</RootNamespace>
-    <AssemblyName>SFA.DAS.UI.Activities</AssemblyName>
+    <RootNamespace>WebApplication2</RootNamespace>
+    <AssemblyName>WebApplication2</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -46,27 +46,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Hashids.net, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hashids.net.1.2.2\lib\net45\Hashids.net.dll</HintPath>
+    <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Elasticsearch.Net.5.5.0\lib\net46\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.5.5.0\lib\net46\Nest.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SFA.DAS.HashingService, Version=1.0.0.43004, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.HashingService.1.0.0.43004\lib\net45\SFA.DAS.HashingService.dll</HintPath>
+    <Reference Include="NuGet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\NuGet.dll</HintPath>
     </Reference>
-    <Reference Include="StructureMap, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\structuremap.3.1.1.134\lib\net40\StructureMap.dll</HintPath>
+    <Reference Include="SFA.DAS.UI.Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
     </Reference>
-    <Reference Include="StructureMap.Net4, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\structuremap.3.1.1.134\lib\net40\StructureMap.Net4.dll</HintPath>
+    <Reference Include="SFA.DAS.UI.Activities.DataAccess, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\SFA.DAS.UI.Activities.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.UI.Activities.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\SFA.DAS.UI.Activities.Domain.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -121,9 +124,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebActivatorEx.2.0.5\lib\net40\WebActivatorEx.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -160,19 +160,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Areas\ActivitiesList\ActivitiesListAreaRegistration.cs" />
-    <Compile Include="Areas\ActivitiesList\Controllers\ActivitiesListController.cs" />
-    <Compile Include="Areas\ActivitiesList\Mappers\ActivityMapper.cs" />
-    <Compile Include="Areas\ActivitiesList\Models\ActivitiesListModel.cs" />
-    <Compile Include="Areas\ActivitiesList\Models\ActivitiesGroupedModel.cs" />
-    <Compile Include="Areas\ActivitiesPage\ActivitiesPageAreaRegistration.cs" />
-    <Compile Include="Areas\ActivitiesPage\Controllers\ActivitiesPageController.cs" />
-    <Compile Include="Areas\ActivitiesPage\Controllers\DogController.cs" />
-    <Compile Include="Areas\ActivitiesPage\Controllers\ImportedController.cs" />
-    <Compile Include="Areas\ActivitiesPage\DateFormatter.cs" />
-    <Compile Include="Areas\ActivitiesPage\Models\ActivitiesListModel.cs" />
-    <Compile Include="Areas\ActivitiesPage\Models\ActivityModel.cs" />
-    <Compile Include="Controllers\WillDeleteController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -190,14 +178,14 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\ActivitiesPage\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\ActivitiesPage\Views\web.config" />
+    <Content Include="Areas\ActivitiesPage\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\ActivitiesPage\Views\Shared\Index.cshtml" />
+    <Content Include="Areas\ActivitiesPage\Views\Dog\Index.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\web.config" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Index.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Activity.cshtml" />
-    <Content Include="Areas\ActivitiesPage\Views\web.config" />
-    <Content Include="Areas\ActivitiesPage\Views\Shared\Index.cshtml" />
-    <Content Include="Areas\ActivitiesPage\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\ActivitiesPage\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\ActivitiesPage\Views\Dog\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -220,21 +208,12 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="SFA.DAS.UI.Activities.nuspec">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Views\WillDelete\Index.cshtml" />
-    <Content Include="Views\WillDelete\About.cshtml" />
-    <Content Include="Views\WillDelete\Contact.cshtml" />
-    <Content Include="Views\WillDelete\Grouped.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\ActivitiesList\Views\ActivitiesList\" />
-    <Folder Include="Areas\ActivitiesList\Views\Default\" />
-    <Folder Include="Areas\ActivitiesPage\Views\ActivitiesPage\" />
-    <Folder Include="Areas\ActivitiesPage\Views\Default\" />
-    <Folder Include="Areas\ActivitiesPage\Views\Imported\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -249,20 +228,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NuGet\NuGet.csproj">
-      <Project>{948f920f-180e-4dab-b4a7-2eac7a72accb}</Project>
-      <Name>NuGet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.UI.Activities.DataAccess\SFA.DAS.UI.Activities.DataAccess.csproj">
-      <Project>{f31d9e4c-f714-4e91-8692-1285428efa4c}</Project>
-      <Name>SFA.DAS.UI.Activities.DataAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.UI.Activities.Domain\SFA.DAS.UI.Activities.Domain.csproj">
-      <Project>{E5999BE1-784F-4BA1-B707-68849F3FBD2D}</Project>
-      <Name>SFA.DAS.UI.Activities.Domain</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -280,9 +245,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>55531</DevelopmentServerPort>
+          <DevelopmentServerPort>50309</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:55531/</IISUrl>
+          <IISUrl>http://localhost:50309/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

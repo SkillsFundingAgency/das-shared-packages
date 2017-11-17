@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UI.Activities.Web.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UI.DataAccess.Tests", "SFA.DAS.UI.DataAccess.Tests\SFA.DAS.UI.DataAccess.Tests.csproj", "{6E822A89-FF6D-4259-806E-A3050F6E6E31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication2", "WebApplication2\WebApplication2.csproj", "{10C7787B-30F6-482F-9C52-84C7E2F275F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{6E822A89-FF6D-4259-806E-A3050F6E6E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E822A89-FF6D-4259-806E-A3050F6E6E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E822A89-FF6D-4259-806E-A3050F6E6E31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10C7787B-30F6-482F-9C52-84C7E2F275F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10C7787B-30F6-482F-9C52-84C7E2F275F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10C7787B-30F6-482F-9C52-84C7E2F275F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10C7787B-30F6-482F-9C52-84C7E2F275F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

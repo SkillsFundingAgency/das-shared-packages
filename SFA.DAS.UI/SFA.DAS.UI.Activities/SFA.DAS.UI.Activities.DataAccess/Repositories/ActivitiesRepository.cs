@@ -12,8 +12,8 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
 
         public ActivitiesRepository(ActivitiesConfiguration configuration)
         {
-            //var elasticSettings = new ConnectionSettings(new Uri("http://activities_app:3t&98Fo5Z00r@localhost:9200")).DefaultIndex("activities");
-            var elasticSettings = new ConnectionSettings(new Uri(configuration.ElasticServerBaseUrl)).DefaultIndex("activities");
+            var elasticSettings = new ConnectionSettings(new Uri("http://activities_app:3t&98Fo5Z00r@localhost:9200")).DefaultIndex("activities");
+            //var elasticSettings = new ConnectionSettings(new Uri(configuration.ElasticServerBaseUrl)).DefaultIndex("activities");
 
             _elasticClient = new ElasticClient(elasticSettings);
 

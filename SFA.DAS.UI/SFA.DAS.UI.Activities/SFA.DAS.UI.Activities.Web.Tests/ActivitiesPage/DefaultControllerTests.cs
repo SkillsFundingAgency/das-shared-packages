@@ -17,7 +17,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests.ActivitiesPage
     {
         private Mock<IActivitiesUiRepository> _mockRepository;
         private List<Activity> _activities;
-        private DefaultController _controller;
+        private ActivitiesPageController _controller;
 
         private const long AccountId = 123456;
 
@@ -30,7 +30,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests.ActivitiesPage
             _mockRepository =new Mock<IActivitiesUiRepository>();
             _mockRepository.Setup(a => a.GetActivities(AccountId)).Returns(_activities);
 
-            _controller = new DefaultController(_mockRepository.Object);
+            _controller = new ActivitiesPageController(_mockRepository.Object);
         }
 
         [Test]
