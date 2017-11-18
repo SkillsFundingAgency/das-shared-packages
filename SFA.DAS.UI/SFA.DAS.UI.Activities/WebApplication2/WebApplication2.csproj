@@ -60,16 +60,16 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NuGet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\NuGet.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\NuGet.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities.DataAccess, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\SFA.DAS.UI.Activities.DataAccess.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\SFA.DAS.UI.Activities.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.1.9\lib\net45\SFA.DAS.UI.Activities.Domain.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\SFA.DAS.UI.Activities.Domain.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -180,10 +180,9 @@
     </Content>
     <Content Include="Areas\ActivitiesPage\Views\_ViewStart.cshtml" />
     <Content Include="Areas\ActivitiesPage\Views\web.config" />
-    <Content Include="Areas\ActivitiesPage\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\ActivitiesPage\Views\Shared\Index.cshtml" />
-    <Content Include="Areas\ActivitiesPage\Views\Dog\Index.cshtml" />
+    <Content Include="Areas\ActivitiesPage\Views\ActivitiesPage\Index.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\web.config" />
+    <Content Include="Areas\ActivitiesList\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Index.cshtml" />
     <Content Include="Areas\ActivitiesList\Views\Shared\Activity.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

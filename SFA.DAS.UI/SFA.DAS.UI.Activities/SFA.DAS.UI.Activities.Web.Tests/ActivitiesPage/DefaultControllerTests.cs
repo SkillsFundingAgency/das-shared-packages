@@ -19,7 +19,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests.ActivitiesPage
         private List<Activity> _activities;
         private ActivitiesPageController _controller;
 
-        private const long AccountId = 123456;
+        private const long AccountId = 1234;
 
         [SetUp]
         public void Init()
@@ -36,7 +36,7 @@ namespace SFA.DAS.UI.Activities.Web.Tests.ActivitiesPage
         [Test]
         public void AcivitiesCollectionIsReturnedInViewModelForm()
         {
-            var result = (ViewResult)_controller.Index();
+            var result = (ViewResult)_controller.Index(AccountId);
             Assert.AreEqual(typeof(ActivitiesListModel), result.Model.GetType());
             var activitiesModels = ((ActivitiesListModel)result.Model).Activities;
             Assert.AreEqual(10, activitiesModels.Count);

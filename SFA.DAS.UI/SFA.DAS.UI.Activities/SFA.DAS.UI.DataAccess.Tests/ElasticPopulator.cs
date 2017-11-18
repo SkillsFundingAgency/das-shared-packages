@@ -11,7 +11,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
         public ElasticPopulator()
         {
             var indexName = "activities";
-            var elasticSettings = new ConnectionSettings(new Uri("http://activities_app:3t&98Fo5Z00r@localhost:9200")).DefaultIndex(indexName);
+            var elasticSettings = new ConnectionSettings(new Uri("http://localhost:9200")).DefaultIndex(indexName);
 
             _elasticClient = new ElasticClient(elasticSettings);
 
@@ -21,7 +21,7 @@ namespace SFA.DAS.UI.DataAccess.Tests
 
             var activities = MakeSomeActivities();
 
-            _elasticClient.IndexMany(activities, indexName);
+            //_elasticClient.IndexMany(activities, indexName);
 
             foreach (var activity in activities)
             {

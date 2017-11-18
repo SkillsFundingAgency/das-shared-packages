@@ -1,5 +1,6 @@
-﻿@{
+﻿@using Microsoft.ApplicationInsights.Web
+@{
     ViewBag.Title = "Home Page";
 }
-
-<p>@Html.Action("Index", "Dog", new { Area = "ActivitiesPage"})</p>
+Activities Page
+<p>@Html.Action("Index", "ActivitiesPage", new { Area = "ActivitiesPage", AccountId = 1234 })</p>

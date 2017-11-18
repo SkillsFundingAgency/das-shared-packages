@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NuGet\NuGet.csproj">
+    <ProjectReference Include="..\NuGet\SFA.DAS.Activities.Entities.csproj">
       <Project>{948f920f-180e-4dab-b4a7-2eac7a72accb}</Project>
-      <Name>NuGet</Name>
+      <Name>SFA.DAS.Activities.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.UI.Activities.DataAccess\SFA.DAS.UI.Activities.DataAccess.csproj">
       <Project>{f31d9e4c-f714-4e91-8692-1285428efa4c}</Project>

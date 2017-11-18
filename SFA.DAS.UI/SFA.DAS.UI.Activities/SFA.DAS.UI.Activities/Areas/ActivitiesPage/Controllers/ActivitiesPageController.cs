@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using SFA.DAS.HashingService;
 using SFA.DAS.UI.Activities.Areas.ActivitiesPage.Models;
 using SFA.DAS.UI.Activities.DataAccess.Repositories;
 using SFA.DAS.UI.Activities.Domain.Configurations;
@@ -13,13 +12,12 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesPage.Controllers
     public class ActivitiesPageController : Controller
     {
         private readonly IActivitiesUiRepository _repository;
-        private readonly IHashingService _hashingService;
 
 
-        //public ActivitiesPageController(IActivitiesUiRepository repository, IHashingService hashingService)
-        //{
-        //    _repository = repository;
-        //}
+        public ActivitiesPageController(IActivitiesUiRepository repository)
+        {
+            _repository = repository;
+        }
 
         public ActivitiesPageController()
         {
@@ -27,9 +25,9 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesPage.Controllers
         }
 
         // GET: ActivitiesPage/Default
-        public ActionResult Index()
+        public ActionResult Index(long accountId)
         {
-            var activities = _repository.GetActivities(1234);
+            var activities = _repository.GetActivities(accountId);
 
             var activityModels = new List<ActivityModel>();
             foreach (var activity in activities)

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UI.Activities", "SF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UI.Activities.DataAccess", "SFA.DAS.UI.Activities.DataAccess\SFA.DAS.UI.Activities.DataAccess.csproj", "{F31D9E4C-F714-4E91-8692-1285428EFA4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGet", "NuGet\NuGet.csproj", "{948F920F-180E-4DAB-B4A7-2EAC7A72ACCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Activities.Entities", "NuGet\SFA.DAS.Activities.Entities.csproj", "{948F920F-180E-4DAB-B4A7-2EAC7A72ACCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UI.Activities.Domain", "SFA.DAS.UI.Activities.Domain\SFA.DAS.UI.Activities.Domain.csproj", "{E5999BE1-784F-4BA1-B707-68849F3FBD2D}"
 EndProject

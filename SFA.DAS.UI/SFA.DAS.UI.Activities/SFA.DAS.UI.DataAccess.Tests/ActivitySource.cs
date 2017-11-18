@@ -78,61 +78,61 @@ namespace SFA.DAS.UI.DataAccess.Tests
             {
                 //today:
                 MakeActivity(ActivityOne, _today02),
-                MakeActivity(ActivityOne, _today03),
-                MakeActivity(ActivityOne, _today02),
-                MakeActivity(ActivityOne, _today03),
-                MakeActivity(ActivityOne, _today04),
-                MakeActivity(ActivityOne, _today02),
-                MakeActivity(ActivityOne, _today03),
+                //MakeActivity(ActivityOne, _today03),
+                //MakeActivity(ActivityOne, _today02),
+                //MakeActivity(ActivityOne, _today03),
+                //MakeActivity(ActivityOne, _today04),
+                //MakeActivity(ActivityOne, _today02),
+                //MakeActivity(ActivityOne, _today03),
 
                 MakeActivity(ActivityTwo, _today10),
                 MakeActivity(ActivityTwo, _today03),
-                MakeActivity(ActivityTwo, _today04),
-                MakeActivity(ActivityTwo, _today02),
-                MakeActivity(ActivityFive, _today14),
+                //MakeActivity(ActivityTwo, _today04),
+                //MakeActivity(ActivityTwo, _today02),
+                //MakeActivity(ActivityFive, _today14),
 
                 //yesterday:
 
                 MakeActivity(ActivityOne, _yesterday11),
                 MakeActivity(ActivityOne, _yesterday10),
-                MakeActivity(ActivityOne, _yesterday09),
-                MakeActivity(ActivityOne, _yesterday08),
-                MakeActivity(ActivityOne, _yesterday07),
+                //MakeActivity(ActivityOne, _yesterday09),
+                //MakeActivity(ActivityOne, _yesterday08),
+                //MakeActivity(ActivityOne, _yesterday07),
 
                 MakeActivity(ActivityTwo, _yesterday06),
-                MakeActivity(ActivityTwo, _yesterday05),
-                MakeActivity(ActivityTwo, _yesterday04),
-                MakeActivity(ActivityTwo, _yesterday03),
-                MakeActivity(ActivityTwo, _yesterday02),
-                MakeActivity(ActivityTwo, _yesterday02),
+                //MakeActivity(ActivityTwo, _yesterday05),
+                //MakeActivity(ActivityTwo, _yesterday04),
+                //MakeActivity(ActivityTwo, _yesterday03),
+                //MakeActivity(ActivityTwo, _yesterday02),
+                //MakeActivity(ActivityTwo, _yesterday02),
 
-                MakeActivity(ActivityThree, _yesterday02),
-                MakeActivity(ActivityThree, _yesterday03),
+                //MakeActivity(ActivityThree, _yesterday02),
+                //MakeActivity(ActivityThree, _yesterday03),
 
-                MakeActivity(ActivityFour, _yesterday02),
-                MakeActivity(ActivityFour, _yesterday03),
+                //MakeActivity(ActivityFour, _yesterday02),
+                //MakeActivity(ActivityFour, _yesterday03),
 
-                MakeActivity(ActivityFive, _yesterday11),
-                MakeActivity(ActivityFive, _yesterday07),
+                //MakeActivity(ActivityFive, _yesterday11),
+                //MakeActivity(ActivityFive, _yesterday07),
 
                 //two days ago
 
-                MakeActivity(ActivityThree, _twoDaysAgo08),
-                MakeActivity(ActivityThree, _twoDaysAgo03),
+                //MakeActivity(ActivityThree, _twoDaysAgo08),
+                //MakeActivity(ActivityThree, _twoDaysAgo03),
 
-                MakeActivity(ActivityFour, _today12),
-                MakeActivity(ActivityFour, _today03),
+                //MakeActivity(ActivityFour, _today12),
+                //MakeActivity(ActivityFour, _today03),
 
                 MakeActivity(ActivityFive, _yesterday11),
                 MakeActivity(ActivityFive, _today13),
 
                 //four days ago
 
-                MakeActivity(ActivityThree, _fourDaysAgo06),
-                MakeActivity(ActivityThree, _fourDaysAgo05),
+                //MakeActivity(ActivityThree, _fourDaysAgo06),
+                //MakeActivity(ActivityThree, _fourDaysAgo05),
 
-                MakeActivity(ActivityFour, _fourDaysAgo04),
-                MakeActivity(ActivityFour, _fourDaysAgo03),
+                //MakeActivity(ActivityFour, _fourDaysAgo04),
+                //MakeActivity(ActivityFour, _fourDaysAgo03),
 
                 MakeActivity(ActivityFive, _fourDaysAgo02),
                 MakeActivity(ActivityFive, _fourDaysAgo05),
@@ -150,8 +150,8 @@ namespace SFA.DAS.UI.DataAccess.Tests
             return new FluentActivity()
                 .ActivityType(type)
                 .PostedDateTime(when)
-                .DescriptionSingular("desc singular")
-                .DescriptionPlural(" things happened")
+                .DescriptionSingular("desc singular Test")
+                .DescriptionPlural(" things happened Test")
                 .DescriptionOne("Someone did a thing")
                 .DescriptionTwo("At 3.23pm")
                 .AddAssociatedThing("associated thing")

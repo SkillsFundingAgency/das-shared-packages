@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Nest;
+﻿using System.Linq;
 using NuGet;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 using SFA.DAS.UI.Activities.DataAccess.Repositories;
 using SFA.DAS.UI.Activities.Domain.Configurations;
 
@@ -24,13 +20,13 @@ namespace SFA.DAS.UI.DataAccess.Tests
         }
 
         [Test]
-        public void TenActivitiesAreReturnsPopulatedAsExprected()
+        public void TenActivitiesAreReturnsPopulatedAsExpected()
         {
             var result = _repo.GetActivities(AccountId).ToList();
             Assert.AreEqual(10, result.Count);
-            Assert.AreEqual(Activity.ActivityTypeStrings.PayeSchemeCreated, result.First().TypeOfActivity);
-            //Assert.IsTrue(result.All(a=>a.Type!=result.First().Type));
-            Assert.AreEqual(4, result.GroupBy(a=>a.TypeOfActivity).Count());
+            Assert.AreEqual(3, result.Count(a=>a.TypeOfActivity.Equals(Activity.ActivityTypeStrings.AgreementSigned)));
+            Assert.AreEqual(3, result.Count(a => a.TypeOfActivity.Equals(Activity.ActivityTypeStrings.AccountCreated)));
+            Assert.AreEqual(3, result.GroupBy(a=>a.TypeOfActivity).Count());
         }
 
        
