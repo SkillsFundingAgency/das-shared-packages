@@ -20,9 +20,9 @@ namespace SFA.DAS.UI.Activities.Areas.ActivitiesList.Controllers
         }
 
         // GET: ActivitiesList/Default
-        public ActionResult Index()
+        public ActionResult Index(long accountId)
         {
-            var activities = _repository.GetActivities(1234);
+            var activities = _repository.GetActivities(accountId);
 
             var summarisedActivities = new ActivityMapper().SummariseCollections(activities);
 

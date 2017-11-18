@@ -21,8 +21,6 @@ namespace SFA.DAS.UI.DataAccess.Tests
 
             var activities = MakeSomeActivities();
 
-            //_elasticClient.IndexMany(activities, indexName);
-
             foreach (var activity in activities)
             {
                 _elasticClient.Index(activity);

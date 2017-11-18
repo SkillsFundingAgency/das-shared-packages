@@ -60,16 +60,16 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NuGet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\NuGet.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.5\lib\net45\NuGet.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.5\lib\net45\SFA.DAS.UI.Activities.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities.DataAccess, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\SFA.DAS.UI.Activities.DataAccess.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.5\lib\net45\SFA.DAS.UI.Activities.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.UI.Activities.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.4\lib\net45\SFA.DAS.UI.Activities.Domain.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Activities.UI.1.0.5\lib\net45\SFA.DAS.UI.Activities.Domain.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
