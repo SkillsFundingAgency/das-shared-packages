@@ -36,7 +36,86 @@ namespace SFA.DAS.UI.Activities.DataAccess.Repositories
             return searchResponse.Documents;
         }
 
-       
+        public ISearchResponse<Activity> GetAggregationsByDay(long accountId)
+        {
+            var searchResponse = _elasticClient.Search<Activity>(s => s
+                .Index("activities")
+                .Type(typeof(Activity))
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.AccountId)
+                        .Query(accountId.ToString())
+                    )
+                )
+                .Aggregations(a => a
+                    .Terms("keywordsBuckets", t => t
+                        .Field(p => p.PostedDateKeyword)
+                        .Order(TermsOrder.TermDescending)
+                        )
+                    )
+                );
+
+            if (searchResponse.DebugInformation.Contains("Invalid"))
+                throw new InvalidOperationException();
+
+
+            return searchResponse;
+        }
+
+        public ISearchResponse<Activity> GetAggregationsByType(long accountId)
+        {
+            var searchResponse = _elasticClient.Search<Activity>(s => s
+                .Index("activities")
+                .Type(typeof(Activity))
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.AccountId)
+                        .Query(accountId.ToString())
+                    )
+                )
+                .Aggregations(a => a
+                    .Terms("keywordsBuckets", t => t
+                        .Field(p => p.TypeOfActivityKeyword)
+                        .Aggregations(aa => aa
+                            .Terms("dateBuckets", th => th
+                                    .Field(p => p.PostedDateTimeKeyword)
+                                )
+                            //.Source(src => src
+                            //    .Includes(fs => fs
+                            //        .Field(p => p.OwnerId)
+                            //        //.Field(p => p.)
+                            //    )
+                            //)
+                            //.Size(1)
+                            //.Version()
+                            //.Explain()
+                            //.FielddataFields(fd => fd
+                            //    .Field(p => p.State)
+                            //    .Field(p => p.NumberOfCommits)
+                            //)
+                            //.Highlight(h => h
+                            //    .Fields(
+                            //        hf => hf.Field(p => p.Tags),
+                            //        hf => hf.Field(p => p.Description)
+                            //    )
+                            //)
+                            //.ScriptFields(sfs => sfs
+                            //    .ScriptField("commit_factor", sf => sf
+                            //        .Inline("doc['numberOfCommits'].value * 2")
+                            //        .Lang("groovy")
+                            //    )
+                            //)
+                            )
+                        )
+                    )
+                );
+
+            if (searchResponse.DebugInformation.Contains("Invalid"))
+                throw new InvalidOperationException();
+
+
+            return searchResponse;
+        }
 
     }
 }
