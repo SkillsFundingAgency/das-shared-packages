@@ -23,20 +23,29 @@ namespace SFA.DAS.Messaging
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    Log.Debug($"Getting message of type {typeof(T).FullName} from azure topic message queue");
+
                     var message = await subscriber.ReceiveAsAsync();
+
+                    Log.Debug($"Recieved message of type {typeof(T).FullName} from azure topic message queue");
+
                     try
                     {
                         if (message == null)
                         {
+                            Log.Debug($"Message of type {typeof(T).FullName} is null");
                             continue;
                         }
 
                         if (message.Content == null)
                         {
+                            Log.Debug($"Message of type {typeof(T).FullName} has null content");
+
                             await message.CompleteAsync();
                             continue;
                         }
 
+                        Log.Debug($"Processing message of type {typeof(T).FullName}");
                         await ProcessMessage(message.Content);
 
                         await message.CompleteAsync();

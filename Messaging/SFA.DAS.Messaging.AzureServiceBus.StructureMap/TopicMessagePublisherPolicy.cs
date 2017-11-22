@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Azure;
+using NLog;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Configuration.FileStorage;
@@ -10,16 +11,19 @@ using SFA.DAS.Messaging.FileSystem;
 using SFA.DAS.Messaging.Interfaces;
 using StructureMap;
 using StructureMap.Pipeline;
+using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
 {
     public class TopicMessagePublisherPolicy<T> : ConfiguredInstancePolicy where T : ITopicMessagePublisherConfiguration
     {
         private readonly string _serviceName;
+        private readonly ILog _logger;
 
-        public TopicMessagePublisherPolicy(string serviceName)
+        public TopicMessagePublisherPolicy(string serviceName, ILog logger)
         {
             _serviceName = serviceName;
+            _logger = logger;
         }
 
         protected override void apply(Type pluginType, IConfiguredInstance instance)
@@ -41,7 +45,8 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
             }
             else
             {
-                var publisher = new TopicMessagePublisher(messageQueueConnectionString);
+                
+                var publisher = new TopicMessagePublisher(messageQueueConnectionString, _logger);
                 instance.Dependencies.AddForConstructorParameter(messagePublisher, publisher);
             }
         }
