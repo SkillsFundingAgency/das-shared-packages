@@ -4,5 +4,6 @@
     {
         public const string HeaderNameRequestCorrelationId = "DasRequestCorrelationId";
         public const string HeaderNameSessionCorrelationId = "DasSessionCorrelationId";
+        public const string JobCorrelationId = "DasJobCorrelationId";
     }
 }

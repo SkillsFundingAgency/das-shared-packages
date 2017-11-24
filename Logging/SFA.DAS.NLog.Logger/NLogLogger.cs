@@ -170,12 +170,16 @@ namespace SFA.DAS.NLog.Logger
         {
             var requestCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameRequestCorrelationId);
             var sessionCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.HeaderNameSessionCorrelationId);
+            var jobCorrelationId = MappedDiagnosticsLogicalContext.Get(Constants.JobCorrelationId);
 
             if (!string.IsNullOrEmpty(requestCorrelationId))
                 properties.Add(Constants.HeaderNameRequestCorrelationId, requestCorrelationId);
 
             if (!string.IsNullOrEmpty(sessionCorrelationId))
                 properties.Add(Constants.HeaderNameSessionCorrelationId, sessionCorrelationId);
+
+            if(!string.IsNullOrEmpty(jobCorrelationId))
+                properties.Add(Constants.JobCorrelationId, jobCorrelationId);
         }
 
         private void SendLog(object message, LogLevel level, IDictionary<string, object> properties, Exception exception = null)
