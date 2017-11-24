@@ -17,6 +17,7 @@ The `RequestIdActionFilter` wil create a new GUID for each request and the `Sess
 We can also set the value in `MappedDiagnosticsLogicalContext` by using the keys:  
 * `Constants.HeaderNameSessionCorrelationId`  
 * `Constants.HeaderNameRequestCorrelationId` 
+* `Constants.JobCorrelationId` 
 
 #### Sending correlation ids to other applications
 To send the id to another application via HTTP we can insert a delegate handler to the HttpClient. The `RequestIdMessageRequestHandler` and `SessionIdMessageRequestHandler` will add the ids to `HttpRequestMessage` header by grabbing the Session or Request id from NLog `MappedDiagnosticsLogicalContext`.
@@ -25,5 +26,10 @@ To send the id to another application via HTTP we can insert a delegate handler 
 HttpActionFilter should be added to the APIs that want to read the header and populate `MappedDiagnosticsLogicalContext` with its value. 
 RequestIdHttpActionFilter and SessionIdHttpActionFilter.
 
+#### Setting correlation id for console applications.
+The NlogCorrelationId class can be used to set a unique id and will be logged out for the key `DasJobCorrelationId`  
+
+Use like: `NlogCorrelationId.SetJobCorrelationId("My Web Job", true);`  
+Result: `MyWebJob-24-Nov-2017-750896dded2f430eaeaad350ec02bdf7`
+
 ---
-Hej då!
