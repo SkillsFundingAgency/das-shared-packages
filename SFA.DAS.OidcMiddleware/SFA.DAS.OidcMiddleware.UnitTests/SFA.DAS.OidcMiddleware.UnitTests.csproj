@@ -79,7 +79,6 @@
   <ItemGroup>
     <Compile Include="ApplyResponseChallengeStrategyTests\WhenApplyingResponseChallenge.cs" />
     <Compile Include="AuthenticateCoreStrategyTests\WhenAuthenticating.cs" />
-    <Compile Include="BuilderTests\WhenGettingAuthorizeRequestUrl.cs" />
     <Compile Include="CodeFlowAuthenticationHandlerTests\WhenHandlingTheAuthentication.cs" />
     <Compile Include="OwinAuthTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

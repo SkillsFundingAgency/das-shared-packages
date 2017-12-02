@@ -13,7 +13,7 @@ namespace SFA.DAS.OidcMiddleware.Builders
                 clientId: clientId,
                 responseType: "code",
                 scope: scopes,
-                redirectUri: $"{requestUrl.Scheme}{Uri.SchemeDelimiter}{requestUrl.Authority}{requestUrl.PathAndQuery}",
+                redirectUri: $"{requestUrl.Scheme}{Uri.SchemeDelimiter}{requestUrl.Authority}{requestUrl.AbsolutePath}",
                 state: state,
                 nonce: nonce);
         }
