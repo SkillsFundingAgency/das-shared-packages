@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using IdentityModel.Client;
 
-namespace SFA.DAS.OidcMiddleware.Builders
+namespace SFA.DAS.OidcMiddleware.Clients
 {
-    public class BuildRequestAuthorisationCode : IBuildRequestAuthorisationCode
+    public class TokenClientWrapper : ITokenClient
     {
-        public async Task<TokenResponse> GetTokenResponse(string tokenEndpoint, string clientId, string clientSecret,string code, Uri redirectUri)
+        public async Task<TokenResponse> RequestAuthorizationCodeAsync(string tokenEndpoint, string clientId, string clientSecret, string code, Uri redirectUri)
         {
             var client = new TokenClient(tokenEndpoint, clientId, clientSecret);
             

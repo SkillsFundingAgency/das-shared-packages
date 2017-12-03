@@ -65,25 +65,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\BuildAuthorizeRequestUrl.cs" />
-    <Compile Include="Builders\BuildRequestAuthorisationCode.cs" />
-    <Compile Include="Builders\BuildUserInfoClientUrl.cs" />
-    <Compile Include="Builders\IBuildAuthorizeRequestUrl.cs" />
-    <Compile Include="Builders\IBuildRequestAuthorisationCode.cs" />
-    <Compile Include="Builders\IBuildUserInfoClientUrl.cs" />
+    <Compile Include="Builders\AuthorizeUrlBuilder.cs" />
+    <Compile Include="Clients\TokenClientWrapper.cs" />
+    <Compile Include="Clients\UserInfoClientWrapper.cs" />
+    <Compile Include="Builders\IAuthorizeUrlBuilder.cs" />
+    <Compile Include="Clients\ITokenClient.cs" />
+    <Compile Include="Clients\IUserClaimsClient.cs" />
+    <Compile Include="Caches\INonceCache.cs" />
+    <Compile Include="Caches\NonceCache.cs" />
     <Compile Include="CodeFlowAuthenticationExtensions.cs" />
     <Compile Include="CodeFlowAuthenticationHandler.cs" />
     <Compile Include="CodeFlowAuthenticationMiddleware.cs" />
     <Compile Include="OidcAuthenticationException.cs" />
     <Compile Include="OidcMiddlewareOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Strategies\ApplyResponseChallengeStrategy.cs" />
-    <Compile Include="Strategies\AuthenticateCoreStrategy.cs" />
-    <Compile Include="Strategies\IApplyResponseChallengeStrategy.cs" />
-    <Compile Include="Strategies\IAuthenticateCoreStrategy.cs" />
     <Compile Include="TokenValidationMethod.cs" />
-    <Compile Include="Validators\ISecurityTokenValidation.cs" />
-    <Compile Include="Validators\SecurityTokenValidation.cs" />
+    <Compile Include="Validators\ITokenValidator.cs" />
+    <Compile Include="Validators\TokenValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
