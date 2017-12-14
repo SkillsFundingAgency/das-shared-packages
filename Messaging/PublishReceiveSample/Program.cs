@@ -155,9 +155,9 @@ namespace PublishReceiveSample
             WriteColoredText("Subscription name: ");
             var subscriptionName = Console.ReadLine();
 
-            publisher = new TopicMessagePublisher(connectionString);
+            publisher = new TopicMessagePublisher(connectionString, new SampleLogger());
 
-            var subscriberFactory = new TopicSubscriberFactory(connectionString, subscriptionName);
+            var subscriberFactory = new TopicSubscriberFactory(connectionString, subscriptionName, new SampleLogger());
             subscriber = subscriberFactory.GetSubscriber<T>();
         }
 
