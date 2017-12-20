@@ -38,6 +38,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IClientValidatior.cs" />
     <Compile Include="ISiteManifest.cs" />
     <Compile Include="NavItem.cs" />
     <Compile Include="PageLinks.cs" />
