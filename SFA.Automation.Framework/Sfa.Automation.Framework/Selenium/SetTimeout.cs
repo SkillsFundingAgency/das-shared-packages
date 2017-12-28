@@ -16,7 +16,7 @@ namespace Sfa.Automation.Framework.Selenium
         /// <param name="timeSpan">Timespan to wait for</param>
         public static void ImplicityWait(IWebDriver driver, TimeSpan timeSpan)
         {
-            driver.Manage().Timeouts().ImplicitlyWait(timeSpan);
+            driver.Manage().Timeouts().ImplicitWait = timeSpan;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Sfa.Automation.Framework.Selenium
         /// <param name="timeSpan">Timespan to wait for</param>
         public static void PageLoad(IWebDriver driver, TimeSpan timeSpan)
         {
-            driver.Manage().Timeouts().SetPageLoadTimeout(timeSpan);
+            driver.Manage().Timeouts().PageLoad = timeSpan;
         }
 
         /// <summary>
@@ -36,8 +36,7 @@ namespace Sfa.Automation.Framework.Selenium
         /// <param name="timeSpan">Timespan to wait for</param>
         public static void Script(IWebDriver driver, TimeSpan timeSpan)
         {
-            driver.Manage().Timeouts().SetScriptTimeout(timeSpan);
+            driver.Manage().Timeouts().AsynchronousJavaScript = timeSpan;
         }
-
     }
 }

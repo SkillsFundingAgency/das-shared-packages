@@ -2,21 +2,20 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>SFA.Automation.Framework</id>
-    <version>1.0.0</version>
-    <authors>Dele Odusanya</authors>
-    <owners>DAS Dele Odusanya</owners>
+    <version>2.0.0</version>
+    <authors>Daniel Ashton, dashton82, Dele Odusanya, Arvinth Seran, arvinthseran</authors>
+    <owners>sfanuget</owners>
 	<licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Web automation framework, using selenium, Specflow and NUnit.</description>
+    <description>Web automation framework, using selenium</description>
     <dependencies>
-      <dependency id="Selenium.Support" version="3.0.0" />
-      <dependency id="Selenium.WebDriver" version="3.0.0" />
-      <dependency id="Selenium.WebDriver.IEDriver" version="3.0.0" />
-      <dependency id="Selenium.WebDriver.ChromeDriver" version="2.25.0" />
-      <dependency id="NUnit" version="3.5.0" />
-      <dependency id="WindowsAzure.Storage" version="7.2.1" />
-      <dependency id="OWASPZAPDotNetAPI" version="1.0.0"/>
+      <dependency id="Selenium.Support" version="3.8.0" />
+      <dependency id="Selenium.WebDriver" version="3.8.0" />
+      <dependency id="Selenium.WebDriver.ChromeDriver" version="2.34.0" />
+      <dependency id="NUnit" version="3.9.0" />
+      <dependency id="WindowsAzure.Storage" version="8.7.0" />
+      <dependency id="OWASPZAPDotNetAPI" version="2.7.0"/>
     </dependencies>
   </metadata>
   <files>
