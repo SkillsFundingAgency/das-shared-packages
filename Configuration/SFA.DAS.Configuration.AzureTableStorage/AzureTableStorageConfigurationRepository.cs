@@ -45,7 +45,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         }
         private TableOperation GetOperation(string serviceName, string environmentName, string version)
         {
-            return TableOperation.Retrieve<ConfigurationItem>(environmentName, $"{serviceName}_{version}");
+            return TableOperation.Retrieve<ConfigurationItem>(environmentName, $"{serviceName}_{version}" );
         }
     }
 }
