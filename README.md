@@ -90,6 +90,8 @@ You are then able to use the [Authorize] attrbiute on any Controller Actions tha
 
 ## Logging
 
+Retrospective Note: DCM 148 Introduced breaking change: IRequestContext has been replaced with IWebLoggingContext
+
 ### NLog Target for Azure Event Hub - DAS.SFA.NLog.Targets.AzureEventHub
 [link to README](Logging/SFA.DAS.NLog.Targets.AzureEventHub/README.MD)
 
