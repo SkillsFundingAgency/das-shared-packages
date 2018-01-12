@@ -42,7 +42,7 @@ namespace SFA.DAS.Elastic.UnitTests
 
         public class When_configuring_elastic_with_min_settings : Test
         {
-            private IElasticClient _client;
+            private IElasticClientFactory _factory;
 
             protected override void Given()
             {
@@ -50,55 +50,27 @@ namespace SFA.DAS.Elastic.UnitTests
 
             protected override void When()
             {
-                _client = new ElasticConfiguration()
+                _factory = new ElasticConfiguration()
                     .UseSingleNodeConnectionPool(ElasticUrl)
-                    .CreateClientFactory()
-                    .CreateClient();
+                    .CreateClientFactory();
             }
 
             [Test]
             public void Then_should_create_client_with_min_settings()
             {
-                Assert.That(_client, Is.Not.Null);
-                Assert.That(_client.ConnectionSettings.ConnectionPool, Is.TypeOf<SingleNodeConnectionPool>());
-                Assert.That(_client.ConnectionSettings.ConnectionPool.Nodes.Count, Is.EqualTo(1));
-                Assert.That(_client.ConnectionSettings.ConnectionPool.Nodes.Single().Uri, Is.EqualTo(new Uri(ElasticUrl)));
-                Assert.That(_client.ConnectionSettings.BasicAuthenticationCredentials, Is.Null);
-                Assert.That(_client.ConnectionSettings.DefaultIndices.Count, Is.Zero);
-            }
-        }
-
-        public class When_configuring_elastic_with_default_environment_name : Test
-        {
-            private IElasticClient _client;
-
-            protected override void Given()
-            {
-            }
-
-            protected override void When()
-            {
-                _client = new ElasticConfiguration()
-                    .UseSingleNodeConnectionPool(ElasticUrl)
-                    .ScanForIndexMappers(typeof(ElasticConfigurationTests).Assembly)
-                    .CreateClientFactory()
-                    .CreateClient();
-            }
-
-            [Test]
-            public void Then_should_create_indices_with_default_environment_name_prefix()
-            {
-                Assert.That(_client, Is.Not.Null);
-                Assert.That(_client.ConnectionSettings.DefaultIndices.Count, Is.EqualTo(1));
-                Assert.That(_client.ConnectionSettings.DefaultIndices.TryGetValue(typeof(Stub), out var indexName), Is.True);
-                Assert.That(indexName, Is.Not.Null);
-                Assert.That(indexName, Is.EqualTo(DefaultEnvironmentStubsIndexName));
+                Assert.That(_factory, Is.Not.Null);
+                Assert.That(_factory.EnvironmentName, Is.EqualTo(EnvironmentName));
+                Assert.That(_factory.IndexMappersFactory, Is.Null);
+                Assert.That(_factory.ConnectionSettings.ConnectionPool, Is.TypeOf<SingleNodeConnectionPool>());
+                Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Count, Is.EqualTo(1));
+                Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Single().Uri, Is.EqualTo(new Uri(ElasticUrl)));
+                Assert.That(_factory.ConnectionSettings.BasicAuthenticationCredentials, Is.Null);
             }
         }
 
         public class When_configuring_elastic_with_max_settings : Test
         {
-            private IElasticClient _client;
+            private IElasticClientFactory _factory;
             private readonly Mock<Action<IApiCallDetails>> _onRequestCompleted = new Mock<Action<IApiCallDetails>>();
             private readonly Mock<IApiCallDetails> _apiCallDetails = new Mock<IApiCallDetails>();
 
@@ -108,48 +80,48 @@ namespace SFA.DAS.Elastic.UnitTests
 
             protected override void When()
             {
-                _client = new ElasticConfiguration()
-                    .OverrideEnvironmentName(EnvironmentName)
+                _factory = new ElasticConfiguration()
+                    .OverrideEnvironmentName(OverriddenEnvironmentName)
                     .UseSingleNodeConnectionPool(ElasticUrl)
                     .UseBasicAuthentication(ElasticUsername, ElasticPassword)
                     .ScanForIndexMappers(typeof(ElasticConfigurationTests).Assembly)
                     .OnRequestCompleted(_onRequestCompleted.Object)
-                    .CreateClientFactory()
-                    .CreateClient();
+                    .CreateClientFactory();
                 
-                _client?.ConnectionSettings?.OnRequestCompleted(_apiCallDetails.Object);
+                _factory?.ConnectionSettings?.OnRequestCompleted(_apiCallDetails.Object);
             }
 
             [Test]
             public void Then_should_create_client_with_max_settings()
             {
-                Assert.That(_client, Is.Not.Null);
-                Assert.That(_client.ConnectionSettings.ConnectionPool, Is.TypeOf<SingleNodeConnectionPool>());
-                Assert.That(_client.ConnectionSettings.ConnectionPool.Nodes.Count, Is.EqualTo(1));
-                Assert.That(_client.ConnectionSettings.ConnectionPool.Nodes.Single().Uri, Is.EqualTo(new Uri(ElasticUrl)));
-                Assert.That(_client.ConnectionSettings.BasicAuthenticationCredentials, Is.Not.Null);
-                Assert.That(_client.ConnectionSettings.BasicAuthenticationCredentials.Username, Is.EqualTo(ElasticUsername));
-                Assert.That(_client.ConnectionSettings.BasicAuthenticationCredentials.Password, Is.EqualTo(ElasticPassword));
-                Assert.That(_client.ConnectionSettings.DefaultIndices.Count, Is.EqualTo(1));
-                Assert.That(_client.ConnectionSettings.DefaultIndices.TryGetValue(typeof(Stub), out var indexName), Is.True);
-                Assert.That(indexName, Is.Not.Null);
-                Assert.That(indexName, Is.EqualTo(OveriddenEnvironmentStubsIndexName));
+                Assert.That(_factory, Is.Not.Null);
+                Assert.That(_factory.EnvironmentName, Is.EqualTo(OverriddenEnvironmentName));
+                Assert.That(_factory.IndexMappersFactory, Is.Not.Null);
+
+                var indexMappers = _factory.IndexMappersFactory().ToList();
+                
+                Assert.That(indexMappers.Count, Is.EqualTo(1));
+                Assert.That(indexMappers.Single(), Is.TypeOf<IndexMapperStub>());
+                Assert.That(_factory.ConnectionSettings.ConnectionPool, Is.TypeOf<SingleNodeConnectionPool>());
+                Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Count, Is.EqualTo(1));
+                Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Single().Uri, Is.EqualTo(new Uri(ElasticUrl)));
+                Assert.That(_factory.ConnectionSettings.BasicAuthenticationCredentials, Is.Not.Null);
+                Assert.That(_factory.ConnectionSettings.BasicAuthenticationCredentials.Username, Is.EqualTo(ElasticUsername));
+                Assert.That(_factory.ConnectionSettings.BasicAuthenticationCredentials.Password, Is.EqualTo(ElasticPassword));
 
                 _onRequestCompleted.Verify(a => a(_apiCallDetails.Object));
             }
         }
 
-        private const string EnvironmentName = "AT";
+        private static readonly string EnvironmentName = CloudConfigurationManager.GetSetting("EnvironmentName");
+        private const string OverriddenEnvironmentName = "AT";
         private const string ElasticUrl = "http://localhost:9200";
         private const string ElasticUsername = "elastic";
         private const string ElasticPassword = "changeme";
-        private const string StubsIndexName = "stubs";
-        private static readonly string DefaultEnvironmentStubsIndexName = $"{CloudConfigurationManager.GetSetting("EnvironmentName").ToLower()}-{StubsIndexName}";
-        private static readonly string OveriddenEnvironmentStubsIndexName = $"{EnvironmentName.ToLower()}-{StubsIndexName}";
 
         public class IndexMapperStub : IndexMapper<Stub>
         {
-            protected override string IndexName => StubsIndexName;
+            protected override string IndexName => "stubs";
             
             protected override void Map(TypeMappingDescriptor<Stub> mapper)
             {
