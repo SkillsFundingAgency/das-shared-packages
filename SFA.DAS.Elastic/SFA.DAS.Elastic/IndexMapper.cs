@@ -7,9 +7,9 @@ namespace SFA.DAS.Elastic
     {
         protected abstract string IndexName { get; }
 
-        public async Task EnureIndexExists(IEnvironmentConfiguration config, IElasticClient client)
+        public async Task EnureIndexExistsAsync(string environmentName, IElasticClient client)
         {
-            var indexName = $"{config.EnvironmentName.ToLower()}-{IndexName}";
+            var indexName = $"{environmentName.ToLower()}-{IndexName}";
 
             client.ConnectionSettings.DefaultIndices.Add(typeof(T), indexName);
 

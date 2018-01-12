@@ -4,6 +4,6 @@ namespace SFA.DAS.Elastic
 {
     public interface IElasticClientFactory
     {
-        IElasticClient GetClient();
+        IElasticClient CreateClient();
     }
 }

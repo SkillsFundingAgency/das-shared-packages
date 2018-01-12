@@ -1,11 +1,10 @@
 # SFA.DAS.Elastic
 
-A library to register a pre-configured [Elasticsearch .NET Client] with a [StructureMap] container. The first time a `Nest.IElasticClient` dependency is resolved the following will be taken care of for you:
+A library to help create a pre-configured [Elasticsearch .NET Client]. The first time a `Nest.IElasticClient` dependency is resolved the following will be taken care of for you:
 
-* Singleton lifetime.
-* Connection pool setup (using `SingleNodeConnectionPool` as per Ops' current requirements).
-* Automatic debug logging (using `SFA.DAS.NLog.Logger.ILog`).
-* Automatic exception throwing (by default [Elasticsearch .NET Client] will not throw exceptions for unsuccessful HTTP requests to the server).
+* Connection pool setup.
+* Debug logging.
+* Exception throwing (by default [Elasticsearch .NET Client] will not throw exceptions for unsuccessful HTTP requests to the server).
 * Automatic index creation.
 
 ## Requirements
@@ -16,27 +15,23 @@ A library to register a pre-configured [Elasticsearch .NET Client] with a [Struc
 > Install-Package SFA.DAS.Elastic
 ```
 
-2. Update your JSON config to include the following properties (e.g. [SFA.DAS.Activities.json](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-activities/SFA.DAS.Activities.json)):
-
-   * `ElasticUrl`
-   * `ElasticUsername`
-   * `ElasticPassword`
-
-3. Update your C# config to inherit from `IElasticConfiguration` to include the above properties.
-4. Add the registry to your container e.g.:
+2. Create an `SFA.DAS.Elastic.IElasticClientFactory` instance:
 
 ```C#
-_container = new Container(c =>
-{
-    c.AddRegistry<ElasticRegistry>();
-});
+var clientFactory = new ElasticConfiguration()
+    .UseSingleNodeConnectionPool("http://localhost:9200")
+    .ScanForIndexMappers(typeof(Foo).Assembly)
+    .OnRequestCompleted(r => Log.Debug(r.DebugInformation))
+    .CreateClientFactory();
 ```
 
-5. Add the config to your container e.g.:
+3. Register the `SFA.DAS.Elastic.IElasticClientFactory` & `Nest.IElasticClient` types as singletons with your container e.g. [StructureMap]:
+
 ```C#
-_container = new Container(c =>
+var container = new Container(c =>
 {
-    c.For<IElasticConfiguration>().Use(config);
+    c.For<IElasticClientFactory>().Use(clientFactory);
+    c.For<IElasticClient>().Use(c => c.GetInstance<IElasticClientFactory>().CreateClient()).Singleton();
 });
 ```
 
@@ -48,7 +43,7 @@ Inheriting from `SFA.DAS.Elastic.IndexMapper<T>` allows you to define an individ
 * A default POCO type for the index.
 * Any mappings from the POCO type to the index.
 
-e.g. For an index named `activities` with default mapping:
+e.g. For a POCO type of `Activity` auto mapped to an index named `activities`:
 
 ```
 public class ActivitiesIndexMapper : IndexMapper<Activity>
@@ -62,9 +57,7 @@ public class ActivitiesIndexMapper : IndexMapper<Activity>
 }
 ```
 
-Please note that the above will actually result in an index being created with a name prefixed with the environment name as per Ops' current requirements i.e. `at-activities`.
-
-Any classes in your assembly that inherit from `SFA.DAS.Elastic.IndexMapper<T>` will be registered automatically with StructureMap and will be used to create your indexes, if they don't already exist, the first time a `Nest.IElasticClient` dependency is resolved.
+Please note that the above will actually result in an index being created with a name prefixed with the environment name as per Ops' current requirements i.e. `local-activities`.
 
 [Elasticsearch .NET Client]: https://www.nuget.org/packages/NEST
 [SFA.DAS.Elastic]: https://www.nuget.org/packages/SFA.DAS.Elastic

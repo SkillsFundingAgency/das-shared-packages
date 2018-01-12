@@ -4,37 +4,46 @@ using System.Linq;
 using System.Threading.Tasks;
 using Elasticsearch.Net;
 using Nest;
-using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Elastic
 {
     public class ElasticClientFactory : IElasticClientFactory
     {
-        private readonly ElasticClient _client;
+        private readonly string _environmentName;
+        private readonly Func<IEnumerable<IIndexMapper>> _indexMappersFactory;
         private readonly ConnectionSettings _settings;
 
-        public ElasticClientFactory(IElasticConfiguration elasticConfig, IEnvironmentConfiguration environmentConfig, IEnumerable<IIndexMapper> indexMappers, ILog log)
+        public ElasticClientFactory(string environmentName, string url, string username, string password, Action<IApiCallDetails> onRequestCompleted, Func<IEnumerable<IIndexMapper>> indexMappersFactory)
         {
-            _settings = new ConnectionSettings(new SingleNodeConnectionPool(new Uri(elasticConfig.ElasticUrl)))
-                .ThrowExceptions()
-                .OnRequestCompleted(r =>
-                {
-                    log.Debug(r.DebugInformation);
-                });
+            _environmentName = environmentName;
+            _indexMappersFactory = indexMappersFactory;
 
-            if (!string.IsNullOrEmpty(elasticConfig.ElasticUsername) && !string.IsNullOrEmpty(elasticConfig.ElasticPassword))
+            _settings = new ConnectionSettings(new SingleNodeConnectionPool(new Uri(url))).ThrowExceptions();
+
+            if (onRequestCompleted != null)
             {
-                _settings.BasicAuthentication(elasticConfig.ElasticUsername, elasticConfig.ElasticPassword);
+                _settings.OnRequestCompleted(onRequestCompleted);
             }
 
-            _client = new ElasticClient(_settings);
-
-            Task.WaitAll(indexMappers.Select(m => m.EnureIndexExists(environmentConfig, _client)).ToArray());
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                _settings.BasicAuthentication(username, password);
+            }
         }
 
-        public IElasticClient GetClient()
+        public IElasticClient CreateClient()
         {
-            return _client;
+            var client = new ElasticClient(_settings);
+
+            if (_indexMappersFactory != null)
+            {
+                var indexMappers = _indexMappersFactory();
+                var tasks = indexMappers.Select(m => m.EnureIndexExistsAsync(_environmentName, client)).ToArray();
+
+                Task.WaitAll(tasks);
+            }
+
+            return client;
         }
 
         public void Dispose()

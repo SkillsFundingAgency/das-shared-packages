@@ -5,6 +5,6 @@ namespace SFA.DAS.Elastic
 {
     public interface IIndexMapper
     {
-        Task EnureIndexExists(IEnvironmentConfiguration config, IElasticClient client);
+        Task EnureIndexExistsAsync(string environmentName, IElasticClient client);
     }
 }
