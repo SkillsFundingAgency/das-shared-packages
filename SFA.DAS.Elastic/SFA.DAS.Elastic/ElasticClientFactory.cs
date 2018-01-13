@@ -10,10 +10,10 @@ namespace SFA.DAS.Elastic
     public class ElasticClientFactory : IElasticClientFactory
     {
         public string EnvironmentName { get; }
-        public Func<IEnumerable<IIndexMapper>> IndexMappersFactory { get; }
+        public IEnumerable<IIndexMapper> IndexMappers { get; }
         public IConnectionSettingsValues ConnectionSettings { get; }
 
-        public ElasticClientFactory(string environmentName, string url, string username, string password, Action<IApiCallDetails> onRequestCompleted, Func<IEnumerable<IIndexMapper>> indexMappersFactory)
+        public ElasticClientFactory(string environmentName, string url, string username, string password, Action<IApiCallDetails> onRequestCompleted, IEnumerable<IIndexMapper> indexMappers)
         {
             var connectionSettings = new ConnectionSettings(new SingleNodeConnectionPool(new Uri(url))).ThrowExceptions();
 
@@ -28,7 +28,7 @@ namespace SFA.DAS.Elastic
             }
 
             EnvironmentName = environmentName;
-            IndexMappersFactory = indexMappersFactory;
+            IndexMappers = indexMappers;
             ConnectionSettings = connectionSettings;
         }
 
@@ -36,12 +36,9 @@ namespace SFA.DAS.Elastic
         {
             var client = new ElasticClient(ConnectionSettings);
 
-            if (IndexMappersFactory != null)
+            if (IndexMappers != null)
             {
-                var indexMappers = IndexMappersFactory();
-                var tasks = indexMappers.Select(m => m.EnureIndexExistsAsync(EnvironmentName, client)).ToArray();
-
-                Task.WaitAll(tasks);
+                Task.WaitAll(IndexMappers.Select(m => m.EnureIndexExistsAsync(EnvironmentName, client)).ToArray());
             }
 
             return client;

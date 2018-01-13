@@ -36,7 +36,7 @@ namespace SFA.DAS.Elastic.UnitTests
             {
                 Assert.That(_factory, Is.Null);
                 Assert.That(_ex, Is.Not.Null);
-                Assert.That(_ex.Message, Does.StartWith($"Node should be configured using {nameof(ElasticConfiguration.UseSingleNodeConnectionPool)} before calling {nameof(ElasticConfiguration.CreateClientFactory)}."));
+                Assert.That(_ex.Message, Does.StartWith($"Node should be configured using '{nameof(ElasticConfiguration.UseSingleNodeConnectionPool)}' before calling '{nameof(ElasticConfiguration.CreateClientFactory)}'."));
             }
         }
 
@@ -60,7 +60,7 @@ namespace SFA.DAS.Elastic.UnitTests
             {
                 Assert.That(_factory, Is.Not.Null);
                 Assert.That(_factory.EnvironmentName, Is.EqualTo(EnvironmentName));
-                Assert.That(_factory.IndexMappersFactory, Is.Null);
+                Assert.That(_factory.IndexMappers, Is.Null);
                 Assert.That(_factory.ConnectionSettings.ConnectionPool, Is.TypeOf<SingleNodeConnectionPool>());
                 Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Count, Is.EqualTo(1));
                 Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Single().Uri, Is.EqualTo(new Uri(ElasticUrl)));
@@ -96,12 +96,9 @@ namespace SFA.DAS.Elastic.UnitTests
             {
                 Assert.That(_factory, Is.Not.Null);
                 Assert.That(_factory.EnvironmentName, Is.EqualTo(OverriddenEnvironmentName));
-                Assert.That(_factory.IndexMappersFactory, Is.Not.Null);
-
-                var indexMappers = _factory.IndexMappersFactory().ToList();
-                
-                Assert.That(indexMappers.Count, Is.EqualTo(1));
-                Assert.That(indexMappers.Single(), Is.TypeOf<IndexMapperStub>());
+                Assert.That(_factory.IndexMappers, Is.Not.Null);
+                Assert.That(_factory.IndexMappers.Count, Is.EqualTo(1));
+                Assert.That(_factory.IndexMappers.Single(), Is.TypeOf<IndexMapperStub>());
                 Assert.That(_factory.ConnectionSettings.ConnectionPool, Is.TypeOf<SingleNodeConnectionPool>());
                 Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Count, Is.EqualTo(1));
                 Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Single().Uri, Is.EqualTo(new Uri(ElasticUrl)));

@@ -151,7 +151,7 @@ namespace SFA.DAS.Elastic.UnitTests
 
             protected override void Given()
             {
-                _factory = new ElasticClientFactory(EnvironmentName, ElasticUrl, "", "", null, () => _mappers.Select(m => m.Object));
+                _factory = new ElasticClientFactory(EnvironmentName, ElasticUrl, "", "", null, _mappers.Select(m => m.Object));
             }
 
             protected override void When()
