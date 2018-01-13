@@ -1,6 +1,6 @@
 # SFA.DAS.Elastic
 
-A library to help create a pre-configured [Elasticsearch .NET Client]. The first time a `Nest.IElasticClient` dependency is resolved the following will be taken care of for you:
+A library to help create a pre-configured [Elasticsearch .NET Client]. Each time an `Nest.IElasticClient` dependency is resolved the following will be taken care of for you:
 
 * Connection pool setup.
 * Debug logging.
@@ -20,6 +20,7 @@ A library to help create a pre-configured [Elasticsearch .NET Client]. The first
 ```C#
 var clientFactory = new ElasticConfiguration()
     .UseSingleNodeConnectionPool("http://localhost:9200")
+    .UseBasicAuthentication("elastic", "changeme")
     .ScanForIndexMappers(typeof(Foo).Assembly)
     .OnRequestCompleted(r => Log.Debug(r.DebugInformation))
     .CreateClientFactory();
