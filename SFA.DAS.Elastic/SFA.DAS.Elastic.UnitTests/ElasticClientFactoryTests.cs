@@ -10,7 +10,7 @@ namespace SFA.DAS.Elastic.UnitTests
 {
     public static class ElasticClientFactoryTests
     {
-        public class When_getting_client : Test
+        public class When_creating_client : Test
         {
             private IElasticClient _client;
             private IElasticClientFactory _factory;
@@ -34,7 +34,7 @@ namespace SFA.DAS.Elastic.UnitTests
             }
         }
 
-        public class When_getting_client_multiple_times : Test
+        public class When_creating_client_multiple_times : Test
         {
             private IElasticClientFactory _factory;
             private IElasticClient _client1;
@@ -66,7 +66,7 @@ namespace SFA.DAS.Elastic.UnitTests
             }
         }
 
-        public class When_getting_client_with_authenticated_connection : Test
+        public class When_creating_client_with_authenticated_connection : Test
         {
             private IElasticClientFactory _factory;
             private IElasticClient _client;
@@ -90,7 +90,7 @@ namespace SFA.DAS.Elastic.UnitTests
             }
         }
 
-        public class When_getting_client_with_unauthenticated_connection : Test
+        public class When_creating_client_with_unauthenticated_connection : Test
         {
             private IElasticClientFactory _factory;
             private IElasticClient _client;
@@ -112,7 +112,7 @@ namespace SFA.DAS.Elastic.UnitTests
             }
         }
 
-        public class When_getting_client_and_on_request_completed_is_configured : Test
+        public class When_creating_client_and_on_request_completed_is_configured : Test
         {
             private IElasticClientFactory _factory;
             private IElasticClient _client;
@@ -137,7 +137,7 @@ namespace SFA.DAS.Elastic.UnitTests
             }
         }
 
-        public class When_getting_client_and_index_mappers_are_configured : Test
+        public class When_creating_client_and_index_mappers_are_configured : Test
         {
             private IElasticClient _client;
             private IElasticClientFactory _factory;

@@ -9,9 +9,13 @@ namespace SFA.DAS.Elastic
 
         public async Task EnureIndexExistsAsync(string environmentName, IElasticClient client)
         {
+            var type = typeof(T);
             var indexName = $"{environmentName.ToLower()}-{IndexName}";
 
-            client.ConnectionSettings.DefaultIndices.Add(typeof(T), indexName);
+            if (!client.ConnectionSettings.DefaultIndices.ContainsKey(type))
+            {
+                client.ConnectionSettings.DefaultIndices.Add(type, indexName);
+            }
 
             var response = await client.IndexExistsAsync(indexName).ConfigureAwait(false);
 
