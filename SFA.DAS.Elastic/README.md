@@ -15,15 +15,14 @@ A library to help create a pre-configured [Elasticsearch .NET Client]. Each time
 > Install-Package SFA.DAS.Elastic
 ```
 
-2. Create an `SFA.DAS.Elastic.IElasticClientFactory` instance:
+2. Create an `SFA.DAS.Elastic.ElasticConfiguration` instance:
 
 ```C#
-var clientFactory = new ElasticConfiguration()
+var elasticConfig = new ElasticConfiguration()
     .UseSingleNodeConnectionPool("http://localhost:9200")
     .UseBasicAuthentication("elastic", "changeme")
     .ScanForIndexMappers(typeof(Foo).Assembly)
-    .OnRequestCompleted(r => Log.Debug(r.DebugInformation))
-    .CreateClientFactory();
+    .OnRequestCompleted(r => Log.Debug(r.DebugInformation));
 ```
 
 3. Register the `SFA.DAS.Elastic.IElasticClientFactory` & `Nest.IElasticClient` types as singletons with your container e.g. [StructureMap]:
@@ -31,7 +30,7 @@ var clientFactory = new ElasticConfiguration()
 ```C#
 var container = new Container(c =>
 {
-    c.For<IElasticClientFactory>().Use(clientFactory);
+    c.For<IElasticClientFactory>().Use(() => elasticConfig.CreateClientFactory()).Singleton();
     c.For<IElasticClient>().Use(c => c.GetInstance<IElasticClientFactory>().CreateClient()).Singleton();
 });
 ```
