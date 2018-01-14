@@ -15,13 +15,13 @@ namespace SFA.DAS.Elastic
             var type = typeof(T);
             var indexName = $"{environmentName.ToLower()}-{IndexName}";
 
-            await _mutex.WaitAsync().ConfigureAwait(false);
+            await _mutex.WaitAsync();
 
             try
             {
                 if (!client.ConnectionSettings.DefaultIndices.TryGetValue(type, out var defaultIndexName) || indexName != defaultIndexName)
                 {
-                    var response = await client.IndexExistsAsync(indexName);
+                    var response = await client.IndexExistsAsync(indexName).ConfigureAwait(false);
 
                     if (!response.Exists)
                     {
