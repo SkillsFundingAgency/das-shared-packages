@@ -9,9 +9,9 @@ namespace SFA.DAS.Elastic
 {
     public class ElasticClientFactory : IElasticClientFactory
     {
+        public IConnectionSettingsValues ConnectionSettings { get; }
         public string EnvironmentName { get; }
         public IEnumerable<IIndexMapper> IndexMappers { get; }
-        public IConnectionSettingsValues ConnectionSettings { get; }
 
         public ElasticClientFactory(string environmentName, string url, string username, string password, Action<IApiCallDetails> onRequestCompleted, IEnumerable<IIndexMapper> indexMappers)
         {
@@ -27,9 +27,9 @@ namespace SFA.DAS.Elastic
                 connectionSettings.BasicAuthentication(username, password);
             }
 
+            ConnectionSettings = connectionSettings;
             EnvironmentName = environmentName;
             IndexMappers = indexMappers;
-            ConnectionSettings = connectionSettings;
         }
 
         public IElasticClient CreateClient()
@@ -47,6 +47,11 @@ namespace SFA.DAS.Elastic
         public void Dispose()
         {
             ConnectionSettings.Dispose();
+
+            foreach (var indexMapper in IndexMappers)
+            {
+                indexMapper.Dispose();
+            }
         }
     }
 }
