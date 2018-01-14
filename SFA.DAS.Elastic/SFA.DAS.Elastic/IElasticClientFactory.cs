@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Nest;
 
 namespace SFA.DAS.Elastic
 {
-    public interface IElasticClientFactory
+    public interface IElasticClientFactory : IDisposable
     {
         IConnectionSettingsValues ConnectionSettings { get; }
         string EnvironmentName { get; }
