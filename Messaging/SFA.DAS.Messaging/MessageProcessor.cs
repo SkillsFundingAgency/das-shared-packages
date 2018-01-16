@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Messaging.Interfaces;
@@ -23,9 +24,19 @@ namespace SFA.DAS.Messaging
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    IMessage<T> message = null;
+
                     Log.Debug($"Getting message of type {typeof(T).FullName} from azure topic message queue");
 
-                    var message = await subscriber.ReceiveAsAsync();
+                    try
+                    {
+                        message = await subscriber.ReceiveAsAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, $"Failed to retrieve message {typeof(T).FullName}");
+                        throw;
+                    }
 
                     Log.Debug($"Recieved message of type {typeof(T).FullName} from azure topic message queue");
 
@@ -34,6 +45,7 @@ namespace SFA.DAS.Messaging
                         if (message == null)
                         {
                             Log.Debug($"Message of type {typeof(T).FullName} is null");
+                            await Task.Delay(500, cancellationToken);
                             continue;
                         }
 
