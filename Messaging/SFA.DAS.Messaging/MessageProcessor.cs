@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Messaging.Interfaces;
@@ -34,7 +33,9 @@ namespace SFA.DAS.Messaging
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, $"Failed to retrieve message {typeof(T).FullName}");
+                        Log.Fatal(ex, $"Failed to retrieve message {typeof(T).FullName}");
+                        await OnFatalAsync(ex);
+
                         throw;
                     }
 
@@ -44,7 +45,7 @@ namespace SFA.DAS.Messaging
                     {
                         if (message == null)
                         {
-                            Log.Debug($"Message of type {typeof(T).FullName} is null");
+                            Log.Debug($"No messages on queue of type {typeof(T).FullName}");
                             await Task.Delay(500, cancellationToken);
                             continue;
                         }
@@ -73,17 +74,40 @@ namespace SFA.DAS.Messaging
                             await message.AbortAsync();
                         }
 
-                        await OnError(message);
+                        await OnErrorAsync(message, ex);
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Implement to handle a message that needs to be processed
+        /// </summary>
+        /// <param name="messageContent"></param>
+        /// <returns></returns>
         protected abstract Task ProcessMessage(T messageContent);
 
-        protected virtual async Task OnError(IMessage<T> message)
+        /// <summary>
+        /// Override to get error and message of this base class
+        /// </summary>
+        /// <param name="message">Message that has caused the error</param>
+        /// <param name="ex">Exception that has occurred</param>
+        /// <returns></returns>
+        protected virtual Task OnErrorAsync(IMessage<T> message, Exception ex)
         {
-            
+            //Do nothing unless someone overrides this method
+            return Task.Delay(0);
+        }
+
+        /// <summary>
+        /// Override to get fatal error of this base class
+        /// </summary>
+        /// <param name="ex">Exception of the fatal error</param>
+        /// <returns></returns>
+        protected virtual Task OnFatalAsync(Exception ex)
+        {
+            //Do nothing unless someone overrides this method
+            return Task.Delay(0);
         }
     }
 }

@@ -31,12 +31,13 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
                 {
                     throw new Exception();
                 }
-                MessageProcessed = true;
+
+                await Task.Run(() => { MessageProcessed = true; });
             }
 
-            protected override async Task OnError(IMessage<MessageType> message)
+            protected override async Task OnErrorAsync(IMessage<MessageType> message, Exception exception)
             {
-                ExceptionHandled = true;
+                await Task.Run(() => { return ExceptionHandled = true; });
             }
         }
 
@@ -115,7 +116,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
             var resetEvent=  new ManualResetEvent(false);
             var cancellationTokenSource = new CancellationTokenSource();
             Task.Run(() => _messageProcessor.RunAsync(cancellationTokenSource.Token), cancellationTokenSource.Token)
-                .ContinueWith(task => resetEvent.Set());
+                .ContinueWith(task => resetEvent.Set(), cancellationTokenSource.Token);
 
             var timeout = DateTime.Now.AddSeconds(1);
             while (DateTime.Now <= timeout)
