@@ -60,7 +60,7 @@ namespace SFA.DAS.Elastic.UnitTests
             {
                 Assert.That(_factory, Is.Not.Null);
                 Assert.That(_factory.EnvironmentName, Is.EqualTo(EnvironmentName));
-                Assert.That(_factory.IndexMappers, Is.Null);
+                Assert.That(_factory.IndexMappers, Is.Empty);
                 Assert.That(_factory.ConnectionSettings.ConnectionPool, Is.TypeOf<SingleNodeConnectionPool>());
                 Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Count, Is.EqualTo(1));
                 Assert.That(_factory.ConnectionSettings.ConnectionPool.Nodes.Single().Uri, Is.EqualTo(new Uri(ElasticUrl)));
