@@ -25,7 +25,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
             _logger.Debug($"Obtained message group name {messageGroupName} for subscriber of message type {typeof(T).FullName}");
 
-            return new TopicMessageSubscriber<T>(_connectionString, messageGroupName, _subscriptionName);
+            return new TopicMessageSubscriber<T>(_connectionString, messageGroupName, _subscriptionName, _logger);
         }
     }
 }
