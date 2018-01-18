@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
@@ -128,19 +129,12 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             {
                 return new AzureServiceBusMessage<T>(brokeredMessage);
             }
-            catch (SerializationException ex)
+            catch (Exception ex)
             {
                  _logger.Error(ex, "Could not deserialise message from azure queue. Message will be dead lettered.");
 
                 //Dead letter the message as it can never be processed.
-                await brokeredMessage.DeadLetterAsync("Message serialisation failed", ex.Message);
-            }
-            catch (InvalidDataContractException ex)
-            {
-                _logger.Error(ex, "Could not deserialise message from azure queue due to invalid data type. Message will be dead lettered.");
-
-                //Dead letter the message as it can never be processed.
-                await brokeredMessage.DeadLetterAsync("Message type was not the same as deserialisation type", ex.Message);
+                await brokeredMessage.DeadLetterAsync("Message deserialisation failed", ex.Message);
             }
 
             return null;
