@@ -130,10 +130,17 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             }
             catch (SerializationException ex)
             {
-                 _logger.Error(ex, "Could not deserialize message from azure queue. Message will be dead lettered.");
+                 _logger.Error(ex, "Could not deserialise message from azure queue. Message will be dead lettered.");
 
                 //Dead letter the message as it can never be processed.
-                await brokeredMessage.DeadLetterAsync();
+                await brokeredMessage.DeadLetterAsync("Message serialisation failed", ex.Message);
+            }
+            catch (InvalidDataContractException ex)
+            {
+                _logger.Error(ex, "Could not deserialise message from azure queue due to invalid data type. Message will be dead lettered.");
+
+                //Dead letter the message as it can never be processed.
+                await brokeredMessage.DeadLetterAsync("Message type was not the same as deserialisation type", ex.Message);
             }
 
             return null;
