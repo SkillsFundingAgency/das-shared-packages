@@ -115,7 +115,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
         {
             var resetEvent=  new ManualResetEvent(false);
             var cancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => _messageProcessor.RunAsync(cancellationTokenSource.Token), cancellationTokenSource.Token)
+            Task.Run(() => _messageProcessor.RunAsync(cancellationTokenSource), cancellationTokenSource.Token)
                 .ContinueWith(task => resetEvent.Set(), cancellationTokenSource.Token);
 
             var timeout = DateTime.Now.AddSeconds(1);

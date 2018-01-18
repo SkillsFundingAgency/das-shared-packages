@@ -84,6 +84,7 @@
     <Compile Include="SampleLogger.cs" />
     <Compile Include="SyndicationSamples\MessageIdentifierFactory.cs" />
     <Compile Include="SyndicationSamples\SampleEventMessageIdentifier.cs" />
+    <Compile Include="TopicSubscriberPolicy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

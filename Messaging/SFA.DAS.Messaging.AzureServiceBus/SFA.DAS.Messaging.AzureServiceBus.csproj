@@ -41,6 +41,9 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Polly, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.5.7.0\lib\net45\Polly.dll</HintPath>
+    </Reference>
     <Reference Include="SFA.DAS.NLog.Logger, Version=1.0.0.43242, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Logger.1.0.0.43242\lib\net45\SFA.DAS.NLog.Logger.dll</HintPath>
     </Reference>
@@ -64,6 +67,9 @@
   <ItemGroup>
     <Compile Include="Attributes\TopicSubscriptionAttribute.cs" />
     <Compile Include="AzureServiceBusMessage.cs" />
+    <Compile Include="AzureServiceBusPollyPolicyNames.cs" />
+    <Compile Include="ExecutionPolicies\ExecutionPolicy.cs" />
+    <Compile Include="ExecutionPolicies\RequiredPolicyAttribute.cs" />
     <Compile Include="Helpers\TopicSubscriptionHelper.cs" />
     <Compile Include="TopicMessagePublisher.cs" />
     <Compile Include="TopicMessageSubscriber.cs" />

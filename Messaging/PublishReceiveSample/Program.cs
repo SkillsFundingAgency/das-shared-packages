@@ -157,7 +157,7 @@ namespace PublishReceiveSample
 
             publisher = new TopicMessagePublisher(connectionString, new SampleLogger());
 
-            var subscriberFactory = new TopicSubscriberFactory(connectionString, subscriptionName, new SampleLogger());
+            var subscriberFactory = new TopicSubscriberFactory(connectionString, subscriptionName, new SampleLogger(), new TopicSubscriberPolicy());
             subscriber = subscriberFactory.GetSubscriber<T>();
         }
 

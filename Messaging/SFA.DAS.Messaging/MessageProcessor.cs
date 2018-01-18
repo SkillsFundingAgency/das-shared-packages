@@ -17,11 +17,11 @@ namespace SFA.DAS.Messaging
             Log = log;
         }
 
-        public async Task RunAsync(CancellationToken cancellationToken)
+        public async Task RunAsync(CancellationTokenSource cancellationTokenSource)
         {
             using (var subscriber = _messageSubscriberFactory.GetSubscriber<T>())
             {
-                while (!cancellationToken.IsCancellationRequested)
+                while (!cancellationTokenSource.Token.IsCancellationRequested)
                 {
                     IMessage<T> message = null;
 
@@ -35,6 +35,7 @@ namespace SFA.DAS.Messaging
                     {
                         Log.Fatal(ex, $"Failed to retrieve message {typeof(T).FullName}");
                         await OnFatalAsync(ex);
+                        cancellationTokenSource.Cancel();
 
                         throw;
                     }
@@ -46,7 +47,7 @@ namespace SFA.DAS.Messaging
                         if (message == null)
                         {
                             Log.Debug($"No messages on queue of type {typeof(T).FullName}");
-                            await Task.Delay(500, cancellationToken);
+                            await Task.Delay(500, cancellationTokenSource.Token);
                             continue;
                         }
 
