@@ -69,7 +69,9 @@
     <Compile Include="AzureServiceBusMessage.cs" />
     <Compile Include="AzureServiceBusPollyPolicyNames.cs" />
     <Compile Include="ExecutionPolicies\ExecutionPolicy.cs" />
+    <Compile Include="ExecutionPolicies\PolicyNameAttribute.cs" />
     <Compile Include="ExecutionPolicies\RequiredPolicyAttribute.cs" />
+    <Compile Include="ExecutionPolicies\TopicSubscriberDefaultPolicy.cs" />
     <Compile Include="Helpers\TopicSubscriptionHelper.cs" />
     <Compile Include="TopicMessagePublisher.cs" />
     <Compile Include="TopicMessageSubscriber.cs" />

@@ -12,6 +12,14 @@ namespace SFA.DAS.Messaging.AzureServiceBus
         private readonly ILog _logger;
         private readonly ExecutionPolicy _executionPolicy;
 
+        public TopicSubscriberFactory(string connectionString, string subscriptionName, ILog logger)
+        {
+            _connectionString = connectionString;
+            _subscriptionName = subscriptionName;
+            _logger = logger;
+            _executionPolicy = new TopicSubscriberDefaultPolicy(logger);
+        }
+
         public TopicSubscriberFactory(string connectionString, string subscriptionName, ILog logger, 
             [RequiredPolicy(PollyPolicyNames.TopicMessageSubscriberPolicyName)] ExecutionPolicy executionPolicy)
         {
