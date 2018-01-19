@@ -15,6 +15,7 @@
       <group targetFramework=".NETFramework4.5">
         <dependency id="SFA.DAS.Messaging" version="3.0.0"/>
         <dependency id="WindowsAzure.ServiceBus" version="3.1.7"/>
+        <dependency id="Polly" version="5.7.0"/>
       </group>
     </dependencies>
   </metadata>
