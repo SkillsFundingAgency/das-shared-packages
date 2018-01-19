@@ -13,7 +13,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
         private readonly string _serviceName;
         private readonly ILog _logger;
 
-        public TopicMessagePublisherPolicy(string serviceName, ILog logger) : base(serviceName)
+        public TopicMessagePublisherPolicy(string serviceName, string serviceVersion, ILog logger) : base(serviceName, serviceVersion)
         {
             _serviceName = serviceName;
             _logger = logger;

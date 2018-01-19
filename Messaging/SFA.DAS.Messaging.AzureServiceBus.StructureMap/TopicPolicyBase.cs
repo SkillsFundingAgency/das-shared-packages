@@ -11,10 +11,12 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
     public abstract class TopicPolicyBase<T> : ConfiguredInstancePolicy where T : ITopicConfiguration
     {
         protected readonly string ServiceName;
+        protected readonly string ServiceVersion;
 
-        protected TopicPolicyBase(string serviceName)
+        protected TopicPolicyBase(string serviceName, string serviceVersion)
         {
             ServiceName = serviceName;
+            ServiceVersion = serviceVersion;
         }
 
         protected string GetEnvironmentName()
@@ -30,7 +32,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
         protected string GetMessageQueueConnectionString(string environment)
         {
             var configurationService = new ConfigurationService(GetConfigurationRepository(),
-                new ConfigurationOptions(ServiceName, environment, "1.0"));
+                new ConfigurationOptions(ServiceName, environment, ServiceVersion));
 
             var config = configurationService.Get<T>();
 
@@ -41,7 +43,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
         protected IConfigurationRepository GetConfigurationRepository()
         {
             IConfigurationRepository configurationRepository;
-            if (bool.Parse(ConfigurationManager.AppSettings["LocalConfig"]))
+            if (bool.Parse(ConfigurationManager.AppSettings["LocalConfig"] ?? "false"))
             {
                 configurationRepository = new FileStorageConfigurationRepository();
             }

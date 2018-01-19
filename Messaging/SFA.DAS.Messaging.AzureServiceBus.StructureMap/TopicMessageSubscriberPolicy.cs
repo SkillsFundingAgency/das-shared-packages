@@ -11,7 +11,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
 {
     public class TopicMessageSubscriberPolicy<T> : TopicPolicyBase<T> where T : ITopicMessageSubscriberConfiguration
     {
-        public TopicMessageSubscriberPolicy(string serviceName) : base(serviceName)
+        public TopicMessageSubscriberPolicy(string serviceName, string serviceVersion) : base(serviceName, serviceVersion)
         {
         }
 
