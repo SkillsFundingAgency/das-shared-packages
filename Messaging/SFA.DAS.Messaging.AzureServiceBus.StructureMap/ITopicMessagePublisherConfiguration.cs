@@ -1,7 +1,7 @@
 ﻿namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
 {
-    public interface ITopicMessagePublisherConfiguration
+    public interface ITopicMessagePublisherConfiguration : ITopicConfiguration
     {
-        string MessageServiceBusConnectionString { get; }
+        
     }
 }
