@@ -1,26 +1,19 @@
 ﻿using System;
-using System.Configuration;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Azure;
-using NLog;
-using SFA.DAS.Configuration;
-using SFA.DAS.Configuration.AzureTableStorage;
-using SFA.DAS.Configuration.FileStorage;
 using SFA.DAS.Messaging.FileSystem;
 using SFA.DAS.Messaging.Interfaces;
-using StructureMap;
 using StructureMap.Pipeline;
 using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
 {
-    public class TopicMessagePublisherPolicy<T> : ConfiguredInstancePolicy where T : ITopicMessagePublisherConfiguration
+    public class TopicMessagePublisherPolicy<T> : TopicPolicyBase<T> where T : ITopicMessagePublisherConfiguration
     {
         private readonly string _serviceName;
         private readonly ILog _logger;
 
-        public TopicMessagePublisherPolicy(string serviceName, ILog logger)
+        public TopicMessagePublisherPolicy(string serviceName, ILog logger) : base(serviceName)
         {
             _serviceName = serviceName;
             _logger = logger;
@@ -56,41 +49,6 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
             var messagePublisher = instance?.Constructor?
                 .GetParameters().FirstOrDefault(x => x.ParameterType == typeof(IMessagePublisher));
             return messagePublisher;
-        }
-
-        private static string GetEnvironmentName()
-        {
-            var environment = Environment.GetEnvironmentVariable("DASENV");
-            if (string.IsNullOrEmpty(environment))
-            {
-                environment = CloudConfigurationManager.GetSetting("EnvironmentName");
-            }
-            return environment;
-        }
-
-        private string GetMessageQueueConnectionString(string environment)
-        {
-            var configurationService = new ConfigurationService(GetConfigurationRepository(),
-                new ConfigurationOptions(_serviceName, environment, "1.0"));
-
-            var config = configurationService.Get<T>();
-
-            var messageQueueConnectionString = config.MessageServiceBusConnectionString;
-            return messageQueueConnectionString;
-        }
-
-        private static IConfigurationRepository GetConfigurationRepository()
-        {
-            IConfigurationRepository configurationRepository;
-            if (bool.Parse(ConfigurationManager.AppSettings["LocalConfig"]))
-            {
-                configurationRepository = new FileStorageConfigurationRepository();
-            }
-            else
-            {
-                configurationRepository = new AzureTableStorageConfigurationRepository(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"));
-            }
-            return configurationRepository;
         }
     }
 }
