@@ -13,7 +13,7 @@
     <releaseNotes />
     <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="WindowsAzure.Storage" version="6.2.0"/>
+        <dependency id="WindowsAzure.Storage" version="8.0.3"/>
         <dependency id="SFA.DAS.Configuration" version="1.0.0"/>
       </group>
     </dependencies>
