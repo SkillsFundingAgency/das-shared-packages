@@ -12,7 +12,7 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.OwinSelfHost
         {
             HttpConfiguration config = new HttpConfiguration();
 
-            //Add message Handlers o the Http Config
+            //Add message Handlers to the Http Config
             config.MessageHandlers.Add(messageHandlers);
 
             //Request the App Builder to use the config
