@@ -1,7 +1,7 @@
 ﻿using Microsoft.Owin.Hosting;
 using System;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SFA.DAS.ApiSubstitute.WebAPI.OwinSelfHost;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using System.Net.Http;
@@ -10,7 +10,7 @@ using System.Net;
 
 namespace SFA.DAS.ApiSubstitute.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     public class ApiSubstituteTests : IDisposable
     {
         private IDisposable _webApi;
@@ -20,7 +20,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         TestAccount expectedresponce;
         string route;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             _apiMessageHandlers = new ApiMessageHandlers();
@@ -29,7 +29,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             route = baseAddress + "/account";
         }
 
-        [TestMethod]
+        [Test]
         public async Task CanHostWebApi()
         {
             
@@ -41,7 +41,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             }
         }
 
-        [TestMethod]
+        [Test]
         public async Task CanUseApiMessageHandlersSetUpGet()
         {
             _apiMessageHandlers.SetupGet(route, expectedresponce);
@@ -53,7 +53,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             }
         }
 
-        [TestMethod]
+        [Test]
         public async Task CanUseApiMessageHandlersSetUpPut()
         {
             _apiMessageHandlers.SetupGet(route, expectedresponce);
@@ -66,7 +66,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         }
 
 
-        [TestMethod]
+        [Test]
         public async Task CanUseApiMessageHandlersClearSetup()
         {
             _apiMessageHandlers.SetupGet(route, expectedresponce);
@@ -79,7 +79,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         }
 
 
-        [TestMethod]
+        [Test]
         public async Task CanUseApiMessageHandlersSetUpGetWithResponceCode()
         {
             _apiMessageHandlers.SetupGet<object>(route, HttpStatusCode.BadRequest, null);
@@ -90,7 +90,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             }
         }
 
-        [TestCleanup]
+        [TearDown]
         public void TestCleanup()
         {
             Dispose();

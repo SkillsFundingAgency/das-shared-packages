@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Newtonsoft.Json;
 using SFA.DAS.ApiSubstitute.WebAPI;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApiSubstitute.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     public class WebApiSubstituteTests
     {
 
-        [TestMethod]
+        [Test]
         public async Task CanUseWebApiSubstitute()
         {
             const string eventsApibaseAddress = "http://localhost:9000";
@@ -32,7 +32,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             }
         }
 
-        [TestMethod]
+        [Test]
         public async Task CanUseMultipleWebApiSubstitute()
         {
             const string eventsApibaseAddress = "http://localhost:9000";
