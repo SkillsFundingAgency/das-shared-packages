@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SFA.DAS.ApiSubstitute.Utilities</id>
+    <version>1.0.0</version>
+    <title>Api Substitute Utilities</title>
+    <authors>elliot ritchie, arvinth seran</authors>
+    <owners>sfanuget</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Class library for utilities can be used by any API Substitiute</description>
+    <releaseNotes>inital release of the package.</releaseNotes>
+    <tags>Object Activator</tags>
+  </metadata>
+<files>
+    <file src="bin\Release\SFA.DAS.ApiSubstitute.Utilities.dll" target="lib\net45\SFA.DAS.ApiSubstitute.Utilities.dll" />
+  </files>
+</package>

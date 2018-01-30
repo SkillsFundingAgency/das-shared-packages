@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="MessageHandlers\DelegateHandler.cs" />
     <Compile Include="MessageHandlers\ApiMessageHandlers.cs" />
     <Compile Include="OwinSelfHost\WebApiStartUp.cs" />

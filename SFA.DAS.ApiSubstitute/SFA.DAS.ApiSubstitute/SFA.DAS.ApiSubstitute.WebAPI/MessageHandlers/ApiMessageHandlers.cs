@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SFA.DAS.ApiSubstitute.WebAPI.Extensions;
 
 namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
 {
@@ -20,20 +21,25 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
         }
 
         private Dictionary<string, Response> _configuredGets = new Dictionary<string, Response>();
+
+
+        public ApiMessageHandlers(string baseAddress) : base(baseAddress)
+        {
+        }
         
         public void SetupGet<T>(string endPoint, T response)
         {
-            SetupGet<T>(endPoint, HttpStatusCode.OK, response);
+            SetupGet(endPoint, HttpStatusCode.OK, response);
         }
 
         public void SetupGet<T>(string endPoint, HttpStatusCode httpStatusCode, T response)
         {
-            _configuredGets.Add(GetEndPoint(endPoint), new Response(httpStatusCode, response));
+            _configuredGets.Add(BaseAddress + endPoint.GetEndPoint(), new Response(httpStatusCode, response));
         }
 
-        public void SetupPut(string url)
+        public void SetupPut(string endPoint)
         {
-            _configuredGets.Remove(url);
+            _configuredGets.Remove(BaseAddress + endPoint.GetEndPoint());
         }
         public void ClearSetup()
         {
@@ -56,13 +62,6 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
             var tsc = new TaskCompletionSource<HttpResponseMessage>();
             tsc.SetResult(response);
             return tsc.Task;
-        }
-
-        private string GetEndPoint(string url)
-        {
-            return url.StartsWith("/")
-                ? url.TrimStart('/')
-                : url;
         }
     }
 }
