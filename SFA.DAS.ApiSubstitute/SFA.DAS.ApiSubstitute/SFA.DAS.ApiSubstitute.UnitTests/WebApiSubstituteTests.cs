@@ -14,7 +14,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseWebApiSubstitute()
         {
-            const string eventsApibaseAddress = "http://localhost:9001";
+            const string eventsApibaseAddress = "http://localhost:9000";
             var expected = new TestAccount(1);
             string endPoint = "/events";
             string route = eventsApibaseAddress + endPoint;
@@ -36,7 +36,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseMultipleWebApiSubstitute()
         {
-            const string eventsApibaseAddress = "http://localhost:9002";
+            const string eventsApibaseAddress = "http://localhost:9000";
             var expectedevents = new TestAccount(1);
             string eventsendPoint = "/events";
             string eventsroute = eventsApibaseAddress + eventsendPoint;
@@ -44,7 +44,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             eventsapiMessageHandlers.SetupGet(eventsendPoint, expectedevents);
             WebApiSubstitute eventswebApiSubstitute = new WebApiSubstitute(eventsapiMessageHandlers);
 
-            const string accountsApibaseAddress = "http://localhost:9003";
+            const string accountsApibaseAddress = "http://localhost:9001";
             var expectedaccounts = new TestAccount(11);
             string accountssendPoint = "/accounts";
             string accountsroute = accountsApibaseAddress + accountssendPoint;
