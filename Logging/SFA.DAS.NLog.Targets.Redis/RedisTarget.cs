@@ -1,32 +1,33 @@
-﻿namespace NLog.Targets
-{
-    using System;
-    using System.Collections.Generic;
-    using Common;
-    using Microsoft.Azure;
-    using Newtonsoft.Json;
-    using NLog.Config;
+﻿using Newtonsoft.Json;
+using NLog;
+using NLog.Common;
+using NLog.Config;
+using NLog.Targets;
+using System.Collections.Generic;
 
+namespace SFA.DAS.NLog.Targets.Redis.DotNetCore
+{
     [Target("Redis")]
     public sealed class RedisTarget : TargetWithLayout
     {
         private const string AppNameKey = "app_Name";
-
         private RedisConnectionManager _redisConnectionManager;
-        private string _key;
+        private string _key = "logstash";
+        private string _connectionString;
+        private string _environment;
 
         [RequiredParameter]
         public string AppName { get; set; }
 
         [RequiredParameter]
-        public string ConnectionStringKey { get; set; }
+        public string ConnectionStringName { get; set; }
 
-        [RequiredParameter]
-        public string KeySettingsKey { get; set; }
-
-        public string EnvironmentKey { get; set; }
+        public string EnvironmentSettingName { get; set; }
 
         public bool IncludeAllProperties { get; set; }
+
+        [ArrayParameter(typeof(Field), "field")]
+        public IList<Field> Fields { get; set; } = new List<Field>();
 
         public RedisTarget()
         {
@@ -36,16 +37,13 @@
         {
             base.InitializeTarget();
 
-            _key = CloudConfigurationManager.GetSetting(KeySettingsKey);
-
-            var connectionString = CloudConfigurationManager.GetSetting(ConnectionStringKey);
-
-            _redisConnectionManager = new RedisConnectionManager(connectionString);
+            _environment = EnvironmentSettingName.GetConfigurationValue();
+            _connectionString = ConnectionStringName.GetConnectionString();
+            _redisConnectionManager = new RedisConnectionManager(_connectionString);
         }
 
         protected override void CloseTarget()
         {
-
             _redisConnectionManager?.Dispose();
 
             base.CloseTarget();
@@ -61,7 +59,7 @@
             redisDatabase.ListRightPush(_key, redisValue);
         }
 
-        protected override void Write(Common.AsyncLogEventInfo logEvent)
+        protected override void Write(AsyncLogEventInfo logEvent)
         {
             var dict = GetDictionary(logEvent.LogEvent, IncludeAllProperties);
             var redisValue = CreateRedisJsonValue(dict);
@@ -86,13 +84,20 @@
                 properties.Add(AppNameKey, AppName);
             }
 
-            if (!properties.ContainsKey("Environment") && !string.IsNullOrEmpty(EnvironmentKey))
+            if (!properties.ContainsKey("Environment"))
             {
-                var environment = CloudConfigurationManager.GetSetting(EnvironmentKey);
+                var environment = "AT";
                 if (environment != null)
                 {
                     properties.Add("Environment", environment);
                 }
+            }
+
+            foreach (var field in Fields)
+            {
+                var renderedField = field.Layout.Render(logEvent);
+                if (!string.IsNullOrWhiteSpace(renderedField))
+                    properties.Add(field.Name, renderedField.ToSystemType(field.LayoutType, logEvent.FormatProvider));
             }
 
             if (logEvent.Exception != null)
@@ -117,5 +122,6 @@
         {
             return JsonConvert.SerializeObject(properties);
         }
+
     }
 }

@@ -1,12 +1,11 @@
-﻿namespace NLog.Targets
+namespace SFA.DAS.NLog.Targets.Redis.DotNetCore
 {
     using System;
-
     using StackExchange.Redis;
 
     internal class RedisConnectionManager : IDisposable
     {
-        private ConnectionMultiplexer _connectionMultiplexer;
+         private ConnectionMultiplexer _connectionMultiplexer;
 
         public RedisConnectionManager(string connectionString)
         {
