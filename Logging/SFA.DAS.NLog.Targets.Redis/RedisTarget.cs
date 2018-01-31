@@ -22,7 +22,7 @@ namespace SFA.DAS.NLog.Targets.Redis.DotNetCore
         [RequiredParameter]
         public string ConnectionStringName { get; set; }
 
-        public string EnvironmentSettingName { get; set; }
+        public string EnvironmentKeyName { get; set; }
 
         public bool IncludeAllProperties { get; set; }
 
@@ -37,7 +37,7 @@ namespace SFA.DAS.NLog.Targets.Redis.DotNetCore
         {
             base.InitializeTarget();
 
-            _environment = EnvironmentSettingName.GetConfigurationValue();
+            _environment = EnvironmentKeyName?.GetConfigurationValue();
             _connectionString = ConnectionStringName.GetConnectionString();
             _redisConnectionManager = new RedisConnectionManager(_connectionString);
         }
@@ -86,11 +86,9 @@ namespace SFA.DAS.NLog.Targets.Redis.DotNetCore
 
             if (!properties.ContainsKey("Environment"))
             {
-                var environment = "AT";
-                if (environment != null)
-                {
-                    properties.Add("Environment", environment);
-                }
+                var environment = string.IsNullOrEmpty(_environment) ? "Dev" : _environment;
+
+                properties.Add("Environment", environment);
             }
 
             foreach (var field in Fields)
