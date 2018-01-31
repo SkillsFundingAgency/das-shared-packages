@@ -54,17 +54,8 @@ The keys specified in the **connectionStringName** (and optionally **environment
 
 ## Application Configuration (.Net Standard)
 
-The keys specified in the **connectionStringName** (and optionally **environmentKeyName**) need to be available within Configuration provided by the following:
+The keys specified in the **connectionStringName** (and optionally **environmentKeyName**) need to be available within the Configuration system provided by one the following providers:
 
-EnvironmentVariables
-appSettings.json
-appSettings.Development.json
-
-
-i.e. the variables are available by:
-
-_configuration["EnvironmentName"]
-
-_configuration.GetConnectionString("Redis")
-or
-_configuration["ConnectionStrings:Redis"]
+- EnvironmentVariables
+- appSettings.json
+- appSettings.Development.json
