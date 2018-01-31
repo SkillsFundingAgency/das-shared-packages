@@ -25,9 +25,7 @@ namespace SFA.DAS.NLog.Targets.Redis.DotNetCore
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile("appsettings.Development.json", true, true);
 
-            var configuration = builder.Build();
-
-            _configuration = configuration;
+            _configuration = builder.Build();
         }
 #endif
         public static object ToSystemType(this string field, Type type, IFormatProvider formatProvider)
