@@ -4,8 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
-    <PackageReference Include="NLog" Version="4.5.0-rc04" />
-    <PackageReference Include="NLog.Config" Version="4.5.0-rc04" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -13,9 +11,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="NLog" Version="4.5.0-rc04" />
+    <PackageReference Include="NLog.Config" Version="4.5.0-rc04" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net45'">
     <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
+    <PackageReference Include="NLog" Version="4.4.12" />
+    <PackageReference Include="NLog.Config" Version="4.4.12" />
   </ItemGroup>
   <PropertyGroup>
     <PackageId>SFA.DAS.NLog.Targets.Redis</PackageId>
