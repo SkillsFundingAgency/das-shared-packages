@@ -1,5 +1,5 @@
 
-## NLog Target for Azure Event Hub - DAS.SFA.NLog.Targets.AzureEventHub
+## (NOTE: NOT ACTIVELY SUPPORTED) NLog Target for Azure Event Hub - DAS.SFA.NLog.Targets.AzureEventHub
 
 A custom [NLog](https://github.com/nlog/nlog/wiki) target that pushes log events to [Azure Event Hub](https://azure.microsoft.com/en-gb/services/event-hubs/).
 
