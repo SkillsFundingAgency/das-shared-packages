@@ -6,7 +6,7 @@ using SFA.DAS.ProviderEventsApiSubstitute.WebAPI;
 using SFA.DAS.Provider.Events.Api.Types;
 
 
-namespace SFA.DAS.ApiSubstitute.UnitTests
+namespace SFA.DAS.ProviderEventsApiSubstitute.UnitTests
 {
     [TestFixture]
     public class ProviderEventsApiSubstituteTests
@@ -19,7 +19,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [SetUp]
         public void SetUp()
         {
-            baseAddress = "http://localhost:9000/";
+            baseAddress = "http://localhost:9005/";
             apiMessageHandlers = new ProviderEventsApiMessageHandler(baseAddress);
         }
         
@@ -40,7 +40,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanOverrideDefaultResponse()
         {
-            apiMessageHandlers.OverrideGetSubmissionEvents(new PageOfResults<SubmissionEvent> { Items = new[] { new SubmissionEvent {ApprenticeshipId = 45785333 } }, PageNumber = 1, TotalNumberOfPages = 1 });
+            apiMessageHandlers.OverrideGetSubmissionEvents(new PageOfResults<SubmissionEvent> { Items = new[] { new SubmissionEvent {ApprenticeshipId = 45785333,  } }, PageNumber = 1, TotalNumberOfPages = 1 });
 
             using (ProviderEventsApi webApi = new ProviderEventsApi(apiMessageHandlers))
             {

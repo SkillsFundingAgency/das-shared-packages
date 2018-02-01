@@ -14,7 +14,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseWebApiSubstitute()
         {
-            const string eventsApibaseAddress = "http://localhost:9000";
+            const string eventsApibaseAddress = "http://localhost:9004";
             var expected = new TestAccount(1);
             string endPoint = "/events";
             string route = eventsApibaseAddress + endPoint;

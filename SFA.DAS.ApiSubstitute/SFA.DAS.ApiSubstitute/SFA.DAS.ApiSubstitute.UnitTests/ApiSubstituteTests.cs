@@ -14,7 +14,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
     public class ApiSubstituteTests : IDisposable
     {
         private IDisposable _webApi;
-        string baseAddress = "http://localhost:9000";
+        string baseAddress = "http://localhost:9002";
 
         ApiMessageHandlers _apiMessageHandlers;
         TestAccount expectedresponce;
