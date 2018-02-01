@@ -14,26 +14,28 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
     public class ApiSubstituteTests : IDisposable
     {
         private IDisposable _webApi;
-        string baseAddress = "http://localhost:9000";
+        string baseAddress = "http://localhost:9002";
 
         ApiMessageHandlers _apiMessageHandlers;
         TestAccount expectedresponce;
         string route;
+        string endpoint;
 
         [SetUp]
         public void TestInitialize()
         {
-            _apiMessageHandlers = new ApiMessageHandlers();
+            _apiMessageHandlers = new ApiMessageHandlers(baseAddress);
             _webApi = WebApp.Start(baseAddress, appBuilder => new WebApiStartUp().Configuration(appBuilder, _apiMessageHandlers));
             expectedresponce = new TestAccount(1);
-            route = baseAddress + "/account";
+            endpoint = "/account";
+            route = baseAddress + endpoint;
         }
 
         [Test]
         public async Task CanHostWebApi()
         {
             
-            _apiMessageHandlers.SetupGet(route, expectedresponce);
+            _apiMessageHandlers.SetupGet(endpoint, expectedresponce);
             using (HttpClient client = new HttpClient())
             {
                 var jsonresponse = await client.GetAsync(route);
@@ -44,7 +46,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseApiMessageHandlersSetUpGet()
         {
-            _apiMessageHandlers.SetupGet(route, expectedresponce);
+            _apiMessageHandlers.SetupGet(endpoint, expectedresponce);
             using (HttpClient client = new HttpClient())
             {
                 var jsonresponse = await client.GetAsync(route);
@@ -56,8 +58,8 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseApiMessageHandlersSetUpPut()
         {
-            _apiMessageHandlers.SetupGet(route, expectedresponce);
-            _apiMessageHandlers.SetupPut(route);
+            _apiMessageHandlers.SetupGet(endpoint, expectedresponce);
+            _apiMessageHandlers.SetupPut(endpoint);
             using (HttpClient client = new HttpClient())
             {
                 var jsonresponse = await client.GetAsync(route);
@@ -69,7 +71,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseApiMessageHandlersClearSetup()
         {
-            _apiMessageHandlers.SetupGet(route, expectedresponce);
+            _apiMessageHandlers.SetupGet(endpoint, expectedresponce);
             _apiMessageHandlers.ClearSetup();
             using (HttpClient client = new HttpClient())
             {
@@ -82,7 +84,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseApiMessageHandlersSetUpGetWithResponceCode()
         {
-            _apiMessageHandlers.SetupGet<object>(route, HttpStatusCode.BadRequest, null);
+            _apiMessageHandlers.SetupGet<object>(endpoint, HttpStatusCode.BadRequest, null);
             using (HttpClient client = new HttpClient())
             {
                 var jsonresponse = await client.GetAsync(route);

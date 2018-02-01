@@ -14,14 +14,15 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseWebApiSubstitute()
         {
-            const string eventsApibaseAddress = "http://localhost:9000";
+            const string eventsApibaseAddress = "http://localhost:9004";
             var expected = new TestAccount(1);
-            string route = eventsApibaseAddress + "/events";
+            string endPoint = "/events";
+            string route = eventsApibaseAddress + endPoint;
 
-            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers();
-            eventsapiMessageHandlers.SetupGet(route, expected);
+            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers(eventsApibaseAddress);
+            eventsapiMessageHandlers.SetupGet(endPoint, expected);
 
-            using (WebApiSubstitute webApiSubstitute = new WebApiSubstitute(eventsApibaseAddress, eventsapiMessageHandlers))
+            using (WebApiSubstitute webApiSubstitute = new WebApiSubstitute(eventsapiMessageHandlers))
             {
                 using (HttpClient client = new HttpClient())
                 {
@@ -37,17 +38,19 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         {
             const string eventsApibaseAddress = "http://localhost:9000";
             var expectedevents = new TestAccount(1);
-            string eventsroute = eventsApibaseAddress + "/events";
-            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers();
-            eventsapiMessageHandlers.SetupGet(eventsroute, expectedevents);
-            WebApiSubstitute eventswebApiSubstitute = new WebApiSubstitute(eventsApibaseAddress, eventsapiMessageHandlers);
+            string eventsendPoint = "/events";
+            string eventsroute = eventsApibaseAddress + eventsendPoint;
+            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers(eventsApibaseAddress);
+            eventsapiMessageHandlers.SetupGet(eventsendPoint, expectedevents);
+            WebApiSubstitute eventswebApiSubstitute = new WebApiSubstitute(eventsapiMessageHandlers);
 
             const string accountsApibaseAddress = "http://localhost:9001";
             var expectedaccounts = new TestAccount(11);
-            string accountsroute = accountsApibaseAddress + "/accounts";
-            ApiMessageHandlers accountsapiMessageHandlers = new ApiMessageHandlers();
-            accountsapiMessageHandlers.SetupGet(accountsroute, expectedaccounts);
-            WebApiSubstitute accountswebApiSubstitute = new WebApiSubstitute(accountsApibaseAddress, accountsapiMessageHandlers);
+            string accountssendPoint = "/accounts";
+            string accountsroute = accountsApibaseAddress + accountssendPoint;
+            ApiMessageHandlers accountsapiMessageHandlers = new ApiMessageHandlers(accountsApibaseAddress);
+            accountsapiMessageHandlers.SetupGet(accountssendPoint, expectedaccounts);
+            WebApiSubstitute accountswebApiSubstitute = new WebApiSubstitute(accountsapiMessageHandlers);
 
             using (HttpClient client = new HttpClient())
             {
