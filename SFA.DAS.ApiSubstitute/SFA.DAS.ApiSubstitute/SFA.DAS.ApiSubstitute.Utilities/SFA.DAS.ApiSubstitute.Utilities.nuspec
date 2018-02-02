@@ -9,8 +9,8 @@
     <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Class library for utilities can be used by any API Substitiute</description>
-    <releaseNotes>inital release of the package.</releaseNotes>
+    <description>Class library for object creator using Activator can be used to create strongly typed instance with default and supplied values</description>
+    <releaseNotes>Check for null set accessor</releaseNotes>
     <tags>Object Activator</tags>
   </metadata>
 <files>

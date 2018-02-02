@@ -21,6 +21,7 @@ namespace SFA.DAS.ApiSubstitute.Utilities
             {
                 [typeof(DateTime)] = () => sixMonthsAgo.AddDays(random.Next(daysSinceSixMonthsAgo)),
                 [typeof(int)] = () => random.Next(1, 2000),
+                [typeof(long)] = () => random.Next(1000, 200000),
                 [typeof(string)] = () => new string(Chars.Select(c => Chars[random.Next(Chars.Length)]).Take(8).ToArray())
             };
         }
@@ -67,7 +68,7 @@ namespace SFA.DAS.ApiSubstitute.Utilities
                 switch (to.Name)
                 {
                     default:
-                        if (_defaults.ContainsKey(to.PropertyType))
+                        if (_defaults.ContainsKey(to.PropertyType) && to.GetSetMethod() != null)
                         {
                             to.SetValue(message, _defaults[to.PropertyType]());
                         }
