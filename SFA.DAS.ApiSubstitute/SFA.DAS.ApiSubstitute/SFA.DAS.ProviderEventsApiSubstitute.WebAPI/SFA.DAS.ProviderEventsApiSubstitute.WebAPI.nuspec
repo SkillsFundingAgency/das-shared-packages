@@ -9,9 +9,8 @@
     <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Class library for substituting Provider Events API response</description>
-    <summary>Substitute Provider events Web Api response, Override the default response by setting the Gets in the Http message handlers Simply initiate the ProviderEventsApi instance with valid message Handler which will start the web App inMemory in baseaddress( http://localHost/ along with any unused port).</summary>
-    <releaseNotes>inital release of the package.</releaseNotes>
+    <description>Class library for substituting Provider Events API response. Substitute Provider events Web Api response, Override the default response by setting the Gets in the Http message handlers Simply initiate the ProviderEventsApi instance with valid message Handler which will start the web App inMemory in baseaddress( http://localHost/ along with any unused port).</description>
+    <releaseNotes>default values are made visible</releaseNotes>
   </metadata>
   <files>
     <file src="bin\Release\SFA.DAS.ProviderEventsApiSubstitute.WebAPI.dll" target="lib\net45\SFA.DAS.ProviderEventsApiSubstitute.WebAPI.dll" />
