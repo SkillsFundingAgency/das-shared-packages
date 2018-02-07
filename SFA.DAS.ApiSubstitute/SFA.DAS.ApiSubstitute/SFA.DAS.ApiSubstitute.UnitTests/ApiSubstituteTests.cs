@@ -67,6 +67,17 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             }
         }
 
+        [Test]
+        public async Task CanUseApiMessageHandlersSetUpPatch()
+        {
+            _apiMessageHandlers.SetupPatch(endpoint, expectedresponce);
+            using (HttpClient client = new HttpClient())
+            {
+                var jsonresponse = await client.GetAsync(route);
+                var response = JsonConvert.DeserializeObject<TestAccount>(jsonresponse.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(1, response.Accountid);
+            }
+        }
 
         [Test]
         public async Task CanUseApiMessageHandlersClearSetup()

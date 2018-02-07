@@ -4,6 +4,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.AccountsApiSubstitute.WebAPI;
+using SFA.DAS.ApiSubstitute.Utilities;
+using System.Collections.Generic;
+using System;
+using SFA.DAS.EAS.Account.Api.Client;
 
 namespace SFA.DAS.AccountsApiSubstitute.UnitTests
 {
@@ -28,7 +32,7 @@ namespace SFA.DAS.AccountsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetAccount);
+                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetAccountEndPoint);
                     var response = JsonConvert.DeserializeObject<AccountDetailViewModel>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual("111/ABC00001", response.PayeSchemes[0].Id);
                     Assert.AreEqual(8080, response.AccountId);
@@ -44,7 +48,7 @@ namespace SFA.DAS.AccountsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetAccountUsingHashedId);
+                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetAccountUsingHashedIdEndPoint);
                     var response = JsonConvert.DeserializeObject<AccountDetailViewModel>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual("111/ABC00001", response.PayeSchemes[0].Id);
                     Assert.AreEqual("VD96WD", response.HashedAccountId);
@@ -61,9 +65,31 @@ namespace SFA.DAS.AccountsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetAccount);
+                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetAccountEndPoint);
                     var response = JsonConvert.DeserializeObject<AccountDetailViewModel>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(9090, response.AccountId);
+                }
+            }
+        }
+
+        [Test]
+        public async Task CanSetupSetupGetAccount()
+        {
+            long accountid = 564781;
+
+            var payeschemes = new List<ResourceViewModel> { new ResourceViewModel { Id = "111/ABC00011", Href = "" } };
+            var resourceList = new ResourceList(payeschemes);
+            var accounts = new ObjectCreator().Create<AccountDetailViewModel>(x => { x.AccountId = accountid; x.PayeSchemes = resourceList; });
+
+            apiMessageHandlers.SetupGetAccount(accountid, accounts);
+
+            using (AccountsApi webApi = new AccountsApi(apiMessageHandlers))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetAccount(accountid));
+                    var response = JsonConvert.DeserializeObject<AccountDetailViewModel>(jsonresponse.Content.ReadAsStringAsync().Result);
+                    Assert.AreEqual(accountid, response.AccountId);
                 }
             }
         }
