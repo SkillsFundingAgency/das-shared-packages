@@ -1,13 +1,11 @@
-﻿using NUnit.Framework;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using Newtonsoft.Json;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.AccountsApiSubstitute.WebAPI;
 using SFA.DAS.ApiSubstitute.Utilities;
-using System.Collections.Generic;
-using System;
-using SFA.DAS.EAS.Account.Api.Client;
 
 namespace SFA.DAS.AccountsApiSubstitute.UnitTests
 {

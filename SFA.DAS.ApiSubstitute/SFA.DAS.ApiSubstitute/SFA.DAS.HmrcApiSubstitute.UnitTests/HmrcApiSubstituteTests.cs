@@ -71,5 +71,36 @@ namespace SFA.DAS.HmrcApiSubstitute.UnitTests
                 }
             }
         }
+
+        [Test]
+        public void CanUseGetEmploymentStatusEndpointWithNullFromAndToDate()
+        {
+            var expectedendpoint = $"apprenticeship-levy/epaye/111/ABC00001/employed/AB956885B";
+            var actualendpoint = apiMessageHandlers.GetEmploymentStatus("111/ABC00001", "AB956885B");
+            Assert.AreEqual(expectedendpoint, actualendpoint);
+        }
+
+        [Test]
+        public void CanUseGetEmploymentStatusEndpointWithNullFromDate()
+        {
+            var expectedendpoint = $"apprenticeship-levy/epaye/111/ABC00001/employed/AB956885B?toDate=2018-02-06";
+            var actualendpoint = apiMessageHandlers.GetEmploymentStatus("111/ABC00001", "AB956885B", null, new DateTime(2018, 02, 06));
+            Assert.AreEqual(expectedendpoint, actualendpoint);
+        }
+
+        [Test]
+        public void CanUseGetEmploymentStatusEndpointWithNullToDate()
+        {
+            var expectedendpoint = $"apprenticeship-levy/epaye/111/ABC00001/employed/AB956885B?fromDate=2017-12-14";
+            var actualendpoint = apiMessageHandlers.GetEmploymentStatus("111/ABC00001", "AB956885B", new DateTime(2017, 12, 14));
+            Assert.AreEqual(expectedendpoint, actualendpoint);
+        }
+        [Test]
+        public void CanUseGetEmploymentStatusEndpointWithFromAndToDate()
+        {
+            var expectedendpoint = $"apprenticeship-levy/epaye/111/ABC00001/employed/AB956885B?fromDate=2017-12-14&toDate=2018-02-06";
+            var actualendpoint = apiMessageHandlers.GetEmploymentStatus("111/ABC00001", "AB956885B", new DateTime(2017, 12, 14), new DateTime(2018, 02, 06));
+            Assert.AreEqual(expectedendpoint, actualendpoint);
+        }
     }
 }
