@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System;
+using System.Text;
 
 namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 {
@@ -122,6 +123,39 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 
             //Assert
             testDelegate.ShouldThrow<IndexOutOfRangeException>();
+        }
+
+
+        [TestCase("10ABCD")]
+        [TestCase("ABCDEFGH10")]
+        [TestCase("B")]
+        [TestCase("57575757575")]
+        [TestCase("A|?.<>")]
+        public void Then_AlphaNumeric_HashId_Should_Equal_Decode_Value(string hashId)
+        {
+            //Act
+            var _sut =  new HashingService(AllowedCharacters, Hashstring);
+            var encodedValue = _sut.HashValue(hashId);
+            var decodedValue = _sut.DecodeValueToString(encodedValue);
+
+            //Assert
+            hashId.Should().Be(decodedValue);
+
+        }
+
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        public void Then_Decoding_Invalid_String_HashId_Should_ThrowException(string hashId)
+        {
+            // Arrange 
+            var _sut = new HashingService(AllowedCharacters, Hashstring);
+
+            //Act
+            Action testDelegate = () => _sut.DecodeValueToString(hashId);
+
+            //Assert
+            testDelegate.ShouldThrow<ArgumentException>();
         }
 
     }
