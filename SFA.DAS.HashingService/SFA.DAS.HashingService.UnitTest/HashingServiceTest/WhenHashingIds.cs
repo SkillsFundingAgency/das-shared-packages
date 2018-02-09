@@ -143,6 +143,21 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 
         }
 
+        [TestCase("10ABCD")]
+        [TestCase("ABCDEFGH10")]
+        [TestCase("B")]
+        [TestCase("57575757575")]
+        [TestCase("A|?.<>")]
+        public void Then_AlphaNumeric_HashId_Should_Not_BeEqual_To_Encoded_Value(string hashId)
+        {
+            //Act
+            var _sut = new HashingService(AllowedCharacters, Hashstring);
+            var encodedValue = _sut.HashValue(hashId);
+            //Assert
+            hashId.Should().NotBe(encodedValue);
+        }
+
+        
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
