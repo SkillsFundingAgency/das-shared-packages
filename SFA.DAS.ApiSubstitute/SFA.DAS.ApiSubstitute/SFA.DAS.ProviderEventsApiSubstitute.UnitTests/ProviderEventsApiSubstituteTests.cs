@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetSubmissionEventsEndPoint(1));
+                    var jsonresponse = await client.GetAsync(baseAddress + "api/submissions?page=1");
                     var response = JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(45785214, response.Items[0].ApprenticeshipId);
                 }
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetSubmissionEventsEndPoint(1));
+                    var jsonresponse = await client.GetAsync(baseAddress + "api/submissions?page=1");
                     var response = JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(45785333, response.Items[0].ApprenticeshipId);
                 }
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetSubmissionEventsEndPoint(page));
+                    var jsonresponse = await client.GetAsync(baseAddress + $"api/submissions?page={page}");
                     var response = JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(45785333, response.Items[0].ApprenticeshipId);
                 }

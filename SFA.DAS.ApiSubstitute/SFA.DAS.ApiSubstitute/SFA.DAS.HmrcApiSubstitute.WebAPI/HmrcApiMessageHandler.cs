@@ -2,6 +2,7 @@
 using SFA.DAS.ApiSubstitute.Utilities;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using HMRC.ESFA.Levy.Api.Types;
+using System.Net;
 
 namespace SFA.DAS.HmrcApiSubstitute.WebAPI
 {
@@ -11,7 +12,7 @@ namespace SFA.DAS.HmrcApiSubstitute.WebAPI
 
         private IObjectCreator _objectCreator;
 
-        public string GetEmploymentStatus(string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null)
+        private string GetEmploymentStatus(string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var route = $"apprenticeship-levy/epaye/{(empRef)}/employed/{nino}";
 
@@ -34,7 +35,6 @@ namespace SFA.DAS.HmrcApiSubstitute.WebAPI
 
             return endpoint;
         }
-
         
         public const string EmpRef = "111/ABC00001";
         public const string Nino = "AB956884A";
@@ -52,14 +52,14 @@ namespace SFA.DAS.HmrcApiSubstitute.WebAPI
             ConfigureGetEmploymentStatus();
         }
 
-        public void OverrideGetSubmissionEvents<T>(T response)
+        public void OverrideGetSubmissionEvents<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetEmploymentStatusEndPoint, response);
+            SetupPatch(DefaultGetEmploymentStatusEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetEmploymentStatus<T>(T response, string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null)
+        public void SetupGetEmploymentStatus<T>(T response, string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(GetEmploymentStatus(empRef, nino, fromDate, toDate), response);
+            SetupPatch(GetEmploymentStatus(empRef, nino, fromDate, toDate), httpStatusCode, response);
         }
 
         private void ConfigureGetEmploymentStatus()

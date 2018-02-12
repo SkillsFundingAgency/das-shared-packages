@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsApiSubstitute.WebAPI;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using SFA.DAS.ApiSubstitute.Utilities;
+using System.Net;
 
 namespace SFA.DAS.CommitmentsApiSubstitute.UnitTests
 {
@@ -67,7 +68,7 @@ namespace SFA.DAS.CommitmentsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetProviderApprenticeship(ProviderId, ApprenticeshipId));
+                    var jsonresponse = await client.GetAsync(baseAddress + $"api/provider/{ProviderId}/apprenticeships/{ApprenticeshipId}");
                     var response = JsonConvert.DeserializeObject<Apprenticeship>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(ProviderId, response.ProviderId);
                 }

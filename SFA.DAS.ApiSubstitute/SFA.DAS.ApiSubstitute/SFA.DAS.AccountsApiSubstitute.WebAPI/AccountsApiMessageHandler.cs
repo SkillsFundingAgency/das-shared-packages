@@ -2,31 +2,32 @@
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using SFA.DAS.EAS.Account.Api.Types;
 using System.Collections.Generic;
+using System.Net;
 
 namespace SFA.DAS.AccountsApiSubstitute.WebAPI
 {
     public class AccountsApiMessageHandler : ApiMessageHandlers
     {
-        public string DefaultGetAccountEndPoint { get; private set; }
+        private string DefaultGetAccountEndPoint { get; set; }
 
-        public string DefaultGetAccountUsingHashedIdEndPoint { get; private set; }
+        private string DefaultGetAccountUsingHashedIdEndPoint { get; set; }
 
         private IObjectCreator _objectCreator;
 
-        public string GetAccount(long accountid)
+        private string GetAccount(long accountid)
         {
             return $"api/accounts/{accountid}";
         }
 
-        public string GetAccountUsingHashedId(string hashedAccountId)
+        private string GetAccountUsingHashedId(string hashedAccountId)
         {
             return $"api/accounts/{hashedAccountId}";
         }
 
-        public const long AccountId = 8080;
-        public const string HashedAccountId = "VD96WD";
-        public const string PayeScheme = "111/ABC00001";
-        public string Href = $"api/accounts/{AccountId}/payescheme/{PayeScheme}";
+        public long AccountId => 8080;
+        public string HashedAccountId => "VD96WD";
+        public string PayeScheme => "111/ABC00001";
+        public string Href => $"api/accounts/{AccountId}/payescheme/{PayeScheme}";
 
         public AccountsApiMessageHandler(string baseAddress) : base(baseAddress)
         {
@@ -40,23 +41,23 @@ namespace SFA.DAS.AccountsApiSubstitute.WebAPI
             ConfigureGetAccountUsingHashedId();
         }
 
-        public void OverrideGetAccount<T>(T response)
+        public void OverrideGetAccount<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetAccountEndPoint, response);
+            SetupPatch(DefaultGetAccountEndPoint, httpStatusCode, response);
         }
-        public void OverrideGetAccountUsingHashedId<T>(T response)
+        public void OverrideGetAccountUsingHashedId<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetAccountUsingHashedIdEndPoint, response);
-        }
-
-        public void SetupGetAccount<T>(long accountid, T response)
-        {
-            SetupPatch(GetAccount(accountid), response);
+            SetupPatch(DefaultGetAccountUsingHashedIdEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetAccountUsingHashedId<T>(string hashedAccountId, T response)
+        public void SetupGetAccount<T>(long accountid, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(GetAccountUsingHashedId(hashedAccountId), response);
+            SetupPatch(GetAccount(accountid), httpStatusCode, response);
+        }
+
+        public void SetupGetAccountUsingHashedId<T>(string hashedAccountId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        {
+            SetupPatch(GetAccountUsingHashedId(hashedAccountId), httpStatusCode, response);
         }
 
         private void ConfigureGetAccount()

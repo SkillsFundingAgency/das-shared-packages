@@ -47,10 +47,10 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
             }
         }
 
-        public void SetupPatch<T>(string endPoint, T response)
+        public void SetupPatch<T>(string endPoint, HttpStatusCode httpStatusCode, T response)
         {
             SetupPut(endPoint);
-            SetupGet(endPoint, response);
+            SetupGet(endPoint, httpStatusCode, response);
         }
 
         public void ClearSetup()

@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.ApiSubstitute.Utilities;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using SFA.DAS.Provider.Events.Api.Types;
+using System.Net;
 
 namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
 {
@@ -10,7 +11,7 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
 
         private IObjectCreator _objectCreator;
 
-        public string GetSubmissionEventsEndPoint(int page)
+        private string GetSubmissionEventsEndPoint(int page)
         {
             return $"api/submissions?page={page}";
         }
@@ -30,14 +31,14 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
             ConfigureGetSubmissionEvents();
         }
 
-        public void OverrideGetSubmissionEvents<T>(T response)
+        public void OverrideGetSubmissionEvents<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetSubmissionEventsEndPoint, response);
+            SetupPatch(DefaultGetSubmissionEventsEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetSubmissionEvents<T>(int page, T response)
+        public void SetupGetSubmissionEvents<T>(int page, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(GetSubmissionEventsEndPoint(page), response);
+            SetupPatch(GetSubmissionEventsEndPoint(page), httpStatusCode, response);
         }
 
         private void ConfigureGetSubmissionEvents()

@@ -70,7 +70,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
         [Test]
         public async Task CanUseApiMessageHandlersSetUpPatch()
         {
-            _apiMessageHandlers.SetupPatch(endpoint, expectedresponce);
+            _apiMessageHandlers.SetupPatch(endpoint, HttpStatusCode.OK, expectedresponce);
             using (HttpClient client = new HttpClient())
             {
                 var jsonresponse = await client.GetAsync(route);

@@ -2,7 +2,7 @@
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
 using System;
-
+using System.Net;
 
 namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
 {
@@ -13,7 +13,7 @@ namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
 
         private IObjectCreator _objectCreator;
 
-        public string GetProviderApprenticeship(long providerId, long apprenticeshipId)
+        private string GetProviderApprenticeship(long providerId, long apprenticeshipId)
         {
             return $"api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
         }
@@ -32,14 +32,14 @@ namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
             ConfigureGetProviderApprenticeship();
         }
 
-        public void OverrideGetProviderApprenticeship<T>(T response)
+        public void OverrideGetProviderApprenticeship<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetProviderApprenticeshipEndPoint, response);
+            SetupPatch(DefaultGetProviderApprenticeshipEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetProviderApprenticeship<T>(long providerId, long apprenticeshipId, T response)
+        public void SetupGetProviderApprenticeship<T>(long providerId, long apprenticeshipId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(GetProviderApprenticeship(providerId, apprenticeshipId), response);
+            SetupPatch(GetProviderApprenticeship(providerId, apprenticeshipId), httpStatusCode, response);
         }
 
 
