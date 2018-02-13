@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.ApiSubstitute.Utilities;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
-using System;
 using System.Net;
 
 namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
@@ -12,11 +11,6 @@ namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
         public string DefaultGetProviderApprenticeshipEndPoint { get; private set; }
 
         private IObjectCreator _objectCreator;
-
-        private string GetProviderApprenticeship(long providerId, long apprenticeshipId)
-        {
-            return $"api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
-        }
 
         public const long ProviderId = 10002457;
         public const long ApprenticeshipId = 45784125;
@@ -42,7 +36,6 @@ namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
             SetupPatch(GetProviderApprenticeship(providerId, apprenticeshipId), httpStatusCode, response);
         }
 
-
         public void ConfigureGetProviderApprenticeship()
         {
             var apprenticeship = _objectCreator.Create<Apprenticeship>(x => { x.ProviderId = ProviderId; x.Id = ApprenticeshipId; });
@@ -50,6 +43,10 @@ namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
             DefaultGetProviderApprenticeshipEndPoint = GetProviderApprenticeship(ProviderId, ApprenticeshipId);
 
             SetupGet(DefaultGetProviderApprenticeshipEndPoint, apprenticeship);
+        }
+        private string GetProviderApprenticeship(long providerId, long apprenticeshipId)
+        {
+            return $"api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
         }
     }
 }

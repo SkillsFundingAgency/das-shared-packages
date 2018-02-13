@@ -11,30 +11,6 @@ namespace SFA.DAS.HmrcApiSubstitute.WebAPI
         public string DefaultGetEmploymentStatusEndPoint { get; private set; }
 
         private IObjectCreator _objectCreator;
-
-        private string GetEmploymentStatus(string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null)
-        {
-            var route = $"apprenticeship-levy/epaye/{(empRef)}/employed/{nino}";
-
-            string endpoint = route;
-
-            if (fromDate.HasValue)
-            {
-                endpoint = route + $"?fromDate={fromDate?.ToString("yyyy-MM-dd")}";
-            }
-
-            if (toDate.HasValue)
-            {
-                endpoint = route + $"?toDate={toDate?.ToString("yyyy-MM-dd")}";
-            }
-
-            if (fromDate.HasValue && toDate.HasValue)
-            {
-                endpoint = route + $"?fromDate={fromDate?.ToString("yyyy-MM-dd")}&toDate={toDate?.ToString("yyyy-MM-dd")}";
-            }
-
-            return endpoint;
-        }
         
         public const string EmpRef = "111/ABC00001";
         public const string Nino = "AB956884A";
@@ -69,6 +45,30 @@ namespace SFA.DAS.HmrcApiSubstitute.WebAPI
             DefaultGetEmploymentStatusEndPoint = GetEmploymentStatus(EmpRef, Nino, FromDate, ToDate);
 
             SetupGet(DefaultGetEmploymentStatusEndPoint, response);
+        }
+
+        private string GetEmploymentStatus(string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var route = $"apprenticeship-levy/epaye/{(empRef)}/employed/{nino}";
+
+            string endpoint = route;
+
+            if (fromDate.HasValue)
+            {
+                endpoint = route + $"?fromDate={fromDate?.ToString("yyyy-MM-dd")}";
+            }
+
+            if (toDate.HasValue)
+            {
+                endpoint = route + $"?toDate={toDate?.ToString("yyyy-MM-dd")}";
+            }
+
+            if (fromDate.HasValue && toDate.HasValue)
+            {
+                endpoint = route + $"?fromDate={fromDate?.ToString("yyyy-MM-dd")}&toDate={toDate?.ToString("yyyy-MM-dd")}";
+            }
+
+            return endpoint;
         }
     }
 }

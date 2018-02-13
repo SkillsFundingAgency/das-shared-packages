@@ -14,16 +14,6 @@ namespace SFA.DAS.AccountsApiSubstitute.WebAPI
 
         private IObjectCreator _objectCreator;
 
-        private string GetAccount(long accountid)
-        {
-            return $"api/accounts/{accountid}";
-        }
-
-        private string GetAccountUsingHashedId(string hashedAccountId)
-        {
-            return $"api/accounts/{hashedAccountId}";
-        }
-
         public long AccountId => 8080;
         public string HashedAccountId => "VD96WD";
         public string PayeScheme => "111/ABC00001";
@@ -80,6 +70,16 @@ namespace SFA.DAS.AccountsApiSubstitute.WebAPI
             DefaultGetAccountUsingHashedIdEndPoint = GetAccountUsingHashedId(HashedAccountId);
 
             SetupGet(DefaultGetAccountUsingHashedIdEndPoint, accounts);
+        }
+
+        private string GetAccount(long accountid)
+        {
+            return $"api/accounts/{accountid}";
+        }
+
+        private string GetAccountUsingHashedId(string hashedAccountId)
+        {
+            return $"api/accounts/{hashedAccountId}";
         }
     }
 }

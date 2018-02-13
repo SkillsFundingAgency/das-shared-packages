@@ -11,11 +11,6 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
 
         private IObjectCreator _objectCreator;
 
-        private string GetSubmissionEventsEndPoint(int page)
-        {
-            return $"api/submissions?page={page}";
-        }
-
         public const long ApprenticeshipId = 45785214;
         public const long Ukprn = 10000254;
 
@@ -46,6 +41,10 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
             var submissionEvents = _objectCreator.Create<SubmissionEvent>(x => { x.ApprenticeshipId = ApprenticeshipId ; x.Ukprn = Ukprn; });
 
             SetupGet(DefaultGetSubmissionEventsEndPoint, new PageOfResults<SubmissionEvent> { Items = new[] { submissionEvents }, PageNumber = 1, TotalNumberOfPages = 1 });
+        }
+        private string GetSubmissionEventsEndPoint(int page)
+        {
+            return $"api/submissions?page={page}";
         }
     }
 }
