@@ -33,21 +33,21 @@ namespace SFA.DAS.AccountsApiSubstitute.WebAPI
 
         public void OverrideGetAccount<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetAccountEndPoint, httpStatusCode, response);
+            SetupCall(DefaultGetAccountEndPoint, httpStatusCode, response);
         }
         public void OverrideGetAccountUsingHashedId<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetAccountUsingHashedIdEndPoint, httpStatusCode, response);
+            SetupCall(DefaultGetAccountUsingHashedIdEndPoint, httpStatusCode, response);
         }
 
         public void SetupGetAccount<T>(long accountid, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(GetAccount(accountid), httpStatusCode, response);
+            SetupCall(GetAccount(accountid), httpStatusCode, response);
         }
 
         public void SetupGetAccountUsingHashedId<T>(string hashedAccountId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(GetAccountUsingHashedId(hashedAccountId), httpStatusCode, response);
+            SetupCall(GetAccountUsingHashedId(hashedAccountId), httpStatusCode, response);
         }
 
         private void ConfigureGetAccount()

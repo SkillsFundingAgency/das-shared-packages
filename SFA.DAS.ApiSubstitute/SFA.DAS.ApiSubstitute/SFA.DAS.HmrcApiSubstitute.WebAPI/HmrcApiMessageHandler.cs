@@ -30,12 +30,12 @@ namespace SFA.DAS.HmrcApiSubstitute.WebAPI
 
         public void OverrideGetSubmissionEvents<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(DefaultGetEmploymentStatusEndPoint, httpStatusCode, response);
+            SetupCall(DefaultGetEmploymentStatusEndPoint, httpStatusCode, response);
         }
 
         public void SetupGetEmploymentStatus<T>(T response, string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPatch(GetEmploymentStatus(empRef, nino, fromDate, toDate), httpStatusCode, response);
+            SetupCall(GetEmploymentStatus(empRef, nino, fromDate, toDate), httpStatusCode, response);
         }
 
         private void ConfigureGetEmploymentStatus()
