@@ -39,8 +39,20 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
 
         public void SetupPut(string endPoint)
         {
-            _configuredGets.Remove(BaseAddress + endPoint.GetEndPoint());
+            var key = BaseAddress + endPoint.GetEndPoint();
+
+            if (_configuredGets.ContainsKey(key))
+            {
+                _configuredGets.Remove(key);
+            }
         }
+
+        public void SetupCall<T>(string endPoint, HttpStatusCode httpStatusCode, T response)
+        {
+            SetupPut(endPoint);
+            SetupGet(endPoint, httpStatusCode, response);
+        }
+
         public void ClearSetup()
         {
             _configuredGets.Clear();

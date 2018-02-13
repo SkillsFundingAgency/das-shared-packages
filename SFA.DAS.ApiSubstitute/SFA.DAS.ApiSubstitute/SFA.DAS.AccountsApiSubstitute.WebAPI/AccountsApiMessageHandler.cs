@@ -2,21 +2,22 @@
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using SFA.DAS.EAS.Account.Api.Types;
 using System.Collections.Generic;
+using System.Net;
 
 namespace SFA.DAS.AccountsApiSubstitute.WebAPI
 {
     public class AccountsApiMessageHandler : ApiMessageHandlers
     {
+        private string DefaultGetAccountEndPoint { get; set; }
+
+        private string DefaultGetAccountUsingHashedIdEndPoint { get; set; }
+
         private IObjectCreator _objectCreator;
 
-        public string GetAccount => $"api/accounts/{AccountId}";
-
-        public string GetAccountUsingHashedId => $"api/accounts/{HashedAccountId}";
-
-        public const long AccountId = 8080;
-        public const string HashedAccountId = "VD96WD";
-        public const string PayeScheme = "111/ABC00001";
-        public string Href = $"api/accounts/{AccountId}/payescheme/{PayeScheme}";
+        public long AccountId => 8080;
+        public string HashedAccountId => "VD96WD";
+        public string PayeScheme => "111/ABC00001";
+        public string Href => $"api/accounts/{AccountId}/payescheme/{PayeScheme}";
 
         public AccountsApiMessageHandler(string baseAddress) : base(baseAddress)
         {
@@ -30,15 +31,23 @@ namespace SFA.DAS.AccountsApiSubstitute.WebAPI
             ConfigureGetAccountUsingHashedId();
         }
 
-        public void OverrideGetAccount<T>(T response)
+        public void OverrideGetAccount<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPut(GetAccount);
-            SetupGet(GetAccount, response);
+            SetupCall(DefaultGetAccountEndPoint, httpStatusCode, response);
         }
-        public void OverrideGetAccountUsingHashedId<T>(T response)
+        public void OverrideGetAccountUsingHashedId<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPut(GetAccountUsingHashedId);
-            SetupGet(GetAccountUsingHashedId, response);
+            SetupCall(DefaultGetAccountUsingHashedIdEndPoint, httpStatusCode, response);
+        }
+
+        public void SetupGetAccount<T>(long accountid, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        {
+            SetupCall(GetAccount(accountid), httpStatusCode, response);
+        }
+
+        public void SetupGetAccountUsingHashedId<T>(string hashedAccountId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        {
+            SetupCall(GetAccountUsingHashedId(hashedAccountId), httpStatusCode, response);
         }
 
         private void ConfigureGetAccount()
@@ -47,15 +56,30 @@ namespace SFA.DAS.AccountsApiSubstitute.WebAPI
             var resourceList = new ResourceList(payeschemes);
             var accounts = _objectCreator.Create<AccountDetailViewModel>(x => { x.AccountId = AccountId; x.PayeSchemes = resourceList; });
 
-            SetupGet(GetAccount, accounts);
+            DefaultGetAccountEndPoint = GetAccount(AccountId);
+
+            SetupGet(DefaultGetAccountEndPoint, accounts);
         }
+
         private void ConfigureGetAccountUsingHashedId()
         {
             var payeschemes = new List<ResourceViewModel> { new ResourceViewModel { Id = PayeScheme, Href = Href } };
             var resourceList = new ResourceList(payeschemes);
             var accounts = _objectCreator.Create<AccountDetailViewModel>(x => { x.HashedAccountId = HashedAccountId; x.PayeSchemes = resourceList; });
 
-            SetupGet(GetAccountUsingHashedId, accounts);
+            DefaultGetAccountUsingHashedIdEndPoint = GetAccountUsingHashedId(HashedAccountId);
+
+            SetupGet(DefaultGetAccountUsingHashedIdEndPoint, accounts);
+        }
+
+        private string GetAccount(long accountid)
+        {
+            return $"api/accounts/{accountid}";
+        }
+
+        private string GetAccountUsingHashedId(string hashedAccountId)
+        {
+            return $"api/accounts/{hashedAccountId}";
         }
     }
 }

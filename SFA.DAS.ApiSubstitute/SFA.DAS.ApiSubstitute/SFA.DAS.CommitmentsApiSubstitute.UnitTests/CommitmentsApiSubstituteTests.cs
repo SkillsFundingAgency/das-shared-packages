@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsApiSubstitute.WebAPI;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
+using SFA.DAS.ApiSubstitute.Utilities;
+using System.Net;
 
 namespace SFA.DAS.CommitmentsApiSubstitute.UnitTests
 {
@@ -29,7 +31,7 @@ namespace SFA.DAS.CommitmentsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetProviderApprenticeship);
+                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetProviderApprenticeshipEndPoint);
                     var response = JsonConvert.DeserializeObject<Apprenticeship>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(45784125, response.Id);
                 }
@@ -45,9 +47,30 @@ namespace SFA.DAS.CommitmentsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetProviderApprenticeship);
+                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetProviderApprenticeshipEndPoint);
                     var response = JsonConvert.DeserializeObject<Apprenticeship>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(32169854, response.Id);
+                }
+            }
+        }
+
+        [Test]
+        public async Task CanSetupGetProviderApprenticeship()
+        {
+            long ProviderId = 10002457;
+            long ApprenticeshipId = 45784125;
+
+            var apprenticeship = new ObjectCreator().Create<Apprenticeship>(x => { x.ProviderId = ProviderId; x.Id = ApprenticeshipId; });
+            
+            apiMessageHandlers.SetupGetProviderApprenticeship(ProviderId, ApprenticeshipId, apprenticeship);
+
+            using (CommitmentsApi webApi = new CommitmentsApi(apiMessageHandlers))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var jsonresponse = await client.GetAsync(baseAddress + $"api/provider/{ProviderId}/apprenticeships/{ApprenticeshipId}");
+                    var response = JsonConvert.DeserializeObject<Apprenticeship>(jsonresponse.Content.ReadAsStringAsync().Result);
+                    Assert.AreEqual(ProviderId, response.ProviderId);
                 }
             }
         }

@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetSubmissionEventsEndPoint);
+                    var jsonresponse = await client.GetAsync(baseAddress + "api/submissions?page=1");
                     var response = JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(45785214, response.Items[0].ApprenticeshipId);
                 }
@@ -46,7 +46,24 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.GetSubmissionEventsEndPoint);
+                    var jsonresponse = await client.GetAsync(baseAddress + "api/submissions?page=1");
+                    var response = JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(jsonresponse.Content.ReadAsStringAsync().Result);
+                    Assert.AreEqual(45785333, response.Items[0].ApprenticeshipId);
+                }
+            }
+        }
+
+        [Test]
+        public async Task CanSetupGetSubmissionEvents()
+        {
+            int page = 1;
+            apiMessageHandlers.SetupGetSubmissionEvents(page, new PageOfResults<SubmissionEvent> { Items = new[] { new SubmissionEvent { ApprenticeshipId = 45785333, } }, PageNumber = 1, TotalNumberOfPages = 1 });
+
+            using (ProviderEventsApi webApi = new ProviderEventsApi(apiMessageHandlers))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var jsonresponse = await client.GetAsync(baseAddress + $"api/submissions?page={page}");
                     var response = JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(jsonresponse.Content.ReadAsStringAsync().Result);
                     Assert.AreEqual(45785333, response.Items[0].ApprenticeshipId);
                 }

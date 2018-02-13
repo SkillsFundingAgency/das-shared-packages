@@ -1,16 +1,16 @@
 ﻿using SFA.DAS.ApiSubstitute.Utilities;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using SFA.DAS.Commitments.Api.Types.Apprenticeship;
-using System;
-
+using System.Net;
 
 namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
 {
     public class CommitmentsApiMessageHandler : ApiMessageHandlers
     {
-        private IObjectCreator _objectCreator;
 
-        public string GetProviderApprenticeship => $"api/provider/{ProviderId}/apprenticeships/{ApprenticeshipId}";
+        public string DefaultGetProviderApprenticeshipEndPoint { get; private set; }
+
+        private IObjectCreator _objectCreator;
 
         public const long ProviderId = 10002457;
         public const long ApprenticeshipId = 45784125;
@@ -26,16 +26,27 @@ namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
             ConfigureGetProviderApprenticeship();
         }
 
-        public void OverrideGetProviderApprenticeship<T>(T response)
+        public void OverrideGetProviderApprenticeship<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPut(GetProviderApprenticeship);
-            SetupGet(GetProviderApprenticeship, response);
+            SetupCall(DefaultGetProviderApprenticeshipEndPoint, httpStatusCode, response);
+        }
+
+        public void SetupGetProviderApprenticeship<T>(long providerId, long apprenticeshipId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        {
+            SetupCall(GetProviderApprenticeship(providerId, apprenticeshipId), httpStatusCode, response);
         }
 
         public void ConfigureGetProviderApprenticeship()
         {
             var apprenticeship = _objectCreator.Create<Apprenticeship>(x => { x.ProviderId = ProviderId; x.Id = ApprenticeshipId; });
-            SetupGet(GetProviderApprenticeship, apprenticeship);
+
+            DefaultGetProviderApprenticeshipEndPoint = GetProviderApprenticeship(ProviderId, ApprenticeshipId);
+
+            SetupGet(DefaultGetProviderApprenticeshipEndPoint, apprenticeship);
+        }
+        private string GetProviderApprenticeship(long providerId, long apprenticeshipId)
+        {
+            return $"api/provider/{providerId}/apprenticeships/{apprenticeshipId}";
         }
     }
 }

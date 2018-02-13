@@ -1,14 +1,15 @@
 ﻿using SFA.DAS.ApiSubstitute.Utilities;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using SFA.DAS.Provider.Events.Api.Types;
+using System.Net;
 
 namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
 {
     public class ProviderEventsApiMessageHandler : ApiMessageHandlers
     {
-        private IObjectCreator _objectCreator;
+        public string DefaultGetSubmissionEventsEndPoint { get; private set; }
 
-        public string GetSubmissionEventsEndPoint => "api/submissions?page=1";
+        private IObjectCreator _objectCreator;
 
         public const long ApprenticeshipId = 45785214;
         public const long Ukprn = 10000254;
@@ -16,25 +17,34 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
         public ProviderEventsApiMessageHandler(string baseAddress) : base(baseAddress)
         {
             _objectCreator = new ObjectCreator();
+            DefaultGetSubmissionEventsEndPoint = GetSubmissionEventsEndPoint(1);
             ConfigureDefaultResponse();
         }
 
-        public void ConfigureDefaultResponse()
+        private void ConfigureDefaultResponse()
         {
             ConfigureGetSubmissionEvents();
         }
 
-        public void OverrideGetSubmissionEvents<T>(T response)
+        public void OverrideGetSubmissionEvents<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
-            SetupPut(GetSubmissionEventsEndPoint);
-            SetupGet(GetSubmissionEventsEndPoint, response);
+            SetupCall(DefaultGetSubmissionEventsEndPoint, httpStatusCode, response);
+        }
+
+        public void SetupGetSubmissionEvents<T>(int page, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        {
+            SetupCall(GetSubmissionEventsEndPoint(page), httpStatusCode, response);
         }
 
         private void ConfigureGetSubmissionEvents()
         {
             var submissionEvents = _objectCreator.Create<SubmissionEvent>(x => { x.ApprenticeshipId = ApprenticeshipId ; x.Ukprn = Ukprn; });
 
-            SetupGet(GetSubmissionEventsEndPoint, new PageOfResults<SubmissionEvent> { Items = new[] { submissionEvents }, PageNumber = 1, TotalNumberOfPages = 1 });
+            SetupGet(DefaultGetSubmissionEventsEndPoint, new PageOfResults<SubmissionEvent> { Items = new[] { submissionEvents }, PageNumber = 1, TotalNumberOfPages = 1 });
+        }
+        private string GetSubmissionEventsEndPoint(int page)
+        {
+            return $"api/submissions?page={page}";
         }
     }
 }
