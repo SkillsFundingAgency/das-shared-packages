@@ -31,21 +31,21 @@ namespace SFA.DAS.AccountsApiSubstitute.WebAPI
             ConfigureGetAccountUsingHashedId();
         }
 
-        public void OverrideGetAccount<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void OverrideGetAccount<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : AccountDetailViewModel
         {
             SetupCall(DefaultGetAccountEndPoint, httpStatusCode, response);
         }
-        public void OverrideGetAccountUsingHashedId<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void OverrideGetAccountUsingHashedId<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : AccountDetailViewModel
         {
             SetupCall(DefaultGetAccountUsingHashedIdEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetAccount<T>(long accountid, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void SetupGetAccount<T>(long accountid, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : AccountDetailViewModel
         {
             SetupCall(GetAccount(accountid), httpStatusCode, response);
         }
 
-        public void SetupGetAccountUsingHashedId<T>(string hashedAccountId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void SetupGetAccountUsingHashedId<T>(string hashedAccountId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : AccountDetailViewModel
         {
             SetupCall(GetAccountUsingHashedId(hashedAccountId), httpStatusCode, response);
         }

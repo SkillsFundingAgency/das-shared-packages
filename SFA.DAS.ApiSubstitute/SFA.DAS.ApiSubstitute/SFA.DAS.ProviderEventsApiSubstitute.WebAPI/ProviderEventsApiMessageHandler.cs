@@ -26,12 +26,12 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.WebAPI
             ConfigureGetSubmissionEvents();
         }
 
-        public void OverrideGetSubmissionEvents<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void OverrideGetSubmissionEvents<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : PageOfResults<SubmissionEvent>
         {
             SetupCall(DefaultGetSubmissionEventsEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetSubmissionEvents<T>(int page, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void SetupGetSubmissionEvents<T>(int page, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : PageOfResults<SubmissionEvent>
         {
             SetupCall(GetSubmissionEventsEndPoint(page), httpStatusCode, response);
         }
