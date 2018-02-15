@@ -28,12 +28,12 @@ namespace SFA.DAS.HmrcApiSubstitute.WebAPI
             ConfigureGetEmploymentStatus();
         }
 
-        public void OverrideGetSubmissionEvents<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : EmploymentStatus
+        public void OverrideGetSubmissionEvents(EmploymentStatus response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
             SetupCall(DefaultGetEmploymentStatusEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetEmploymentStatus<T>(T response, string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null, HttpStatusCode httpStatusCode = HttpStatusCode.OK) where T : EmploymentStatus
+        public void SetupGetEmploymentStatus(EmploymentStatus response, string empRef, string nino, DateTime? fromDate = null, DateTime? toDate = null, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
             SetupCall(GetEmploymentStatus(empRef, nino, fromDate, toDate), httpStatusCode, response);
         }
