@@ -13,7 +13,7 @@
     <releaseNotes>refactored generic type to be strongly typed.</releaseNotes>
   <dependencies>
     <group targetFramework=".NETFramework4.5">
-      <dependency id="HMRC.ESFA.Levy.Api.Types" version="1.0.43.0"/>
+      <dependency id="HMRC.ESFA.Levy.Api.Types" version="1.0.43"/>
     </group>
   </dependencies>
   </metadata>

@@ -13,7 +13,7 @@
     <releaseNotes>refactored generic type to be strongly typed.</releaseNotes>
   <dependencies>
       <group targetFramework=".NETFramework4.5">
-        <dependency id="SFA.DAS.Provider.Events.Api.Types" version="2.0.0.40478"/>
+        <dependency id="SFA.DAS.Provider.Events.Api.Client" version="2.0.0.40478"/>
       </group>
     </dependencies>
   </metadata>
