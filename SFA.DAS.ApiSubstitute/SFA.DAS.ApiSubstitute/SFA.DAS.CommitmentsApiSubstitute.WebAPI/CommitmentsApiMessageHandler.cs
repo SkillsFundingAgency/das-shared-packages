@@ -26,12 +26,12 @@ namespace SFA.DAS.CommitmentsApiSubstitute.WebAPI
             ConfigureGetProviderApprenticeship();
         }
 
-        public void OverrideGetProviderApprenticeship<T>(T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void OverrideGetProviderApprenticeship(Apprenticeship response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
             SetupCall(DefaultGetProviderApprenticeshipEndPoint, httpStatusCode, response);
         }
 
-        public void SetupGetProviderApprenticeship<T>(long providerId, long apprenticeshipId, T response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        public void SetupGetProviderApprenticeship(long providerId, long apprenticeshipId, Apprenticeship response, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
         {
             SetupCall(GetProviderApprenticeship(providerId, apprenticeshipId), httpStatusCode, response);
         }

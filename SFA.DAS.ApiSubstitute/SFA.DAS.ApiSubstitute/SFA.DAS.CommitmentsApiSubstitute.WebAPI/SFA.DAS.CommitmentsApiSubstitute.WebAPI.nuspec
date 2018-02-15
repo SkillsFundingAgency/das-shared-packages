@@ -10,8 +10,13 @@
     <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Class library for substituting Commitments API response. Substitute Commitments Web Api response, Override the default response by setting the Gets in the Http message handlers Simply initiate the CommitmentsAPI instance with valid message Handler which will start the web App inMemory in baseaddress( http://localHost/ along with any unused port you specified).</description>
-    <releaseNotes>inital release of the package.</releaseNotes>
+    <releaseNotes>refactored generic type to be strongly typed.</releaseNotes>
   </metadata>
+  <dependencies>
+    <group targetFramework=".NETFramework4.5">
+      <dependency id="SFA.DAS.Commitments.Api.Types" version="2.0.0.56681"/>
+    </group>
+  </dependencies>
   <files>
     <file src="bin\Release\SFA.DAS.CommitmentsApiSubstitute.WebAPI.dll" target="lib\net45\SFA.DAS.CommitmentsApiSubstitute.WebAPI.dll" />
   </files>
