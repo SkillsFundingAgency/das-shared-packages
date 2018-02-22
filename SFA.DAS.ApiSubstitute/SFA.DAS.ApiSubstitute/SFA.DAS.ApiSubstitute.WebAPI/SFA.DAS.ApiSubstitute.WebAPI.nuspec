@@ -18,6 +18,7 @@
         <dependency id="Microsoft.Owin" version="2.0.2"/>
         <dependency id="Microsoft.Owin.Hosting" version="2.0.2"/>
         <dependency id="Microsoft.AspNet.WebApi.OwinSelfHost" version="5.2.3"/>
+        <dependency id="SFA.DAS.NLog.Logger" version="1.0.0.47445"/>
       </group>
     </dependencies>
   </metadata>
