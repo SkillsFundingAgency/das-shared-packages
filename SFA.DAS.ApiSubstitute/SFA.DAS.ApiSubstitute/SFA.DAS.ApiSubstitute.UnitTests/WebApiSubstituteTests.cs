@@ -1,12 +1,12 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using Newtonsoft.Json;
 using SFA.DAS.ApiSubstitute.WebAPI;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.NLog.Logger;
-using Moq;
-using System.Net;
+using System.Web;
 
 namespace SFA.DAS.ApiSubstitute.UnitTests
 {
@@ -14,7 +14,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
     public class WebApiSubstituteTests
     {
         [Test]
-        public async Task CanUseWebApiSubstituteWithNLogLogger()
+        public void CanUseWebApiSubstituteWithNLogLogger()
         {
             const string eventsApibaseAddress = "http://localhost:9004";
             var expected = new TestAccount(1);
@@ -28,13 +28,11 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var jsonresponse = await client.GetAsync(route);
-                    var response = JsonConvert.DeserializeObject<TestAccount>(jsonresponse.Content.ReadAsStringAsync().Result);
-                    Assert.AreEqual(1, response.Accountid);
+                    Assert.DoesNotThrowAsync(async () => await client.GetAsync(route));
                 }
             }
         }
-
+        
         [Test]
         public async Task CanUseWebApiSubstituteWithNLogLoggerForUnkownRequest()
         {
@@ -50,7 +48,8 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
                 using (HttpClient client = new HttpClient())
                 {
                     var jsonresponse = await client.GetAsync(route);
-                    Assert.AreEqual(HttpStatusCode.NotFound, jsonresponse.StatusCode);
+                    Assert.Throws<HttpRequestException>(() => jsonresponse.EnsureSuccessStatusCode());
+                    
                 }
             }
         }
