@@ -72,8 +72,10 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
                 {
                     var jsonresponse = await client.GetAsync(route);
                     var response = JsonConvert.DeserializeObject<TestAccount>(jsonresponse.Content.ReadAsStringAsync().Result);
-                    logger.Verify(l => l.Info($"Response configured for {route}"), Times.Once);
-                }
+
+                    logger.Verify(l => l.Info(It.IsAny<string>()), Times.Exactly(2));
+
+                 }
             }
         }
 
@@ -94,7 +96,7 @@ namespace SFA.DAS.ApiSubstitute.UnitTests
                 {
                     var jsonresponse = await client.GetAsync(route);
                     var response = JsonConvert.DeserializeObject<TestAccount>(jsonresponse.Content.ReadAsStringAsync().Result);
-                    logger.Verify(l => l.Warn($"Response is not configured for {route}"), Times.Once);
+                    logger.Verify(l => l.Warn(It.IsAny<string>()), Times.Once);
                 }
             }
         }

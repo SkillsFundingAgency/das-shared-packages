@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.ApiSubstitute.WebAPI.Extensions;
 using SFA.DAS.NLog.Logger;
+using System;
 
 namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
 {
@@ -42,7 +43,11 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
 
         public void SetupGet<T>(string endPoint, HttpStatusCode httpStatusCode, T response)
         {
-            _configuredGets.Add(BaseAddress + endPoint.GetEndPoint(), new Response(httpStatusCode, response));
+            var key = BaseAddress + endPoint.GetEndPoint();
+
+            _configuredGets.Add(key, new Response(httpStatusCode, response));
+
+            _logger.Info($"Configured get for {key}");
         }
 
         public void SetupPut(string endPoint)
@@ -73,7 +78,7 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
             if (!_configuredGets.ContainsKey(requestUri))
             {
                 response = request.CreateResponse(HttpStatusCode.NotFound);
-                _logger.Warn($"Response is not configured for {requestUri}");
+                _logger.Warn($"Response is not configured for {requestUri}, configured gets are {string.Join(Environment.NewLine, _configuredGets.Keys.ToString())}");
             }
             else
             {
