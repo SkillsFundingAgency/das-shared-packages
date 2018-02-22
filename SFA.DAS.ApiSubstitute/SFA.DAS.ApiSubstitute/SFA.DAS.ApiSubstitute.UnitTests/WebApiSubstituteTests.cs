@@ -4,12 +4,101 @@ using SFA.DAS.ApiSubstitute.WebAPI;
 using SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SFA.DAS.NLog.Logger;
+using Moq;
+using System.Net;
 
 namespace SFA.DAS.ApiSubstitute.UnitTests
 {
     [TestFixture]
     public class WebApiSubstituteTests
     {
+        [Test]
+        public async Task CanUseWebApiSubstituteWithNLogLogger()
+        {
+            const string eventsApibaseAddress = "http://localhost:9004";
+            var expected = new TestAccount(1);
+            string endPoint = "/events";
+            string route = eventsApibaseAddress + endPoint;
+
+            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers(eventsApibaseAddress, new NLogLogger(typeof(WebApiSubstituteTests), null, null));
+            eventsapiMessageHandlers.SetupGet(endPoint, expected);
+
+            using (WebApiSubstitute webApiSubstitute = new WebApiSubstitute(eventsapiMessageHandlers))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var jsonresponse = await client.GetAsync(route);
+                    var response = JsonConvert.DeserializeObject<TestAccount>(jsonresponse.Content.ReadAsStringAsync().Result);
+                    Assert.AreEqual(1, response.Accountid);
+                }
+            }
+        }
+
+        [Test]
+        public async Task CanUseWebApiSubstituteWithNLogLoggerForUnkownRequest()
+        {
+            const string eventsApibaseAddress = "http://localhost:9004";
+            var expected = new TestAccount(1);
+            string endPoint = "/events";
+            string route = eventsApibaseAddress + endPoint;
+
+            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers(eventsApibaseAddress, new NLogLogger(typeof(WebApiSubstituteTests), null, null));
+            
+            using (WebApiSubstitute webApiSubstitute = new WebApiSubstitute(eventsapiMessageHandlers))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var jsonresponse = await client.GetAsync(route);
+                    Assert.AreEqual(HttpStatusCode.NotFound, jsonresponse.StatusCode);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WebApiSubstituteCanLogKnownRequest()
+        {
+            var logger = new Mock<ILog>();
+            const string eventsApibaseAddress = "http://localhost:9004";
+            var expected = new TestAccount(1);
+            string endPoint = "/events";
+            string route = eventsApibaseAddress + endPoint;
+
+            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers(eventsApibaseAddress, logger.Object);
+            eventsapiMessageHandlers.SetupGet(endPoint, expected);
+
+            using (WebApiSubstitute webApiSubstitute = new WebApiSubstitute(eventsapiMessageHandlers))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var jsonresponse = await client.GetAsync(route);
+                    var response = JsonConvert.DeserializeObject<TestAccount>(jsonresponse.Content.ReadAsStringAsync().Result);
+                    logger.Verify(l => l.Info($"Response configured for {route}"), Times.Once);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WebApiSubstituteCanLogUnKnownRequest()
+        {
+            var logger = new Mock<ILog>();
+            const string eventsApibaseAddress = "http://localhost:9004";
+            var expected = new TestAccount(1);
+            string endPoint = "/events";
+            string route = eventsApibaseAddress + endPoint;
+
+            ApiMessageHandlers eventsapiMessageHandlers = new ApiMessageHandlers(eventsApibaseAddress, logger.Object);
+            
+            using (WebApiSubstitute webApiSubstitute = new WebApiSubstitute(eventsapiMessageHandlers))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var jsonresponse = await client.GetAsync(route);
+                    var response = JsonConvert.DeserializeObject<TestAccount>(jsonresponse.Content.ReadAsStringAsync().Result);
+                    logger.Verify(l => l.Warn($"Response is not configured for {route}"), Times.Once);
+                }
+            }
+        }
 
         [Test]
         public async Task CanUseWebApiSubstitute()
