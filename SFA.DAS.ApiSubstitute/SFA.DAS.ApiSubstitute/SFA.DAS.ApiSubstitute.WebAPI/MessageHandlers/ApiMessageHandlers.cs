@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.ApiSubstitute.WebAPI.Extensions;
+using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
 {
@@ -22,11 +23,18 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
 
         private Dictionary<string, Response> _configuredGets = new Dictionary<string, Response>();
 
+        private ILog _logger;
+
+        public ApiMessageHandlers(string baseAddress, ILog logger) : base(baseAddress)
+        {
+            _logger = logger;
+        }
 
         public ApiMessageHandlers(string baseAddress) : base(baseAddress)
         {
+            _logger = new NLogLogger(typeof(ApiMessageHandlers), null, null);
         }
-        
+
         public void SetupGet<T>(string endPoint, T response)
         {
             SetupGet(endPoint, HttpStatusCode.OK, response);
@@ -65,10 +73,12 @@ namespace SFA.DAS.ApiSubstitute.WebAPI.MessageHandlers
             if (!_configuredGets.ContainsKey(requestUri))
             {
                 response = request.CreateResponse(HttpStatusCode.NotFound);
+                _logger.Warn($"Response is not configured for {requestUri}");
             }
             else
             {
                 response = request.CreateResponse(_configuredGets[requestUri]._statusCode, _configuredGets[requestUri]._response);
+                _logger.Info($"Response configured for {requestUri}");
             }
 
             var tsc = new TaskCompletionSource<HttpResponseMessage>();
