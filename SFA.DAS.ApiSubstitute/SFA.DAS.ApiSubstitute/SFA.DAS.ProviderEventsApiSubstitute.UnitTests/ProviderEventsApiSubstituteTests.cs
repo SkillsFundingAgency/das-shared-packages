@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderEventsApiSubstitute.UnitTests
         [SetUp]
         public void SetUp()
         {
-            baseAddress = "http://localhost:9005/";
+            baseAddress = "http://localhost:9006/";
             apiMessageHandlers = new ProviderEventsApiMessageHandler(baseAddress);
         }
         

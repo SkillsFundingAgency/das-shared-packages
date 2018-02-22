@@ -19,7 +19,7 @@ namespace SFA.DAS.AccountsApiSubstitute.UnitTests
         [SetUp]
         public void SetUp()
         {
-            baseAddress = "http://localhost:9006/";
+            baseAddress = "http://localhost:9001/";
             apiMessageHandlers = new AccountsApiMessageHandler(baseAddress);
         }
 

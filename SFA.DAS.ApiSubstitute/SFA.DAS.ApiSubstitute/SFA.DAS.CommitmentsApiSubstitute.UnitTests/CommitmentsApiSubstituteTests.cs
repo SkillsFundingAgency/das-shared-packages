@@ -20,7 +20,7 @@ namespace SFA.DAS.CommitmentsApiSubstitute.UnitTests
         [SetUp]
         public void SetUp()
         {
-            baseAddress = "http://localhost:9008/";
+            baseAddress = "http://localhost:9003/";
             apiMessageHandlers = new CommitmentsApiMessageHandler(baseAddress);
         }
 

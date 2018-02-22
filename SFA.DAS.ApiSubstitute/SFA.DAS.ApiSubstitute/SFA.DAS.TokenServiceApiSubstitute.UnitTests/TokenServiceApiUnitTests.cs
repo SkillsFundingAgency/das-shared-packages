@@ -16,24 +16,24 @@ namespace SFA.DAS.TokenServiceApiSubstitute.UnitTests
 
         private TokenServiceApiMessageHandler apiMessageHandlers;
 
+        private TokenServiceApi webApi;
+
         [SetUp]
         public void SetUp()
         {
-            baseAddress = "http://localhost:9010/";
+            baseAddress = "http://localhost:9007/";
             apiMessageHandlers = new TokenServiceApiMessageHandler(baseAddress);
+            webApi = new TokenServiceApi(apiMessageHandlers);
         }
 
         [Test]
         public async Task CanUseDefaultResponse()
         {
-            using (TokenServiceApi webApi = new TokenServiceApi(apiMessageHandlers))
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetPrivilegedAccessTokenAsyncEndPoint);
-                    var response = JsonConvert.DeserializeObject<PrivilegedAccessToken>(jsonresponse.Content.ReadAsStringAsync().Result);
-                    Assert.AreEqual(DateTime.Now.AddDays(1).Date, response.ExpiryTime.Date);
-                }
+                var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetPrivilegedAccessTokenAsyncEndPoint);
+                var response = JsonConvert.DeserializeObject<PrivilegedAccessToken>(jsonresponse.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(DateTime.Now.AddDays(1).Date, response.ExpiryTime.Date);
             }
         }
 
@@ -42,14 +42,11 @@ namespace SFA.DAS.TokenServiceApiSubstitute.UnitTests
         {
             apiMessageHandlers.OverrideGetPrivilegedAccessTokenAsync(new PrivilegedAccessToken { AccessCode = "32169854", ExpiryTime = DateTime.Now.AddDays(5) });
 
-            using (TokenServiceApi webApi = new TokenServiceApi(apiMessageHandlers))
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetPrivilegedAccessTokenAsyncEndPoint);
-                    var response = JsonConvert.DeserializeObject<PrivilegedAccessToken>(jsonresponse.Content.ReadAsStringAsync().Result);
-                    Assert.AreEqual(DateTime.Now.AddDays(5).Date, response.ExpiryTime.Date);
-                }
+                var jsonresponse = await client.GetAsync(baseAddress + apiMessageHandlers.DefaultGetPrivilegedAccessTokenAsyncEndPoint);
+                var response = JsonConvert.DeserializeObject<PrivilegedAccessToken>(jsonresponse.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(DateTime.Now.AddDays(5).Date, response.ExpiryTime.Date);
             }
         }
 
@@ -58,16 +55,19 @@ namespace SFA.DAS.TokenServiceApiSubstitute.UnitTests
         {
             
             apiMessageHandlers.SetupGetPrivilegedAccessTokenAsync(new PrivilegedAccessToken { AccessCode = "321", ExpiryTime = DateTime.Now.AddDays(15) });
-
-            using (TokenServiceApi webApi = new TokenServiceApi(apiMessageHandlers))
+            
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    var jsonresponse = await client.GetAsync(baseAddress + $"api/PrivilegedAccess");
-                    var response = JsonConvert.DeserializeObject<PrivilegedAccessToken>(jsonresponse.Content.ReadAsStringAsync().Result);
-                    Assert.AreEqual(DateTime.Now.AddDays(15).Date, response.ExpiryTime.Date);
-                }
+                var jsonresponse = await client.GetAsync(baseAddress + $"api/PrivilegedAccess");
+                var response = JsonConvert.DeserializeObject<PrivilegedAccessToken>(jsonresponse.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(DateTime.Now.AddDays(15).Date, response.ExpiryTime.Date);
             }
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            webApi?.Dispose();
         }
     }
 }

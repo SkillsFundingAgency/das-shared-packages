@@ -20,7 +20,7 @@ namespace SFA.DAS.HmrcApiSubstitute.UnitTests
         [SetUp]
         public void SetUp()
         {
-            baseAddress = "http://localhost:9010/";
+            baseAddress = "http://localhost:9005/";
             apiMessageHandlers = new HmrcApiMessageHandler(baseAddress);
         }
 
