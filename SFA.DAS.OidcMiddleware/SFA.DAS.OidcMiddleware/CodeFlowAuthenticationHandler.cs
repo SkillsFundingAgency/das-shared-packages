@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
+using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Infrastructure;
 using SFA.DAS.OidcMiddleware.Builders;
@@ -19,7 +20,12 @@ namespace SFA.DAS.OidcMiddleware
         private readonly ITokenValidator _tokenValidator;
         private readonly IUserInfoClient _userInfoClient;
 
-        public CodeFlowAuthenticationHandler(IAuthorizeUrlBuilder authorizeUrlBuilder, INonceCache nonceCache, ITokenClient tokenClient, ITokenValidator tokenValidator, IUserInfoClient userInfoClient)
+        public CodeFlowAuthenticationHandler(
+            IAuthorizeUrlBuilder authorizeUrlBuilder, 
+            INonceCache nonceCache, 
+            ITokenClient tokenClient, 
+            ITokenValidator tokenValidator, 
+            IUserInfoClient userInfoClient)
         {
             _authorizeUrlBuilder = authorizeUrlBuilder;
             _nonceCache = nonceCache;
@@ -42,14 +48,14 @@ namespace SFA.DAS.OidcMiddleware
 
             if (properties == null)
             {
-                throw new Exception("The original state was not found.");
+                return null;
             }
 
             var nonce = await _nonceCache.GetNonceAsync(Context.Authentication);
 
             if (nonce == null)
             {
-                throw new Exception("The original nonce was not found.");
+                return null;
             }
 
             var tokenResponse = await _tokenClient.RequestAuthorizationCodeAsync(Options.TokenEndpoint, Options.ClientId, Options.ClientSecret, code, Request.Uri);
