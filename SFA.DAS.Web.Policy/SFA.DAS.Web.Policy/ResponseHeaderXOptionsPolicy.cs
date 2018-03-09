@@ -12,7 +12,7 @@ namespace SFA.DAS.Web.Policy
         {
             {"X-Frame-Options","deny"},
             {"X-Content-Type-Options","nosniff"},
-            {"X-XSS-Protection","1"},
+            {"X-XSS-Protection","1; mode=block"},
         };
 
         public void Apply(HttpContextBase context)
