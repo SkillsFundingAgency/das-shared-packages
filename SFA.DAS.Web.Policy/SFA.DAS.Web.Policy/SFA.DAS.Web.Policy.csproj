@@ -47,6 +47,8 @@
     <Compile Include="IHttpResponsePolicy.cs" />
     <Compile Include="PolicyConcern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResponseHeaderXOptionsPolicy.cs" />
+    <Compile Include="ResponseHeaderRestrictedCachePolicy.cs" />
     <Compile Include="ResponseHeaderRestrictionPolicy.cs" />
   </ItemGroup>
   <ItemGroup>

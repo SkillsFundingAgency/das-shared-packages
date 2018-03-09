@@ -15,23 +15,27 @@ namespace SFA.DAS.Web.Policy.UnitTests
         protected HttpContextPolicyProvider Unit;
         protected NameValueCollection _requestHeaders;
         protected NameValueCollection _responseHeaders;
+        protected Mock<HttpCachePolicyBase> Cache;
 
         [SetUp]
         public virtual void Setup()
         {
             Unit = new HttpContextPolicyProvider(new List<IHttpContextPolicy>()
             {
-                new ResponseHeaderRestrictionPolicy()
+                new ResponseHeaderRestrictionPolicy(),
+                new ResponseHeaderRestrictedCachePolicy(),
+                new ResponseHeaderXOptionsPolicy()
             });
 
             _requestHeaders = new NameValueCollection();
-
+            _responseHeaders = new NameValueCollection();
 
             HttpContextManager.SetCurrentContext(GetMockedHttpContext());
 
         }
         private HttpContextBase GetMockedHttpContext()
         {
+            Cache = new Mock<HttpCachePolicyBase>();
             var context = new Mock<HttpContextBase>();
             var request = new Mock<HttpRequestBase>();
             var response = new Mock<HttpResponseBase>();
@@ -49,6 +53,9 @@ namespace SFA.DAS.Web.Policy.UnitTests
             context.Setup(ctx => ctx.User).Returns(user.Object);
             
             user.Setup(ctx => ctx.Identity).Returns(identity.Object);
+
+
+
             identity.Setup(id => id.IsAuthenticated).Returns(true);
             identity.Setup(id => id.Name).Returns("test");
             request.Setup(req => req.Url).Returns(new Uri("http://www.google.com"));
@@ -57,7 +64,12 @@ namespace SFA.DAS.Web.Policy.UnitTests
             requestContext.Setup(x => x.RouteData).Returns(new RouteData(){});
 
             request.SetupGet(req => req.Headers).Returns(_requestHeaders);
-            response.SetupGet(req => req.Headers).Returns(_requestHeaders);
+            response.SetupGet(req => req.Headers).Returns(_responseHeaders);
+
+            response.SetupGet(ctx => ctx.Cache).Returns(Cache.Object);
+
+
+
 
             return context.Object;
         }
