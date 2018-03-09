@@ -3,6 +3,9 @@ using System.Web;
 
 namespace SFA.DAS.Web.Policy
 {
+    /// <summary>
+    /// Adds X options headers to an outgoing response
+    /// </summary>
     public class ResponseHeaderXOptionsPolicy : IHttpResponsePolicy
     {
         private readonly Dictionary<string,string> _headersToAdd = new Dictionary<string, string>()

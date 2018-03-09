@@ -2,7 +2,9 @@
 
 namespace SFA.DAS.Web.Policy
 {
-   
+    /// <summary>
+    /// Sets some chaching control headers to restrict caching operations and sets Expires to immediate
+    /// </summary>
     public class ResponseHeaderRestrictedCachePolicy : IHttpResponsePolicy
     {
 

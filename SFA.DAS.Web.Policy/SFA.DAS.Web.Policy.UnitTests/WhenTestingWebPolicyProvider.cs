@@ -20,12 +20,7 @@ namespace SFA.DAS.Web.Policy.UnitTests
         [SetUp]
         public virtual void Setup()
         {
-            Unit = new HttpContextPolicyProvider(new List<IHttpContextPolicy>()
-            {
-                new ResponseHeaderRestrictionPolicy(),
-                new ResponseHeaderRestrictedCachePolicy(),
-                new ResponseHeaderXOptionsPolicy()
-            });
+            Unit = new HttpContextPolicyProvider();
 
             _requestHeaders = new NameValueCollection();
             _responseHeaders = new NameValueCollection();
@@ -33,7 +28,8 @@ namespace SFA.DAS.Web.Policy.UnitTests
             HttpContextManager.SetCurrentContext(GetMockedHttpContext());
 
         }
-        private HttpContextBase GetMockedHttpContext()
+
+        protected HttpContextBase GetMockedHttpContext()
         {
             Cache = new Mock<HttpCachePolicyBase>();
             var context = new Mock<HttpContextBase>();

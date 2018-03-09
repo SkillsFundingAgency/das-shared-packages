@@ -59,7 +59,7 @@
     <Compile Include="WhenTestingWebPolicyProvider.cs" />
     <Compile Include="WhenTestingWebPolicyProviderResponseHeaderRestrictedCachePolicy.cs" />
     <Compile Include="WhenTestingWebPolicyProviderResponseHeaderXOptionsPolicy.cs" />
-    <Compile Include="WhenTestingWebPolicyProviderResponsePolicy.cs" />
+    <Compile Include="WhenTestingWebPolicyProviderResponseHeaderRestrictionPolicy.cs" />
     <Compile Include="WhenTestingWebPolicyProviderWithMultiplePolicies.cs" />
   </ItemGroup>
   <ItemGroup>

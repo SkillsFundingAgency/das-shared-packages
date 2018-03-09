@@ -1,10 +1,25 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using NUnit.Framework;
 
 namespace SFA.DAS.Web.Policy.UnitTests
 {
-    public class WhenTestingWebPolicyProviderResponsePolicy : WhenTestingWebPolicyProvider
+    public class WhenTestingWebPolicyProviderResponseHeaderRestrictionPolicy : WhenTestingWebPolicyProvider
     {
+        [SetUp]
+        public override void Setup()
+        {
+            Unit = new HttpContextPolicyProvider(new List<IHttpContextPolicy>()
+            {
+                new ResponseHeaderRestrictionPolicy()
+            });
 
+            _requestHeaders = new NameValueCollection();
+            _responseHeaders = new NameValueCollection();
+
+            HttpContextManager.SetCurrentContext(GetMockedHttpContext());
+
+        }
         [Test]
         public void ItShouldApplyItsPolicy()
         {
