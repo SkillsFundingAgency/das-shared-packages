@@ -57,7 +57,9 @@
     <Compile Include="HttpContextManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WhenTestingWebPolicyProvider.cs" />
-    <Compile Include="WhenTestingWebPolicyProviderResponsePolicy.cs" />
+    <Compile Include="WhenTestingWebPolicyProviderResponseHeaderRestrictedCachePolicy.cs" />
+    <Compile Include="WhenTestingWebPolicyProviderResponseHeaderXOptionsPolicy.cs" />
+    <Compile Include="WhenTestingWebPolicyProviderResponseHeaderRestrictionPolicy.cs" />
     <Compile Include="WhenTestingWebPolicyProviderWithMultiplePolicies.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +70,9 @@
       <Project>{d74e69de-5c61-4205-9dfb-991dfa333f1f}</Project>
       <Name>SFA.DAS.Web.Policy</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
