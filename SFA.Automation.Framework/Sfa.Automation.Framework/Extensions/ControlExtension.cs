@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using System.Threading;
 using Sfa.Automation.Framework.Constants;

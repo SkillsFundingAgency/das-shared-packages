@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.PageObjects;
-using OpenQA.Selenium.Support.UI;
 using Sfa.Automation.Framework.Constants;
-using Sfa.Automation.Framework.Enums;
+using SeleniumExtras.PageObjects;
+using OpenQA.Selenium.Support.UI;
 
 namespace Sfa.Automation.Framework.Selenium
 {
@@ -68,7 +67,7 @@ namespace Sfa.Automation.Framework.Selenium
                     Driver.FindElement(By.Id(elementId));
                     return true;
                 }
-                catch (NoSuchElementException exception)
+                catch (NoSuchElementException)
                 {
                 }
                 Thread.Sleep(TimeSpan.FromSeconds(1));
