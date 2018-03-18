@@ -46,10 +46,13 @@ namespace Sfa.Automation.Framework.Selenium
 
             /* Set test name */
             capability.SetCapability("name", TestContext.CurrentContext.Test.Name);
+
+            /* Set project name */
             capability.SetCapability("project", Settings["project"]);
 
             /* Set build name */
-            capability.SetCapability("build", $"{url.Split('.')[0].Replace("https://", "")}-{Settings?["env"]}-{builddatetime}");
+            capability.SetCapability("build", $"{Settings["build"]}-{ Settings["env"]}-{ builddatetime}");
+
             return new RemoteWebDriver(new Uri($"http://{Settings["server"]}/wd/hub/"), capability);
         }
 
