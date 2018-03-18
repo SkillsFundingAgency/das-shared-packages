@@ -11,8 +11,8 @@ namespace Sfa.Automation.Framework.Selenium
 {
     public static class BrowserStackService
     {
-        private static NameValueCollection Settings { get; set; }
-        private static NameValueCollection Environments { get; set; }
+        public static NameValueCollection Settings { get; set; }
+        public static NameValueCollection Environments { get; set; }
 
         private static readonly string builddatetime;
 
