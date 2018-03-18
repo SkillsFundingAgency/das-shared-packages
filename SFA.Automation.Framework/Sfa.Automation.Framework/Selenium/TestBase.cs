@@ -46,7 +46,7 @@ namespace Sfa.Automation.Framework.Selenium
                     InitialiseZapChrome(url, deleteAllCookies);
                     break;
                 case WebDriver.BrowserStack:
-                    InitialiseZapChrome(url, deleteAllCookies);
+                    InitBrowserStackInstance(url, deleteAllCookies);
                     break;
 
                 default:
