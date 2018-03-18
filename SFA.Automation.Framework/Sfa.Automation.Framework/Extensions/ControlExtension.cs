@@ -1,9 +1,9 @@
 ﻿using System;
 using OpenQA.Selenium;
-using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
 using System.Threading;
 using Sfa.Automation.Framework.Constants;
+using OpenQA.Selenium.Support.UI;
 
 namespace Sfa.Automation.Framework.Extensions
 {
@@ -18,7 +18,7 @@ namespace Sfa.Automation.Framework.Extensions
         {
             if (timeoutInSeconds > 0)
             {
-                new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds)).Until(ExpectedConditions.ElementToBeClickable(element));
+                new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds)).Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(element));
             }
         }
 
