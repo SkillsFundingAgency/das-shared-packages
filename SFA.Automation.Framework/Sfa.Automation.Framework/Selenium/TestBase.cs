@@ -45,6 +45,10 @@ namespace Sfa.Automation.Framework.Selenium
                 case WebDriver.Zap:
                     InitialiseZapChrome(url, deleteAllCookies);
                     break;
+                case WebDriver.BrowserStack:
+                    InitialiseZapChrome(url, deleteAllCookies);
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(webDriver), webDriver, null);
             }
@@ -150,6 +154,17 @@ namespace Sfa.Automation.Framework.Selenium
             };
             return proxy;
         }
+        private void InitBrowserStackInstance(Uri url, bool deleteAllCookies)
+        {
+            WebBrowserDriver = BrowserStackService.Init(url.AbsolutePath);
+            if (deleteAllCookies)
+            {
+                WebBrowserDriver.Manage().Cookies.DeleteAllCookies();
+            }
+            WebBrowserDriver.Manage().Window.Maximize();
+            WebBrowserDriver.Navigate().GoToUrl(url);
+        }
+
 
         private void InitialiseWebDriver(Uri url, bool deleteAllCookies)
         {

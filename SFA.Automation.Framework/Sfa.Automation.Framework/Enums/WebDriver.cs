@@ -20,6 +20,10 @@
         /// <summary>
         /// Use Chrome Browser with Zap
         /// </summary>
-        Zap
+        Zap,
+        /// <summary>
+        /// Use Browser stack to execute tests
+        /// </summary>
+        BrowserStack
     }
 }
