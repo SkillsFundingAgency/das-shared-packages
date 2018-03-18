@@ -131,15 +131,24 @@ namespace Sfa.Automation.Framework.Selenium
 
         private void InitialiseZapChrome(Uri url, bool deleteAllCookies)
         {
-            const string PROXY = "localhost:8095";
-            var chromeOptions = new ChromeOptions();
-            var proxy = new Proxy();
-            proxy.HttpProxy = PROXY;
-            proxy.SslProxy = PROXY;
-            proxy.FtpProxy = PROXY;
-            chromeOptions.Proxy = proxy;
-            WebBrowserDriver = new ChromeDriver(chromeOptions);
+            var options = new ChromeOptions();
+            options.AddUserProfilePreference("download.prompt_for_download", true);
+            options.AddArguments("no-sandbox");
+            options.Proxy = ZapProxy();
+            WebBrowserDriver = new ChromeDriver(options);
             InitialiseWebDriver(url, deleteAllCookies);
+        }
+        private static Proxy ZapProxy()
+        {
+            string zapProxy = $"127.0.0.1:{Zap.Port}";
+            var proxy = new Proxy
+            {
+                Kind = ProxyKind.Manual,
+                IsAutoDetect = false,
+                HttpProxy = zapProxy,
+                SslProxy = zapProxy
+            };
+            return proxy;
         }
 
         private void InitialiseWebDriver(Uri url, bool deleteAllCookies)

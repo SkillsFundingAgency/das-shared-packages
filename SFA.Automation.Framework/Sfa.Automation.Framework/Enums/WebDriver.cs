@@ -17,7 +17,9 @@
         /// Use Chrome Browser
         /// </summary>
         Chrome,
-
+        /// <summary>
+        /// Use Chrome Browser with Zap
+        /// </summary>
         Zap
     }
 }
