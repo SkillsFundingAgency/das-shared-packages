@@ -2,15 +2,15 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>SFA.Automation.Framework</id>
-    <version>2.1.0</version>
-    <authors>Daniel Ashton, dashton82, Dele Odusanya, Arvinth Seran, arvinthseran</authors>
+    <version>2.2.0</version>
+    <authors>Arvinth Seran</authors>
     <owners>sfanuget</owners>
 	<licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Web automation framework, using selenium</description>
-    <summary>web automation framework using selenium with Owasp zap support</summary>
-    <releaseNotes>updated selenium api</releaseNotes>
+    <summary>web automation framework using selenium with Owasp zap support and browser stack support (creds should be stored in app.config)</summary>
+    <releaseNotes>added browserstack support</releaseNotes>
     <dependencies>
       <dependency id="DotNetSeleniumExtras.PageObjects" version="3.11.0" />
       <dependency id="DotNetSeleniumExtras.WaitHelpers" version="3.11.0" />
