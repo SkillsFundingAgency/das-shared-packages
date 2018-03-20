@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration", "SFA.DAS.Configuration\SFA.DAS.Configuration.csproj", "{01489492-DC61-4F97-8047-1A8BC6CC399B}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildAndDeploy", "BuildAndDeploy", "{FA2D37AE-A87A-40A0-A18F-F3B205975397}"
 	ProjectSection(SolutionItems) = preProject
 		Build.fsx = Build.fsx
+		CustomTargets.fsx = CustomTargets.fsx
+		DefaultTargets.fsx = DefaultTargets.fsx
 		RunBuild.bat = RunBuild.bat
 	EndProjectSection
 EndProject
@@ -56,5 +58,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DCAE686F-CD1B-4534-A735-C478BE92E1FF} = {A71A2CA0-779F-4F53-A5FE-01CBB8DCA6ED}
 		{8F7569FB-5A78-4C50-86A7-CACA49AEC5F5} = {F571B0F9-901A-4DD3-8C1D-337D5EDC8185}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D561EBDF-4F4A-4946-8FCA-81DCCFC7FEFC}
 	EndGlobalSection
 EndGlobal

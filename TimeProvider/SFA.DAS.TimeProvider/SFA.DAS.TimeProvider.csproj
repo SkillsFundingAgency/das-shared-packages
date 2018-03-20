@@ -46,6 +46,7 @@
     <Compile Include="DateTimeProvider.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="SFA.DAS.TimeProvider.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
