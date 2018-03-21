@@ -14,6 +14,6 @@
     <tags>Object Activator</tags>
   </metadata>
 <files>
-    <file src="bin\Release\SFA.DAS.ApiSubstitute.Utilities.dll" target="lib\net45\SFA.DAS.ApiSubstitute.Utilities.dll" />
+    <file src="bin\Release\SFA.DAS.ApiSubstitute.Utilities.dll" target="lib\net462\SFA.DAS.ApiSubstitute.Utilities.dll" />
   </files>
 </package>

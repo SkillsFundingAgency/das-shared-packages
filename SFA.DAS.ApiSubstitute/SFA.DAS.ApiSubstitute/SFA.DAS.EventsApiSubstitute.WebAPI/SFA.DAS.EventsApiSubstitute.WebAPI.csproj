@@ -50,7 +50,7 @@
       <Name>SFA.DAS.ApiSubstitute.Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.ApiSubstitute.WebAPI\SFA.DAS.ApiSubstitute.WebAPI.csproj">
-      <Project>{AA6A9A50-6EB2-4BBF-98FB-625AB83D5BB8}</Project>
+      <Project>{aa6a9a50-6eb2-4bbf-98fb-625ab83d5bb8}</Project>
       <Name>SFA.DAS.ApiSubstitute.WebAPI</Name>
     </ProjectReference>
   </ItemGroup>

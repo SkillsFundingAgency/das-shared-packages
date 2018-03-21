@@ -12,12 +12,12 @@
     <description>Class library for substituting Token Service API response. Substitute Token Service Web Api response, Override the default response by setting the Gets in the Http message handlers Simply initiate the Token Service API instance with valid message Handler which will start the web App inMemory in baseaddress( http://localHost/ along with any unused port you specified).</description>
     <releaseNotes>initial release of the package.</releaseNotes>
     <dependencies>
-      <group targetFramework=".NETFramework4.5">
+      <group targetFramework=".NETFramework4.6.2">
         <dependency id="SFA.DAS.TokenService.Api.Client" version="1.0.0.26382"/>
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\SFA.DAS.TokenServiceApiSubstitute.WebAPI.dll" target="lib\net45\SFA.DAS.TokenServiceApiSubstitute.WebAPI.dll" />
+    <file src="bin\Release\SFA.DAS.TokenServiceApiSubstitute.WebAPI.dll" target="lib\net462\SFA.DAS.TokenServiceApiSubstitute.WebAPI.dll" />
   </files>
 </package>
