@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SFA.DAS.TokenServiceApiSubstitute.WebAPI</id>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <title>Token Api Substitute</title>
     <authors>arvinth seran</authors>
     <owners>sfanuget</owners>
