@@ -13,7 +13,7 @@
     <summary>Substitute any Web Api response by setting the Gets in the Http message handlers use it for your Integration / Acceptance / End to End Tests. Simply start the web App inMemory in http://localHost/ along wiht any unused port and configure your api to substitute your Rest response </summary>
     <releaseNotes>added logging feature</releaseNotes>
     <dependencies>
-      <group targetFramework=".NETFramework4.5">
+      <group targetFramework=".NETFramework4.6.2">
         <dependency id="Newtonsoft.Json" version="9.0.1"/>
         <dependency id="Microsoft.Owin" version="2.0.2"/>
         <dependency id="Microsoft.Owin.Hosting" version="2.0.2"/>
@@ -23,6 +23,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\SFA.DAS.ApiSubstitute.WebAPI.dll" target="lib\net45\SFA.DAS.ApiSubstitute.WebAPI.dll" />
+    <file src="bin\Release\SFA.DAS.ApiSubstitute.WebAPI.dll" target="lib\net462\SFA.DAS.ApiSubstitute.WebAPI.dll" />
   </files>
 </package>

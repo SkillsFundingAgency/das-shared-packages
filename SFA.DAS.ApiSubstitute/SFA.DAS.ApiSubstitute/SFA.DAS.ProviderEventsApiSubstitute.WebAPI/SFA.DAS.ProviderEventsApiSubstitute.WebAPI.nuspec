@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SFA.DAS.ProviderEventsApiSubstitute.WebAPI</id>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <title>Provider Api Substitute</title>
     <authors>arvinth seran</authors>
     <owners>sfanuget</owners>
@@ -12,12 +12,12 @@
     <description>Class library for substituting Provider Events API response. Substitute Provider events Web Api response, Override the default response by setting the Gets in the Http message handlers Simply initiate the ProviderEventsApi instance with valid message Handler which will start the web App inMemory in baseaddress( http://localHost/ along with any unused port).</description>
     <releaseNotes>refactored generic type to be strongly typed.</releaseNotes>
   <dependencies>
-      <group targetFramework=".NETFramework4.5">
+      <group targetFramework=".NETFramework4.6.2">
         <dependency id="SFA.DAS.Provider.Events.Api.Client" version="2.0.0.40478"/>
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\SFA.DAS.ProviderEventsApiSubstitute.WebAPI.dll" target="lib\net45\SFA.DAS.ProviderEventsApiSubstitute.WebAPI.dll" />
+    <file src="bin\Release\SFA.DAS.ProviderEventsApiSubstitute.WebAPI.dll" target="lib\net462\SFA.DAS.ProviderEventsApiSubstitute.WebAPI.dll" />
   </files>
 </package>

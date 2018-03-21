@@ -452,9 +452,10 @@ Target "Run Acceptance Tests" (fun _ ->
         shouldRunTests <- true
 
     if shouldRunTests then
+        nUnitRunnerLocation <- GetToolPath(nUnitToolPath, nUnitRunner)
         testDlls |> Fake.Testing.NUnit3.NUnit3 (fun p ->
             {p with
-                ToolPath = nUnitToolPath;
+                ToolPath = nUnitRunnerLocation;
                 StopOnError = false;
                 Agents = Some 1;
                 Testlist = acceptanceTestPlayList;
