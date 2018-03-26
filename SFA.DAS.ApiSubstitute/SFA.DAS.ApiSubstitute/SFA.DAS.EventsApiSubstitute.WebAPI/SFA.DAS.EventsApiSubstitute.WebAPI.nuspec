@@ -13,7 +13,7 @@
     <releaseNotes>initial release of the package.</releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.6.2">
-        <dependency id="SFA.DAS.Events.Api.Client" version="2.0.0.36524"/>
+        <dependency id="SFA.DAS.Events.Api.Client" version="1.29.0.35031"/>
       </group>
     </dependencies>
   </metadata>
