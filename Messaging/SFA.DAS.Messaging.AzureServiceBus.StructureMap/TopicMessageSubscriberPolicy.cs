@@ -11,8 +11,11 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
 {
     public class TopicMessageSubscriberPolicy<T> : TopicPolicyBase<T> where T : ITopicMessageSubscriberConfiguration
     {
-        public TopicMessageSubscriberPolicy(string serviceName, string serviceVersion) : base(serviceName, serviceVersion)
+        private readonly bool _keepConnectionAlive;
+
+        public TopicMessageSubscriberPolicy(string serviceName, string serviceVersion, bool keepConnectionAlive = false) : base(serviceName, serviceVersion)
         {
+            _keepConnectionAlive = keepConnectionAlive;
         }
 
         protected override void apply(Type pluginType, IConfiguredInstance instance)
@@ -36,7 +39,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
             {
                 var subscriptionName = TopicSubscriptionHelper.GetMessageGroupName(instance.Constructor.DeclaringType);
 
-                var factory = new TopicSubscriberFactory(messageQueueConnectionString, subscriptionName, new NLogLogger(typeof(TopicSubscriberFactory)));
+                var factory = new TopicSubscriberFactory(messageQueueConnectionString, subscriptionName, new NLogLogger(typeof(TopicSubscriberFactory)), _keepConnectionAlive);
 
                 instance.Dependencies.AddForConstructorParameter(subscriberFactory, factory);
             }
