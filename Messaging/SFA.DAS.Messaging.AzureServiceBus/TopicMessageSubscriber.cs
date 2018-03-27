@@ -128,7 +128,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
             try
             {
-                return new AzureServiceBusMessage<T>(brokeredMessage, _keepConnectionAlive);
+                return new AzureServiceBusMessage<T>(brokeredMessage, _logger, _keepConnectionAlive);
             }
             catch (Exception ex)
             {
