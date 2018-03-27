@@ -45,7 +45,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
                         _brokeredMessage.RenewLock();
                     }
 
-                    Thread.Sleep(500);
+                    Task.Delay(500);
                 }
             }, _keepConnectionAliveCancellationToken.Token);
         }
