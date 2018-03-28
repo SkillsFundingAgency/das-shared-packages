@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
 using SFA.DAS.Messaging.AzureServiceBus.ExecutionPolicies;
@@ -17,18 +16,20 @@ namespace SFA.DAS.Messaging.AzureServiceBus
         private readonly string _subscriptionName;
         private readonly ExecutionPolicy _executionPolicy;
         private readonly ILog _logger;
+        private readonly bool _keepConnectionAlive;
         private SubscriptionClient _client;
         private bool _clientOpen;
 
         public TopicMessageSubscriber(string connectionString, string topicName, string subscriptionName,
             [RequiredPolicy(PollyPolicyNames.TopicMessageSubscriberPolicyName)] ExecutionPolicy executionPolicy, 
-            ILog logger)
+            ILog logger, bool keepConnectionAlive = false)
         {
             _connectionString = connectionString;
             _topicName = topicName;
             _subscriptionName = subscriptionName;
             _executionPolicy = executionPolicy;
             _logger = logger;
+            _keepConnectionAlive = keepConnectionAlive;
             _clientOpen = false;
         }
 
@@ -127,7 +128,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
             try
             {
-                return new AzureServiceBusMessage<T>(brokeredMessage);
+                return new AzureServiceBusMessage<T>(brokeredMessage, _logger, _keepConnectionAlive);
             }
             catch (Exception ex)
             {
