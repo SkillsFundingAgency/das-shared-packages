@@ -31,7 +31,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         {
             var table = GetTable();
             var operation = GetOperation(serviceName, environmentName, version);
-            var result = await table.ExecuteAsync(operation);
+            var result = await table.ExecuteAsync(operation).ConfigureAwait(false);
 
             var configItem = (ConfigurationItem)result.Result;
             return configItem?.Data;

@@ -42,7 +42,7 @@ namespace SFA.DAS.Configuration
             if (!string.IsNullOrEmpty(details))
                 return ParseConfig<T>(details);
 
-            details = await _configurationRepository.GetAsync(_options.ServiceName, _options.EnvironmentName, _options.VersionNumber);
+            details = await _configurationRepository.GetAsync(_options.ServiceName, _options.EnvironmentName, _options.VersionNumber).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(details))
                 _configurationCache?.Set(typeof(T).FullName, details);
