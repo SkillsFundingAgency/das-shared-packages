@@ -22,10 +22,12 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
         {
             var subscriberFactory = GetMessageSubscriberFactoryParameter(instance);
 
-            if (subscriberFactory == null) return;
+            if (subscriberFactory == null)
+            {
+                return;
+            }
 
             var environment = GetEnvironmentName();
-
             var messageQueueConnectionString = GetMessageQueueConnectionString(environment);
 
             if (string.IsNullOrEmpty(messageQueueConnectionString))
@@ -38,7 +40,6 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
             else
             {
                 var subscriptionName = TopicSubscriptionHelper.GetMessageGroupName(instance.Constructor.DeclaringType);
-
                 var factory = new TopicSubscriberFactory(messageQueueConnectionString, subscriptionName, new NLogLogger(typeof(TopicSubscriberFactory)), _keepConnectionAlive);
 
                 instance.Dependencies.AddForConstructorParameter(subscriberFactory, factory);
@@ -47,10 +48,10 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
 
         private static ParameterInfo GetMessageSubscriberFactoryParameter(IConfiguredInstance instance)
         {
-            var factory = instance?.Constructor?
+            var parameter = instance?.Constructor?
                 .GetParameters().FirstOrDefault(x => x.ParameterType == typeof(IMessageSubscriberFactory));
 
-            return factory;
+            return parameter;
         }
     }
 }
