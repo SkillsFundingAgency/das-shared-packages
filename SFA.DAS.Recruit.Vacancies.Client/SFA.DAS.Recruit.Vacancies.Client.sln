@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Recruit.Vacancies.Client", "SFA.DAS.Recruit.Vacancies.Client\SFA.DAS.Recruit.Vacancies.Client.csproj", "{874E7A53-2DBF-442A-AF74-20190A9901F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Recruit.Vacancies.Client.UnitTests", "SFA.DAS.Recruit.Vacancies.Client.UnitTests\SFA.DAS.Recruit.Vacancies.Client.UnitTests.csproj", "{3ADB4302-6F54-4965-9AB3-D6319A076002}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{874E7A53-2DBF-442A-AF74-20190A9901F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{874E7A53-2DBF-442A-AF74-20190A9901F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{874E7A53-2DBF-442A-AF74-20190A9901F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{874E7A53-2DBF-442A-AF74-20190A9901F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ADB4302-6F54-4965-9AB3-D6319A076002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ADB4302-6F54-4965-9AB3-D6319A076002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ADB4302-6F54-4965-9AB3-D6319A076002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ADB4302-6F54-4965-9AB3-D6319A076002}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5E9971D-1CF4-4003-989F-D8D95BBC5D01}
+	EndGlobalSection
+EndGlobal
