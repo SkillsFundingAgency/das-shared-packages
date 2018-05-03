@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SFA.DAS.Recruit.Vacancies.Client</id>
+    <version>1.0.0</version>
+    <authors>DAS</authors>
+    <owners>DAS</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Client package to retrieve vacancies from the Recruit Vacancies query store</description>
+    <releaseNotes/>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="mongocsharpdriver" version="1.10.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\SFA.DAS.Recruit.Vacancies.Client.dll" target="lib\net45\SFA.DAS.Recruit.Vacancies.Client.dll" />
+  </files>
+</package>
