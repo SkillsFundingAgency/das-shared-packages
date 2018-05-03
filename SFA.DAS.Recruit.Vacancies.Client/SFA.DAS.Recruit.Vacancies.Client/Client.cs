@@ -1,12 +1,16 @@
-﻿using System.Security.Authentication;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Authentication;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using SFA.DAS.Recruit.Vacancies.Client.Entities;
 
 namespace SFA.DAS.Recruit.Vacancies.Client
 {
     public class Client : IClient
     {
+        private const string LiveVacancyDocumentType = "LiveVacancy";
         private const string IdFormat = "LiveVacancy_{0}";
 
         private readonly string _connectionString;
@@ -39,6 +43,16 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var collection = GetCollection();
             var result = collection.FindOneById(id);
             return result;
+        }
+
+        public IList<LiveVacancy> GetLiveVacancies()
+        {
+            var collection = GetCollection();
+            var vacancies = collection
+                            .AsQueryable()
+                            .Where(each => each.Type.Equals(LiveVacancyDocumentType))
+                            .ToList();
+            return vacancies;
         }
 
         private MongoCollection<LiveVacancy> GetCollection()
