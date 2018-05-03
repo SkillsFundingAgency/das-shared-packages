@@ -8,7 +8,6 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public string Id { get; set; }
         public string Type { get; set; }
         public DateTime LastUpdated { get; set; }
-
         public Guid VacancyId { get; set; }
         public string ApplicationInstructions { get; set; }
         public string ApplicationUrl { get; set; }
@@ -21,7 +20,6 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
-
         public DateTime LiveDate { get; set; }
         public int NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
