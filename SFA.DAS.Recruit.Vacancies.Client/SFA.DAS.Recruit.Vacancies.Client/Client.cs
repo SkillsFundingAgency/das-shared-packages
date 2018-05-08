@@ -26,7 +26,11 @@ namespace SFA.DAS.Recruit.Vacancies.Client
                 new IgnoreExtraElementsConvention(true),
                 new IgnoreIfNullConvention(true)
             };
-            ConventionRegistry.Register("recruit conventions", pack, t => true);
+            ConventionRegistry.Register("recruit conventions", pack, t => t == typeof(Address) ||
+                                                                          t == typeof(LiveVacancy) ||
+                                                                          t == typeof(Qualification) ||
+                                                                          t == typeof(TrainingProvider) ||
+                                                                          t == typeof(Wage));
         }
         
         public Client(string connectionString, string databaseName, string collectionName)
