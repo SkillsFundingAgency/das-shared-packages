@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SFA.DAS.Recruit.Vacancies.Client</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>DAS</authors>
     <owners>DAS</owners>
     <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
