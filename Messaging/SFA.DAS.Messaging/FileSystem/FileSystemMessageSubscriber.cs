@@ -35,10 +35,10 @@ namespace SFA.DAS.Messaging.FileSystem
             var availableMessageFiles = GetAvailableMessages(_topicName).Take(batchSize).ToArray();
             if (!availableMessageFiles.Any())
             {
-                return new Message<T>[0];
+                return new IMessage<T>[0];
             }
 
-            var messages = new Message<T>[availableMessageFiles.Length];
+            var messages = new IMessage<T>[availableMessageFiles.Length];
             for (var i = 0; i < messages.Length; i++)
             {
                 messages[i] = await FileSystemMessage<T>.Lock(availableMessageFiles[i]);

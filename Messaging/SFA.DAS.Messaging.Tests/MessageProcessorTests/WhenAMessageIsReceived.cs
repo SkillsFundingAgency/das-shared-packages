@@ -17,7 +17,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
 
         internal class TestMessageProcessor : MessageProcessor<MessageType>
         {
-            internal TestMessageProcessor(IMessageSubscriberFactory messageSubscriberFactory, ILog logger) : base(messageSubscriberFactory, logger)
+            internal TestMessageProcessor(IMessageSubscriberFactory messageSubscriberFactory, ILog logger, IMessageContextProvider messageContextProvider) : base(messageSubscriberFactory, logger, messageContextProvider)
             {
             }
 
@@ -25,8 +25,12 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
             internal bool ThrowException;
             internal bool ExceptionHandled;
 
+            public Action<MessageType> OnBeingProcessed;
+
             protected override async Task ProcessMessage(MessageType messageContent)
             {
+                OnBeingProcessed?.Invoke(messageContent);
+
                 if (ThrowException)
                 {
                     throw new Exception();
@@ -43,6 +47,7 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
 
         private Mock<IMessageSubscriberFactory> _messageSubscriberFactory;
         private Mock<IMessageSubscriber<MessageType>> _messageSubscriber;
+        private Mock<IMessageContextProvider> _messageContextProvider;
         private Mock<ILog> _logger;
         private TestMessageProcessor _messageProcessor;
 
@@ -51,11 +56,12 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
         {
             _messageSubscriber = new Mock<IMessageSubscriber<MessageType>>();
             _messageSubscriberFactory = new Mock<IMessageSubscriberFactory>();
+            _messageContextProvider = new Mock<IMessageContextProvider>();
             _logger = new Mock<ILog>();
 
             _messageSubscriberFactory.Setup(x => x.GetSubscriber<MessageType>()).Returns(_messageSubscriber.Object);
 
-            _messageProcessor = new TestMessageProcessor(_messageSubscriberFactory.Object, _logger.Object);
+            _messageProcessor = new TestMessageProcessor(_messageSubscriberFactory.Object, _logger.Object, _messageContextProvider.Object);
         }
 
         [Test]
@@ -92,6 +98,20 @@ namespace SFA.DAS.Messaging.UnitTests.MessageProcessorTests
 
             Assert.IsTrue(_messageProcessor.MessageProcessed);
             message.Verify(x => x.CompleteAsync());
+        }
+
+        [Test]
+        public void ThenMessageIsStoredAndReleasedInAContext()
+        {
+            var message = new Mock<IMessage<MessageType>>();
+            message.SetupGet(x => x.Content).Returns(new MessageType());
+
+            _messageSubscriber.Setup(x => x.ReceiveAsAsync()).ReturnsAsync(message.Object);
+
+            ProcessMessage(() => _messageProcessor.MessageProcessed);
+
+            _messageContextProvider.Verify(mcp => mcp.StoreMessageContext(message.Object));
+            _messageContextProvider.Verify(mcp => mcp.ReleaseMessageContext(message.Object));
         }
 
         [Test]
