@@ -60,18 +60,22 @@
   <ItemGroup>
     <Compile Include="Attributes\MessageGroupAttribute.cs" />
     <Compile Include="EventingMessageReceiverPollingWrapper.cs" />
+    <Compile Include="Exceptions\MessageContentNotAvailableException.cs" />
     <Compile Include="FileSystem\FileSystemMessage.cs" />
     <Compile Include="FileSystem\FileSystemMessagePublisher.cs" />
     <Compile Include="FileSystem\FileSystemMessageSubscriber.cs" />
     <Compile Include="FileSystem\FileSystemMessageSubscriberFactory.cs" />
     <Compile Include="Helpers\MessageGroupHelper.cs" />
+    <Compile Include="Interfaces\IMessageContextProvider.cs" />
     <Compile Include="Interfaces\IEventingMessageReceiver.cs" />
     <Compile Include="Interfaces\IMessage.cs" />
     <Compile Include="Interfaces\IMessageProcessor.cs" />
     <Compile Include="Interfaces\IMessagePublisher.cs" />
     <Compile Include="Interfaces\IMessageSubscriber.cs" />
     <Compile Include="Interfaces\IMessageSubscriberFactory.cs" />
+    <Compile Include="MessageContextProvider.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MessageContext.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="PollingToEventSettings.cs" />
@@ -82,9 +86,7 @@
     <None Include="packages.config" />
     <None Include="SFA.DAS.Messaging.nuspec" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

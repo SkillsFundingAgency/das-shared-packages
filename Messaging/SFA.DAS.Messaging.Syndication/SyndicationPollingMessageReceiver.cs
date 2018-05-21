@@ -31,7 +31,7 @@ namespace SFA.DAS.Messaging.Syndication
             var batch = (await _messageClient.GetBatchOfUnseenMessages<T>(batchSize))?.ToArray();
             if (batch == null || !batch.Any())
             {
-                return new Message<T>[0];
+                return new IMessage<T>[0];
             }
 
             return batch.Select(cm => new SyndicationMessage<T>(cm.Message, cm.Identifier, _feedPositionRepository));

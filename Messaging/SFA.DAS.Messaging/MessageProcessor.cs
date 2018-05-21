@@ -6,24 +6,35 @@ using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Messaging
 {
-    public abstract class MessageProcessor<T> : IMessageProcessor where T : new()
+    public abstract class MessageProcessor<T> : IMessageProcessor where T: class, new()
     {
         private readonly IMessageSubscriberFactory _messageSubscriberFactory;
+        private readonly IMessageContextProvider _messageContextProvider;
         protected readonly ILog Log;
 
-        protected MessageProcessor(IMessageSubscriberFactory subscriberFactory, ILog log)
+        protected MessageProcessor(
+            IMessageSubscriberFactory subscriberFactory, 
+            ILog log,
+            IMessageContextProvider messageContextProvider)
         {
             _messageSubscriberFactory = subscriberFactory;
             Log = log;
+            _messageContextProvider = messageContextProvider;
         }
 
-        public async Task RunAsync(CancellationTokenSource cancellationTokenSource)
+        public Task RunAsync(CancellationTokenSource cancellationTokenSource)
         {
+            return Task.Run(() => Run(cancellationTokenSource));
+        }
+
+        public async Task Run(CancellationTokenSource cancellationTokenSource)
+        {
+
             using (var subscriber = _messageSubscriberFactory.GetSubscriber<T>())
             {
                 while (!cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    IMessage<T> message = null;
+                    IMessage<T> message;
 
                     Log.Debug($"Getting message of type {typeof(T).FullName} from azure topic message queue");
 
@@ -40,7 +51,7 @@ namespace SFA.DAS.Messaging
                         throw;
                     }
 
-                    Log.Debug($"Recieved message of type {typeof(T).FullName} from azure topic message queue");
+                    Log.Debug($"Received message of type {typeof(T).FullName} from azure topic message queue");
 
                     try
                     {
@@ -60,11 +71,18 @@ namespace SFA.DAS.Messaging
                         }
 
                         Log.Debug($"Processing message of type {typeof(T).FullName}");
-                        await ProcessMessage(message.Content);
+                        try
+                        {
+                            _messageContextProvider.StoreMessageContext(message);
+                            await ProcessMessage(message.Content);
+                        }
+                        finally
+                        {
+                            _messageContextProvider.ReleaseMessageContext(message);
+                        }
 
                         await message.CompleteAsync();
                         Log.Info($"Completed message {typeof(T).FullName}");
-                        
                     }
                     catch (Exception ex)
                     {

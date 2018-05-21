@@ -1,35 +1,40 @@
+using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SFA.DAS.Messaging.Interfaces;
 
 namespace SFA.DAS.Messaging.FileSystem
 {
-    public class FileSystemMessage<T> : Message<T>
+    public class FileSystemMessage<T> : IMessage<T>
     {
         private readonly FileInfo _dataFile;
         private readonly FileInfo _lockFile;
 
-        public FileSystemMessage(FileInfo dataFile, FileInfo lockFile, T content) : base(content)
+        public FileSystemMessage(FileInfo dataFile, FileInfo lockFile, T content) 
         {
             _dataFile = dataFile;
             _lockFile = lockFile;
+            Content = content;
+            Id = Guid.NewGuid().ToString();
         }
 
-        public override Task CompleteAsync()
+        public T Content { get; protected set; }
+        public string Id { get; }
+        public Task CompleteAsync()
         {
             _dataFile.Delete();
             _lockFile.Delete();
             return Task.FromResult<object>(null);
         }
 
-        public override Task AbortAsync()
+        public Task AbortAsync()
         {
             _lockFile.Delete();
             return Task.FromResult<object>(null);
         }
-
 
         public static async Task<FileSystemMessage<T>> Lock(FileInfo dataFile)
         {
