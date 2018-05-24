@@ -18,7 +18,13 @@ namespace SFA.DAS.Messaging.FileSystem
             _dataFile = dataFile;
             _lockFile = lockFile;
             Content = content;
-            Id = Guid.NewGuid().ToString();
+
+            if (!Guid.TryParse(Path.GetFileNameWithoutExtension(dataFile.Name), out var possibleMessageId))
+            {
+                possibleMessageId = Guid.NewGuid();
+            }
+
+            Id = possibleMessageId.ToString();
         }
 
         public T Content { get; protected set; }
