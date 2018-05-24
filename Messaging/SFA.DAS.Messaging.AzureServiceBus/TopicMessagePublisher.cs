@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
 using SFA.DAS.Messaging.Helpers;
 using SFA.DAS.Messaging.Interfaces;
@@ -29,7 +30,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
                 _logger.Debug($"Adding message to message group {messageGroupName}");
 
                 client = TopicClient.CreateFromConnectionString(_connectionString, messageGroupName);
-                await client.SendAsync(new BrokeredMessage(message));
+                await client.SendAsync(new BrokeredMessage(message){MessageId = Guid.NewGuid().ToString()});
 
                 _logger.Debug($"Message has been added to message group {messageGroupName}");
             }

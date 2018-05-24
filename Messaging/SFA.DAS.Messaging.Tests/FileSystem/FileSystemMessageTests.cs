@@ -30,6 +30,50 @@ namespace SFA.DAS.Messaging.UnitTests.FileSystem
             Assert.AreEqual(ExpectedData, result.Content.Data);
         }
 
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(".txt")]
+        [TestCase(".lck")]
+        public void Constructor_WithGuidFileName_ShouldTakeFileNameAsMessageId(string requiredFileExtension)
+        {
+            var fileNameWithoutExtension = Guid.NewGuid().ToString();
+            var fileNameWithExtension = Path.ChangeExtension(fileNameWithoutExtension, requiredFileExtension);
+            AssertTestFile(fileNameWithExtension, msg => Assert.AreEqual(fileNameWithoutExtension, msg.Id));
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(".txt")]
+        [TestCase(".lck")]
+        public void Constructor_WithNonGuidFileName_ShouldHaveMessageIdSet(string requiredFileExtension)
+        {
+            var fileNameWithoutExtension = "abc";
+            var fileNameWithExtension = Path.ChangeExtension(fileNameWithoutExtension, requiredFileExtension);
+            AssertTestFile(fileNameWithExtension, msg => Assert.AreNotEqual(Guid.Empty, msg.Id));
+        }
+
+        private void AssertTestFile(string filename, Action<FileSystemMessage<object>> check)
+        {
+            var fullFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), filename);
+
+            if (File.Exists(fullFileName))
+            {
+                File.Delete(fullFileName);
+            }
+
+            File.WriteAllText(fullFileName, "File used by unit test - can be deleted");
+            try
+            {
+                var fileInfo = new FileInfo(fullFileName);
+                var message = new FileSystemMessage<object>(fileInfo, null, null);
+                check(message);
+            }
+            finally
+            {
+                File.Delete(fullFileName);
+            }
+        }
+
         [TearDown]
         public void CleanUp()
         {
