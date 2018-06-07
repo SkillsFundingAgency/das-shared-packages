@@ -59,6 +59,11 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             return vacancies;
         }
 
+        public void SubmitApplication(VacancyApplication application)
+        {
+            //todo: Add message to queue
+        }
+
         private MongoCollection<LiveVacancy> GetCollection()
         {
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_connectionString));
