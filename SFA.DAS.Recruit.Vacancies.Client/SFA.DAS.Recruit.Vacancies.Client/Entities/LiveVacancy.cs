@@ -10,6 +10,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public DateTime LastUpdated { get; set; }
         public Guid VacancyId { get; set; }
         public string ApplicationInstructions { get; set; }
+        public string ApplicationMethod { get; set; }
         public string ApplicationUrl { get; set; }
         public DateTime ClosingDate { get; set; }
         public string Description { get; set; }
