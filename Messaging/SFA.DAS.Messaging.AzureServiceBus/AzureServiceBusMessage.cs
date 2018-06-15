@@ -30,13 +30,13 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
         public Task CompleteAsync()
         {
-            _keepConnectionAliveCancellationToken.Cancel();
+            _keepConnectionAliveCancellationToken?.Cancel();
             return _brokeredMessage.CompleteAsync();
         }
 
         public Task AbortAsync()
         {
-            _keepConnectionAliveCancellationToken.Cancel();
+            _keepConnectionAliveCancellationToken?.Cancel();
             return _brokeredMessage.AbandonAsync();
         }
 
