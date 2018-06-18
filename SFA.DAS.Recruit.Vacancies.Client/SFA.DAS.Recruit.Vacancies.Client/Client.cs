@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using Newtonsoft.Json;
 using SFA.DAS.Recruit.Vacancies.Client.Entities;
+using SFA.DAS.Recruit.Vacancies.Client.Messages;
 
 namespace SFA.DAS.Recruit.Vacancies.Client
 {
@@ -12,10 +17,12 @@ namespace SFA.DAS.Recruit.Vacancies.Client
     {
         private const string LiveVacancyDocumentType = "LiveVacancy";
         private const string IdFormat = "LiveVacancy_{0}";
+        private const string ApplicationSubmittedQueueName = "application-submitted-queue";
 
         private readonly string _connectionString;
         private readonly string _databaseName;
         private readonly string _collectionName;
+        private readonly string _storageConnection;
 
         static Client()
         {
@@ -33,11 +40,12 @@ namespace SFA.DAS.Recruit.Vacancies.Client
                                                                           t == typeof(Wage));
         }
         
-        public Client(string connectionString, string databaseName, string collectionName)
+        public Client(string connectionString, string databaseName, string collectionName, string storageConnection)
         {
             _connectionString = connectionString;
             _databaseName = databaseName;
             _collectionName = collectionName;
+            _storageConnection = storageConnection;
         }
 
         public LiveVacancy GetVacancy(long vacancyReference)
@@ -61,7 +69,17 @@ namespace SFA.DAS.Recruit.Vacancies.Client
 
         public void SubmitApplication(VacancyApplication application)
         {
-            //todo: Add message to queue
+            var message = new ApplicationSubmitMessage
+            {
+                Application = application
+            };
+
+            var messageContent = JsonConvert.SerializeObject(message, Formatting.Indented);
+            var cloudQueueMessage = new CloudQueueMessage(messageContent);
+
+            var queue = GetQueue(ApplicationSubmittedQueueName);
+            
+            queue.AddMessage(cloudQueueMessage);
         }
 
         private MongoCollection<LiveVacancy> GetCollection()
@@ -74,6 +92,16 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var collection = database.GetCollection<LiveVacancy>(_collectionName);
 
             return collection;
+        }
+
+        private CloudQueue GetQueue(string queueName)
+        {
+            var storageAccount = CloudStorageAccount.Parse(_storageConnection);
+            var client = storageAccount.CreateCloudQueueClient();
+            var queue = client.GetQueueReference(queueName);
+            queue.CreateIfNotExists();
+
+            return queue;
         }
     }
 }
