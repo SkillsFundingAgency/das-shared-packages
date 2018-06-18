@@ -1,0 +1,111 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NUnit.Framework;
+using SFA.DAS.Recruit.Vacancies.Client.Entities;
+
+namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
+{
+    [TestFixture]
+    public class ApplicationSubmitTests
+    {
+#if !DEBUG
+    [Ignore("Don't run this test as part of CI. It's just a helper for populating the queue when debugging")] 
+#endif
+        [Test]
+        public void SubmitApplication()
+        {
+            var vacancyApplication = GetApplication();
+
+            var sut = new Client(null,null,null, "UseDevelopmentStorage=true");
+
+            sut.SubmitApplication(vacancyApplication);
+        }
+
+        private VacancyApplication GetApplication()
+        {
+            return new VacancyApplication
+            {
+                AddressLine1 = "address line 1",
+                AddressLine2 = "address line 2",
+                AddressLine3 = "address line 3",
+                AddressLine4 = "address line 4",
+                ApplicationDate = DateTime.Now,
+                BirthDate = DateTime.Parse("2009-10-29"),
+                CandidateId = Guid.NewGuid(),
+                DisabilityStatus = "disability status",
+                EducationFromYear = 2010,
+                EducationInstitution = "education institution",
+                EducationToYear = 2011,
+                Email = "email",
+                FirstName = "first name",
+                HobbiesAndInterests = "hobbies",
+                Improvements = "improvements",
+                LastName = "last name",
+                Phone = "phone",
+                Postcode = "postcode",
+                Qualifications = new List<VacancyApplication.CandidateQualification>
+                {
+                    new VacancyApplication.CandidateQualification
+                    {
+                        Grade = "grade 1",
+                        IsPredicted = true,
+                        QualificationType = "qualification type 1",
+                        Subject = "subject 1",
+                        Year = 2011
+                    },
+                    new VacancyApplication.CandidateQualification
+                    {
+                        Grade = "grade 2",
+                        IsPredicted = false,
+                        QualificationType = "qualification type 2",
+                        Subject = "subject 2",
+                        Year = 2012
+                    }
+                },
+                Skills = new List<string> { "skill 1", "skill 2" },
+                Strengths = "stengths",
+                Support = "support",
+                TrainingCourses = new List<VacancyApplication.CandidateTrainingCourse>
+                {
+                    new VacancyApplication.CandidateTrainingCourse
+                    {
+                        FromDate = DateTime.Parse("2000-01-01"),
+                        Provider = "provider 1",
+                        Title = "title 1",
+                        ToDate = DateTime.Parse("2000-01-02")
+                    },
+                    new VacancyApplication.CandidateTrainingCourse
+                    {
+                        FromDate = DateTime.Parse("2000-02-01"),
+                        Provider = "provider 2",
+                        Title = "title 2",
+                        ToDate = DateTime.Parse("2000-02-02")
+                    }
+                },
+                VacancyReference = 9999999999,
+                WorkExperiences = new List<VacancyApplication.CandidateWorkExperience>
+                {
+                    new VacancyApplication.CandidateWorkExperience
+                    {
+                        ToDate = DateTime.Parse("2001-01-01"),
+                        FromDate = DateTime.Parse("2001-01-02"),
+                        Description = "description 1",
+                        Employer = "employer 1",
+                        JobTitle = "job title 1"
+                    },
+                    new VacancyApplication.CandidateWorkExperience
+                    {
+                        ToDate = DateTime.Parse("2001-02-01"),
+                        FromDate = DateTime.Parse("2001-02-02"),
+                        Description = "description 2",
+                        Employer = "employer 2",
+                        JobTitle = "job title 2"
+                    }
+                }
+            };
+        }
+    }
+}
