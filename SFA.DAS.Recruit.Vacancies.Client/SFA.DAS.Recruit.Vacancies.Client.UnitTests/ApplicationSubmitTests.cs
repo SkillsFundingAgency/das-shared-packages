@@ -11,9 +11,8 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
     [TestFixture]
     public class ApplicationSubmitTests
     {
-#if !DEBUG
-    [Ignore("Don't run this test as part of CI. It's just a helper for populating the queue when debugging")] 
-#endif
+
+        [Ignore("A helper test to add a message to the queue when debugging")] 
         [Test]
         public void SubmitApplication()
         {
@@ -24,9 +23,9 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
             sut.SubmitApplication(vacancyApplication);
         }
 
-        private VacancyApplication GetApplication()
+        private Application GetApplication()
         {
-            return new VacancyApplication
+            return new Application
             {
                 AddressLine1 = "address line 1",
                 AddressLine2 = "address line 2",
@@ -46,9 +45,9 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
                 LastName = "last name",
                 Phone = "phone",
                 Postcode = "postcode",
-                Qualifications = new List<VacancyApplication.CandidateQualification>
+                Qualifications = new List<ApplicationQualification>
                 {
-                    new VacancyApplication.CandidateQualification
+                    new ApplicationQualification
                     {
                         Grade = "grade 1",
                         IsPredicted = true,
@@ -56,7 +55,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
                         Subject = "subject 1",
                         Year = 2011
                     },
-                    new VacancyApplication.CandidateQualification
+                    new ApplicationQualification
                     {
                         Grade = "grade 2",
                         IsPredicted = false,
@@ -66,18 +65,18 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
                     }
                 },
                 Skills = new List<string> { "skill 1", "skill 2" },
-                Strengths = "stengths",
+                Strengths = "strengths",
                 Support = "support",
-                TrainingCourses = new List<VacancyApplication.CandidateTrainingCourse>
+                TrainingCourses = new List<ApplicationTrainingCourse>
                 {
-                    new VacancyApplication.CandidateTrainingCourse
+                    new ApplicationTrainingCourse
                     {
                         FromDate = DateTime.Parse("2000-01-01"),
                         Provider = "provider 1",
                         Title = "title 1",
                         ToDate = DateTime.Parse("2000-01-02")
                     },
-                    new VacancyApplication.CandidateTrainingCourse
+                    new ApplicationTrainingCourse
                     {
                         FromDate = DateTime.Parse("2000-02-01"),
                         Provider = "provider 2",
@@ -85,10 +84,10 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
                         ToDate = DateTime.Parse("2000-02-02")
                     }
                 },
-                VacancyReference = 9999999999,
-                WorkExperiences = new List<VacancyApplication.CandidateWorkExperience>
+                VacancyReference = 1000000016,
+                WorkExperiences = new List<ApplicationWorkExperience>
                 {
-                    new VacancyApplication.CandidateWorkExperience
+                    new ApplicationWorkExperience
                     {
                         ToDate = DateTime.Parse("2001-01-01"),
                         FromDate = DateTime.Parse("2001-01-02"),
@@ -96,7 +95,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
                         Employer = "employer 1",
                         JobTitle = "job title 1"
                     },
-                    new VacancyApplication.CandidateWorkExperience
+                    new ApplicationWorkExperience
                     {
                         ToDate = DateTime.Parse("2001-02-01"),
                         FromDate = DateTime.Parse("2001-02-02"),

@@ -7,6 +7,6 @@ namespace SFA.DAS.Recruit.Vacancies.Client
     {
         LiveVacancy GetVacancy(long vacancyReference);
         IList<LiveVacancy> GetLiveVacancies();
-        void SubmitApplication(VacancyApplication application);
+        void SubmitApplication(Application application);
     }
 }

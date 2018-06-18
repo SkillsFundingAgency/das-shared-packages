@@ -70,10 +70,13 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Entities\Address.cs" />
+    <Compile Include="Entities\ApplicationQualification.cs" />
+    <Compile Include="Entities\ApplicationTrainingCourse.cs" />
+    <Compile Include="Entities\ApplicationWorkExperience.cs" />
     <Compile Include="Entities\LiveVacancy.cs" />
     <Compile Include="Entities\Qualification.cs" />
     <Compile Include="Entities\TrainingProvider.cs" />
-    <Compile Include="Entities\VacancyApplication.cs" />
+    <Compile Include="Entities\Application.cs" />
     <Compile Include="Entities\Wage.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Messages\ApplicationSubmitMessage.cs" />
