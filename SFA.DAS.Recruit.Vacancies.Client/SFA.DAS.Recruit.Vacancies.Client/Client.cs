@@ -67,7 +67,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             return vacancies;
         }
 
-        public void SubmitApplication(VacancyApplication application)
+        public void SubmitApplication(Application application)
         {
             var message = new ApplicationSubmitMessage
             {

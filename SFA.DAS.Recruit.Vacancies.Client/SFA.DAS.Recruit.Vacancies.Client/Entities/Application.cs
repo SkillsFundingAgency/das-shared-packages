@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.Vacancies.Client.Entities
 {
-    public class VacancyApplication
+    public class Application
     {
         public Guid CandidateId { get; set; }
         public long VacancyReference { get; set; }
@@ -24,37 +24,11 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public string LastName { get; set; }
         public string Phone { get; set; }
         public string Postcode { get; set; }
-        public List<CandidateQualification> Qualifications { get; set; }
+        public List<ApplicationQualification> Qualifications { get; set; }
         public List<string> Skills { get; set; }
         public string Strengths { get; set; }
         public string Support { get; set; }
-        public List<CandidateTrainingCourse> TrainingCourses { get; set; }
-        public List<CandidateWorkExperience> WorkExperiences { get; set; }
-        
-        public class CandidateQualification
-        {
-            public string QualificationType { get; set; }
-            public string Subject { get; set; }
-            public string Grade { get; set; }
-            public bool IsPredicted { get; set; }
-            public int Year { get; set; }
-        }
-
-        public class CandidateTrainingCourse
-        {
-            public string Provider { get; set; }
-            public string Title { get; set; }
-            public DateTime FromDate { get; set; }
-            public DateTime ToDate { get; set; }
-        }
-
-        public class CandidateWorkExperience
-        {
-            public string Employer { get; set; }
-            public string JobTitle { get; set; }
-            public string Description { get; set; }
-            public DateTime FromDate { get; set; }
-            public DateTime ToDate { get; set; }
-        }
+        public List<ApplicationTrainingCourse> TrainingCourses { get; set; }
+        public List<ApplicationWorkExperience> WorkExperiences { get; set; }
     }
 }
