@@ -10,7 +10,7 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
             if (isDevelopment)
             {
                 var transport = config.UseTransport<LearningTransport>();
-
+                
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 
                 routing(transport.Routing());
@@ -22,7 +22,15 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
                 transport.ConnectionString(connectionStringBuilder);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 transport.UseForwardingTopology();
-                
+
+                var messageReceiver = transport.MessageReceivers();
+
+                messageReceiver.AutoRenewTimeout(TimeSpan.FromMinutes(10));
+
+                var queue = transport.Queues();
+
+                queue.LockDuration(TimeSpan.FromMinutes(1));
+
                 routing(transport.Routing());
             }
 
