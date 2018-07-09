@@ -7,8 +7,9 @@ namespace SFA.DAS.NServiceBus
     public interface IOutbox
     {
         Task<IOutboxTransaction> BeginTransactionAsync();
-        Task AddAsync(OutboxMessage outboxMessage);
-        Task<OutboxMessage> GetById(Guid id);
-        Task<IEnumerable<Guid>> GetIdsToProcess();
+        Task<OutboxMessage> GetAsync(Guid messageId);
+        Task<IEnumerable<IOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync();
+        Task SetAsDispatchedAsync(Guid messageId);
+        Task StoreAsync(OutboxMessage outboxMessage, IOutboxTransaction outboxTransaction);
     }
 }

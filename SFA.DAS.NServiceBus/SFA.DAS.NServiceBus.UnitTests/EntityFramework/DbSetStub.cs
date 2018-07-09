@@ -7,7 +7,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SFA.DAS.NServiceBus.UnitTests.EntityFramework
+namespace SFA.DAS.Testing.EntityFramework
 {
     public class DbSetStub<T> : DbSet<T>, IDbAsyncEnumerable<T>, IQueryable<T> where T : class
     {

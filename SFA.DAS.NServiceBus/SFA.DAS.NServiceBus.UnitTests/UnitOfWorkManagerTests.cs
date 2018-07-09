@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NServiceBus;
+using NServiceBus.Settings;
 using NServiceBus.Testing;
 using NUnit.Framework;
+using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests
 {
@@ -32,34 +34,38 @@ namespace SFA.DAS.NServiceBus.UnitTests
         }
 
         [Test]
-        public void End_WhenEndingAUnitOfWork_ThenShouldAddOutboxMessage()
+        public void End_WhenEndingAUnitOfWork_ThenShouldStoreOutboxMessage()
         {
-            Run(f => f.SetEvents(), f => f.BeginThenEnd(), f => f.Outbox.Verify(o => o.AddAsync(It.Is<OutboxMessage>(m => !string.IsNullOrWhiteSpace(m.Data))), Times.Once));
+            Run(f => f.SetEvents(), f => f.BeginThenEnd(), f =>
+            {
+                f.Outbox.Verify(o => o.StoreAsync(It.Is<OutboxMessage>(m => m.MessageId != Guid.Empty), f.OutboxTransaction.Object), Times.Once);
+                f.OutboxMessage.Operations.Should().BeEquivalentTo(f.Events);
+            });
         }
 
         [Test]
-        public void End_WhenEndingAUnitOfWorkWithNoEvents_ThenShouldNotAddOutboxMessage()
+        public void End_WhenEndingAUnitOfWorkWithNoEvents_ThenShouldNotStoreOutboxMessage()
         {
-            Run(f => f.BeginThenEnd(), f => f.Outbox.Verify(o => o.AddAsync(It.IsAny<OutboxMessage>()), Times.Never));
+            Run(f => f.BeginThenEnd(), f => f.Outbox.Verify(o => o.StoreAsync(It.IsAny<OutboxMessage>(), It.IsAny<IOutboxTransaction>()), Times.Never));
         }
 
         [Test]
         public void End_WhenEndingAUnitOfWork_ThenShouldCommitTransaction()
         {
-            Run(f => f.BeginThenEnd(), f => f.OutboxTransaction.Verify(t => t.Commit()));
+            Run(f => f.BeginThenEnd(), f => f.OutboxTransaction.Verify(t => t.CommitAsync()));
         }
 
         [Test]
         public void End_WhenEndingAUnitOfWorkAfterAnException_ThenShouldNotCommitTransaction()
         {
-            Run(f => f.BeginThenEndAfterException(), f => f.OutboxTransaction.Verify(t => t.Commit(), Times.Never));
+            Run(f => f.BeginThenEndAfterException(), f => f.OutboxTransaction.Verify(t => t.CommitAsync(), Times.Never));
         }
 
         [Test]
         public void End_WhenEndingAUnitOfWork_ThenShouldSendProcessOutboxMessageCommand()
         {
             Run(f => f.SetEvents(), f => f.BeginThenEnd(), f => f.MessageSession.SentMessages.Should().ContainSingle(m =>
-                m.Options.GetMessageId() == f.OutboxMessage.Id.ToString() &&
+                m.Options.GetMessageId() == f.OutboxMessage.MessageId.ToString() &&
                 m.Message.GetType() == typeof(ProcessOutboxMessageCommand)));
         }
 
@@ -95,7 +101,9 @@ namespace SFA.DAS.NServiceBus.UnitTests
         public TestableMessageSession MessageSession { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public Mock<IOutbox> Outbox { get; set; }
+        public Mock<ReadOnlySettings> Settings { get; set; }
         public Mock<IOutboxTransaction> OutboxTransaction { get; set; }
+        public string EndpointName { get; set; }
         public List<Event> Events { get; set; }
         public OutboxMessage OutboxMessage { get; set; }
 
@@ -105,7 +113,9 @@ namespace SFA.DAS.NServiceBus.UnitTests
             MessageSession = new TestableMessageSession();
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             Outbox = new Mock<IOutbox>();
+            Settings = new Mock<ReadOnlySettings>();
             OutboxTransaction = new Mock<IOutboxTransaction>();
+            EndpointName = "SFA.DAS.NServiceBus";
 
             Events = new List<Event>
             {
@@ -114,13 +124,18 @@ namespace SFA.DAS.NServiceBus.UnitTests
             };
             
             Outbox.Setup(o => o.BeginTransactionAsync()).ReturnsAsync(OutboxTransaction.Object);
-            Outbox.Setup(o => o.AddAsync(It.IsAny<OutboxMessage>())).Returns(Task.CompletedTask).Callback<OutboxMessage>(m => OutboxMessage = m);
+
+            Outbox.Setup(o => o.StoreAsync(It.IsAny<OutboxMessage>(), It.IsAny<IOutboxTransaction>()))
+                .Returns(Task.CompletedTask).Callback<OutboxMessage, IOutboxTransaction>((m, t) => OutboxMessage = m);
+
+            Settings.Setup(s => s.Get<string>("NServiceBus.Routing.EndpointName")).Returns(EndpointName);
 
             UnitOfWorkManager = new UnitOfWorkManager(
                 Db.Object,
                 MessageSession,
                 UnitOfWorkContext.Object,
-                Outbox.Object);
+                Outbox.Object,
+                Settings.Object);
         }
 
         public void Begin()
@@ -175,7 +190,7 @@ namespace SFA.DAS.NServiceBus.UnitTests
 
         public UnitOfWorkManagerTestsFixture SetupCommitTransactionBeforeSendingProcessOutboxMessageCommand()
         {
-            OutboxTransaction.Setup(t => t.Commit()).Callback(() =>
+            OutboxTransaction.Setup(t => t.CommitAsync()).Callback(() =>
             {
                 if (MessageSession.SentMessages.Any())
                     throw new Exception("Commit called too early");

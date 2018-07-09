@@ -13,7 +13,7 @@ namespace SFA.DAS.NServiceBus.MsSqlServer
                 return sqlStorageSession;
             }
 
-            throw new Exception("Cannot access the SQL synchronized storage session. Either this endpoint has not been configured to use the SQL persistence or a different persistence type is used for sagas.");
+            throw new Exception("Cannot access the SQL storage session");
         }
     }
 }

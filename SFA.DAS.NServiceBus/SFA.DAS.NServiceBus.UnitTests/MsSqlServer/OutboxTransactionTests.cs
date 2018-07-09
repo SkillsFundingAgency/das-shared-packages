@@ -1,9 +1,11 @@
 ﻿using System.Data.Common;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.MsSqlServer;
+using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
 {
@@ -11,27 +13,33 @@ namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
     public class OutboxTransactionTests : FluentTest<OutboxTransactionTestsFixture>
     {
         [Test]
-        public void New_WhenCreatingAnOutboxTransaction_ThenShouldCreateOutboxTransaction()
+        public void New_WhenCreatingAnOutboxTransaction_ThenShouldCreateAnOutboxTransaction()
         {
             Run(f => f.New(), (f, r) => r.Should().NotBeNull());
         }
-
         [Test]
-        public void Commit_WhenCommitting_ThenShouldCommitTransaction()
+        public void Transaction_WhenGettingTheTransaction_ThenShouldReturnTheTransaction()
         {
-            Run(f => f.Commit(), f => f.Transaction.Verify(t => t.Commit(), Times.Once));
+            Run(f => f.SetOutboxTransaction(), f => f.OutboxTransaction.Transaction, (f, r) => r.Should().Be(f.Transaction.Object));
         }
 
         [Test]
-        public void Dispose_WhenDisposing_ThenShouldDisposeTransaction()
+        public Task CommitAsync_WhenCommitting_ThenShouldCommitTransaction()
         {
-            Run(f => f.Dispose(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true));
+            return RunAsync(f => f.SetOutboxTransaction(), f => f.CommitAsync(), f => f.Transaction.Verify(t => t.Commit(), Times.Once));
+        }
+
+        [Test]
+        public void Dispose_WhenDisposing_ThenShouldDisposeTheTransaction()
+        {
+            Run(f => f.SetOutboxTransaction(), f => f.Dispose(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true));
         }
     }
 
     public class OutboxTransactionTestsFixture : FluentTestFixture
     {
         public Mock<DbTransaction> Transaction { get; set; }
+        public OutboxTransaction OutboxTransaction { get; set; }
 
         public OutboxTransactionTestsFixture()
         {
@@ -43,18 +51,21 @@ namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
             return new OutboxTransaction(Transaction.Object);
         }
 
-        public void Commit()
+        public Task CommitAsync()
         {
-            var outboxTransaction = New();
-
-            outboxTransaction.Commit();
+            return OutboxTransaction.CommitAsync();
         }
 
         public void Dispose()
         {
-            var outboxTransaction = New();
+            OutboxTransaction.Dispose();
+        }
 
-            outboxTransaction.Dispose();
+        public OutboxTransactionTestsFixture SetOutboxTransaction()
+        {
+            OutboxTransaction = New();
+
+            return this;
         }
     }
 }

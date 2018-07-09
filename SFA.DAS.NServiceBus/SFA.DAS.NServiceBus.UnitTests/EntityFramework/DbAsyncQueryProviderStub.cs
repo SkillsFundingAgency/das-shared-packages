@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.NServiceBus.UnitTests.EntityFramework
+namespace SFA.DAS.Testing.EntityFramework
 {
     public class DbAsyncQueryProviderStub<TEntity> : IDbAsyncQueryProvider
     {

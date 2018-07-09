@@ -4,6 +4,7 @@ using System.Web.Routing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.Mvc;
+using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests.Mvc
 {
@@ -11,31 +12,31 @@ namespace SFA.DAS.NServiceBus.UnitTests.Mvc
     public class UnitOfWorkManagerFilterTests : FluentTest<UnitOfWorkManagerFilterTestsFixture>
     {
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginUnitOfWork()
+        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginAUnitOfWork()
         {
             Run(f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.Begin(), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuting_WhenAChildActionIsExecuting_ThenShouldNotBeginUnitOfWork()
+        public void OnActionExecuting_WhenAChildActionIsExecuting_ThenShouldNotBeginAUnitOfWork()
         {
             Run(f => f.SetChildAction(), f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.Begin(), Times.Never()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldEndUnitOfWork()
+        public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldEndTheUnitOfWork()
         {
             Run(f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.End(null), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldEndUnitOfWork()
+        public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldEndTheUnitOfWork()
         {
             Run(f => f.SetChildAction(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.End(null), Times.Never));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAfterAnException_ThenShouldEndUnitOfWork()
+        public void OnActionExecuted_WhenAnActionHasExecutedAfterAnException_ThenShouldTheEndUnitOfWork()
         {
             Run(f => f.SetException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.End(f.Exception), Times.Once()));
         }

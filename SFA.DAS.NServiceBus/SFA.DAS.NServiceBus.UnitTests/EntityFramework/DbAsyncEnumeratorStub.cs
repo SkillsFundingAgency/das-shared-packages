@@ -3,7 +3,7 @@ using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.NServiceBus.UnitTests.EntityFramework
+namespace SFA.DAS.Testing.EntityFramework
 {
     public class DbAsyncEnumeratorStub<T> : IDbAsyncEnumerator<T>
     {

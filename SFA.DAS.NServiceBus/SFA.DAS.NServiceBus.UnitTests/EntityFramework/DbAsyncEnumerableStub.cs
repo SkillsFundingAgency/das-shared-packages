@@ -3,7 +3,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SFA.DAS.NServiceBus.UnitTests.EntityFramework
+namespace SFA.DAS.Testing.EntityFramework
 {
     public class DbAsyncEnumerableStub<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T>
     {

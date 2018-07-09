@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.EntityFramework;
+using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests.EntityFramework
 {

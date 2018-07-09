@@ -1,24 +1,27 @@
 ﻿using System.Data.Common;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.NServiceBus.MsSqlServer
 {
     public class OutboxTransaction : IOutboxTransaction
     {
-        private readonly DbTransaction _transaction;
+        public DbTransaction Transaction { get; }
 
         public OutboxTransaction(DbTransaction transaction)
         {
-            _transaction = transaction;
+            Transaction = transaction;
         }
 
-        public void Commit()
+        public Task CommitAsync()
         {
-            _transaction.Commit();
+            Transaction.Commit();
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()
         {
-            _transaction.Dispose();
+            Transaction.Dispose();
         }
     }
 }

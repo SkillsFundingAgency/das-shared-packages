@@ -5,6 +5,7 @@ using Moq;
 using NServiceBus.Testing;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.MsSqlServer;
+using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
 {

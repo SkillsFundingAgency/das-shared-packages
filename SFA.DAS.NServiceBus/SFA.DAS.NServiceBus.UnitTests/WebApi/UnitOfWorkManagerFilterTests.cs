@@ -7,6 +7,7 @@ using System.Web.Http.Hosting;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.WebApi;
+using SFA.DAS.Testing;
 using StructureMap;
 using StructureMap.Pipeline;
 
@@ -16,19 +17,19 @@ namespace SFA.DAS.NServiceBus.UnitTests.WebApi
     public class UnitOfWorkManagerFilterTests : FluentTest<UnitOfWorkManagerFilterTestsFixture>
     {
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginUnitOfWork()
+        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginAUnitOfWork()
         {
             Run(f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.Begin(), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldEndUnitOfWork()
+        public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldEndTheUnitOfWork()
         {
             Run(f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.End(null), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAfterAnException_ThenShouldEndUnitOfWork()
+        public void OnActionExecuted_WhenAnActionHasExecutedAfterAnException_ThenShouldTheEndUnitOfWork()
         {
             Run(f => f.SetException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.End(f.Exception), Times.Once()));
         }

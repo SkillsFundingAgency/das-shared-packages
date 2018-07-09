@@ -17,13 +17,14 @@ namespace SFA.DAS.NServiceBus
 
         public async Task RunAsync()
         {
-            var outboxMessageIds = await _outbox.GetIdsToProcess();
+            var outboxMessages = await _outbox.GetAwaitingDispatchAsync();
 
-            var tasks = outboxMessageIds.Select(i =>
+            var tasks = outboxMessages.Select(m =>
             {
                 var options = new SendOptions();
                 
-                options.SetMessageId(i.ToString());
+                options.SetDestination(m.EndpointName);
+                options.SetMessageId(m.MessageId.ToString());
 
                 return _messageSession.Send(new ProcessOutboxMessageCommand(), options);
             });

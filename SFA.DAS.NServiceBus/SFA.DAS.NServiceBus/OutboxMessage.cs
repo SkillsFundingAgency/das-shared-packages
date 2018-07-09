@@ -1,40 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.NServiceBus
 {
-    public class OutboxMessage
+    public class OutboxMessage : IOutboxMessageAwaitingDispatch
     {
-        public virtual Guid Id { get; protected set; }
-        public virtual DateTime Sent { get; protected set; }
-        public virtual DateTime? Published { get; protected set; }
-        public virtual string Data { get; protected set; }
+        public Guid MessageId { get; }
+        public string EndpointName { get; }
+        public IEnumerable<Event> Operations { get; } = new List<Event>();
 
-        public OutboxMessage(IEnumerable<Event> events)
+        public OutboxMessage(Guid messageId, string endpointName)
         {
-            Id = GuidComb.NewGuidComb();
-            Sent = DateTime.UtcNow;
-            Data = JsonConvert.SerializeObject(events, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            MessageId = messageId;
+            EndpointName = endpointName;
         }
 
-        protected OutboxMessage()
+        public OutboxMessage(Guid messageId, string endpointName, IEnumerable<Event> operations)
         {
-        }
-
-        public IEnumerable<Event> Publish()
-        {
-            RequiresNotAlreadyPublished();
-
-            Published = DateTime.UtcNow;
-
-            return JsonConvert.DeserializeObject<List<Event>>(Data, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-        }
-
-        private void RequiresNotAlreadyPublished()
-        {
-            if (Published != null)
-                throw new Exception("Requires not already published");
+            MessageId = messageId;
+            EndpointName = endpointName;
+            Operations = operations;
         }
     }
 }

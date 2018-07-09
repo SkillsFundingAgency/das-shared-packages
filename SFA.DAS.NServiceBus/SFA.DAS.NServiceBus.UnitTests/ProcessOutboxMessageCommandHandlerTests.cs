@@ -6,6 +6,7 @@ using FluentAssertions;
 using Moq;
 using NServiceBus.Testing;
 using NUnit.Framework;
+using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests
 {
@@ -13,28 +14,34 @@ namespace SFA.DAS.NServiceBus.UnitTests
     public class ProcessOutboxMessageCommandHandlerTests : FluentTest<ProcessOutboxMessageCommandHandlerTestsFixture>
     {
         [Test]
-        public Task Handle_WhenHandlingProcessOutboxMessageCommand_ThenShouldPublishOutboxMessageEvents()
+        public Task Handle_WhenHandlingAProcessOutboxMessageCommand_ThenShouldPublishTheOutboxMessageEvents()
         {
-            return RunAsync(f => f.Handle(), f => f.Context.PublishedMessages.Select(m => m.Message).Cast<Event>().Should().HaveCount(2).And.Match<IEnumerable<Event>>(e =>
-                e.ElementAt(0) is FooEvent && e.ElementAt(0).Created == f.Events[0].Created &&
-                e.ElementAt(1) is BarEvent && e.ElementAt(1).Created == f.Events[1].Created));
+            return RunAsync(f => f.Handle(), f => f.Context.PublishedMessages.Select(m => m.Message).Cast<Event>().Should().BeEquivalentTo(f.Events));
+        }
+
+        [Test]
+        public Task Handle_WhenHandlingAProcessOutboxMessageCommand_ThenShouldSetTheOutboxMessageAsDispatched()
+        {
+            return RunAsync(f => f.Handle(), f => f.Outbox.Verify(o => o.SetAsDispatchedAsync(f.OutboxMessage.MessageId)));
         }
     }
 
     public class ProcessOutboxMessageCommandHandlerTestsFixture : FluentTestFixture
     {
         public DateTime Now { get; set; }
-        public TestableMessageHandlerContext Context { get; set; }
-        public List<Event> Events { get; set; }
-        public ProcessOutboxMessageCommandHandler Handler { get; set; }
-        public ProcessOutboxMessageCommand Command { get; set; }
-        public OutboxMessage OutboxMessage { get; set; }
         public Mock<IOutbox> Outbox { get; set; }
-
-
+        public ProcessOutboxMessageCommand Command { get; set; }
+        public TestableMessageHandlerContext Context { get; set; }
+        public ProcessOutboxMessageCommandHandler Handler { get; set; }
+        public OutboxMessage OutboxMessage { get; set; }
+        public string EndpointName { get; set; }
+        public List<Event> Events { get; set; }
+        
         public ProcessOutboxMessageCommandHandlerTestsFixture()
         {
             Now = DateTime.UtcNow;
+
+            EndpointName = "SFA.DAS.NServiceBus";
 
             Events = new List<Event>
             {
@@ -42,17 +49,17 @@ namespace SFA.DAS.NServiceBus.UnitTests
                 new BarEvent { Created = Now }
             };
 
-            OutboxMessage = new OutboxMessageBuilder().WithId(GuidComb.NewGuidComb()).WithEvents(Events).Build();
+            OutboxMessage = new OutboxMessage(GuidComb.NewGuidComb(), EndpointName, Events);
 
             Context = new TestableMessageHandlerContext
             {
-                MessageId = OutboxMessage.Id.ToString()
+                MessageId = OutboxMessage.MessageId.ToString()
             };
 
             Command = new ProcessOutboxMessageCommand();
             Outbox = new Mock<IOutbox>();
 
-            Outbox.Setup(o => o.GetById(OutboxMessage.Id)).ReturnsAsync(OutboxMessage);
+            Outbox.Setup(o => o.GetAsync(OutboxMessage.MessageId)).ReturnsAsync(OutboxMessage);
 
             Handler = new ProcessOutboxMessageCommandHandler(Outbox.Object);
         }

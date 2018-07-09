@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.NServiceBus.UnitTests
+﻿namespace SFA.DAS.Testing
 {
     public abstract class FluentTestFixture
     {

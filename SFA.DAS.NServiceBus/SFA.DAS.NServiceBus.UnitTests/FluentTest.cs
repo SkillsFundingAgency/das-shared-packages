@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions.Specialized;
 
-namespace SFA.DAS.NServiceBus.UnitTests
+namespace SFA.DAS.Testing
 {
     public abstract class FluentTest<T> where T : new()
     {

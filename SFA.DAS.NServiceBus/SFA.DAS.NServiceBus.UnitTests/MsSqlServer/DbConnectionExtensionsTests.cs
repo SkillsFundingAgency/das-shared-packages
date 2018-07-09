@@ -7,6 +7,7 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.MsSqlServer;
+using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
 {
@@ -26,7 +27,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
         }
 
         [Test]
-        public Task TryOpenAsync_WhenOpeningAConnectionAndAnExceptionIsThrown_ThenShouldRethrowException()
+        public Task TryOpenAsync_WhenOpeningAConnectionAndAnExceptionIsThrown_ThenShouldRethrowTheException()
         {
             return RunAsync(f => f.SetupThrowException(), f => f.TryOpenAsync(), (f, a) => a.ShouldThrow<Exception>());
         }

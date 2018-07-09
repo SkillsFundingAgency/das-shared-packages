@@ -17,11 +17,11 @@ namespace SFA.DAS.NServiceBus
         public async Task Handle(ProcessOutboxMessageCommand message, IMessageHandlerContext context)
         {
             var outboxMessageId = Guid.Parse(context.MessageId);
-            var outboxMessage = await _outbox.GetById(outboxMessageId);
-            var events = outboxMessage.Publish();
-            var tasks = events.Select(context.Publish);
+            var outboxMessage = await _outbox.GetAsync(outboxMessageId);
+            var tasks = outboxMessage.Operations.Select(context.Publish);
 
             await Task.WhenAll(tasks);
+            await _outbox.SetAsDispatchedAsync(outboxMessage.MessageId);
         }
     }
 }

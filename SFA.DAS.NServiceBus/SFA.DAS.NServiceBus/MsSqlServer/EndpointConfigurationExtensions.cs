@@ -9,13 +9,20 @@ namespace SFA.DAS.NServiceBus.MsSqlServer
     {
         public static EndpointConfiguration SetupMsSqlServerPersistence(this EndpointConfiguration config, Func<DbConnection> connectionBuilder)
         {
-            config.Pipeline.Register(new IncomingPhysicalMessageBehavior(), "Sets up a unit of work context for each message");
-            config.Pipeline.Register(new InvokeHandlerBehavior(), "Sets up a unit of work context for each message");
-
             var persistence = config.UsePersistence<SqlPersistence>();
 
             persistence.ConnectionBuilder(connectionBuilder);
+            persistence.DisableInstaller();
             persistence.SqlDialect<SqlDialect.MsSqlServer>();
+            persistence.TablePrefix("");
+
+            config.Pipeline.Register(new IncomingPhysicalMessageBehavior(), "Sets up a unit of work context for each message");
+            config.Pipeline.Register(new InvokeHandlerBehavior(), "Sets up a unit of work context for each message");
+
+            config.RegisterComponents(c =>
+            {
+                c.ConfigureComponent<Outbox>(DependencyLifecycle.InstancePerUnitOfWork);
+            });
 
             return config;
         }
