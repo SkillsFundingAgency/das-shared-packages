@@ -15,8 +15,8 @@ namespace SFA.DAS.NServiceBus.MsSqlServer
     {
         public const string GetCommandText = "SELECT EndpointName, Operations FROM dbo.ClientOutboxData WHERE MessageId = @MessageId";
         public const string SetAsDispatchedCommandText = "UPDATE dbo.ClientOutboxData SET Dispatched = 1, DispatchedAt = @DispatchedAt, Operations = '[]' WHERE MessageId = @MessageId";
-        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE Created <= @Created AND Dispatched = 0 ORDER BY Created";
-        public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, Created, Operations) VALUES (@MessageId, @EndpointName, @Created, @Operations)";
+        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE CreatedAt <= @CreatedAt AND Dispatched = 0 ORDER BY CreatedAt";
+        public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, @Operations)";
 
         private readonly DbConnection _connection;
         private readonly IUnitOfWorkContext _unitOfWorkContext;
@@ -78,7 +78,7 @@ namespace SFA.DAS.NServiceBus.MsSqlServer
                 {
                     command.CommandText = GetAwaitingDispatchCommandText;
                     command.CommandType = CommandType.Text;
-                    command.AddParameter("Created", DateTime.UtcNow.AddMinutes(-10));
+                    command.AddParameter("CreatedAt", DateTime.UtcNow.AddMinutes(-10));
 
                     using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                     {
@@ -107,7 +107,7 @@ namespace SFA.DAS.NServiceBus.MsSqlServer
         {
             var connection = _unitOfWorkContext.Get<DbConnection>();
             var transaction = _unitOfWorkContext.Get<DbTransaction>();
-            
+
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = SetAsDispatchedCommandText;
@@ -132,7 +132,7 @@ namespace SFA.DAS.NServiceBus.MsSqlServer
                 command.Transaction = transaction;
                 command.AddParameter("MessageId", outboxMessage.MessageId);
                 command.AddParameter("EndpointName", outboxMessage.EndpointName);
-                command.AddParameter("Created", DateTime.UtcNow);
+                command.AddParameter("CreatedAt", DateTime.UtcNow);
                 command.AddParameter("Operations", JsonConvert.SerializeObject(outboxMessage.Operations, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }));
 
                 return command.ExecuteNonQueryAsync();

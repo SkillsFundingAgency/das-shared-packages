@@ -58,7 +58,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
                 f.Command.VerifySet(c => c.Transaction = f.Transaction.Object);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "MessageId" && p.Value as Guid? == f.OutboxMessage.MessageId)));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "EndpointName" && p.Value as string == f.EndpointName)));
-                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "Created" && p.Value as DateTime? >= f.Now)));
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? >= f.Now)));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "Operations" && p.Value as string == f.EventsData)));
                 f.Command.Verify(c => c.ExecuteNonQueryAsync(CancellationToken.None), Times.Once);
             });
@@ -92,7 +92,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
                 f.Connection.Verify(c => c.Close(), Times.Once);
                 f.Command.VerifySet(c => c.CommandText = Outbox.GetAwaitingDispatchCommandText);
-                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "Created" && p.Value as DateTime? <= f.Now)));
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? <= f.Now)));
                 r.ShouldAllBeEquivalentTo(f.OutboxMessages);
             });
         }
@@ -204,7 +204,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
         public OutboxTestsFixture SetupGetReaderWithRows()
         {
             DataReader = new Mock<DbDataReader>();
-            
+
             DataReader.Setup(r => r.ReadAsync(CancellationToken.None)).ReturnsAsync(true);
             DataReader.Setup(r => r.GetString(0)).Returns(EndpointName);
             DataReader.Setup(r => r.GetString(1)).Returns(EventsData);
