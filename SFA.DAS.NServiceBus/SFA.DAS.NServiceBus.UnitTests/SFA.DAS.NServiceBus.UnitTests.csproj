@@ -81,6 +81,9 @@
     <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SFA.DAS.Testing, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Testing.1.0.1\lib\net462\SFA.DAS.Testing.dll</HintPath>
+    </Reference>
     <Reference Include="StructureMap, Version=4.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StructureMap.4.6.1\lib\net45\StructureMap.dll</HintPath>
     </Reference>
@@ -128,14 +131,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BarEvent.cs" />
-    <Compile Include="EntityFramework\DbAsyncEnumerableStub.cs" />
-    <Compile Include="EntityFramework\DbAsyncEnumeratorStub.cs" />
-    <Compile Include="EntityFramework\DbAsyncQueryProviderStub.cs" />
     <Compile Include="EntityFramework\DbContextFake.cs" />
-    <Compile Include="EntityFramework\DbSetStub.cs" />
     <Compile Include="EntityFramework\DbTests.cs" />
-    <Compile Include="FluentTest.cs" />
-    <Compile Include="FluentTestFixture.cs" />
     <Compile Include="MsSqlServer\DbConnectionExtensionsTests.cs" />
     <Compile Include="MsSqlServer\IncomingPhysicalMessageBehaviorTests.cs" />
     <Compile Include="MsSqlServer\InvokeHandlerBehaviorTests.cs" />
