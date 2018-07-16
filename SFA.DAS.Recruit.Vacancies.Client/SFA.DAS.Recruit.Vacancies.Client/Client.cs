@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
 using Microsoft.WindowsAzure.Storage;
@@ -62,7 +61,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var collection = GetCollection();
             var vacancies = collection
                             .AsQueryable()
-                            .Where(each => each.Type.Equals(LiveVacancyDocumentType))
+                            .Where(each => each.viewType.Equals(LiveVacancyDocumentType))
                             .ToList();
             return vacancies;
         }
