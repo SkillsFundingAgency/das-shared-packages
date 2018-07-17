@@ -61,7 +61,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var collection = GetCollection();
             var vacancies = collection
                             .AsQueryable()
-                            .Where(each => each.viewType.Equals(LiveVacancyDocumentType))
+                            .Where(each => each.ViewType.Equals(LiveVacancyDocumentType))
                             .ToList();
             return vacancies;
         }

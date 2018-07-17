@@ -6,7 +6,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
     public class LiveVacancy
     {
         public string Id { get; set; }
-        public string viewType { get; set; }
+        public string ViewType { get; set; }
         public DateTime LastUpdated { get; set; }
         public Guid VacancyId { get; set; }
         public string ApplicationInstructions { get; set; }
