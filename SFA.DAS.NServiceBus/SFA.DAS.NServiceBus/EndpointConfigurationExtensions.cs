@@ -26,6 +26,13 @@ namespace SFA.DAS.NServiceBus
             return config;
         }
 
+        public static EndpointConfiguration SetupLicense(this EndpointConfiguration config, string licenseText)
+        {
+            config.License(licenseText);
+
+            return config;
+        }
+
         public static EndpointConfiguration SetupMetrics(this EndpointConfiguration config)
         {
             var metrics = config.EnableMetrics();
