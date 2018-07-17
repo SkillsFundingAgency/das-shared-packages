@@ -31,6 +31,10 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
 
                 queue.LockDuration(TimeSpan.FromMinutes(1));
 
+                var sanitization = transport.Sanitization();
+
+                sanitization.UseStrategy<ValidateAndHashIfNeeded>();
+
                 routing(transport.Routing());
             }
 
