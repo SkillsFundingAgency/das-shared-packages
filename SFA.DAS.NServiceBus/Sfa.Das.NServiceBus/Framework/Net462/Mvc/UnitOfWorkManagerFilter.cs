@@ -1,4 +1,5 @@
 ﻿using System;
+#if NET462
 using System.Web.Mvc;
 
 namespace SFA.DAS.NServiceBus.Mvc
@@ -14,6 +15,7 @@ namespace SFA.DAS.NServiceBus.Mvc
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+
             if (!filterContext.IsChildAction)
             {
                 _unitOfWorkManager().Begin();
@@ -29,3 +31,4 @@ namespace SFA.DAS.NServiceBus.Mvc
         }
     }
 }
+#endif
