@@ -48,15 +48,9 @@
     <Compile Remove="Framework\NetStandard20\**" />
     <EmbeddedResource Remove="Framework\NetStandard20\**" />
     <None Remove="Framework\NetStandard20\**" />
-    <Folder Include="Framework\NetStandard20\" />
   </ItemGroup>
 
- 
 
-  <ItemGroup>
-
-   
-  </ItemGroup>
 
 
 
