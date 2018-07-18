@@ -17,6 +17,14 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
             }
             else
             {
+#if NETSTANDARD2_0
+                var transport = config.UseTransport<AzureServiceBusTransport>();
+
+                transport.ConnectionString(connectionStringBuilder);
+                transport.Transactions(TransportTransactionMode.ReceiveOnly);
+
+                routing(transport.Routing());
+#elif NET462
                 var transport = config.UseTransport<AzureServiceBusTransport>();
 
                 transport.ConnectionString(connectionStringBuilder);
@@ -32,6 +40,7 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
                 queue.LockDuration(TimeSpan.FromMinutes(1));
 
                 routing(transport.Routing());
+#endif
             }
 
             return config;
