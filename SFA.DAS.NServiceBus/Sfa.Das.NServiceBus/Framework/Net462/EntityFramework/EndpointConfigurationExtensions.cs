@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 using NServiceBus;
-using SFA.DAS.NServiceBus.UnitOfWork;
 
 namespace SFA.DAS.NServiceBus.EntityFramework
 {

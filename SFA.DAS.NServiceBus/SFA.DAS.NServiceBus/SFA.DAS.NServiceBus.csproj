@@ -50,6 +50,10 @@
     <None Remove="Framework\NetStandard20\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Framework\NetStandard20\" />
+  </ItemGroup>
+
 
 
 
