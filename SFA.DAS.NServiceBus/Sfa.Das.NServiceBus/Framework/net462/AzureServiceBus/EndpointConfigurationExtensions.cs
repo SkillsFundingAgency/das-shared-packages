@@ -5,7 +5,7 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
 {
     public static class EndpointConfigurationExtensions
     {
-        public static EndpointConfiguration SetupAzureServiceBusTransport(this EndpointConfiguration config, bool isDevelopment, string connectionString, Action<RoutingSettings> routing)
+        public static EndpointConfiguration SetupAzureServiceBusTransport(this EndpointConfiguration config, bool isDevelopment, Func<string> connectionStringBuilder, Action<RoutingSettings> routing)
         {
             if (isDevelopment)
             {
@@ -19,7 +19,7 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
             {
                 var transport = config.UseTransport<AzureServiceBusTransport>();
 
-                transport.ConnectionString(connectionString);
+                transport.ConnectionString(connectionStringBuilder);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 transport.UseForwardingTopology();
 
@@ -30,10 +30,6 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
                 var queue = transport.Queues();
 
                 queue.LockDuration(TimeSpan.FromMinutes(1));
-
-                var sanitization = transport.Sanitization();
-
-                sanitization.UseStrategy<ValidateAndHashIfNeeded>();
 
                 routing(transport.Routing());
             }

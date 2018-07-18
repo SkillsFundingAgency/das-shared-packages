@@ -1,12 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFrameworks>net462;netstandard20</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NServiceBus" Version="7.0.1" />
-    <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0" />
     <PackageReference Include="NServiceBus.Heartbeat" Version="3.0.0" />
     <PackageReference Include="NServiceBus.Metrics.ServiceControl" Version="3.0.1" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
@@ -15,5 +14,24 @@
     <PackageReference Include="NServiceBus.StructureMap" Version="7.0.0" />
     <PackageReference Include="StructureMap" Version="4.6.1" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard20' ">
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.1.0-preview" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0-alpha0142" />
+
+    <Compile Remove="Framework\net462\**" />
+    <EmbeddedResource Remove="Framework\net462\**" />
+    <None Remove="Framework\net462\**" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' ">
+    <PackageReference Include="WindowsAzure.ServiceBus" Version="4.1.0" />
+    <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0" />
+
+    <Compile Remove="Framework\netstandard20\**" />
+    <EmbeddedResource Remove="Framework\netstandard20\**" />
+    <None Remove="Framework\netstandard20\**" />
+  </ItemGroup>
+
 
 </Project>
