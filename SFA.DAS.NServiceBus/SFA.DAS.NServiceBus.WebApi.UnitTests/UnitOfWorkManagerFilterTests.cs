@@ -6,12 +6,11 @@ using System.Web.Http.Filters;
 using System.Web.Http.Hosting;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.WebApi;
 using SFA.DAS.Testing;
 using StructureMap;
 using StructureMap.Pipeline;
 
-namespace SFA.DAS.NServiceBus.UnitTests.WebApi
+namespace SFA.DAS.NServiceBus.WebApi.UnitTests
 {
     [TestFixture]
     public class UnitOfWorkManagerFilterTests : FluentTest<UnitOfWorkManagerFilterTestsFixture>

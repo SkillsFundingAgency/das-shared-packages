@@ -3,10 +3,9 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.Mvc;
 using SFA.DAS.Testing;
 
-namespace SFA.DAS.NServiceBus.UnitTests.Mvc
+namespace SFA.DAS.NServiceBus.Mvc.UnitTests
 {
     [TestFixture]
     public class UnitOfWorkManagerFilterTests : FluentTest<UnitOfWorkManagerFilterTestsFixture>
