@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace SFA.DAS.NServiceBus.UnitTests.EntityFramework
+namespace SFA.DAS.NServiceBus.EntityFramework.UnitTests
 {
     public class DbContextFake : DbContext
     {

@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.EntityFramework;
 using SFA.DAS.Testing;
 
-namespace SFA.DAS.NServiceBus.UnitTests.EntityFramework
+namespace SFA.DAS.NServiceBus.EntityFramework.UnitTests
 {
     [TestFixture]
     public class DbTests : FluentTest<DbTestsFixture>
