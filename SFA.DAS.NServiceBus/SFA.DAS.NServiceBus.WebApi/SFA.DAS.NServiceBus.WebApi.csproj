@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>net462</TargetFrameworks>
+    <Description>WebApi outbox integration for SFA.DAS.NServiceBus</Description>
+    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.NServiceBus</PackageProjectUrl>
+    <Authors>DAS</Authors>
   </PropertyGroup>
 
   <ItemGroup>

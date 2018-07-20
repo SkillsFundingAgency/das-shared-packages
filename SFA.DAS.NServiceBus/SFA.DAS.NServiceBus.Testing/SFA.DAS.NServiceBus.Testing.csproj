@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
+    <Authors>DAS</Authors>
+    <Description>Test stubs for SFA.DAS.NServiceBus</Description>
+    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.NServiceBus</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
