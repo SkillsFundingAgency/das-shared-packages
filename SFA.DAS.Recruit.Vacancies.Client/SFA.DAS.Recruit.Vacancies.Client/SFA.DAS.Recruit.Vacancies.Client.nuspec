@@ -10,7 +10,12 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Client package to retrieve vacancies from the Recruit Vacancies query store</description>
     <releaseNotes/>
-  </metadata>
+    <dependencies>
+      <dependency id="MongoDB.Driver" version="2.7.0" />
+      <dependency id="Newtonsoft.Json" version="9.0.1" />
+      <dependency id="WindowsAzure.Storage" version="8.0.1" />
+    </dependencies>
+    </metadata>
   <files>
     <file src="bin\Release\SFA.DAS.Recruit.Vacancies.Client.dll" target="lib\net451\SFA.DAS.Recruit.Vacancies.Client.dll" />
   </files>
