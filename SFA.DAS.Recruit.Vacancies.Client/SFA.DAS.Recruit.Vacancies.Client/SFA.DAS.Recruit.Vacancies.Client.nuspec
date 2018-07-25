@@ -12,6 +12,6 @@
     <releaseNotes/>
   </metadata>
   <files>
-    <file src="bin\Release\SFA.DAS.Recruit.Vacancies.Client.dll" target="lib\net45\SFA.DAS.Recruit.Vacancies.Client.dll" />
+    <file src="bin\Release\SFA.DAS.Recruit.Vacancies.Client.dll" target="lib\net451\SFA.DAS.Recruit.Vacancies.Client.dll" />
   </files>
 </package>

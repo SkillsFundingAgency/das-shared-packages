@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var id = string.Format(IdFormat, vacancyReference);
             
             var collection = GetCollection();
-            var result = collection.Find(lv => lv.Id.Equals(id)).SingleOrDefault();
+            var result = collection.Find(lv => lv.Id.Equals(id) && lv.ViewType.Equals(LiveVacancyDocumentType)).SingleOrDefault();
             return result;
         }
 
