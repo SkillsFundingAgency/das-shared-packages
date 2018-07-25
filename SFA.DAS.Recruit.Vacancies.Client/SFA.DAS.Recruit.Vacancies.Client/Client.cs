@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var id = string.Format(IdFormat, vacancyReference);
             
             var collection = GetCollection();
-            var result = collection.FindOneById(id);
+            var result = collection.Find(lv => lv.Id.Equals(id) && lv.ViewType.Equals(LiveVacancyDocumentType)).SingleOrDefault();
             return result;
         }
 
@@ -81,13 +81,13 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             queue.AddMessage(cloudQueueMessage);
         }
 
-        private MongoCollection<LiveVacancy> GetCollection()
+        private IMongoCollection<LiveVacancy> GetCollection()
         {
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_connectionString));
             settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
             
             var client = new MongoClient(settings);
-            var database = client.GetServer().GetDatabase(_databaseName);
+            var database = client.GetDatabase(_databaseName);
             var collection = database.GetCollection<LiveVacancy>(_collectionName);
 
             return collection;

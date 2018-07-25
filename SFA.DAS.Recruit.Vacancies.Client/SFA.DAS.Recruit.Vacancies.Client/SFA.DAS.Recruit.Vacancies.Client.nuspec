@@ -10,13 +10,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Client package to retrieve vacancies from the Recruit Vacancies query store</description>
     <releaseNotes/>
-    <dependencies>
-      <group targetFramework=".NETFramework4.5">
-        <dependency id="mongocsharpdriver" version="1.10.0" />
-      </group>
-    </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\SFA.DAS.Recruit.Vacancies.Client.dll" target="lib\net45\SFA.DAS.Recruit.Vacancies.Client.dll" />
+    <file src="bin\Release\SFA.DAS.Recruit.Vacancies.Client.dll" target="lib\net451\SFA.DAS.Recruit.Vacancies.Client.dll" />
   </files>
 </package>
