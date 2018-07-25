@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing", "SFA.DAS.Testing\SFA.DAS.Testing.csproj", "{AF6A3461-2FF1-4773-9E55-549AE55182B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing", "SFA.DAS.Testing\SFA.DAS.Testing.csproj", "{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing.EntityFramework", "SFA.DAS.Testing.EntityFramework\SFA.DAS.Testing.EntityFramework.csproj", "{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AF6A3461-2FF1-4773-9E55-549AE55182B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF6A3461-2FF1-4773-9E55-549AE55182B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF6A3461-2FF1-4773-9E55-549AE55182B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF6A3461-2FF1-4773-9E55-549AE55182B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

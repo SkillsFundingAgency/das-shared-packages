@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <Authors>DAS</Authors>
-    <Description>Testing infrastructure for SFA.DAS</Description>
+    <Description>Entity Framework testing infrastructure for SFA.DAS</Description>
     <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Testing</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="4.17.0" />
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
   </ItemGroup>
 
 </Project>
