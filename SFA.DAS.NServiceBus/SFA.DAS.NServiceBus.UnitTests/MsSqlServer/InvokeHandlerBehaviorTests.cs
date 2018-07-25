@@ -15,13 +15,13 @@ namespace SFA.DAS.NServiceBus.UnitTests.MsSqlServer
     public class InvokeHandlerBehaviorTests : FluentTest<InvokeHandlerBehaviorTestsFixture>
     {
         [Test]
-        public Task Invoke_WhenHandlingAMessage_ThenShouldSetUnitOfWorkContextDbConnectionBeforeNextTask()
+        public Task Invoke_WhenInvokingAHandler_ThenShouldSetUnitOfWorkContextDbConnectionBeforeNextTask()
         {
             return RunAsync(f => f.Invoke(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.Connection.Object), Times.Once));
         }
 
         [Test]
-        public Task Invoke_WhenALogicalMessageIsIncoming_ThenShouldSetUnitOfWorkContextDbTransactionBeforeNextTask()
+        public Task Invoke_WhenInvokingAHandler_ThenShouldSetUnitOfWorkContextDbTransactionBeforeNextTask()
         {
             return RunAsync(f => f.Invoke(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.Transaction.Object), Times.Once));
         }

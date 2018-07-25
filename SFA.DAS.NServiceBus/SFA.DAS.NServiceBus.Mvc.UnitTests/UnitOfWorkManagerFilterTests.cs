@@ -29,7 +29,7 @@ namespace SFA.DAS.NServiceBus.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldEndTheUnitOfWork()
+        public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldNotEndTheUnitOfWork()
         {
             Run(f => f.SetChildAction(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.End(null), Times.Never));
         }
