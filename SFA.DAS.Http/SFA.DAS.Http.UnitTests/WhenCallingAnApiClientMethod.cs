@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.Http.UnitTests.MessageHandlers;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FluentAssertions;
+using NUnit.Framework;
+using SFA.DAS.Http.UnitTests.MessageHandlers;
 
 namespace SFA.DAS.Http.UnitTests
 {
@@ -44,7 +44,7 @@ namespace SFA.DAS.Http.UnitTests
 
             Func<Task<string>> act = async () => await _client.GetAsync(testUrl);
 
-            act.ShouldThrow<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
+            act.Should().Throw<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace SFA.DAS.Http.UnitTests
 
             Func<Task<string>> act = async () => await _client.GetAsync(testBaseUrl, new { q = "abc", v = "xyz" });
 
-            act.ShouldThrow<Exception>().WithMessage("Response status code does not indicate success: 503 (Service Unavailable).");
+            act.Should().Throw<Exception>().WithMessage("Response status code does not indicate success: 503 (Service Unavailable).");
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace SFA.DAS.Http.UnitTests
 
             Func<Task<string>> act = async () => await _client.PostAsync(testBaseUrl, "Test Post Data");
 
-            act.ShouldThrow<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
+            act.Should().Throw<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace SFA.DAS.Http.UnitTests
 
             Func<Task<string>> act = async () => await _client.PutAsync(testBaseUrl, "Test Put Data");
 
-            act.ShouldThrow<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
+            act.Should().Throw<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace SFA.DAS.Http.UnitTests
 
             Func<Task<string>> act = async () => await _client.PatchAsync(testBaseUrl, "Test Patch Data");
 
-            act.ShouldThrow<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
+            act.Should().Throw<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace SFA.DAS.Http.UnitTests
 
             Func<Task> act = async () => await _client.DeleteAsync(testBaseUrl, null);
 
-            act.ShouldThrow<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
+            act.Should().Throw<Exception>().WithMessage("Response status code does not indicate success: 404 (Not Found).");
         }
     }
 
