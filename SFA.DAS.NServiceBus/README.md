@@ -15,7 +15,7 @@ The following example configures an NServiceBus endpoint to allow both sending a
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandlers")
     .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupEntityFrameworkUnitOfWork<EmployerAccountsDbContext>()
+    .SetupUnitOfWork()
     .SetupErrorQueue()
     .SetupInstallers()
     .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
@@ -32,7 +32,7 @@ The following example configures an NServiceBus endpoint within an MVC applicati
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
     .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupEntityFrameworkUnitOfWork<EmployerAccountsDbContext>()
+    .SetupUnitOfWork()
     .SetupErrorQueue()
     .SetupInstallers()
     .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
@@ -49,7 +49,7 @@ The following example configures an NServiceBus endpoint within a WebApi applica
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
     .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupEntityFrameworkUnitOfWork<EmployerAccountsDbContext>()
+    .SetupUnitOfWork()
     .SetupErrorQueue()
     .SetupInstallers()
     .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
