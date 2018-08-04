@@ -31,13 +31,18 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 transport.UseForwardingTopology();
 
-                var messageReceiver = transport.MessageReceivers();
+                var messageReceivers = transport.MessageReceivers();
 
-                messageReceiver.AutoRenewTimeout(TimeSpan.FromMinutes(10));
+                messageReceivers.AutoRenewTimeout(TimeSpan.FromMinutes(10));
 
-                var queue = transport.Queues();
+                var queues = transport.Queues();
 
-                queue.LockDuration(TimeSpan.FromMinutes(1));
+                queues.ForwardDeadLetteredMessagesTo(q => q != "errors" && q != "audits" && q != "deadletters", "deadletters");
+                queues.LockDuration(TimeSpan.FromMinutes(1));
+
+                var subscriptions = transport.Subscriptions();
+
+                subscriptions.ForwardDeadLetteredMessagesTo("deadletters");
 
                 routing(transport.Routing());
 #endif
