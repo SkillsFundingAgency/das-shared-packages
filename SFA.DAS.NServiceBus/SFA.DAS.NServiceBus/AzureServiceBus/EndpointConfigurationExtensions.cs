@@ -36,13 +36,8 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
                 messageReceivers.AutoRenewTimeout(TimeSpan.FromMinutes(10));
 
                 var queues = transport.Queues();
-
-                queues.ForwardDeadLetteredMessagesTo(q => q != "errors" && q != "audits" && q != "deadletters", "deadletters");
+                
                 queues.LockDuration(TimeSpan.FromMinutes(1));
-
-                var subscriptions = transport.Subscriptions();
-
-                subscriptions.ForwardDeadLetteredMessagesTo("deadletters");
 
                 routing(transport.Routing());
 #endif
