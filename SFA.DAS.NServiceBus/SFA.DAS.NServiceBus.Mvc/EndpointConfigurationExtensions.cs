@@ -1,4 +1,7 @@
-﻿using System.Web.Mvc;
+﻿#if NET462
+
+
+using System.Web.Mvc;
 using NServiceBus;
 
 namespace SFA.DAS.NServiceBus.Mvc
@@ -14,3 +17,4 @@ namespace SFA.DAS.NServiceBus.Mvc
         }
     }
 }
+#endif
