@@ -47,3 +47,4 @@ namespace SFA.DAS.NServiceBus.Mvc
         }
     }
 }
+#endif
