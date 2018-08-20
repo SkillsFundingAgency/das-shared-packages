@@ -7,6 +7,7 @@
     <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.NServiceBus</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard20'">
@@ -31,11 +32,13 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard20'">
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.1.0-preview" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0-alpha0142" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
     <PackageReference Include="WindowsAzure.ServiceBus" Version="4.1.0" />
     <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0" />
+    
   </ItemGroup>
 
 </Project>

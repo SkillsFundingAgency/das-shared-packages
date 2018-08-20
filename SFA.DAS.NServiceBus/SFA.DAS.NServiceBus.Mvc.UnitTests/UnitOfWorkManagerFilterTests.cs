@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET462
+using System;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Moq;
@@ -85,3 +86,4 @@ namespace SFA.DAS.NServiceBus.Mvc.UnitTests
         }
     }
 }
+#endif
