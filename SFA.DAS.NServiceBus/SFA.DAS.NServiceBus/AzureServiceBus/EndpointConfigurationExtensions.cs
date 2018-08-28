@@ -1,5 +1,6 @@
 ﻿using System;
 using NServiceBus;
+using NServiceBus.Transport.AzureServiceBus;
 
 namespace SFA.DAS.NServiceBus.AzureServiceBus
 {
@@ -27,6 +28,7 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
 #elif NET462
                 var transport = config.UseTransport<AzureServiceBusTransport>();
 
+                transport.BrokeredMessageBodyType(SupportedBrokeredMessageBodyTypes.Stream);
                 transport.ConnectionString(connectionStringBuilder);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 transport.UseForwardingTopology();
