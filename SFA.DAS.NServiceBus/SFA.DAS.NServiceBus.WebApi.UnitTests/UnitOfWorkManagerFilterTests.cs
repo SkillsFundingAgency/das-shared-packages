@@ -7,8 +7,6 @@ using System.Web.Http.Hosting;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing;
-using StructureMap;
-using StructureMap.Pipeline;
 
 namespace SFA.DAS.NServiceBus.WebApi.UnitTests
 {
@@ -41,7 +39,6 @@ namespace SFA.DAS.NServiceBus.WebApi.UnitTests
         public HttpRequestMessage HttpRequestMessage { get; set; }
         public HttpControllerContext ControllerContext { get; set; }
         public Mock<HttpActionDescriptor> ActionDescriptor { get; set; }
-        public Mock<IContainer> Container { get; set; }
         public Mock<IDependencyScope> DependencyScope { get; set; }
         public HttpActionContext ActionContext { get; set; }
         public HttpActionExecutedContext ActionExecutedContext { get; set; }
@@ -54,14 +51,12 @@ namespace SFA.DAS.NServiceBus.WebApi.UnitTests
             HttpRequestMessage = new HttpRequestMessage();
             ControllerContext = new HttpControllerContext { Request = HttpRequestMessage };
             ActionDescriptor = new Mock<HttpActionDescriptor>();
-            Container = new Mock<IContainer>();
             DependencyScope = new Mock<IDependencyScope>();
             ActionContext = new HttpActionContext(ControllerContext, ActionDescriptor.Object);
             ActionExecutedContext = new HttpActionExecutedContext(ActionContext, null) { Response = new HttpResponseMessage() };
             Exception = new Exception();
-
-            Container.Setup(c => c.GetInstance<IUnitOfWorkManager>(It.IsAny<ExplicitArguments>())).Returns(UnitOfWorkManager.Object);
-            DependencyScope.Setup(s => s.GetService(typeof(IContainer))).Returns(Container.Object);
+            
+            DependencyScope.Setup(s => s.GetService(typeof(IUnitOfWorkManager))).Returns(UnitOfWorkManager.Object);
             HttpRequestMessage.Properties[HttpPropertyKeys.DependencyScope] = DependencyScope.Object;
         }
 
