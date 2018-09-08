@@ -1,8 +1,7 @@
 ﻿#if NET462
-
-
 using System.Web.Mvc;
 using NServiceBus;
+using SFA.DAS.NServiceBus.ClientOutbox;
 
 namespace SFA.DAS.NServiceBus.Mvc
 {

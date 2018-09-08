@@ -14,15 +14,22 @@ The following example configures an NServiceBus endpoint to allow both sending a
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandlers")
-    .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupUnitOfWork()
+    .SetupAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .SetupErrorQueue()
     .SetupInstallers()
-    .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .SetupNewtonsoftSerializer()
+    .SetupSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .SetupNewtonsoftJsonSerializer()
     .SetupNLogFactory()
     .SetupOutbox()
-    .SetupStructureMapBuilder(container);
+    .SetupStructureMapBuilder(container)
+    .SetupUnitOfWork();
+
+_endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+
+container.Configure(c =>
+{
+    c.For<IMessageSession>().Use(_endpoint);
+});
 ```
 
 ### MVC Endpoint
@@ -31,15 +38,43 @@ The following example configures an NServiceBus endpoint within an MVC applicati
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
-    .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupUnitOfWork()
+    .SetupAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .SetupErrorQueue()
     .SetupInstallers()
-    .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .SetupNewtonsoftSerializer()
+    .SetupSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .SetupNewtonsoftJsonSerializer()
     .SetupNLogFactory()
     .SetupOutbox(GlobalFilters.Filters)
-    .SetupStructureMapBuilder(container);
+    .SetupStructureMapBuilder(container)
+    .SetupUnitOfWork();
+
+_endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+
+container.Configure(c =>
+{
+    c.For<IMessageSession>().Use(_endpoint);
+});
+```
+
+### MVC Core Endpoint
+
+The following example configures an NServiceBus endpoint within an MVC Core application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by calling the `UseNServiceBusOutbox()` extension method on `IApplicationBuilder` the package will replicate NServiceBus' outbox feature when publishing messages on the client:
+
+```c#
+var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
+    .SetupAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .SetupErrorQueue()
+    .SetupInstallers()
+    .SetupSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .SetupNewtonsoftJsonSerializer()
+    .SetupNLogFactory()
+    .SetupOutbox()
+    .SetupStructureMapBuilder(container)
+    .SetupUnitOfWork();
+
+app.UseNServiceBusOutbox();
+services.AddNServiceBus(endpointConfiguration);
+container.Populate(services);
 ```
 
 ### WebApi Endpoint
@@ -48,25 +83,32 @@ The following example configures an NServiceBus endpoint within a WebApi applica
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
-    .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupUnitOfWork()
+    .SetupAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .SetupErrorQueue()
     .SetupInstallers()
-    .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .SetupNewtonsoftSerializer()
+    .SetupSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .SetupNewtonsoftJsonSerializer()
     .SetupNLogFactory()
     .SetupOutbox(GlobalConfiguration.Configuration.Filters)
-    .SetupStructureMapBuilder(container);
+    .SetupStructureMapBuilder(container)
+    .SetupUnitOfWork();
+
+_endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+
+container.Configure(c =>
+{
+    c.For<IMessageSession>().Use(_endpoint);
+});
 ```
 
 ### Job
 
-In the case of a crash or a service outage between an MVC or WebApi client and the server, some messages will fail to be published immediately. To accomodate these scenarios the `IProcessOutboxMessagesJob` should be run periodically. Here's an example of triggering the job to run every 24 hours using an Azure function:
+In the case of a crash or a service outage between an MVC or WebApi client and the server, some messages will fail to be published immediately. To accomodate these scenarios the `IProcessClientOutboxMessagesJob` should be run periodically. Here's an example of triggering the job to run every 24 hours using an Azure function:
 
 ```c#
-public static Task ProcessOutboxMessages([TimerTrigger("0 0 0 * * *")] TimerInfo timer, TraceWriter logger)
+public static Task ProcessClientOutboxMessages([TimerTrigger("0 0 0 * * *")] TimerInfo timer, TraceWriter logger)
 {
-    var job = ServiceLocator.GetInstance<IProcessOutboxMessagesJob>();
+    var job = ServiceLocator.GetInstance<IProcessClientOutboxMessagesJob>();
     return job.RunAsync();
 }
 ```
@@ -116,8 +158,8 @@ GO
 To ensure data is saved and messages are published as part of the same transaction then any database operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.NServiceBus.IUnitOfWorkContext` this will give you access to the current request's connection and transaction, for example if you're using an SQL database:
 
 ```c#
-var connection = _unitofWorkContext.Get<DbConnection>();
-var transaction = _unitofWorkContext.Get<DbTransaction>();
+var connection = _unitOfWorkContext.Get<DbConnection>();
+var transaction = _unitOfWorkContext.Get<DbTransaction>();
 ```
 
 ### Publishing Messages
@@ -140,15 +182,15 @@ If you're currently using the `SFA.DAS.Messaging.IMessagePublisher` interface to
 
 ## Extension
 
-If you're not using MS SQL Server then the infrastructure can be extended easily to accomodate your stack. For example, if you're using RavenDB then you'll just need to add a custom implementation of `IOutbox`. `IOutbox`'s signature currently looks like this.
+If you're not using MS SQL Server then the infrastructure can be extended easily to accomodate your stack. For example, if you're using RavenDB then you'll just need to add a custom implementation of `IClientOutboxStorage`. `IClientOutboxStorage`'s signature currently looks like this:
 
 ```c#
-public interface IOutbox
+public interface IClientOutboxStorage
 {
-    Task<IOutboxTransaction> BeginTransactionAsync();
-    Task<OutboxMessage> GetAsync(Guid messageId);
-    Task<IEnumerable<IOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync();
+    Task<IClientOutboxTransaction> BeginTransactionAsync();
+    Task<ClientOutboxMessage> GetAsync(Guid messageId);
+    Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync();
     Task SetAsDispatchedAsync(Guid messageId);
-    Task StoreAsync(OutboxMessage outboxMessage, IOutboxTransaction outboxTransaction);
+    Task StoreAsync(ClientOutboxMessage clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction);
 }
 ```

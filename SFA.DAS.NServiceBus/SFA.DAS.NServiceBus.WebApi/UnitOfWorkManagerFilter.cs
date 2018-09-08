@@ -1,5 +1,6 @@
 ﻿using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using SFA.DAS.NServiceBus.ClientOutbox;
 using WebApi.StructureMap;
 
 namespace SFA.DAS.NServiceBus.WebApi

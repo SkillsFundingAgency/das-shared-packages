@@ -6,6 +6,7 @@ using System.Web.Http.Filters;
 using System.Web.Http.Hosting;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.WebApi.UnitTests

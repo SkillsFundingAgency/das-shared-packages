@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.Mvc.UnitTests

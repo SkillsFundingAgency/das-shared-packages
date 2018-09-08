@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>DAS</Authors>
     <Description>Test stubs for SFA.DAS.NServiceBus</Description>
     <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>

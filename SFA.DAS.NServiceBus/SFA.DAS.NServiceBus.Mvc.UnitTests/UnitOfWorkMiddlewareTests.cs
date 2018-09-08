@@ -1,13 +1,12 @@
 ﻿#if NETCOREAPP2_0
 using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.Mvc.UnitTests
@@ -48,7 +47,7 @@ namespace SFA.DAS.NServiceBus.Mvc.UnitTests
 
         public Mock<RequestDelegate> RequestDelegateMock { get; set; }
         public Mock<IUnitOfWorkManager> UnitOfWorkManager { get; set; }
-        public NserviceBusUnitOfWorkMiddleware UnitOfWorkMiddleware { get; set; }
+        public UnitOfWorkManagerMiddleware UnitOfWorkManagerMiddleware { get; set; }
         public Exception Exception { get; set; }
         public HttpContext Context { get; set; }
         public string ContextBody { get; }
@@ -58,7 +57,7 @@ namespace SFA.DAS.NServiceBus.Mvc.UnitTests
             Context = new DefaultHttpContext();
             ContextBody = "Next Middleware Invoked";
             UnitOfWorkManager = new Mock<IUnitOfWorkManager>();
-            UnitOfWorkMiddleware = new NserviceBusUnitOfWorkMiddleware(Next(false));
+            UnitOfWorkManagerMiddleware = new UnitOfWorkManagerMiddleware(Next(false));
             Exception = new Exception();
         }
 
@@ -80,14 +79,14 @@ namespace SFA.DAS.NServiceBus.Mvc.UnitTests
 
         public async void InvokeMiddleware()
         {
-            await UnitOfWorkMiddleware.InvokeAsync(Context, UnitOfWorkManager.Object);
+            await UnitOfWorkManagerMiddleware.InvokeAsync(Context, UnitOfWorkManager.Object);
         }
 
         public async void InvokeMiddlewareAndSwallowException()
         {
             try
             {
-                await UnitOfWorkMiddleware.InvokeAsync(Context, UnitOfWorkManager.Object);
+                await UnitOfWorkManagerMiddleware.InvokeAsync(Context, UnitOfWorkManager.Object);
             }
             catch (Exception e)
             {
@@ -98,7 +97,7 @@ namespace SFA.DAS.NServiceBus.Mvc.UnitTests
 
         public void SetException()
         {
-            UnitOfWorkMiddleware = new NserviceBusUnitOfWorkMiddleware(Next(true));
+            UnitOfWorkManagerMiddleware = new UnitOfWorkManagerMiddleware(Next(true));
         }
 
         public string ResponseContextBody()

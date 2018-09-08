@@ -1,5 +1,7 @@
 ﻿using System;
 using NServiceBus;
+using SFA.DAS.NServiceBus.ClientOutbox.UnitOfWork;
+using SFA.DAS.NServiceBus.UnitOfWork;
 
 namespace SFA.DAS.NServiceBus
 {
@@ -71,7 +73,7 @@ namespace SFA.DAS.NServiceBus
             {
                 if (!c.HasComponent<IDb>())
                 {
-                    c.ConfigureComponent<Db>(DependencyLifecycle.InstancePerUnitOfWork);
+                    c.ConfigureComponent<NoOpDb>(DependencyLifecycle.InstancePerUnitOfWork);
                 }
 
                 c.ConfigureComponent<EventPublisher>(DependencyLifecycle.InstancePerUnitOfWork);

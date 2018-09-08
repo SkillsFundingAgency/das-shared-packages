@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using SFA.DAS.NServiceBus.UnitOfWork;
 
 namespace SFA.DAS.NServiceBus.EntityFramework
 {

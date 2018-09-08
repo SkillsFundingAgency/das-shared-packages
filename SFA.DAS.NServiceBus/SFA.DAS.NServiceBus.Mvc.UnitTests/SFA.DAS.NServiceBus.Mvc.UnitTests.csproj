@@ -10,17 +10,25 @@
     <PackageReference Include="NUnit" Version="3.10.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
     <PackageReference Include="SFA.DAS.Testing" Version="1.0.14" />
+  </ItemGroup>
 
-   
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
-    <PackageReference Include="NServiceBus" Version="7.0.1" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <DefineConstants>NETCOREAPP2_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
+    <DefineConstants>NET462</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
   </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
+    <PackageReference Include="NServiceBus" Version="7.0.1" />
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.NServiceBus.Mvc\SFA.DAS.NServiceBus.Mvc.csproj" />
     <ProjectReference Include="..\SFA.DAS.NServiceBus\SFA.DAS.NServiceBus.csproj" />
