@@ -23,7 +23,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         [Test]
         public Task Handle_WhenHandlingAProcessOutboxMessageCommand_ThenShouldSetTheOutboxMessageAsDispatched()
         {
-            return RunAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId)));
+            return RunAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, null)));
         }
     }
 
@@ -60,7 +60,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
             Command = new ProcessClientOutboxMessageCommand();
             ClientOutboxStorage = new Mock<IClientOutboxStorage>();
 
-            ClientOutboxStorage.Setup(o => o.GetAsync(ClientOutboxMessage.MessageId)).ReturnsAsync(ClientOutboxMessage);
+            ClientOutboxStorage.Setup(o => o.GetAsync(ClientOutboxMessage.MessageId, null)).ReturnsAsync(ClientOutboxMessage);
 
             Handler = new ProcessClientOutboxMessageCommandHandler(ClientOutboxStorage.Object);
         }

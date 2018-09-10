@@ -7,7 +7,7 @@ namespace SFA.DAS.NServiceBus.ClientOutbox
     {
         public Guid MessageId { get; }
         public string EndpointName { get; }
-        public IEnumerable<Event> Operations { get; } = new List<Event>();
+        public IEnumerable<object> Operations { get; } = new List<object>();
 
         public ClientOutboxMessage(Guid messageId, string endpointName)
         {
@@ -15,7 +15,7 @@ namespace SFA.DAS.NServiceBus.ClientOutbox
             EndpointName = endpointName;
         }
 
-        public ClientOutboxMessage(Guid messageId, string endpointName, IEnumerable<Event> operations)
+        public ClientOutboxMessage(Guid messageId, string endpointName, IEnumerable<object> operations)
         {
             MessageId = messageId;
             EndpointName = endpointName;

@@ -2,12 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
-    <Description>NServiceBus integration for SFA.DAS</Description>
     <Authors>DAS</Authors>
+    <Description>NServiceBus integration for SFA.DAS</Description>
     <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.NServiceBus</PackageProjectUrl>
-    <RepositoryUrl></RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -24,7 +22,6 @@
     <PackageReference Include="NServiceBus.Metrics.ServiceControl" Version="3.0.1" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.NLog" Version="3.0.0" />
-    <PackageReference Include="NServiceBus.Persistence.Sql" Version="4.1.1" />
     <PackageReference Include="NServiceBus.StructureMap" Version="7.0.0" />
     <PackageReference Include="StructureMap" Version="4.6.1" />
   </ItemGroup>

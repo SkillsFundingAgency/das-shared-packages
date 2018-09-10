@@ -17,11 +17,10 @@ namespace SFA.DAS.NServiceBus.ClientOutbox
         public async Task Handle(ProcessClientOutboxMessageCommand message, IMessageHandlerContext context)
         {
             var clientOutboxMessageId = Guid.Parse(context.MessageId);
-            var clientOutboxMessage = await _clientOutboxStorage.GetAsync(clientOutboxMessageId);
-            var tasks = clientOutboxMessage.Operations.Select(context.Publish);
+            var clientOutboxMessage = await _clientOutboxStorage.GetAsync(clientOutboxMessageId, context.SynchronizedStorageSession);
 
-            await Task.WhenAll(tasks);
-            await _clientOutboxStorage.SetAsDispatchedAsync(clientOutboxMessage.MessageId);
+            await Task.WhenAll(clientOutboxMessage.Operations.Select(context.Publish));
+            await _clientOutboxStorage.SetAsDispatchedAsync(clientOutboxMessage.MessageId, context.SynchronizedStorageSession);
         }
     }
 }
