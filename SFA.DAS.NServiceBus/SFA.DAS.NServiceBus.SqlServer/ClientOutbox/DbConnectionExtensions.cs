@@ -10,13 +10,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
             try
             {
                 await connection.OpenAsync().ConfigureAwait(false);
-
                 return connection;
             }
             catch
             {
                 connection.Dispose();
-
                 throw;
             }
         }

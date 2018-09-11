@@ -26,7 +26,7 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandle
 
 ### MVC Endpoint
 
-The following example configures an NServiceBus endpoint within an MVC application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering `IUnitOfWorkManager` from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalFilters.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
+The following example configures an NServiceBus endpoint within an MVC application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalFilters.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
@@ -45,7 +45,7 @@ filters.AddUnitOfWorkFilter();
 
 ### MVC Core Endpoint
 
-The following example configures an NServiceBus endpoint within an MVC Core application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering `IUnitOfWorkManager` from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `UseUnitOfWork()` extension method on `IApplicationBuilder` then NServiceBus' outbox feature will be replicated when publishing messages on the client:
+The following example configures an NServiceBus endpoint within an MVC Core application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `UseUnitOfWork()` extension method on `IApplicationBuilder` then NServiceBus' outbox feature will be replicated when publishing messages on the client:
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
@@ -64,7 +64,7 @@ app.UseUnitOfWork();
 
 ### WebApi Endpoint
 
-The following example configures an NServiceBus endpoint within a WebApi application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering `IUnitOfWorkManager` from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalConfiguration.Configuration.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
+The following example configures an NServiceBus endpoint within a WebApi application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalConfiguration.Configuration.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
