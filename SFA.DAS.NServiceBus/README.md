@@ -3,7 +3,7 @@
 This package includes:
 
 * Infrastructure to support transactional data persistence and event publishing on the client.
-* Extension methods for `NServiceBus.EndpointConfiguration` to wire up of common behaviour.
+* Extension methods for `NServiceBus.EndpointConfiguration` to wire up common behaviour.
 
 ## Configuration
 
