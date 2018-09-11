@@ -1,4 +1,5 @@
-﻿using StructureMap;
+﻿using SFA.DAS.NServiceBus.ClientOutbox;
+using StructureMap;
 
 namespace SFA.DAS.NServiceBus.StructureMap
 {
@@ -6,7 +7,7 @@ namespace SFA.DAS.NServiceBus.StructureMap
     {
         public NServiceBusRegistry()
         {
-            For<IProcessOutboxMessagesJob>().Use<ProcessOutboxMessagesJob>();
+            For<IProcessClientOutboxMessagesJob>().Use<ProcessClientOutboxMessagesJob>();
         }
     }
 }

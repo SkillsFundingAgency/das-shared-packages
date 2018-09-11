@@ -14,64 +14,87 @@ The following example configures an NServiceBus endpoint to allow both sending a
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandlers")
-    .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupUnitOfWork()
-    .SetupErrorQueue()
-    .SetupInstallers()
-    .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .SetupNewtonsoftSerializer()
-    .SetupNLogFactory()
-    .SetupOutbox()
-    .SetupStructureMapBuilder(container);
+    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseErrorQueue()
+    .UseInstallers()
+    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .UseNewtonsoftJsonSerializer()
+    .UseNLogFactory()
+    .UseOutbox()
+    .UseStructureMapBuilder(container)
+    .UseUnitOfWork();
 ```
 
 ### MVC Endpoint
 
-The following example configures an NServiceBus endpoint within an MVC application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by passing MVC's `GlobalFilters.Filters` collection to the `SetupOutbox` method the package will replicate NServiceBus' outbox feature when publishing messages on the client:
+The following example configures an NServiceBus endpoint within an MVC application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering `IUnitOfWorkManager` from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalFilters.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
-    .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupUnitOfWork()
-    .SetupErrorQueue()
-    .SetupInstallers()
-    .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .SetupNewtonsoftSerializer()
-    .SetupNLogFactory()
-    .SetupOutbox(GlobalFilters.Filters)
-    .SetupStructureMapBuilder(container);
+    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseErrorQueue()
+    .UseInstallers()
+    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .UseNewtonsoftJsonSerializer()
+    .UseNLogFactory()
+    .UseOutbox()
+    .UseStructureMapBuilder(container)
+    .UseUnitOfWork();
+
+filters.AddUnitOfWorkFilter();
+```
+
+### MVC Core Endpoint
+
+The following example configures an NServiceBus endpoint within an MVC Core application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering `IUnitOfWorkManager` from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `UseUnitOfWork()` extension method on `IApplicationBuilder` then NServiceBus' outbox feature will be replicated when publishing messages on the client:
+
+```c#
+var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
+    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseErrorQueue()
+    .UseInstallers()
+    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .UseNewtonsoftJsonSerializer()
+    .UseNLogFactory()
+    .UseOutbox()
+    .UseStructureMapBuilder(container)
+    .UseUnitOfWork();
+
+app.UseUnitOfWork();
 ```
 
 ### WebApi Endpoint
 
-The following example configures an NServiceBus endpoint within a WebApi application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by passing WebApi's `GlobalConfiguration.Configuration.Filters` collection to the `SetupOutbox` method the package will replicate NServiceBus' outbox feature when publishing messages on the client:
+The following example configures an NServiceBus endpoint within a WebApi application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering `IUnitOfWorkManager` from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalConfiguration.Configuration.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
-    .SetupAzureServiceBusTransport(() => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString)
-    .SetupUnitOfWork()
-    .SetupErrorQueue()
-    .SetupInstallers()
-    .SetupMsSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .SetupNewtonsoftSerializer()
-    .SetupNLogFactory()
-    .SetupOutbox(GlobalConfiguration.Configuration.Filters)
-    .SetupStructureMapBuilder(container);
+    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseErrorQueue()
+    .UseInstallers()
+    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .UseNewtonsoftJsonSerializer()
+    .UseNLogFactory()
+    .UseOutbox()
+    .UseStructureMapBuilder(container)
+    .UseUnitOfWork();
+
+filters.AddUnitOfWorkFilter();
 ```
 
 ### Job
 
-In the case of a crash or a service outage between an MVC or WebApi client and the server, some messages will fail to be published immediately. To accomodate these scenarios the `IProcessOutboxMessagesJob` should be run periodically. Here's an example of triggering the job to run every 24 hours using an Azure function:
+In the case of a crash or a service outage between an MVC or WebApi client and the server, some messages will fail to be published immediately. To accomodate these scenarios the `IProcessClientOutboxMessagesJob` should be run periodically. Here's an example of triggering the job to run every 24 hours using an Azure function:
 
 ```c#
-public static Task ProcessOutboxMessages([TimerTrigger("0 0 0 * * *")] TimerInfo timer, TraceWriter logger)
+public static Task ProcessClientOutboxMessages([TimerTrigger("0 0 0 * * *")] TimerInfo timer, TraceWriter logger)
 {
-    var job = ServiceLocator.GetInstance<IProcessOutboxMessagesJob>();
+    var job = ServiceLocator.GetInstance<IProcessClientOutboxMessagesJob>();
     return job.RunAsync();
 }
 ```
 
-### MS SQL Server
+### SQL Server
 
 When configuring an MVC or WebApi client as above the following tables will need to be created as part of a deployment:
 
@@ -113,11 +136,24 @@ GO
 
 ### Saving Data
 
-To ensure data is saved and messages are published as part of the same transaction then any database operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.NServiceBus.IUnitOfWorkContext` this will give you access to the current request's connection and transaction, for example if you're using an SQL database:
+To ensure data is saved and messages are published as part of the same transaction then any database operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.NServiceBus.IUnitOfWorkContext` this will give you access to the current request's persistence session, for example if you're using an SQL database:
+
+### Client
 
 ```c#
-var connection = _unitofWorkContext.Get<DbConnection>();
-var transaction = _unitofWorkContext.Get<DbTransaction>();
+var session = _unitOfWorkContext.Get<IClientOutboxTransaction>();
+var sqlSession = session.SqlPersistenceSession();
+var connection = sqlSession.Connection;
+var transaction = sqlSession.Transaction;
+```
+
+### Server
+
+```c#
+var session = _unitOfWorkContext.Get<SynchronizedStorageSession>();
+var sqlSession = session.SqlPersistenceSession();
+var connection = sqlSession.Connection;
+var transaction = sqlSession.Transaction;
 ```
 
 ### Publishing Messages
@@ -136,19 +172,19 @@ UnitOfWorkContext.AddEvent(new SomethingHappenedEvent());
 
 ### Legacy SFA.DAS.Messaging
 
-If you're currently using the `SFA.DAS.Messaging.IMessagePublisher` interface to publish messages on the client but would like to use this package instead then the equivalent interface is `SFA.DAS.NServiceBus.IEventPublisher` which exposes a `Task Publish<T>(T message)` method.
+If you're currently using the `SFA.DAS.Messaging.IMessagePublisher` interface to publish messages on the client but would like to use this package instead then the equivalent interface is `SFA.DAS.NServiceBus.IEventPublisher` which exposes a `Task Publish(object message)` method.
 
 ## Extension
 
-If you're not using MS SQL Server then the infrastructure can be extended easily to accomodate your stack. For example, if you're using RavenDB then you'll just need to add a custom implementation of `IOutbox`. `IOutbox`'s signature currently looks like this.
+If you're not using SQL Server then the infrastructure can be extended easily to accomodate your stack. For example, if you're using RavenDB then you'll just need to add a custom implementation of `IClientOutboxStorage`. `IClientOutboxStorage`'s signature currently looks like this:
 
 ```c#
-public interface IOutbox
+public interface IClientOutboxStorage
 {
-    Task<IOutboxTransaction> BeginTransactionAsync();
-    Task<OutboxMessage> GetAsync(Guid messageId);
-    Task<IEnumerable<IOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync();
-    Task SetAsDispatchedAsync(Guid messageId);
-    Task StoreAsync(OutboxMessage outboxMessage, IOutboxTransaction outboxTransaction);
+    Task<IClientOutboxTransaction> BeginTransactionAsync();
+    Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession);
+    Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync();
+    Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession);
+    Task StoreAsync(ClientOutboxMessage clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction);
 }
 ```

@@ -5,7 +5,7 @@ namespace SFA.DAS.NServiceBus.NLog
 {
     public static class EndpointConfigurationExtensions
     {
-        public static EndpointConfiguration SetupNLogFactory(this EndpointConfiguration config)
+        public static EndpointConfiguration UseNLogFactory(this EndpointConfiguration config)
         {
             LogManager.Use<NLogFactory>();
 

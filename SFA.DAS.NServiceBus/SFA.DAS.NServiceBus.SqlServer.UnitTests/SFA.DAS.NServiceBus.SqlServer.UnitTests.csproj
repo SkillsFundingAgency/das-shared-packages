@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.NServiceBus\SFA.DAS.NServiceBus.csproj" />
+    <ProjectReference Include="..\SFA.DAS.NServiceBus.SqlServer\SFA.DAS.NServiceBus.SqlServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
