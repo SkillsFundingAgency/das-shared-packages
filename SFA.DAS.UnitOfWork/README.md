@@ -3,8 +3,8 @@
 This package includes:
 
 * Infrastructure to support transactional units of work.
-* Extension methods for `Mvc`, `WebApi` and `NServiceBus` to wire up transactional behaviour i.e. Creating a DB transaction at the beginning of an HTTP request and committing it at the end of an HTTP request.
-* Registries for `StructureMap` to wire up unit of work behaviour i.e. Publishing events at the end of a HTTP request.
+* Extension methods for MVC, WebApi and NServiceBus to wire up transactional behaviour e.g. Creating a DB transaction at the beginning of an HTTP request and committing it at the end of an HTTP request.
+* Registries for `StructureMap` to wire up unit of work behaviour e.g. Publishing events at the end of a HTTP request.
 
 ## Configuration
 
@@ -19,8 +19,8 @@ The following example configures an MVC application to:
 ```c#
 var container = new Container(c =>
 {
-    c.AddRegistry<EntityFrameworkUnitOfWorkRegistry<FooDbContext>>();
     c.AddRegistry<SqlServerUnitOfWorkRegistry>();
+    c.AddRegistry<EntityFrameworkUnitOfWorkRegistry<FooDbContext>>();
 });
 
 filters.AddUnitOfWorkFilter();
@@ -31,8 +31,8 @@ filters.AddUnitOfWorkFilter();
 ```c#
 var container = new Container(c =>
 {
-    c.AddRegistry<EntityFrameworkUnitOfWorkRegistry<FooDbContext>>();
     c.AddRegistry<SqlServerUnitOfWorkRegistry>();
+    c.AddRegistry<EntityFrameworkUnitOfWorkRegistry<FooDbContext>>();
 });
 
 app.UseUnitOfWork();

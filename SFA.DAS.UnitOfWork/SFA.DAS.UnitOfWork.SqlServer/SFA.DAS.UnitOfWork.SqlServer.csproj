@@ -3,14 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Authors>DAS</Authors>
-    <Description>NServiceBus unit of work integration for SFA.DAS.UnitOfWork</Description>
+    <Description>SQL Server unit of work integration for SFA.DAS.UnitOfWork</Description>
     <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NServiceBus.UniformSession" Version="2.1.0" />
-    <PackageReference Include="SFA.DAS.NServiceBus" Version="2.0.2" />
     <PackageReference Include="StructureMap" Version="4.6.1" />
   </ItemGroup>
 

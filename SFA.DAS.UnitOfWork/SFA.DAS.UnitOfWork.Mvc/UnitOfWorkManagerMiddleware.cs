@@ -12,7 +12,6 @@ namespace SFA.DAS.UnitOfWork.Mvc
         public UnitOfWorkManagerMiddleware(RequestDelegate next)
         {
             _next = next;
-
         }
 
         public async Task InvokeAsync(HttpContext context, IUnitOfWorkManager unitOfWorkManager)
@@ -26,7 +25,6 @@ namespace SFA.DAS.UnitOfWork.Mvc
             catch (Exception ex)
             {
                 await unitOfWorkManager.EndAsync(ex).ConfigureAwait(false);
-
                 throw;
             }
 
