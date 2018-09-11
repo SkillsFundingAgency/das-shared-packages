@@ -2,9 +2,8 @@
 
 This package includes:
 
-* Extension methods for `NServiceBus.EndpointConfiguration` that can be used to ensure NServiceBus is configured consistenly across `SFA.DAS` modules.
-* Unit of work behavior to support data persistence and event publishing without polluting your code with `_repository.Save()` calls.
-* Infrastructure to support transactional data persistence and event publishing from MVC and WebApi clients.
+* Infrastructure to support transactional data persistence and event publishing on the client.
+* Extension methods for `NServiceBus.EndpointConfiguration` to wire up of common behaviour.
 
 ## Configuration
 
