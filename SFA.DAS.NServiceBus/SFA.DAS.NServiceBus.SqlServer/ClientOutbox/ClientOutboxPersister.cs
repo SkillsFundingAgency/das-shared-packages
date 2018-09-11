@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using NServiceBus;
 using NServiceBus.Persistence;
 using SFA.DAS.NServiceBus.ClientOutbox;
 
@@ -40,7 +39,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public async Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
-            var sqlSession = synchronizedStorageSession.SqlPersistenceSession();
+            var sqlSession = synchronizedStorageSession.GetSqlSession();
 
             using (var command = sqlSession.Connection.CreateCommand())
             {
@@ -102,7 +101,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
-            var sqlSession = synchronizedStorageSession.SqlPersistenceSession();
+            var sqlSession = synchronizedStorageSession.GetSqlSession();
 
             using (var command = sqlSession.Connection.CreateCommand())
             {

@@ -8,6 +8,8 @@ using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
+using NServiceBus.Persistence;
+using NServiceBus.Persistence.Sql;
 using NServiceBus.Settings;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.ClientOutbox;
@@ -32,13 +34,13 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
 
         [Test]
-        public Task BeginTransactionAsync_WhenBeginningATransaction_ThenShouldReturnAnOutboxTransaction()
+        public Task BeginTransactionAsync_WhenBeginningATransaction_ThenShouldReturnAClientOutboxTransaction()
         {
             return RunAsync(f => f.BeginTransactionAsync(), (f, r) => r.Should().NotBeNull().And.BeOfType<SqlClientOutboxTransaction>());
         }
 
         [Test]
-        public Task StoreAsync_WhenStoringAnOutboxMessage_ThenShouldStoreTheOutboxMessage()
+        public Task StoreAsync_WhenStoringAClientOutboxMessage_ThenShouldStoreTheClientOutboxMessage()
         {
             return RunAsync(f => f.StoreAsync(), f =>
             {
@@ -54,7 +56,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
 
         [Test]
-        public Task GetAsync_WhenGettingAnOutboxMessage_TheShouldReturnTheOutboxMessage()
+        public Task GetAsync_WhenGettingAClientOutboxMessage_TheShouldReturnTheClientOutboxMessage()
         {
             return RunAsync(f => f.SetupGetReaderWithRows(), f => f.GetAsync(), (f, r) =>
             {
@@ -67,14 +69,14 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
 
         [Test]
-        public Task GetAsync_WhenGettingAnOutboxMessageThatDoesNotExist_ThenShouldThrowAnException()
+        public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldThrowAnException()
         {
             return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.ShouldThrow<KeyNotFoundException>()
                 .WithMessage($"Client outbox data not found where MessageId = '{f.ClientOutboxMessage.MessageId}'"));
         }
 
         [Test]
-        public Task GetAwaitingDispatchAsync_WhenGettingOutboxMessagesAwaitingDispatch_TheShouldReturnOutboxMessagesAwaitingDispatch()
+        public Task GetAwaitingDispatchAsync_WhenGettingClientOutboxMessagesAwaitingDispatch_TheShouldReturnClientOutboxMessagesAwaitingDispatch()
         {
             return RunAsync(f => f.SetupGetAwaitingDispatchReader(), f => f.GetAwaitingDispatchAsync(), (f, r) =>
             {
@@ -87,7 +89,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
 
         [Test]
-        public Task SetAsDispatchedAsync_WhenSettingAnOutboxMessageAsDispatched_ThenShouldSetTheOutboxMessageAsDispatched()
+        public Task SetAsDispatchedAsync_WhenSettingAClientOutboxMessageAsDispatched_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
             return RunAsync(f => f.SetAsDispatchedAsync(), f =>
             {
@@ -115,6 +117,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         public List<Event> Events { get; set; }
         public string EventsData { get; set; }
         public ClientOutboxMessage ClientOutboxMessage { get; set; }
+        public Mock<SynchronizedStorageSession> SynchronizedStorageSession { get; set; }
+        public Mock<ISqlStorageSession> SqlSession { get; set; }
         public List<IClientOutboxMessageAwaitingDispatch> OutboxMessages { get; set; }
         public Mock<DbDataReader> DataReader { get; set; }
 
@@ -137,8 +141,10 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
 
             EventsData = JsonConvert.SerializeObject(Events, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
             ClientOutboxMessage = new ClientOutboxMessage(GuidComb.NewGuidComb(), EndpointName, Events);
+            SynchronizedStorageSession = new Mock<SynchronizedStorageSession>();
+            SqlSession = SynchronizedStorageSession.As<ISqlStorageSession>();
             OutboxMessages = new List<IClientOutboxMessageAwaitingDispatch>();
-
+            
             Parameters.Setup(p => p.Add(It.IsAny<DbParameter>()));
             Command.SetupSet(c => c.CommandText = It.IsAny<string>());
             Command.SetupSet(c => c.Transaction = It.IsAny<DbTransaction>());
@@ -156,7 +162,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             Command.Protected().Setup<DbParameterCollection>("DbParameterCollection").Returns(Parameters.Object);
             Connection.Protected().Setup<DbTransaction>("BeginDbTransaction", IsolationLevel.Unspecified).Returns(Transaction.Object);
             Connection.Protected().Setup<DbCommand>("CreateDbCommand").Returns(Command.Object);
-            Settings.Setup(s => s.Get<string>("NServiceBus.Routing.EndpointName")).Returns(EndpointName);
+            SqlSession.Setup(s => s.Connection).Returns(Connection.Object);
+            SqlSession.Setup(s => s.Transaction).Returns(Transaction.Object);
 
             ClientOutboxStorage = new ClientOutboxPersister(Connection.Object);
         }
@@ -173,7 +180,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
 
         public Task<ClientOutboxMessage> GetAsync()
         {
-            return ClientOutboxStorage.GetAsync(ClientOutboxMessage.MessageId, null);
+            return ClientOutboxStorage.GetAsync(ClientOutboxMessage.MessageId, SynchronizedStorageSession.Object);
         }
 
         public Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync()
@@ -183,7 +190,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
 
         public Task SetAsDispatchedAsync()
         {
-            return ClientOutboxStorage.SetAsDispatchedAsync(ClientOutboxMessage.MessageId, null);
+            return ClientOutboxStorage.SetAsDispatchedAsync(ClientOutboxMessage.MessageId, SynchronizedStorageSession.Object);
         }
 
         public ClientOutboxPersisterTestsFixture SetupGetReaderWithRows()
