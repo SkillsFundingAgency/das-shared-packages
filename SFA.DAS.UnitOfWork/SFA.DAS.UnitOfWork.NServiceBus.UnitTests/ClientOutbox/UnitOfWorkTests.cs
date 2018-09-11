@@ -73,8 +73,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
                 new FooEvent(),
                 new BarEvent()
             };
-            
-            ClientOutboxStorage.Setup(o => o.BeginTransactionAsync()).ReturnsAsync(ClientOutboxTransaction.Object);
+
+            UnitOfWorkContext.Setup(c => c.Get<IClientOutboxTransaction>()).Returns(ClientOutboxTransaction.Object);
 
             ClientOutboxStorage.Setup(o => o.StoreAsync(It.IsAny<ClientOutboxMessage>(), It.IsAny<IClientOutboxTransaction>()))
                 .Returns(Task.CompletedTask).Callback<ClientOutboxMessage, IClientOutboxTransaction>((m, t) => ClientOutboxMessage = m);
