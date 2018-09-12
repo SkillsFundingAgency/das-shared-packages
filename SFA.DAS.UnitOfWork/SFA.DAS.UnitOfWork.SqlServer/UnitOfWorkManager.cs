@@ -22,7 +22,10 @@ namespace SFA.DAS.UnitOfWork.SqlServer
         public async Task BeginAsync()
         {
             await _connection.TryOpenAsync().ConfigureAwait(false);
+
             _transaction = _connection.BeginTransaction();
+
+            _unitOfWorkContext.Set(_connection);
             _unitOfWorkContext.Set(_transaction);
         }
 
@@ -32,9 +35,16 @@ namespace SFA.DAS.UnitOfWork.SqlServer
             {
                 if (ex == null)
                 {
-                    await _unitsOfWork.CommitAsync(() => { _transaction.Commit(); return Task.CompletedTask; }).ConfigureAwait(false);
+                    await _unitsOfWork.CommitAsync(CommitTransactionAsync).ConfigureAwait(false);
                 }
             }
+        }
+
+        private Task CommitTransactionAsync()
+        {
+            _transaction.Commit();
+
+            return Task.CompletedTask;
         }
     }
 }

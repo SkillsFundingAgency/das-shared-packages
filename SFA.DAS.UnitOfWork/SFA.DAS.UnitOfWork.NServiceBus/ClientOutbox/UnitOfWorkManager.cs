@@ -22,6 +22,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
         public async Task BeginAsync()
         {
             _transaction = await _clientOutboxStorage.BeginTransactionAsync().ConfigureAwait(false);
+
             _unitOfWorkContext.Set(_transaction);
         }
 
