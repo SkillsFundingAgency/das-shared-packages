@@ -18,6 +18,24 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         }
 
         [Test]
+        public void Get_WhenGettingDataAndKeyDoesNotExist_ThenShouldThrowException()
+        {
+            Run(f => f.GetData(), (f, a) => a.ShouldThrow<Exception>().WithMessage($"The key '{typeof(object).FullName}' was not present in the dictionary"));
+        }
+
+        [Test]
+        public void TryGet_WhenGettingData_ThenShouldReturnData()
+        {
+            Run(f => f.SetData(), f => f.TryGetData(), (f, d) => d.Should().Be(f.Data));
+        }
+
+        [Test]
+        public void TryGet_WhenGettingDataAndKeyDoesNotExist_ThenShouldReturnNull()
+        {
+            Run(f => f.TryGetData(), (f, d) => d.Should().BeNull());
+        }
+
+        [Test]
         public void GetEvents_WhenGettingEvents_ThenShouldReturnAllEvents()
         {
             Run(f => f.SetEvents(), f => f.GetEvents(), (f, r) => r.Should().HaveCount(4).And.Match<IEnumerable<Event>>(e =>
@@ -158,6 +176,11 @@ namespace SFA.DAS.UnitOfWork.UnitTests
             Now = DateTime.UtcNow;
 
             return this;
+        }
+
+        public object TryGetData()
+        {
+            return UnitOfWorkContextInstance.TryGet<object>();
         }
     }
 }

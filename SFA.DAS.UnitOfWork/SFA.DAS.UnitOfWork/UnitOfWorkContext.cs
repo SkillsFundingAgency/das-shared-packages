@@ -65,5 +65,17 @@ namespace SFA.DAS.UnitOfWork
         {
             _data[typeof(T).FullName] = value;
         }
+
+        public T TryGet<T>() where T : class
+        {
+            var key = typeof(T).FullName;
+
+            if (_data.TryGetValue(key, out var value))
+            {
+                return (T)value;
+            }
+
+            return null;
+        }
     }
 }

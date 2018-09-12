@@ -10,5 +10,6 @@ namespace SFA.DAS.UnitOfWork
         T Get<T>();
         IEnumerable<object> GetEvents();
         void Set<T>(T value);
+        T TryGet<T>() where T : class;
     }
 }
