@@ -32,7 +32,7 @@ namespace SFA.DAS.UnitOfWork.SqlServer
             {
                 if (ex == null)
                 {
-                    await _unitsOfWork.CommitAsync(() => _transaction.Commit()).ConfigureAwait(false);
+                    await _unitsOfWork.CommitAsync(() => { _transaction.Commit(); return Task.CompletedTask; }).ConfigureAwait(false);
                 }
             }
         }
