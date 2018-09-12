@@ -6,14 +6,14 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 {
     public static class ClientOutboxTransactionExtensions
     {
-        public static ISqlStorageSession SqlPersistenceSession(this IClientOutboxTransaction clientOutboxTransaction)
+        public static ISqlStorageSession GetSqlSession(this IClientOutboxTransaction clientOutboxTransaction)
         {
             if (clientOutboxTransaction is ISqlStorageSession sqlSession)
             {
                 return sqlSession;
             }
 
-            throw new Exception("Cannot access the SQL storage session");
+            throw new Exception("Cannot access the SQL session");
         }
     }
 }
