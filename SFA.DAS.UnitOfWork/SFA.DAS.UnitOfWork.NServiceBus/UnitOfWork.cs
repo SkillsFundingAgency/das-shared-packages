@@ -7,12 +7,12 @@ namespace SFA.DAS.UnitOfWork.NServiceBus
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IUniformSession _session;
+        private readonly IUniformSession _uniformSession;
         private readonly IUnitOfWorkContext _unitOfWorkContext;
 
-        public UnitOfWork(IUniformSession session, IUnitOfWorkContext unitOfWorkContext)
+        public UnitOfWork(IUniformSession uniformSession, IUnitOfWorkContext unitOfWorkContext)
         {
-            _session = session;
+            _uniformSession = uniformSession;
             _unitOfWorkContext = unitOfWorkContext;
         }
 
@@ -21,7 +21,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus
             var events = _unitOfWorkContext.GetEvents();
 
             await next().ConfigureAwait(false);
-            await Task.WhenAll(events.Select(_session.Publish)).ConfigureAwait(false);
+            await Task.WhenAll(events.Select(_uniformSession.Publish)).ConfigureAwait(false);
         }
     }
 }

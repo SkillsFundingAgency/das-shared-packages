@@ -3,21 +3,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Settings;
+using NServiceBus.UniformSession;
 using SFA.DAS.NServiceBus.ClientOutbox;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IMessageSession _messageSession;
+        private readonly IUniformSession _uniformSession;
         private readonly IUnitOfWorkContext _unitOfWorkContext;
         private readonly IClientOutboxStorage _clientOutboxStorage;
         private readonly ReadOnlySettings _settings;
 
-        public UnitOfWork(IClientOutboxStorage clientOutboxStorage, IMessageSession messageSession, IUnitOfWorkContext unitOfWorkContext, ReadOnlySettings settings)
+        public UnitOfWork(IClientOutboxStorage clientOutboxStorage, IUniformSession uniformSession, IUnitOfWorkContext unitOfWorkContext, ReadOnlySettings settings)
         {
             _clientOutboxStorage = clientOutboxStorage;
-            _messageSession = messageSession;
+            _uniformSession = uniformSession;
             _unitOfWorkContext = unitOfWorkContext;
             _settings = settings;
         }
@@ -42,7 +43,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
                 options.RouteToThisEndpoint();
                 options.SetMessageId(clientOutboxMessage.MessageId.ToString());
 
-                await _messageSession.Send(new ProcessClientOutboxMessageCommand(), options).ConfigureAwait(false);
+                await _uniformSession.Send(new ProcessClientOutboxMessageCommand(), options).ConfigureAwait(false);
             }
         }
     }

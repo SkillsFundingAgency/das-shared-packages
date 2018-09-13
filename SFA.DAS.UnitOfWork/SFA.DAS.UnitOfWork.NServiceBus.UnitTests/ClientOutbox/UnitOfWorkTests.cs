@@ -6,6 +6,7 @@ using Moq;
 using NServiceBus;
 using NServiceBus.Settings;
 using NServiceBus.Testing;
+using NServiceBus.UniformSession;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus;
 using SFA.DAS.NServiceBus.ClientOutbox;
@@ -51,6 +52,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
     {
         public IUnitOfWork UnitOfWork { get; set; }
         public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }
+        public Mock<IUniformSession> UniformSession { get; set; }
         public TestableMessageSession MessageSession { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public Mock<ReadOnlySettings> Settings { get; set; }
@@ -62,6 +64,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         public UnitOfWorkTestsFixture()
         {
             ClientOutboxStorage = new Mock<IClientOutboxStorage>();
+            UniformSession = new Mock<IUniformSession>();
             MessageSession = new TestableMessageSession();
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             Settings = new Mock<ReadOnlySettings>();
@@ -79,11 +82,15 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
             ClientOutboxStorage.Setup(o => o.StoreAsync(It.IsAny<ClientOutboxMessage>(), It.IsAny<IClientOutboxTransaction>()))
                 .Returns(Task.CompletedTask).Callback<ClientOutboxMessage, IClientOutboxTransaction>((m, t) => ClientOutboxMessage = m);
 
+            UniformSession.Setup(s => s.Send(It.IsAny<object>(), It.IsAny<SendOptions>()))
+                .Callback<object, SendOptions>((m, o) => MessageSession.Send(m, o))
+                .Returns(Task.CompletedTask);
+
             Settings.Setup(s => s.Get<string>("NServiceBus.Routing.EndpointName")).Returns(EndpointName);
 
             UnitOfWork = new NServiceBus.ClientOutbox.UnitOfWork(
                 ClientOutboxStorage.Object,
-                MessageSession,
+                UniformSession.Object,
                 UnitOfWorkContext.Object,
                 Settings.Object);
         }
