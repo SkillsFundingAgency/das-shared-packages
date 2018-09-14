@@ -23,6 +23,14 @@ namespace SFA.DAS.UnitOfWork.Mvc
 
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
+            if (!filterContext.IsChildAction && filterContext.Exception != null)
+            {
+                _unitOfWorkManager().EndAsync(filterContext.Exception).GetAwaiter().GetResult();
+            }
+        }
+
+        public override void OnResultExecuted(ResultExecutedContext filterContext)
+        {
             if (!filterContext.IsChildAction)
             {
                 _unitOfWorkManager().EndAsync(filterContext.Exception).GetAwaiter().GetResult();

@@ -24,21 +24,21 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldEndTheUnitOfWork()
+        public void OnActionExecuted_WhenAnResultHasExecuted_ThenShouldEndTheUnitOfWork()
         {
-            Run(f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once()));
+            Run(f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once()));
         }
 
         [Test]
         public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldNotEndTheUnitOfWork()
         {
-            Run(f => f.SetChildAction(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
+            Run(f => f.SetChildAction(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAfterAnException_ThenShouldTheEndUnitOfWork()
+        public void OnActionExecuted_WhenAResultHasExecutedAfterAnException_ThenShouldTheEndUnitOfWork()
         {
-            Run(f => f.SetException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
+            Run(f => f.SetException(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
         }
     }
 
@@ -48,7 +48,7 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
         public UnitOfWorkManagerFilter UnitOfWorkManagerFilter { get; set; }
         public RouteData RouteData { get; set; }
         public ActionExecutingContext ActionExecutingContext { get; set; }
-        public ActionExecutedContext ActionExecutedContext { get; set; }
+        public ResultExecutedContext ResultExecutedContext { get; set; }
         public Exception Exception { get; set; }
 
         public UnitOfWorkManagerFilterTestsFixture()
@@ -57,7 +57,7 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
             UnitOfWorkManagerFilter = new UnitOfWorkManagerFilter(() => UnitOfWorkManager.Object);
             RouteData = new RouteData();
             ActionExecutingContext = new ActionExecutingContext { RouteData = RouteData };
-            ActionExecutedContext = new ActionExecutedContext { RouteData = RouteData };
+            ResultExecutedContext = new ResultExecutedContext { RouteData = RouteData };
             Exception = new Exception();
         }
 
@@ -66,9 +66,9 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
             UnitOfWorkManagerFilter.OnActionExecuting(ActionExecutingContext);
         }
 
-        public void OnActionExecuted()
+        public void OnResultExecuted()
         {
-            UnitOfWorkManagerFilter.OnActionExecuted(ActionExecutedContext);
+            UnitOfWorkManagerFilter.OnResultExecuted(ResultExecutedContext);
         }
 
         public UnitOfWorkManagerFilterTestsFixture SetChildAction()
@@ -80,7 +80,7 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
 
         public UnitOfWorkManagerFilterTestsFixture SetException()
         {
-            ActionExecutedContext.Exception = Exception;
+            ResultExecutedContext.Exception = Exception;
 
             return this;
         }
