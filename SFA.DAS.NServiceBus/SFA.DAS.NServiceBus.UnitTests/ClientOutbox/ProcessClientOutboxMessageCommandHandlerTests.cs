@@ -15,13 +15,13 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
     public class ProcessClientOutboxMessageCommandHandlerTests : FluentTest<ProcessClientOutboxMessageCommandHandlerTestsFixture>
     {
         [Test]
-        public Task Handle_WhenHandlingAProcessOutboxMessageCommand_ThenShouldPublishTheOutboxMessageEvents()
+        public Task Handle_WhenHandlingAProcessClientOutboxMessageCommand_ThenShouldPublishTheClientOutboxMessageEvents()
         {
             return RunAsync(f => f.Handle(), f => f.Context.PublishedMessages.Select(m => m.Message).Cast<Event>().Should().BeEquivalentTo(f.Events));
         }
 
         [Test]
-        public Task Handle_WhenHandlingAProcessOutboxMessageCommand_ThenShouldSetTheOutboxMessageAsDispatched()
+        public Task Handle_WhenHandlingAProcessClientOutboxMessageCommand_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
             return RunAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, null)));
         }

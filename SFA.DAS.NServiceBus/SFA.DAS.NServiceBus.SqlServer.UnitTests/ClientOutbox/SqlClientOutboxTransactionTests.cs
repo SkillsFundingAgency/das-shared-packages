@@ -13,10 +13,17 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
     public class SqlClientOutboxTransactionTests : FluentTest<SqlClientOutboxTransactionTestsFixture>
     {
         [Test]
-        public void New_WhenCreatingAnOutboxTransaction_ThenShouldCreateAnOutboxTransaction()
+        public void New_WhenCreatingASqlClientOutboxTransaction_ThenShouldCreateASqlClientOutboxTransaction()
         {
             Run(f => f.New(), (f, r) => r.Should().NotBeNull());
         }
+
+        [Test]
+        public void Transaction_WhenGettingTheConnection_ThenShouldReturnTheConnection()
+        {
+            Run(f => f.SetSqlClientOutboxTransaction(), f => f.SqlClientOutboxTransaction.Connection, (f, r) => r.Should().Be(f.Connection.Object));
+        }
+
         [Test]
         public void Transaction_WhenGettingTheTransaction_ThenShouldReturnTheTransaction()
         {
@@ -33,6 +40,12 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         public void Dispose_WhenDisposing_ThenShouldDisposeTheTransaction()
         {
             Run(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true));
+        }
+
+        [Test]
+        public void Dispose_WhenDisposing_ThenShouldDisposeTheConnection()
+        {
+            Run(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Connection.Protected().Verify("Dispose", Times.Once(), true));
         }
     }
 
