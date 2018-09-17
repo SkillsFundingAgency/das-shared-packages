@@ -12,31 +12,31 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
     public class UnitOfWorkManagerFilterTests : FluentTest<UnitOfWorkManagerFilterTestsFixture>
     {
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginAUnitOfWork()
+        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginUnitOfWorkManager()
         {
             Run(f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuting_WhenAChildActionIsExecuting_ThenShouldNotBeginAUnitOfWork()
+        public void OnActionExecuting_WhenAChildActionIsExecuting_ThenShouldNotBeginUnitOfWorkManager()
         {
             Run(f => f.SetChildAction(), f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Never()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnResultHasExecuted_ThenShouldEndTheUnitOfWork()
+        public void OnActionExecuted_WhenAnResultHasExecuted_ThenShouldEndUnitOfWorkManager()
         {
             Run(f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldNotEndTheUnitOfWork()
+        public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldNotEndUnitOfWorkManager()
         {
             Run(f => f.SetChildAction(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAResultHasExecutedAfterAnException_ThenShouldTheEndUnitOfWork()
+        public void OnActionExecuted_WhenAResultHasExecutedAfterAnException_ThenShouldEndUnitOfWorkManager()
         {
             Run(f => f.SetException(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
         }

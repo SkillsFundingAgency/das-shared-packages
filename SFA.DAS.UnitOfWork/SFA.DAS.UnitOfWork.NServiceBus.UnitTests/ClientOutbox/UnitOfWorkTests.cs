@@ -57,6 +57,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public Mock<ReadOnlySettings> Settings { get; set; }
         public Mock<IClientOutboxTransaction> ClientOutboxTransaction { get; set; }
+        public Mock<Func<Task>> NextTask { get; set; }
+        public bool NextTaskInvoked { get; set; }
         public string EndpointName { get; set; }
         public List<Event> Events { get; set; }
         public ClientOutboxMessage ClientOutboxMessage { get; set; }
@@ -69,6 +71,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             Settings = new Mock<ReadOnlySettings>();
             ClientOutboxTransaction = new Mock<IClientOutboxTransaction>();
+            NextTask = new Mock<Func<Task>>();
             EndpointName = "SFA.DAS.NServiceBus";
 
             Events = new List<Event>
@@ -80,11 +83,24 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
             UnitOfWorkContext.Setup(c => c.Get<IClientOutboxTransaction>()).Returns(ClientOutboxTransaction.Object);
 
             ClientOutboxStorage.Setup(o => o.StoreAsync(It.IsAny<ClientOutboxMessage>(), It.IsAny<IClientOutboxTransaction>()))
-                .Returns(Task.CompletedTask).Callback<ClientOutboxMessage, IClientOutboxTransaction>((m, t) => ClientOutboxMessage = m);
+                .Returns(Task.CompletedTask).Callback<ClientOutboxMessage, IClientOutboxTransaction>((m, t) =>
+                {
+                    if (NextTaskInvoked)
+                        throw new Exception("StoreAsync called too late");
+
+                    ClientOutboxMessage = m;
+                });
 
             UniformSession.Setup(s => s.Send(It.IsAny<object>(), It.IsAny<SendOptions>()))
-                .Callback<object, SendOptions>((m, o) => MessageSession.Send(m, o))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.CompletedTask).Callback<object, SendOptions>((m, o) =>
+                {
+                    if (!NextTaskInvoked)
+                        throw new Exception("Send called too early");
+
+                    MessageSession.Send(m, o);
+                });
+
+            NextTask.Setup(n => n()).Returns(Task.CompletedTask).Callback(() => NextTaskInvoked = true);
 
             Settings.Setup(s => s.Get<string>("NServiceBus.Routing.EndpointName")).Returns(EndpointName);
 
@@ -97,7 +113,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
 
         public Task CommitAsync()
         {
-            return UnitOfWork.CommitAsync(() => Task.CompletedTask);
+            return UnitOfWork.CommitAsync(NextTask.Object);
         }
 
         public UnitOfWorkTestsFixture SetEvents()

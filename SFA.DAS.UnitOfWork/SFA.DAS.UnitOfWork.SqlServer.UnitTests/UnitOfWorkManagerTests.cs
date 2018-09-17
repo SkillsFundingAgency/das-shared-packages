@@ -1,28 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using Moq.Protected;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.Testing;
-using SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox;
 
-namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
+namespace SFA.DAS.UnitOfWork.SqlServer.UnitTests
 {
     [TestFixture]
     public class UnitOfWorkManagerTests : FluentTest<UnitOfWorkManagerTestsFixture>
     {
         [Test]
+        public Task BeginAsync_WhenBeginning_ThenShouldOpenConnection()
+        {
+            return RunAsync(f => f.BeginAsync(), f => f.Connection.Verify(o => o.OpenAsync(CancellationToken.None), Times.Once));
+        }
+
+        [Test]
         public Task BeginAsync_WhenBeginning_ThenShouldBeginTransaction()
         {
-            return RunAsync(f => f.BeginAsync(), f => f.ClientOutboxStorage.Verify(o => o.BeginTransactionAsync(), Times.Once));
+            return RunAsync(f => f.BeginAsync(), f => f.Connection.Protected().Verify<DbTransaction>("BeginDbTransaction", Times.Once(), IsolationLevel.Unspecified));
+        }
+
+        [Test]
+        public Task BeginAsync_WhenBeginning_ThenShouldSetUnitOfWorkContextConnection()
+        {
+            return RunAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.Connection.Object), Times.Once));
         }
 
         [Test]
         public Task BeginAsync_WhenBeginning_ThenShouldSetUnitOfWorkContextTransaction()
         {
-            return RunAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.ClientOutboxTransaction.Object), Times.Once));
+            return RunAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.Transaction.Object), Times.Once));
         }
 
         [Test]
@@ -34,40 +48,40 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         [Test]
         public Task EndAsync_WhenEnding_ThenShouldCommitTransactionAfterCommittingUnitsOfWork()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsync(), f => f.ClientOutboxTransaction.Verify(t => t.CommitAsync()));
+            return RunAsync(f => f.BeginAsyncThenEndAsync(), f => f.Transaction.Verify(t => t.Commit()));
         }
 
         [Test]
         public Task EndAsync_WhenEndingAfterAnException_ThenShouldNotCommitTransaction()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.ClientOutboxTransaction.Verify(t => t.CommitAsync(), Times.Never));
+            return RunAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.Transaction.Verify(t => t.Commit(), Times.Never));
         }
 
         [Test]
         public Task EndAsync_WhenEnding_ThenShouldDisposeTransaction()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsync(), f => f.ClientOutboxTransaction.Verify(t => t.Dispose(), Times.Once));
+            return RunAsync(f => f.BeginAsyncThenEndAsync(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true));
         }
 
         [Test]
         public Task EndAsync_WhenEndingAfterAnException_ThenShouldDisposeTransaction()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.ClientOutboxTransaction.Verify(t => t.Dispose(), Times.Once));
+            return RunAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true));
         }
     }
 
     public class UnitOfWorkManagerTestsFixture : FluentTestFixture
     {
         public IUnitOfWorkManager UnitOfWorkManager { get; set; }
-        public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }
+        public Mock<DbConnection> Connection { get; set; }
         public List<Mock<IUnitOfWork>> UnitsOfWork { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
-        public Mock<IClientOutboxTransaction> ClientOutboxTransaction { get; set; }
+        public Mock<DbTransaction> Transaction { get; set; }
         public int CommittedUnitsOfWork { get; set; }
 
         public UnitOfWorkManagerTestsFixture()
         {
-            ClientOutboxStorage = new Mock<IClientOutboxStorage>();
+            Connection = new Mock<DbConnection>();
 
             UnitsOfWork = new List<Mock<IUnitOfWork>>
             {
@@ -77,20 +91,20 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
             };
 
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
-            ClientOutboxTransaction = new Mock<IClientOutboxTransaction>();
+            Transaction = new Mock<DbTransaction> { CallBase = true };
 
-            ClientOutboxTransaction.Setup(t => t.CommitAsync()).Callback(() =>
+            Transaction.Setup(t => t.Commit()).Callback(() =>
             {
                 if (CommittedUnitsOfWork != UnitsOfWork.Count)
                     throw new Exception("CommitAsync called too early");
             });
 
-            ClientOutboxStorage.Setup(o => o.BeginTransactionAsync()).ReturnsAsync(ClientOutboxTransaction.Object);
+            Connection.Protected().Setup<DbTransaction>("BeginDbTransaction", IsolationLevel.Unspecified).Returns(Transaction.Object);
             UnitsOfWork.ForEach(u => u.Setup(u2 => u2.CommitAsync(It.IsAny<Func<Task>>())).Returns<Func<Task>>(t => { CommittedUnitsOfWork++; return t(); }));
 
             UnitOfWorkManager = new UnitOfWorkManager(
-                ClientOutboxStorage.Object,
-                UnitsOfWork.Select(u => u.Object).Concat(new [] { new UnitOfWork(null, null) }),
+                Connection.Object,
+                UnitsOfWork.Select(u => u.Object),
                 UnitOfWorkContext.Object);
         }
 

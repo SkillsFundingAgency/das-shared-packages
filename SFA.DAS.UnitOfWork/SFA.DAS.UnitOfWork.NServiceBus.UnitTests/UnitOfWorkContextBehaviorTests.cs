@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.Common;
 using System.Threading.Tasks;
 using Moq;
 using NServiceBus.Persistence;
@@ -26,6 +25,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
         public FakeBuilder Builder { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public Mock<SynchronizedStorageSession> SynchronizedStorageSession { get; set; }
+        public Mock<Func<Task>> NextTask { get; set; }
         public bool NextTaskInvoked { get; set; }
 
         public InvokeHandlerBehaviorTestsFixture()
@@ -34,6 +34,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
             Builder = new FakeBuilder();
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             SynchronizedStorageSession = new Mock<SynchronizedStorageSession>();
+            NextTask = new Mock<Func<Task>>();
 
             Context = new TestableInvokeHandlerContext
             {
@@ -41,29 +42,20 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
                 SynchronizedStorageSession = SynchronizedStorageSession.Object
             };
 
-            UnitOfWorkContext.Setup(c => c.Set<DbConnection>(null)).Callback<DbConnection>(t =>
+            UnitOfWorkContext.Setup(c => c.Set(It.IsAny<SynchronizedStorageSession>())).Callback<SynchronizedStorageSession>(s =>
             {
                 if (NextTaskInvoked)
                     throw new Exception("Set called too late");
             });
 
-            UnitOfWorkContext.Setup(c => c.Set<DbTransaction>(null)).Callback<DbTransaction>(t =>
-            {
-                if (NextTaskInvoked)
-                    throw new Exception("Set called too late");
-            });
-            
+            NextTask.Setup(n => n()).Returns(Task.CompletedTask).Callback(() => NextTaskInvoked = true);
+
             Builder.Register(UnitOfWorkContext.Object);
         }
         
         public Task Invoke()
         {
-            return Behavior.Invoke(Context, () =>
-            {
-                NextTaskInvoked = true;
-
-                return Task.CompletedTask;
-            });
+            return Behavior.Invoke(Context, NextTask.Object);
         }
     }
 }

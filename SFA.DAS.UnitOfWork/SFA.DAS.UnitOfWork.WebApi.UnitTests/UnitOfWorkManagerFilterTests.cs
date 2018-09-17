@@ -14,19 +14,19 @@ namespace SFA.DAS.UnitOfWork.WebApi.UnitTests
     public class UnitOfWorkManagerFilterTests : FluentTest<UnitOfWorkManagerFilterTestsFixture>
     {
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginAUnitOfWork()
+        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginUnitOfWorkManager()
         {
             Run(f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldEndTheUnitOfWork()
+        public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldEndUnitOfWorkWorkManager()
         {
             Run(f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once()));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAfterAnException_ThenShouldTheEndUnitOfWork()
+        public void OnActionExecuted_WhenAnActionHasExecutedAfterAnException_ThenShouldEndUnitOfWorkWorkManager()
         {
             Run(f => f.SetException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
         }
