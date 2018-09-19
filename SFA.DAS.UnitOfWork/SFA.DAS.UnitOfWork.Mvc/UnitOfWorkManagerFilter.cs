@@ -6,6 +6,8 @@ namespace SFA.DAS.UnitOfWork.Mvc
 {
     public class UnitOfWorkManagerFilter : ActionFilterAttribute
     {
+        private const string OnActionExecutedExceptionKey = "__Exception__";
+
         private readonly Func<IUnitOfWorkManager> _unitOfWorkManager;
 
         public UnitOfWorkManagerFilter(Func<IUnitOfWorkManager> unitOfWorkManager)
@@ -25,7 +27,14 @@ namespace SFA.DAS.UnitOfWork.Mvc
         {
             if (!filterContext.IsChildAction && filterContext.Exception != null)
             {
-                _unitOfWorkManager().EndAsync(filterContext.Exception).GetAwaiter().GetResult();
+                if (filterContext.ExceptionHandled)
+                {
+                    filterContext.Controller.ViewData.Add(OnActionExecutedExceptionKey, filterContext.Exception);
+                }
+                else
+                {
+                    _unitOfWorkManager().EndAsync(filterContext.Exception).GetAwaiter().GetResult();
+                }
             }
         }
 
@@ -33,7 +42,7 @@ namespace SFA.DAS.UnitOfWork.Mvc
         {
             if (!filterContext.IsChildAction)
             {
-                _unitOfWorkManager().EndAsync(filterContext.Exception).GetAwaiter().GetResult();
+                _unitOfWorkManager().EndAsync(filterContext.Controller.ViewData[OnActionExecutedExceptionKey] as Exception ?? filterContext.Exception).GetAwaiter().GetResult();
             }
         }
     }
