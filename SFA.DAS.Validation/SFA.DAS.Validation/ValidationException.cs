@@ -1,29 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace SFA.DAS.Validation
 {
-    public class ValidationException<T> : ValidationException
-    {
-        public ValidationException(Expression<Func<T, object>> expression, string message)
-            : base(expression, message)
-        {
-        }
-    }
-
     public class ValidationException : Exception
     {
-        public LambdaExpression Expression { get; }
+        public IEnumerable<ValidationError> ValidationErrors => _validationErrors;
 
-        public ValidationException(string message)
-            : this(null, message)
+        private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
+
+        public ValidationException()
+            : base("")
         {
         }
 
-        public ValidationException(LambdaExpression expression, string message)
+        public ValidationException(string message)
             : base(message)
         {
-            Expression = expression;
+        }
+
+        public ValidationException AddError<T>(T instance, Expression<Func<T, object>> property, string message) where T : class
+        {
+            _validationErrors.Add(new ValidationError(instance, property, message));
+
+            return this;
         }
     }
 }

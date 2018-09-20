@@ -6,11 +6,21 @@ namespace SFA.DAS.Validation.Mvc
 {
     public static class ModelStateDictionaryExtensions
     {
-        public static void AddModelError(this ModelStateDictionary modelState, ValidationException ex)
+        public static void AddModelError(this ModelStateDictionary modelState, object model, ValidationException ex)
         {
-            var key = ex.Expression == null ? "" : $"{ex.Expression.Type.GenericTypeArguments[0].Name}.{ExpressionHelper.GetExpressionText(ex.Expression)}";
+            if (!string.IsNullOrWhiteSpace(ex.Message))
+            {
+                modelState.AddModelError("", ex.Message);
+            }
 
-            modelState.AddModelError(key, ex.Message);
+            foreach (var validationError in ex.ValidationErrors)
+            {
+                var parentKey = model == validationError.Model ? "" : model.GetType().GetProperties().Where(p => p.GetValue(model) == validationError.Model).Select(p => p.Name).Single();
+                var childKey = ExpressionHelper.GetExpressionText(validationError.Property);
+                var key = $"{parentKey}.{childKey}".Trim('.');
+
+                modelState.AddModelError(key, validationError.Message);
+            }
         }
 
         public static SerializableModelStateDictionary ToSerializable(this ModelStateDictionary modelState)
