@@ -28,6 +28,12 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
+        public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetRouteData()
+        {
+            Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.RouteData.Values.Should().HaveCount(f.QueryString.Count));
+        }
+
+        [Test]
         public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetRedirectToRouteResult()
         {
             Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().NotBeNull().And.Match<RedirectToRouteResult>(r => r.RouteValues == f.RouteData.Values));
@@ -58,6 +64,12 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
+        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetRouteData()
+        {
+            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.RouteData.Values.Should().HaveCount(f.QueryString.Count));
+        }
+
+        [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetResult()
         {
             Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.Match<RedirectToRouteResult>(r => r.RouteValues == f.RouteData.Values));
@@ -78,6 +90,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         public Mock<HttpContextBase> HttpContext { get; set; }
         public Mock<ControllerBase> Controller { get; set; }
         public RouteData RouteData { get; set; }
+        public NameValueCollection QueryString { get; set; }
 
 
         public ValidateModelStateFilterTestsFixture()
@@ -100,11 +113,17 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
                 RouteData = RouteData
             };
 
+            QueryString = new NameValueCollection
+            {
+                ["Foo"] = "Foo",
+                ["Bar"] = "Bar"
+            };
+
             ValidateModelStateFilter = new ValidateModelStateFilter();
 
             Controller.Object.ViewData.ModelState.SetModelValue("Foo", new ValueProviderResult("FooRawValue", "FooAttemptedValue", CultureInfo.InvariantCulture));
             Controller.Object.ViewData.ModelState.SetModelValue("Bar", new ValueProviderResult("BarRawValue", "BarAttemptedValue", CultureInfo.InvariantCulture));
-            HttpContext.Setup(c => c.Request.QueryString).Returns(new NameValueCollection());
+            HttpContext.Setup(c => c.Request.QueryString).Returns(QueryString);
         }
 
         public void OnActionExecuting()

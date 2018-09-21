@@ -11,7 +11,7 @@ namespace SFA.DAS.Validation.Mvc
         public static bool IsValid<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression)
         {
             var partialFieldName = ExpressionHelper.GetExpressionText(expression);
-            var fullHtmlFieldName = htmlHelper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(partialFieldName);
+            var fullHtmlFieldName = htmlHelper.ViewData.TemplateInfo.GetFullHtmlFieldName(partialFieldName);
 
             if (htmlHelper.ViewData.ModelState.ContainsKey(fullHtmlFieldName))
             {

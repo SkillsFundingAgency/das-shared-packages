@@ -4,8 +4,7 @@ using System.Web.Mvc;
 
 namespace SFA.DAS.Validation.Mvc
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class HttpNotFoundForNullModelAttribute : ActionFilterAttribute
+    public class HttpNotFoundForNullModelFilter : ActionFilterAttribute
     {
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {

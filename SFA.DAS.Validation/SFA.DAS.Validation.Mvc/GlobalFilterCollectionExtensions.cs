@@ -5,6 +5,11 @@ namespace SFA.DAS.Validation.Mvc
 {
     public static class GlobalFilterCollectionExtensions
     {
+        public static void AddHttpNotFoundForNullModelFilter(this GlobalFilterCollection filters)
+        {
+            filters.Add(new HttpNotFoundForNullModelFilter());
+        }
+
         public static void AddValidationFilter(this GlobalFilterCollection filters)
         {
             filters.Add(new ValidateModelStateFilter());
