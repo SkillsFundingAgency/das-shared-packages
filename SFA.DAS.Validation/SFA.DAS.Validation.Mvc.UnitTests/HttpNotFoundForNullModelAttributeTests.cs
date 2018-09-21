@@ -7,7 +7,7 @@ using SFA.DAS.Testing;
 namespace SFA.DAS.Validation.Mvc.UnitTests
 {
     [TestFixture]
-    public class HttpNotFoundForNullModelFilterTests : FluentTest<HttpNotFoundForNullModelFilterTestsFixture>
+    public class HttpNotFoundForNullModelAttributeTests : FluentTest<HttpNotFoundForNullModelFilterTestsFixture>
     {
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldNotSetResult()
@@ -25,17 +25,17 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
     public class HttpNotFoundForNullModelFilterTestsFixture
     {
         public ActionExecutedContext ActionExecutedContext { get; set; }
-        public HttpNotFoundForNullModelFilter HttpNotFoundForNullModelFilter { get; set; }
+        public HttpNotFoundForNullModelAttribute HttpNotFoundForNullModelAttribute { get; set; }
 
         public HttpNotFoundForNullModelFilterTestsFixture()
         {
             ActionExecutedContext = new ActionExecutedContext();
-            HttpNotFoundForNullModelFilter = new HttpNotFoundForNullModelFilter();
+            HttpNotFoundForNullModelAttribute = new HttpNotFoundForNullModelAttribute();
         }
 
         public void OnActionExecuted()
         {
-            HttpNotFoundForNullModelFilter.OnActionExecuted(ActionExecutedContext);
+            HttpNotFoundForNullModelAttribute.OnActionExecuted(ActionExecutedContext);
         }
 
         public HttpNotFoundForNullModelFilterTestsFixture SetNullModel()

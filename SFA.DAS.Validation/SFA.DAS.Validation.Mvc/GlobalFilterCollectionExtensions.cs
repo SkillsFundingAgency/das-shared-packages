@@ -7,7 +7,7 @@ namespace SFA.DAS.Validation.Mvc
     {
         public static void AddHttpNotFoundForNullModelFilter(this GlobalFilterCollection filters)
         {
-            filters.Add(new HttpNotFoundForNullModelFilter());
+            filters.Add(new HttpNotFoundForNullModelAttribute());
         }
 
         public static void AddValidationFilter(this GlobalFilterCollection filters)
