@@ -22,9 +22,15 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
+        public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldSetViewDataActionParameters()
+        {
+            Run(f => f.OnActionExecuting(), f => f.Controller.Object.ViewData["__ActionParameters__"].Should().Be(f.ActionParameters));
+        }
+
+        [Test]
         public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetTempDataModelState()
         {
-            Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
+            Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.Controller.Object.TempData["__ModelState__"].Should().NotBeNull());
         }
 
         [Test]
@@ -58,27 +64,33 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
+        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldUpdateModelState()
+        {
+            Run(f => f.SetViewDataActionParameters().SetValidationException(), f => f.OnActionExecuted(), f => f.Controller.Object.ViewData.ModelState.IsValid.Should().BeFalse());
+        }
+
+        [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetTempDataModelState()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
+            Run(f => f.SetViewDataActionParameters().SetValidationException(), f => f.OnActionExecuted(), f => f.Controller.Object.TempData["__ModelState__"].Should().NotBeNull());
         }
 
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetRouteData()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.RouteData.Values.Should().HaveCount(f.QueryString.Count));
+            Run(f => f.SetViewDataActionParameters().SetValidationException(), f => f.OnActionExecuted(), f => f.RouteData.Values.Should().HaveCount(f.QueryString.Count));
         }
 
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetResult()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.Match<RedirectToRouteResult>(r => r.RouteValues == f.RouteData.Values));
+            Run(f => f.SetViewDataActionParameters().SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.Match<RedirectToRouteResult>(r => r.RouteValues == f.RouteData.Values));
         }
 
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetExceptionHandled()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.ExceptionHandled.Should().BeTrue());
+            Run(f => f.SetViewDataActionParameters().SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.ExceptionHandled.Should().BeTrue());
         }
     }
 
@@ -87,22 +99,28 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         public ActionExecutingContext ActionExecutingContext { get; set; }
         public ActionExecutedContext ActionExecutedContext { get; set; }
         public ValidateModelStateFilter ValidateModelStateFilter { get; set; }
-        public Mock<HttpContextBase> HttpContext { get; set; }
+        public Dictionary<string, object> ActionParameters { get; set; }
         public Mock<ControllerBase> Controller { get; set; }
+        public Mock<HttpContextBase> HttpContext { get; set; }
+        public Foo Model { get; set; }
         public RouteData RouteData { get; set; }
         public NameValueCollection QueryString { get; set; }
 
-
         public ValidateModelStateFilterTestsFixture()
         {
-            HttpContext = new Mock<HttpContextBase>();
+            ActionParameters = new Dictionary<string, object>();
             Controller = new Mock<ControllerBase>();
+            HttpContext = new Mock<HttpContextBase>();
+            Model = new Foo { Bar = new Bar() };
             RouteData = new RouteData();
+
+            ActionParameters.Add("model", Model);
 
             ActionExecutingContext = new ActionExecutingContext
             {
-                HttpContext = HttpContext.Object,
+                ActionParameters = ActionParameters,
                 Controller = Controller.Object,
+                HttpContext = HttpContext.Object,
                 RouteData = RouteData
             };
 
@@ -120,9 +138,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
             };
 
             ValidateModelStateFilter = new ValidateModelStateFilter();
-
-            Controller.Object.ViewData.ModelState.SetModelValue("Foo", new ValueProviderResult("FooRawValue", "FooAttemptedValue", CultureInfo.InvariantCulture));
-            Controller.Object.ViewData.ModelState.SetModelValue("Bar", new ValueProviderResult("BarRawValue", "BarAttemptedValue", CultureInfo.InvariantCulture));
+            
             HttpContext.Setup(c => c.Request.QueryString).Returns(QueryString);
         }
 
@@ -136,23 +152,16 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
             ValidateModelStateFilter.OnActionExecuted(ActionExecutedContext);
         }
 
+        public ValidateModelStateFilterTestsFixture SetViewDataActionParameters()
+        {
+            Controller.Object.ViewData["__ActionParameters__"] = ActionParameters;
+
+            return this;
+        }
+
         public ValidateModelStateFilterTestsFixture SetGetRequest()
         {
             HttpContext.Setup(c => c.Request.HttpMethod).Returns("GET");
-
-            return this;
-        }
-
-        public ValidateModelStateFilterTestsFixture SetValidationException()
-        {
-            ActionExecutedContext.Exception = new ValidationException();
-
-            return this;
-        }
-
-        public ValidateModelStateFilterTestsFixture SetPostRequest()
-        {
-            HttpContext.Setup(c => c.Request.HttpMethod).Returns("POST");
 
             return this;
         }
@@ -167,7 +176,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
 
         public ValidateModelStateFilterTestsFixture SetInvalidTempDataModelState()
         {
-            Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName] = new SerializableModelStateDictionary
+            Controller.Object.TempData["__ModelState__"] = new SerializableModelStateDictionary
             {
                 Data = new List<SerializableModelState>
                 {
@@ -190,6 +199,30 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
 
             return this;
         }
+
+        public ValidateModelStateFilterTestsFixture SetPostRequest()
+        {
+            HttpContext.Setup(c => c.Request.HttpMethod).Returns("POST");
+
+            return this;
+        }
+
+        public ValidateModelStateFilterTestsFixture SetValidationException()
+        {
+            ActionExecutedContext.Exception = new ValidationException("Oops!").AddError(Model.Bar, m => m.Value, "Value is invalid");
+
+            return this;
+        }
+    }
+
+    public class Foo
+    {
+        public Bar Bar { get; set; }
+    }
+
+    public class Bar
+    {
+        public int Value { get; set; }
     }
 }
 #endif

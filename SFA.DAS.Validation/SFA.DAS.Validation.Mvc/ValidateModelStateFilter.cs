@@ -1,15 +1,22 @@
 ﻿#if NET462
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace SFA.DAS.Validation.Mvc
 {
     public class ValidateModelStateFilter : ActionFilterAttribute
     {
+        private const string ActionParametersKey = "__ActionParameters__";
+        private const string ModelStateKey = "__ModelState__";
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            filterContext.Controller.ViewData.Add(ActionParametersKey, filterContext.ActionParameters);
+
             if (filterContext.HttpContext.Request.HttpMethod == "GET")
             {
-                var serializableModelState = filterContext.Controller.TempData.TryGet<SerializableModelStateDictionary>();
+                var serializableModelState = filterContext.Controller.TempData[ModelStateKey] as SerializableModelStateDictionary;
                 var modelState = serializableModelState?.ToModelState();
 
                 filterContext.Controller.ViewData.ModelState.Merge(modelState);
@@ -18,7 +25,7 @@ namespace SFA.DAS.Validation.Mvc
             {
                 var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
                 
-                filterContext.Controller.TempData.Set(serializableModelState);
+                filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
                 filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
 
                 filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
@@ -29,11 +36,14 @@ namespace SFA.DAS.Validation.Mvc
         {
             if (filterContext.Exception is ValidationException validationException)
             {
-                filterContext.Controller.ViewData.ModelState.AddModelError(filterContext.Controller.ViewData.Model, validationException);
+                var actionParameters = (IDictionary<string, object>)filterContext.Controller.ViewData[ActionParametersKey];
+                var model = actionParameters.Values.SingleOrDefault();
+
+                filterContext.Controller.ViewData.ModelState.AddModelError(model, validationException);
 
                 var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-
-                filterContext.Controller.TempData.Set(serializableModelState);
+                
+                filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
                 filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
 
                 filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);

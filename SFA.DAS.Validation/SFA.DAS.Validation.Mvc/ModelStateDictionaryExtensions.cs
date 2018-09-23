@@ -6,7 +6,7 @@ namespace SFA.DAS.Validation.Mvc
 {
     public static class ModelStateDictionaryExtensions
     {
-        public static void AddModelError(this ModelStateDictionary modelState, object model, ValidationException ex)
+        public static void AddModelError<T>(this ModelStateDictionary modelState, T model, ValidationException ex) where T : class
         {
             if (!string.IsNullOrWhiteSpace(ex.Message))
             {
@@ -15,7 +15,7 @@ namespace SFA.DAS.Validation.Mvc
 
             foreach (var validationError in ex.ValidationErrors)
             {
-                var parentKey = model == validationError.Model ? "" : model.GetType().GetProperties().Where(p => p.GetValue(model) == validationError.Model).Select(p => p.Name).Single();
+                var parentKey = model?.GetPath(validationError.Model);
                 var childKey = ExpressionHelper.GetExpressionText(validationError.Property);
                 var key = $"{parentKey}.{childKey}".Trim('.');
 
