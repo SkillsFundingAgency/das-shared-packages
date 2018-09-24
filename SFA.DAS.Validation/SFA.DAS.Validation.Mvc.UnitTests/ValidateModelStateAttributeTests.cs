@@ -1,7 +1,6 @@
 ﻿#if NET462
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Globalization;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -13,7 +12,7 @@ using SFA.DAS.Testing;
 namespace SFA.DAS.Validation.Mvc.UnitTests
 {
     [TestFixture]
-    public class ValidateModelStateFilterTests : FluentTest<ValidateModelStateFilterTestsFixture>
+    public class ValidateModelStateAttributeTests : FluentTest<ValidateModelStateAttributeTestsFixture>
     {
         [Test]
         public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsValid_ThenShouldNotSetResult()
@@ -94,11 +93,11 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
     }
 
-    public class ValidateModelStateFilterTestsFixture
+    public class ValidateModelStateAttributeTestsFixture
     {
         public ActionExecutingContext ActionExecutingContext { get; set; }
         public ActionExecutedContext ActionExecutedContext { get; set; }
-        public ValidateModelStateFilter ValidateModelStateFilter { get; set; }
+        public ValidateModelStateAttribute ValidateModelStateAttribute { get; set; }
         public Dictionary<string, object> ActionParameters { get; set; }
         public Mock<ControllerBase> Controller { get; set; }
         public Mock<HttpContextBase> HttpContext { get; set; }
@@ -106,7 +105,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         public RouteData RouteData { get; set; }
         public NameValueCollection QueryString { get; set; }
 
-        public ValidateModelStateFilterTestsFixture()
+        public ValidateModelStateAttributeTestsFixture()
         {
             ActionParameters = new Dictionary<string, object>();
             Controller = new Mock<ControllerBase>();
@@ -137,36 +136,36 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
                 ["Bar"] = "Bar"
             };
 
-            ValidateModelStateFilter = new ValidateModelStateFilter();
+            ValidateModelStateAttribute = new ValidateModelStateAttribute();
             
             HttpContext.Setup(c => c.Request.QueryString).Returns(QueryString);
         }
 
         public void OnActionExecuting()
         {
-            ValidateModelStateFilter.OnActionExecuting(ActionExecutingContext);
+            ValidateModelStateAttribute.OnActionExecuting(ActionExecutingContext);
         }
 
         public void OnActionExecuted()
         {
-            ValidateModelStateFilter.OnActionExecuted(ActionExecutedContext);
+            ValidateModelStateAttribute.OnActionExecuted(ActionExecutedContext);
         }
 
-        public ValidateModelStateFilterTestsFixture SetViewDataActionParameters()
+        public ValidateModelStateAttributeTestsFixture SetViewDataActionParameters()
         {
             Controller.Object.ViewData["__ActionParameters__"] = ActionParameters;
 
             return this;
         }
 
-        public ValidateModelStateFilterTestsFixture SetGetRequest()
+        public ValidateModelStateAttributeTestsFixture SetGetRequest()
         {
             HttpContext.Setup(c => c.Request.HttpMethod).Returns("GET");
 
             return this;
         }
 
-        public ValidateModelStateFilterTestsFixture SetInvalidModelState()
+        public ValidateModelStateAttributeTestsFixture SetInvalidModelState()
         {
             Controller.Object.ViewData.ModelState.AddModelError("Foo", "FooErrorMessage");
             Controller.Object.ViewData.ModelState.AddModelError("Bar", "BarErrorMessage");
@@ -174,7 +173,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
             return this;
         }
 
-        public ValidateModelStateFilterTestsFixture SetInvalidTempDataModelState()
+        public ValidateModelStateAttributeTestsFixture SetInvalidTempDataModelState()
         {
             Controller.Object.TempData["__ModelState__"] = new SerializableModelStateDictionary
             {
@@ -200,14 +199,14 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
             return this;
         }
 
-        public ValidateModelStateFilterTestsFixture SetPostRequest()
+        public ValidateModelStateAttributeTestsFixture SetPostRequest()
         {
             HttpContext.Setup(c => c.Request.HttpMethod).Returns("POST");
 
             return this;
         }
 
-        public ValidateModelStateFilterTestsFixture SetValidationException()
+        public ValidateModelStateAttributeTestsFixture SetValidationException()
         {
             ActionExecutedContext.Exception = new ValidationException("Oops!").AddError(Model.Bar, m => m.Value, "Value is invalid");
 

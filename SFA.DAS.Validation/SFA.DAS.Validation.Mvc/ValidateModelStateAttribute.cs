@@ -1,11 +1,13 @@
 ﻿#if NET462
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
 namespace SFA.DAS.Validation.Mvc
 {
-    public class ValidateModelStateFilter : ActionFilterAttribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class ValidateModelStateAttribute : ActionFilterAttribute
     {
         private const string ActionParametersKey = "__ActionParameters__";
         private const string ModelStateKey = "__ModelState__";

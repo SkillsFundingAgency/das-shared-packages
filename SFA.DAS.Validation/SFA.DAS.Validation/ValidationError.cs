@@ -4,13 +4,13 @@ namespace SFA.DAS.Validation
 {
     public class ValidationError
     {
-        public object Model { get; }
+        public object Instance { get; }
         public LambdaExpression Property { get; }
         public string Message { get; }
 
-        public ValidationError(object model, LambdaExpression property, string message)
+        public ValidationError(object instance, LambdaExpression property, string message)
         {
-            Model = model;
+            Instance = instance;
             Property = property;
             Message = message;
         }
