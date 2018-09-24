@@ -7,70 +7,61 @@ namespace SFA.DAS.Validation
 {
     public static class ObjectExtensions
     {
-        public static string GetPath<T1, T2>(this T1 source, T2 item, string sourceName = "") where T1 : class where T2 : class
+        public static string GetPath(this object source, object item, string sourceName = "")
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            if (source is string || source is ValueType)
-                throw new ArgumentException("Parameter must be a reference type", nameof(source));
-
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            if (item is string || item is ValueType)
-                throw new ArgumentException("Parameter must be a reference type", nameof(item));
-
-            return source == item ? sourceName : GetPath(source, item, sourceName, source.GetType().GetProperties());
+            return source.Equals(item) ? sourceName : GetPath(source, item, sourceName, source.GetType().GetProperties());
         }
 
-        private static string GetPath<T1, T2>(T1 source, T2 item, string sourceName, IEnumerable<PropertyInfo> sourceProperties) where T1 : class where T2 : class
+        private static string GetPath(object source, object item, string sourceName, IEnumerable<PropertyInfo> sourceProperties)
         {
             string path = null;
 
-            if (!(source is string) && !(source is ValueType))
+            if (source is IEnumerable sourceValues)
             {
-                if (source is IEnumerable sourceValues)
+                var i = 0;
+
+                foreach (var value in sourceValues)
                 {
-                    var i = 0;
+                    var name = $"{sourceName}[{i}]";
 
-                    foreach (var value in sourceValues)
+                    if (value == null)
                     {
-                        var name = $"{sourceName}[{i}]";
-
-                        if (value == null)
-                        {
-                            continue;
-                        }
-
-                        path = value == item ? name : GetPath(value, item, name, value.GetType().GetProperties());
-
-                        if (path != null)
-                        {
-                            break;
-                        }
-
-                        i++;
+                        continue;
                     }
-                }
-                else
-                {
-                    foreach (var property in sourceProperties)
+
+                    path = value.Equals(item) ? name : GetPath(value, item, name, value.GetType().GetProperties());
+
+                    if (path != null)
                     {
-                        var value = property.GetValue(source);
-                        var name = $"{sourceName}.{property.Name}".Trim('.');
+                        break;
+                    }
 
-                        if (value == null)
-                        {
-                            continue;
-                        }
+                    i++;
+                }
+            }
+            else
+            {
+                foreach (var property in sourceProperties)
+                {
+                    var value = property.GetValue(source);
+                    var name = $"{sourceName}.{property.Name}".Trim('.');
 
-                        path = value == item ? name : GetPath(value, item, name, property.PropertyType.GetProperties());
+                    if (value == null)
+                    {
+                        continue;
+                    }
 
-                        if (path != null)
-                        {
-                            break;
-                        }
+                    path = value.Equals(item) ? name : GetPath(value, item, name, property.PropertyType.GetProperties());
+
+                    if (path != null)
+                    {
+                        break;
                     }
                 }
             }

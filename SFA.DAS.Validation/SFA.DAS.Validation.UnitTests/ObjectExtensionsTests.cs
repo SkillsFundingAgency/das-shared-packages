@@ -27,15 +27,33 @@ namespace SFA.DAS.Validation.UnitTests
         }
 
         [Test]
+        public void GetPath_WhenGettingPathAndItemIsPresentAtLevel1Value_ThenShouldReturnLevel1ValuePath()
+        {
+            Run(f => f.SetLevel1Value(), f => f.GetPath(), (f, r) => r.Should().Be("Level1.Value"));
+        }
+
+        [Test]
         public void GetPath_WhenGettingPathAndItemIsPresentAtLevel1Index1_ThenShouldReturnLevel1Index1Path()
         {
             Run(f => f.SetLevel1Index1(), f => f.GetPath(), (f, r) => r.Should().Be("Level1s[1]"));
         }
 
         [Test]
+        public void GetPath_WhenGettingPathAndItemIsPresentAtLevel1Index1Value_ThenShouldReturnLevel1Index1ValuePath()
+        {
+            Run(f => f.SetLevel1Index1Value(), f => f.GetPath(), (f, r) => r.Should().Be("Level1s[1].Value"));
+        }
+
+        [Test]
         public void GetPath_WhenGettingPathAndItemIsPresentAtLevel2_ThenShouldReturnLevel2Path()
         {
             Run(f => f.SetLevel2(), f => f.GetPath(), (f, r) => r.Should().Be("Level1.Level2"));
+        }
+
+        [Test]
+        public void GetPath_WhenGettingPathAndItemIsPresentAtLevel2Value_ThenShouldReturnLevel2ValuePath()
+        {
+            Run(f => f.SetLevel2Value(), f => f.GetPath(), (f, r) => r.Should().Be("Level1.Level2.Value"));
         }
 
         [Test]
@@ -48,6 +66,12 @@ namespace SFA.DAS.Validation.UnitTests
         public void GetPath_WhenGettingPathAndItemIsPresentAtLevel2Index1_ThenShouldReturnLevel2Index1Path()
         {
             Run(f => f.SetLevel2Index1(), f => f.GetPath(), (f, r) => r.Should().Be("Level1.Level2s[1]"));
+        }
+
+        [Test]
+        public void GetPath_WhenGettingPathAndItemIsPresentAtLevel2Index1Value_ThenShouldReturnLevel2Index1ValuePath()
+        {
+            Run(f => f.SetLevel2Index1Value(), f => f.GetPath(), (f, r) => r.Should().Be("Level1.Level2s[1].Value"));
         }
 
         [Test]
@@ -95,6 +119,24 @@ namespace SFA.DAS.Validation.UnitTests
             return this;
         }
 
+        public ObjectExtensionsTestsFixture SetLevel1Value()
+        {
+            Item = 123;
+
+            Source = new Level0
+            {
+                NotNull = new Level1(),
+                Null = null,
+                Value = 1,
+                Level1 = new Level1
+                {
+                    Value = (int)Item
+                }
+            };
+
+            return this;
+        }
+
         public ObjectExtensionsTestsFixture SetLevel1Index1()
         {
             Item = new Level1();
@@ -108,6 +150,28 @@ namespace SFA.DAS.Validation.UnitTests
                 {
                     new Level1(),
                     (Level1)Item
+                }
+            };
+
+            return this;
+        }
+
+        public ObjectExtensionsTestsFixture SetLevel1Index1Value()
+        {
+            Item = 123;
+
+            Source = new Level0
+            {
+                NotNull = new Level1(),
+                Null = null,
+                Value = 1,
+                Level1s = new List<Level1>
+                {
+                    new Level1(),
+                    new Level1
+                    {
+                        Value = (int)Item
+                    }
                 }
             };
 
@@ -129,6 +193,30 @@ namespace SFA.DAS.Validation.UnitTests
                     Null = new Level2(),
                     Value = 1,
                     Level2 = (Level2)Item
+                }
+            };
+
+            return this;
+        }
+
+        public ObjectExtensionsTestsFixture SetLevel2Value()
+        {
+            Item = 123;
+
+            Source = new Level0
+            {
+                NotNull = new Level1(),
+                Null = null,
+                Value = 1,
+                Level1 = new Level1
+                {
+                    NotNull = new Level2(),
+                    Null = new Level2(),
+                    Value = 1,
+                    Level2 = new Level2
+                    {
+                        Value = (int)Item
+                    }
                 }
             };
 
@@ -178,6 +266,34 @@ namespace SFA.DAS.Validation.UnitTests
                     {
                         new Level2(),
                         (Level2)Item
+                    }
+                }
+            };
+
+            return this;
+        }
+
+        public ObjectExtensionsTestsFixture SetLevel2Index1Value()
+        {
+            Item = 123;
+
+            Source = new Level0
+            {
+                NotNull = new Level1(),
+                Null = null,
+                Value = 1,
+                Level1 = new Level1
+                {
+                    NotNull = new Level2(),
+                    Null = new Level2(),
+                    Value = 1,
+                    Level2s = new List<Level2>
+                    {
+                        new Level2(),
+                        new Level2
+                        {
+                            Value = (int)Item
+                        }
                     }
                 }
             };
