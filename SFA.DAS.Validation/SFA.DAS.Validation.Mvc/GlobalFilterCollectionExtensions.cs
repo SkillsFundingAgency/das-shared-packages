@@ -7,7 +7,7 @@ namespace SFA.DAS.Validation.Mvc
     {
         public static void AddValidationFilter(this GlobalFilterCollection filters)
         {
-            filters.Add(new ValidateModelStateAttribute());
+            filters.Add(new ValidateModelStateFilter());
         }
     }
 }

@@ -6,8 +6,7 @@ using System.Web.Mvc;
 
 namespace SFA.DAS.Validation.Mvc
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class ValidateModelStateAttribute : ActionFilterAttribute
+    public class ValidateModelStateFilter : ActionFilterAttribute
     {
         private const string ActionParametersKey = "__ActionParameters__";
         private const string ModelStateKey = "__ModelState__";
