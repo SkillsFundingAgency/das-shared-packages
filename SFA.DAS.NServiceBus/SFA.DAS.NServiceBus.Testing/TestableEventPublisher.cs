@@ -18,11 +18,10 @@ namespace SFA.DAS.NServiceBus.Testing
             return Task.CompletedTask;
         }
 
-        public Task Publish<T>(Action<T> action) where T : Event, new()
+        public Task Publish<T>(Func<T> messageFactory) where T : Event
         {
-            var message = new T();
-
-            action(message);
+            var message = messageFactory();
+            
             _events.Enqueue(message);
 
             return Task.CompletedTask;
