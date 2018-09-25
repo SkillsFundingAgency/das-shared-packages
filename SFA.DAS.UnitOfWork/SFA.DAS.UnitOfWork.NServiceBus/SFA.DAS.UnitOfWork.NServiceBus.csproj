@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="NServiceBus.UniformSession" Version="2.1.0" />
-    <PackageReference Include="SFA.DAS.NServiceBus" Version="2.0.2" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="3.0.1" />
     <PackageReference Include="StructureMap" Version="4.6.1" />
   </ItemGroup>
 

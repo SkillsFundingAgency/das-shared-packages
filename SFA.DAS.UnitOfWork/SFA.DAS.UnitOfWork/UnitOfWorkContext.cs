@@ -17,29 +17,22 @@ namespace SFA.DAS.UnitOfWork
             Events.Value = new ConcurrentQueue<Func<object>>();
         }
 
-        public static void AddEvent(object message)
+        public static void AddEvent<T>(T message) where T : class
         {
             Events.Value.Enqueue(() => message);
         }
 
-        public static void AddEvent<T>(Action<T> action) where T : class, new()
+        public static void AddEvent<T>(Func<T> messageFactory) where T : class
         {
-            Events.Value.Enqueue(() =>
-            {
-                var message = new T();
-
-                action(message);
-
-                return message;
-            });
+            Events.Value.Enqueue(messageFactory);
         }
 
-        void IUnitOfWorkContext.AddEvent(object message)
+        void IUnitOfWorkContext.AddEvent<T>(T message)
         {
             AddEvent(message);
         }
 
-        void IUnitOfWorkContext.AddEvent<T>(Action<T> action)
+        void IUnitOfWorkContext.AddEvent<T>(Func<T> action)
         {
             AddEvent(action);
         }
@@ -68,14 +61,7 @@ namespace SFA.DAS.UnitOfWork
 
         public T TryGet<T>() where T : class
         {
-            var key = typeof(T).FullName;
-
-            if (_data.TryGetValue(key, out var value))
-            {
-                return (T)value;
-            }
-
-            return null;
+            return _data.TryGetValue(typeof(T).FullName, out var value) ? (T) value : null;
         }
     }
 }

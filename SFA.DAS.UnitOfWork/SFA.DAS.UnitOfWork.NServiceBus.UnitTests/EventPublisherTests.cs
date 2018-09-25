@@ -24,14 +24,14 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
     public class EventPublisherTestsFixture : FluentTestFixture
     {
         public FooEvent FooEvent { get; set; }
-        public Action<BarEvent> BarEvent { get; set; }
+        public Func<BarEvent> BarEvent { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public IEventPublisher EventPublisher { get; set; }
 
         public EventPublisherTestsFixture()
         {
             FooEvent = new FooEvent { Created = DateTime.UtcNow };
-            BarEvent = e => e.Created = DateTime.Now;
+            BarEvent = () => new BarEvent { Created = DateTime.Now };
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             EventPublisher = new EventPublisher(UnitOfWorkContext.Object);
         }

@@ -103,9 +103,9 @@ namespace SFA.DAS.UnitOfWork.UnitTests
             Events.Add(barEvent);
 
             UnitOfWorkContextInstance.AddEvent(fooEvent);
-            UnitOfWorkContextInstance.AddEvent<FooEvent>(e => e.Created = Now);
+            UnitOfWorkContextInstance.AddEvent(() => new FooEvent { Created = Now });
             UnitOfWorkContext.AddEvent(barEvent);
-            UnitOfWorkContext.AddEvent<BarEvent>(e => e.Created = Now);
+            UnitOfWorkContext.AddEvent(() => new BarEvent { Created = Now });
 
             Now = DateTime.UtcNow;
 
@@ -125,12 +125,12 @@ namespace SFA.DAS.UnitOfWork.UnitTests
                 Task.Run(() =>
                 {
                     UnitOfWorkContextInstance.AddEvent(fooEvent);
-                    UnitOfWorkContextInstance.AddEvent<FooEvent>(e => e.Created = Now);
+                    UnitOfWorkContextInstance.AddEvent(() => new FooEvent { Created = Now });
                 }),
                 Task.Run(() =>
                 {
                     UnitOfWorkContext.AddEvent(barEvent);
-                    UnitOfWorkContext.AddEvent<BarEvent>(e => e.Created = Now);
+                    UnitOfWorkContext.AddEvent(() => new BarEvent { Created = Now });
                 })
             };
 
@@ -156,18 +156,18 @@ namespace SFA.DAS.UnitOfWork.UnitTests
                     IUnitOfWorkContext unitOfWorkContextInstance = new UnitOfWorkContext();
 
                     UnitOfWorkContextInstance.AddEvent(fooEvent);
-                    unitOfWorkContextInstance.AddEvent<FooEvent>(e => e.Created = Now);
+                    unitOfWorkContextInstance.AddEvent(() => new FooEvent { Created = Now });
                     UnitOfWorkContext.AddEvent(barEvent);
-                    UnitOfWorkContext.AddEvent<BarEvent>(e => e.Created = Now);
+                    UnitOfWorkContext.AddEvent(() => new BarEvent { Created = Now });
                 }),
                 Task.Run(() =>
                 {
                     IUnitOfWorkContext unitOfWorkContextInstance = new UnitOfWorkContext();
 
                     UnitOfWorkContextInstance.AddEvent(fooEvent);
-                    unitOfWorkContextInstance.AddEvent<FooEvent>(e => e.Created = Now);
+                    unitOfWorkContextInstance.AddEvent(() => new FooEvent { Created = Now });
                     UnitOfWorkContext.AddEvent(barEvent);
-                    UnitOfWorkContext.AddEvent<BarEvent>(e => e.Created = Now);
+                    UnitOfWorkContext.AddEvent(() => new BarEvent { Created = Now });
                 })
             };
 

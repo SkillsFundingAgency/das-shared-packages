@@ -5,8 +5,8 @@ namespace SFA.DAS.UnitOfWork
 {
     public interface IUnitOfWorkContext
     {
-        void AddEvent(object message);
-        void AddEvent<T>(Action<T> action) where T : class, new();
+        void AddEvent<T>(T message) where T : class;
+        void AddEvent<T>(Func<T> messageFactory) where T : class;
         T Get<T>();
         IEnumerable<object> GetEvents();
         void Set<T>(T value);

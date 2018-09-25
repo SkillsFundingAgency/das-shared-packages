@@ -20,9 +20,9 @@ namespace SFA.DAS.UnitOfWork.NServiceBus
             return Task.CompletedTask;
         }
 
-        public Task Publish<T>(Action<T> action) where T : Event, new()
+        public Task Publish<T>(Func<T> messageFactory) where T : Event
         {
-            _unitOfWorkContext.AddEvent(action);
+            _unitOfWorkContext.AddEvent(messageFactory);
 
             return Task.CompletedTask;
         }
