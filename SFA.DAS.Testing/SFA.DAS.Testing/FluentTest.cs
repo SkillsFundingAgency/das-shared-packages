@@ -4,7 +4,7 @@ using FluentAssertions.Specialized;
 
 namespace SFA.DAS.Testing
 {
-    public abstract class FluentTest<T> where T : new()
+    public abstract class FluentTest<T> where T : class, new()
     {
         public void Run(Action<T> assert)
         {
