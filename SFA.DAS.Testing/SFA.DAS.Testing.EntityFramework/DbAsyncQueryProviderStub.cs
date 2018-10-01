@@ -1,4 +1,5 @@
-﻿using System.Data.Entity.Infrastructure;
+﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -17,6 +18,15 @@ namespace SFA.DAS.Testing.EntityFramework
 
         public IQueryable CreateQuery(Expression expression)
         {
+            if (expression is MethodCallExpression methodCallExpression)
+            {
+                var resultType = methodCallExpression.Method.ReturnType;
+                var elementType = resultType.GetGenericArguments()[0];
+                var queryableType = typeof(DbAsyncEnumerableStub<>).MakeGenericType(elementType);
+
+                return (IQueryable)Activator.CreateInstance(queryableType, expression);
+            }
+
             return new DbAsyncEnumerableStub<TEntity>(expression);
         }
 
