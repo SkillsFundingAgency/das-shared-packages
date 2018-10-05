@@ -6,6 +6,7 @@ namespace SFA.DAS.UnitOfWork.SqlServer
     {
         public SqlServerUnitOfWorkRegistry()
         {
+            IncludeRegistry<UnitOfWorkRegistry>();
             For<IUnitOfWorkManager>().Add<UnitOfWorkManager>();
         }
     }

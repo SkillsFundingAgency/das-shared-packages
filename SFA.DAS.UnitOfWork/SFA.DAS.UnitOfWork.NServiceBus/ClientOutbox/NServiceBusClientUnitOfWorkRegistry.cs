@@ -6,6 +6,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
     {
         public NServiceBusClientUnitOfWorkRegistry()
         {
+            IncludeRegistry<UnitOfWorkRegistry>();
             For<IUnitOfWork>().Add<UnitOfWork>();
             For<IUnitOfWorkManager>().Add<UnitOfWorkManager>();
         }

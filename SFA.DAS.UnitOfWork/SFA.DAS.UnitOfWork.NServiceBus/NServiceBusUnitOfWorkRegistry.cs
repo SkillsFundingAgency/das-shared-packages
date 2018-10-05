@@ -6,6 +6,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus
     {
         public NServiceBusUnitOfWorkRegistry()
         {
+            IncludeRegistry<UnitOfWorkRegistry>();
             For<IUnitOfWork>().Add<UnitOfWork>();
         }
     }
