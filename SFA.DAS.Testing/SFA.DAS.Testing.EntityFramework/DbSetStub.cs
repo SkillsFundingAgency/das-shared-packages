@@ -54,7 +54,6 @@ namespace SFA.DAS.Testing.EntityFramework
 
         public override T Add(T item)
         {
-            //todo: clone on the way in?
             _local.Add(item);
             return item;
         }
