@@ -9,15 +9,18 @@ using System.Linq.Expressions;
 
 namespace SFA.DAS.Testing.EntityFramework
 {
+    /// <remarks>
+    /// See https://docs.microsoft.com/en-us/ef/ef6/fundamentals/testing/writing-test-doubles
+    /// </remarks>
     public class DbSetStub<T> : DbSet<T>, IDbAsyncEnumerable<T>, IQueryable<T> where T : class
     {
-        public Expression Expression => _data.Expression;
-        public Type ElementType => _data.ElementType;
-        public override ObservableCollection<T> Local => _local ?? (_local = new ObservableCollection<T>(_data));
-        public IQueryProvider Provider => new DbAsyncQueryProviderStub<T>(_data.Provider);
+        public Expression Expression => _query.Expression;
+        public Type ElementType => _query.ElementType;
+        public override ObservableCollection<T> Local => _local;
+        public IQueryProvider Provider => new DbAsyncQueryProviderStub<T>(_query.Provider);
 
-        private readonly IQueryable<T> _data;
-        private ObservableCollection<T> _local;
+        private readonly IQueryable<T> _query;
+        private readonly ObservableCollection<T> _local;
 
         public DbSetStub(params T[] data) : this(data.AsEnumerable())
         {
@@ -25,12 +28,13 @@ namespace SFA.DAS.Testing.EntityFramework
 
         public DbSetStub(IEnumerable<T> data)
         {
-            _data = data.AsQueryable();
+            _query = data.AsQueryable();
+            _local = new ObservableCollection<T>(_query);
         }
 
         public IDbAsyncEnumerator<T> GetAsyncEnumerator()
         {
-            return new DbAsyncEnumeratorStub<T>(_data.GetEnumerator());
+            return new DbAsyncEnumeratorStub<T>(_local.GetEnumerator());
         }
 
         IDbAsyncEnumerator IDbAsyncEnumerable.GetAsyncEnumerator()
@@ -40,12 +44,30 @@ namespace SFA.DAS.Testing.EntityFramework
 
         public IEnumerator<T> GetEnumerator()
         {
-            return _data.GetEnumerator();
+            return _local.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public override T Add(T item)
+        {
+            _local.Add(item);
+            return item;
+        }
+
+        public override T Remove(T item)
+        {
+            _local.Remove(item);
+            return item;
+        }
+
+        public override T Attach(T item)
+        {
+            _local.Add(item);
+            return item;
         }
     }
 }
