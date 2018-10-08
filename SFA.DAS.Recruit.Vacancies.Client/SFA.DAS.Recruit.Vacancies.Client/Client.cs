@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
 using Microsoft.WindowsAzure.Storage;
@@ -17,6 +18,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
         private const string LiveVacancyDocumentType = "LiveVacancy";
         private const string IdFormat = "LiveVacancy_{0}";
         private const string ApplicationSubmittedQueueName = "application-submitted-queue";
+        private const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
 
         private readonly string _connectionString;
         private readonly string _databaseName;
@@ -78,6 +80,22 @@ namespace SFA.DAS.Recruit.Vacancies.Client
 
             var queue = GetQueue(ApplicationSubmittedQueueName);
             
+            queue.AddMessage(cloudQueueMessage);
+        }
+
+        public void WithdrawApplication(long vacancyReference, Guid candidateId)
+        {
+            var message = new ApplicationWithdrawMessage
+            {
+                CandidateId = candidateId,
+                VacancyReference = vacancyReference
+            };
+
+            var messageContent = JsonConvert.SerializeObject(message, Formatting.Indented);
+            var cloudQueueMessage = new CloudQueueMessage(messageContent);
+
+            var queue = GetQueue(ApplicationWithdrawnQueueName);
+
             queue.AddMessage(cloudQueueMessage);
         }
 

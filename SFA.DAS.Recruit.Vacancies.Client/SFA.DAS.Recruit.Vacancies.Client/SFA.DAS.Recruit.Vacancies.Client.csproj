@@ -92,6 +92,7 @@
     <Compile Include="Entities\Wage.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Messages\ApplicationSubmitMessage.cs" />
+    <Compile Include="Messages\ApplicationWithdrawMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VacancyVersionHelper.cs" />
   </ItemGroup>
