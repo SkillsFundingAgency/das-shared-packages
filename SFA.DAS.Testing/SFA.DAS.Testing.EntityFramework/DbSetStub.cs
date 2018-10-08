@@ -52,8 +52,6 @@ namespace SFA.DAS.Testing.EntityFramework
             return GetEnumerator();
         }
 
-        #region Entity Operations
-
         public override T Add(T item)
         {
             //todo: clone on the way in?
@@ -82,7 +80,5 @@ namespace SFA.DAS.Testing.EntityFramework
         {
             return Activator.CreateInstance<TDerivedEntity>();
         }
-
-        #endregion Entity Operations
     }
 }
