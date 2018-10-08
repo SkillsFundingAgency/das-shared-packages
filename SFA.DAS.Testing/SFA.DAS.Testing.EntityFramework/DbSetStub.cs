@@ -69,15 +69,5 @@ namespace SFA.DAS.Testing.EntityFramework
             _local.Add(item);
             return item;
         }
-
-        public override T Create()
-        {
-            return Activator.CreateInstance<T>();
-        }
-
-        public override TDerivedEntity Create<TDerivedEntity>()
-        {
-            return Activator.CreateInstance<TDerivedEntity>();
-        }
     }
 }
