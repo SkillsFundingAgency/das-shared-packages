@@ -16,7 +16,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
     public class Client : IClient
     {
         private const string LiveVacancyDocumentType = "LiveVacancy";
-        private const string IdFormat = "LiveVacancy_{0}";
+        private const string ClosedVacancyDocumentType = "ClosedVacancy";
         private const string ApplicationSubmittedQueueName = "application-submitted-queue";
         private const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
 
@@ -35,7 +35,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
                 new IgnoreIfNullConvention(true)
             };
             ConventionRegistry.Register("recruit conventions", pack, t => t == typeof(Address) ||
-                                                                          t == typeof(LiveVacancy) ||
+                                                                          t == typeof(Vacancy) ||
                                                                           t == typeof(Qualification) ||
                                                                           t == typeof(TrainingProvider) ||
                                                                           t == typeof(Wage));
@@ -49,16 +49,17 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             _storageConnection = storageConnection;
         }
 
-        public LiveVacancy GetVacancy(long vacancyReference)
+        public Vacancy GetVacancy(long vacancyReference)
         {
-            var id = string.Format(IdFormat, vacancyReference);
-            
             var collection = GetCollection();
-            var result = collection.Find(lv => lv.Id.Equals(id) && lv.ViewType.Equals(LiveVacancyDocumentType)).SingleOrDefault();
+            var result = collection.Find(lv =>
+                    lv.VacancyReference.Equals(vacancyReference) &&
+                    (lv.ViewType.Equals(LiveVacancyDocumentType) || lv.ViewType.Equals(ClosedVacancyDocumentType)))
+                .SingleOrDefault();
             return result;
         }
 
-        public IList<LiveVacancy> GetLiveVacancies()
+        public IList<Vacancy> GetLiveVacancies()
         {
             var collection = GetCollection();
             var vacancies = collection
@@ -99,14 +100,14 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             queue.AddMessage(cloudQueueMessage);
         }
 
-        private IMongoCollection<LiveVacancy> GetCollection()
+        private IMongoCollection<Vacancy> GetCollection()
         {
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_connectionString));
             settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
             
             var client = new MongoClient(settings);
             var database = client.GetDatabase(_databaseName);
-            var collection = database.GetCollection<LiveVacancy>(_collectionName);
+            var collection = database.GetCollection<Vacancy>(_collectionName);
 
             return collection;
         }
