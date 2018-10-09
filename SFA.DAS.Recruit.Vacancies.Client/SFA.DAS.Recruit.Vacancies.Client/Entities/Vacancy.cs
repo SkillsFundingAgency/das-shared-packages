@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.Vacancies.Client.Entities
 {
-    public class LiveVacancy
+    public class Vacancy
     {
         public string Id { get; set; }
         public string ViewType { get; set; }

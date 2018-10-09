@@ -50,12 +50,15 @@
   <ItemGroup>
     <Compile Include="ApplicationSubmitTests.cs" />
     <Compile Include="ApplicationWithdrawTests.cs" />
+    <Compile Include="ClientTests\GetVacancyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VacancyVersionHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Recruit.Vacancies.Client\SFA.DAS.Recruit.Vacancies.Client.csproj">
