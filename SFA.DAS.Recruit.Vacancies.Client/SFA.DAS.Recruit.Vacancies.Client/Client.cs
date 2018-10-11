@@ -19,6 +19,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
         private const string ClosedVacancyDocumentType = "ClosedVacancy";
         private const string ApplicationSubmittedQueueName = "application-submitted-queue";
         private const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
+        private const string CandidateDeleteQueueName = "candidate-delete-queue";
 
         private readonly string _connectionString;
         private readonly string _databaseName;
@@ -96,6 +97,21 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var cloudQueueMessage = new CloudQueueMessage(messageContent);
 
             var queue = GetQueue(ApplicationWithdrawnQueueName);
+
+            queue.AddMessage(cloudQueueMessage);
+        }
+
+        public void DeleteCandidate(Guid candidateId)
+        {
+            var message = new CandidateDeleteMessage
+            {
+                CandidateId = candidateId
+            };
+
+            var messageContent = JsonConvert.SerializeObject(message, Formatting.Indented);
+            var cloudQueueMessage = new CloudQueueMessage(messageContent);
+
+            var queue = GetQueue(CandidateDeleteQueueName);
 
             queue.AddMessage(cloudQueueMessage);
         }

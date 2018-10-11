@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationSubmitTests.cs" />
+    <Compile Include="CandidateDeleteTests.cs" />
     <Compile Include="ApplicationWithdrawTests.cs" />
     <Compile Include="ClientTests\GetVacancyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
