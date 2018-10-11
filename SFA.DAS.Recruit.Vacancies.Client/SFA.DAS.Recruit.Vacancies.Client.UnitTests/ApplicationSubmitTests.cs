@@ -34,7 +34,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
                 ApplicationDate = DateTime.Now,
                 BirthDate = DateTime.Parse("2009-10-29"),
                 CandidateId = Guid.NewGuid(),
-                DisabilityStatus = "disability status",
+                DisabilityStatus = "Yes",
                 EducationFromYear = 2010,
                 EducationInstitution = "education institution",
                 EducationToYear = 2011,
