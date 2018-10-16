@@ -3,9 +3,9 @@ using StructureMap;
 
 namespace SFA.DAS.UnitOfWork.EntityFrameworkCore
 {
-    public class EntityFrameworkUnitOfWorkRegistry<T> : Registry where T : DbContext
+    public class EntityFrameworkCoreUnitOfWorkRegistry<T> : Registry where T : DbContext
     {
-        public EntityFrameworkUnitOfWorkRegistry()
+        public EntityFrameworkCoreUnitOfWorkRegistry()
         {
             For<IUnitOfWork>().Add<UnitOfWork<T>>();
         }

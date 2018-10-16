@@ -25,11 +25,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.NService
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.NServiceBus", "SFA.DAS.UnitOfWork.NServiceBus\SFA.DAS.UnitOfWork.NServiceBus.csproj", "{8A301719-3AED-4A1A-A0E7-3208A058A754}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.SqlServer", "SFA.DAS.UnitOfWork.SqlServer\SFA.DAS.UnitOfWork.SqlServer.csproj", "{A831EFDB-3415-4431-83C9-B1F99FF82BCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.SqlServer", "SFA.DAS.UnitOfWork.SqlServer\SFA.DAS.UnitOfWork.SqlServer.csproj", "{A831EFDB-3415-4431-83C9-B1F99FF82BCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.SqlServer.UnitTests", "SFA.DAS.UnitOfWork.SqlServer.UnitTests\SFA.DAS.UnitOfWork.SqlServer.UnitTests.csproj", "{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.SqlServer.UnitTests", "SFA.DAS.UnitOfWork.SqlServer.UnitTests\SFA.DAS.UnitOfWork.SqlServer.UnitTests.csproj", "{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.EntityFrameworkCore", "SFA.DAS.UnitOfWork.EntityFrameworkCore\SFA.DAS.UnitOfWork.EntityFrameworkCore.csproj", "{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.EntityFrameworkCore", "SFA.DAS.UnitOfWork.EntityFrameworkCore\SFA.DAS.UnitOfWork.EntityFrameworkCore.csproj", "{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9ED731E2-4270-4C38-99B4-928BE9FFF834}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
