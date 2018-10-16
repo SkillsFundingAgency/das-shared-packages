@@ -25,9 +25,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.NService
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.NServiceBus", "SFA.DAS.UnitOfWork.NServiceBus\SFA.DAS.UnitOfWork.NServiceBus.csproj", "{8A301719-3AED-4A1A-A0E7-3208A058A754}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.SqlServer", "SFA.DAS.UnitOfWork.SqlServer\SFA.DAS.UnitOfWork.SqlServer.csproj", "{A831EFDB-3415-4431-83C9-B1F99FF82BCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.SqlServer", "SFA.DAS.UnitOfWork.SqlServer\SFA.DAS.UnitOfWork.SqlServer.csproj", "{A831EFDB-3415-4431-83C9-B1F99FF82BCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.SqlServer.UnitTests", "SFA.DAS.UnitOfWork.SqlServer.UnitTests\SFA.DAS.UnitOfWork.SqlServer.UnitTests.csproj", "{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.SqlServer.UnitTests", "SFA.DAS.UnitOfWork.SqlServer.UnitTests\SFA.DAS.UnitOfWork.SqlServer.UnitTests.csproj", "{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.UnitOfWork.EntityFrameworkCore", "SFA.DAS.UnitOfWork.EntityFrameworkCore\SFA.DAS.UnitOfWork.EntityFrameworkCore.csproj", "{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9ED731E2-4270-4C38-99B4-928BE9FFF834}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.EntityFrameworkCore.UnitTests", "SFA.DAS.UnitOfWork.EntityFrameworkCore.UnitTests\SFA.DAS.UnitOfWork.EntityFrameworkCore.UnitTests.csproj", "{490CFE19-43E1-4E7C-8A5E-AC050E411EA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +93,14 @@ Global
 		{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{490CFE19-43E1-4E7C-8A5E-AC050E411EA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{490CFE19-43E1-4E7C-8A5E-AC050E411EA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{490CFE19-43E1-4E7C-8A5E-AC050E411EA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{490CFE19-43E1-4E7C-8A5E-AC050E411EA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +112,7 @@ Global
 		{0E43A2B3-CAD9-49E7-BEB1-EF3630A7876D} = {E22A6AD2-5789-4476-9E8C-931865A063EF}
 		{3292CC0C-4AFB-4D50-9E56-4B43047890AC} = {E22A6AD2-5789-4476-9E8C-931865A063EF}
 		{4FF7FB03-9B5F-467F-AB3C-54C934EED78F} = {E22A6AD2-5789-4476-9E8C-931865A063EF}
+		{490CFE19-43E1-4E7C-8A5E-AC050E411EA3} = {E22A6AD2-5789-4476-9E8C-931865A063EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDFEC84D-CF8D-41A2-AF6C-79F23CDF9F6F}
