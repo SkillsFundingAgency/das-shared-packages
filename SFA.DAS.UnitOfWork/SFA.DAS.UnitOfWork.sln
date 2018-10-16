@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.SqlServe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.SqlServer.UnitTests", "SFA.DAS.UnitOfWork.SqlServer.UnitTests\SFA.DAS.UnitOfWork.SqlServer.UnitTests.csproj", "{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.EntityFrameworkCore", "SFA.DAS.UnitOfWork.EntityFrameworkCore\SFA.DAS.UnitOfWork.EntityFrameworkCore.csproj", "{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FF7FB03-9B5F-467F-AB3C-54C934EED78F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4804B8A3-AD12-42DF-BD03-BF8CBDCFDB09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
