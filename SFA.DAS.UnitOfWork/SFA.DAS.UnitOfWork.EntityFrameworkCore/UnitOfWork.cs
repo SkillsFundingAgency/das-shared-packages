@@ -15,7 +15,11 @@ namespace SFA.DAS.UnitOfWork.EntityFrameworkCore
 
         public async Task CommitAsync(Func<Task> next)
         {
-            await _db.Value.SaveChangesAsync().ConfigureAwait(false);
+            using (new SynchronizationContextRemover())
+            {
+                await _db.Value.SaveChangesAsync();
+            }
+            
             await next().ConfigureAwait(false);
         }
     }
