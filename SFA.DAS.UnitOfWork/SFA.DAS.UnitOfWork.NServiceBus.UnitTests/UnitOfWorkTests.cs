@@ -24,7 +24,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
         }
     }
 
-    public class UnitOfWorkTestsFixture : FluentTestFixture
+    public class UnitOfWorkTestsFixture
     {
         public Mock<IUniformSession> UniformSession { get; set; }
         public List<Event> Events { get; set; }

@@ -33,11 +33,11 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
         [Test]
         public Task InvokeAsync_WhenInvokingMiddlewareAndAnExceptionIsThrown_ThenShouldThrowException()
         {
-            return RunAsync(f => f.SetException(), f => f.InvokeAsync(), (f, a) => a.ShouldThrow<Exception>());
+            return RunAsync(f => f.SetException(), f => f.InvokeAsync(), (f, a) => a.Should().Throw<Exception>());
         }
     }
 
-    public class UnitOfWorkManagerMiddlewareTestsFixture : FluentTestFixture
+    public class UnitOfWorkManagerMiddlewareTestsFixture
     {
         public HttpContext Context { get; set; }
         public Mock<IUnitOfWorkManager> UnitOfWorkManager { get; set; }

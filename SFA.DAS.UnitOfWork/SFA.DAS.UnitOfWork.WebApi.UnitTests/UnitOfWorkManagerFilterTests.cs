@@ -32,7 +32,7 @@ namespace SFA.DAS.UnitOfWork.WebApi.UnitTests
         }
     }
 
-    public class UnitOfWorkManagerFilterTestsFixture : FluentTestFixture
+    public class UnitOfWorkManagerFilterTestsFixture
     {
         public Mock<IUnitOfWorkManager> UnitOfWorkManager { get; set; }
         public UnitOfWorkManagerFilter UnitOfWorkManagerFilter { get; set; }

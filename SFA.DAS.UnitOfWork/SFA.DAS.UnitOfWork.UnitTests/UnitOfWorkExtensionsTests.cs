@@ -24,7 +24,7 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         }
     }
 
-    public class UnitOfWorkExtensionsTestsFixture : FluentTestFixture
+    public class UnitOfWorkExtensionsTestsFixture
     {
         public List<Mock<IUnitOfWork>> UnitsOfWork { get; }
         public Mock<Func<Task>> NextTask { get; }

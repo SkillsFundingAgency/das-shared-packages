@@ -70,7 +70,7 @@ namespace SFA.DAS.UnitOfWork.SqlServer.UnitTests
         }
     }
 
-    public class UnitOfWorkManagerTestsFixture : FluentTestFixture
+    public class UnitOfWorkManagerTestsFixture
     {
         public IUnitOfWorkManager UnitOfWorkManager { get; set; }
         public Mock<DbConnection> Connection { get; set; }

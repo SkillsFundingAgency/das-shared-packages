@@ -79,7 +79,7 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests
         }
     }
 
-    public class UnitOfWorkManagerFilterTestsFixture : FluentTestFixture
+    public class UnitOfWorkManagerFilterTestsFixture
     {
         public Mock<IUnitOfWorkManager> UnitOfWorkManager { get; set; }
         public UnitOfWorkManagerFilter UnitOfWorkManagerFilter { get; set; }

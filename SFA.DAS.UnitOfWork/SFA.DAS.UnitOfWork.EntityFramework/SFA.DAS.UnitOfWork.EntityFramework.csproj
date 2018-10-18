@@ -4,7 +4,7 @@
         <LangVersion>latest</LangVersion>
         <TargetFrameworks>net462</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        
+
         <Authors>DAS</Authors>
         <Description>Entity Framework unit of work integration for SFA.DAS.UnitOfWork</Description>
         <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>

@@ -16,7 +16,7 @@ namespace SFA.DAS.UnitOfWork.EntityFramework.UnitTests
         }
     }
 
-    public class UnitOfWorkTestsFixture : FluentTestFixture
+    public class UnitOfWorkTestsFixture
     {
         public Mock<DbContextStub> DbContext { get; set; }
         public IUnitOfWork UnitOfWork { get; set; }

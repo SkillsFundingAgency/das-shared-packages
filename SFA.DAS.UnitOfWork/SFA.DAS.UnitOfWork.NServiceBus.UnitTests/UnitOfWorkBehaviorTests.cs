@@ -19,7 +19,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
         }
     }
 
-    public class UnitOfWorkBehaviorTestsFixture : FluentTestFixture
+    public class UnitOfWorkBehaviorTestsFixture
     {
         public List<Mock<IUnitOfWork>> UnitsOfWork { get; set; }
         public UnitOfWorkBehavior UnitOfWorkBehavior { get; set; }

@@ -20,7 +20,7 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         [Test]
         public void Get_WhenGettingDataAndKeyDoesNotExist_ThenShouldThrowException()
         {
-            Run(f => f.GetData(), (f, a) => a.ShouldThrow<Exception>().WithMessage($"The key '{typeof(object).FullName}' was not present in the unit of work context"));
+            Run(f => f.GetData(), (f, a) => a.Should().Throw<Exception>().WithMessage($"The key '{typeof(object).FullName}' was not present in the unit of work context"));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         }
     }
 
-    public class UnitOfWorkContextTestsFixture : FluentTestFixture
+    public class UnitOfWorkContextTestsFixture
     {
         public DateTime Now { get; set; }
         public object Data { get; set; }

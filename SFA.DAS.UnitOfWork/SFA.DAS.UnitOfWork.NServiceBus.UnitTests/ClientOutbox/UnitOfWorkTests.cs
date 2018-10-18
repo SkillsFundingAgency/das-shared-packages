@@ -48,7 +48,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         }
     }
 
-    public class UnitOfWorkTestsFixture : FluentTestFixture
+    public class UnitOfWorkTestsFixture
     {
         public IUnitOfWork UnitOfWork { get; set; }
         public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }

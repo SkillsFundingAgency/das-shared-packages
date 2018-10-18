@@ -21,7 +21,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
         }
     }
 
-    public class EventPublisherTestsFixture : FluentTestFixture
+    public class EventPublisherTestsFixture
     {
         public FooEvent FooEvent { get; set; }
         public Func<BarEvent> BarEvent { get; set; }

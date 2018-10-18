@@ -18,7 +18,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
         }
     }
 
-    public class InvokeHandlerBehaviorTestsFixture : FluentTestFixture
+    public class InvokeHandlerBehaviorTestsFixture
     {
         public UnitOfWorkContextBehavior Behavior { get; set; }
         public TestableInvokeHandlerContext Context { get; set; }
