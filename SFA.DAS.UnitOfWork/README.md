@@ -19,7 +19,6 @@ The following example configures an MVC application to:
 ```c#
 var container = new Container(c =>
 {
-    c.AddRegistry<UnitOfWorkRegistry>();
     c.AddRegistry<SqlServerUnitOfWorkRegistry>();
     c.AddRegistry<EntityFrameworkUnitOfWorkRegistry<FooDbContext>>();
 });
@@ -32,7 +31,6 @@ filters.AddUnitOfWorkFilter();
 ```c#
 var container = new Container(c =>
 {
-    c.AddRegistry<UnitOfWorkRegistry>();
     c.AddRegistry<SqlServerUnitOfWorkRegistry>();
     c.AddRegistry<EntityFrameworkUnitOfWorkRegistry<FooDbContext>>();
 });
