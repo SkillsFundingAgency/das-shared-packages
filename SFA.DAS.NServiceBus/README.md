@@ -141,7 +141,7 @@ To ensure data is saved and messages are published as part of the same transacti
 
 ```c#
 var session = _unitOfWorkContext.Get<IClientOutboxTransaction>();
-var sqlSession = session.SqlPersistenceSession();
+var sqlSession = session.GetSqlSession();
 var connection = sqlSession.Connection;
 var transaction = sqlSession.Transaction;
 ```
@@ -150,7 +150,7 @@ var transaction = sqlSession.Transaction;
 
 ```c#
 var session = _unitOfWorkContext.Get<SynchronizedStorageSession>();
-var sqlSession = session.SqlPersistenceSession();
+var sqlSession = session.GetSqlSession();
 var connection = sqlSession.Connection;
 var transaction = sqlSession.Transaction;
 ```
