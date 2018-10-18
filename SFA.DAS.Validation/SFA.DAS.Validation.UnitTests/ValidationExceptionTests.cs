@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Castle.Core.Internal;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Testing;
@@ -37,7 +36,7 @@ namespace SFA.DAS.Validation.UnitTests
         [Test]
         public void Initialize_WhenInitializingWithErrors_ThenShouldHaveValidationErrorsForSpecificProperties()
         {
-            Run(f => f.SetErrors(), f => f.Initialize(), (f, r) => r.ValidationErrors.ForEach(e => e.Should().Match<ValidationError>(e2 => e2.Property.Compile().DynamicInvoke(e2.Instance) as string == e2.Message)));
+            Run(f => f.SetErrors(), f => f.Initialize(), (f, r) => r.ValidationErrors.ToList().ForEach(e => e.Should().Match<ValidationError>(e2 => e2.Property.Compile().DynamicInvoke(e2.Instance) as string == e2.Message)));
         }
     }
 
