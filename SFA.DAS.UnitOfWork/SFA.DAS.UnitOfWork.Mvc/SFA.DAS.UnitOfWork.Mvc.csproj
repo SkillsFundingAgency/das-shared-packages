@@ -1,31 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
-    <Authors>DAS</Authors>
-    <Description>MVC integration for SFA.DAS.UnitOfWork</Description>
-    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork</PackageProjectUrl>
-  </PropertyGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>NETCOREAPP2_0</DefineConstants>
-  </PropertyGroup>
+        <Authors>DAS</Authors>
+        <Description>MVC integration for SFA.DAS.UnitOfWork</Description>
+        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork</PackageProjectUrl>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <DefineConstants>NET462</DefineConstants>
-  </PropertyGroup>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <EmbedUntrackedSources>false</EmbedUntrackedSources>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
-  </ItemGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+        <DefineConstants>NETCOREAPP2_0</DefineConstants>
+    </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
-  </ItemGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
+        <DefineConstants>NET462</DefineConstants>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.UnitOfWork\SFA.DAS.UnitOfWork.csproj" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+        <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SFA.DAS.UnitOfWork\SFA.DAS.UnitOfWork.csproj"/>
+    </ItemGroup>
 
 </Project>
