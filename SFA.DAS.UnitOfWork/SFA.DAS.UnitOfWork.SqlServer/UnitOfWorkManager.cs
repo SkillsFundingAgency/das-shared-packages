@@ -21,7 +21,7 @@ namespace SFA.DAS.UnitOfWork.SqlServer
 
         public async Task BeginAsync()
         {
-            await _connection.TryOpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
             _transaction = _connection.BeginTransaction();
 

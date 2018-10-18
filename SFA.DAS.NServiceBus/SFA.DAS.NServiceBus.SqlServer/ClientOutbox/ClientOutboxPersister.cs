@@ -29,7 +29,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public async Task<IClientOutboxTransaction> BeginTransactionAsync()
         {
-            await _connection.TryOpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
             var transaction = _connection.BeginTransaction();
             var sqlClientOutboxTransaction = new SqlClientOutboxTransaction(_connection, transaction);
@@ -66,7 +66,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public async Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync()
         {
-            await _connection.TryOpenAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
 
             try
             {
