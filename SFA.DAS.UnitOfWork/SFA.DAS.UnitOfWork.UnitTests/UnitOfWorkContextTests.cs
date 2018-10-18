@@ -20,19 +20,19 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         [Test]
         public void Get_WhenGettingDataAndKeyDoesNotExist_ThenShouldThrowException()
         {
-            Run(f => f.GetData(), (f, a) => a.ShouldThrow<Exception>().WithMessage($"The key '{typeof(object).FullName}' was not present in the dictionary"));
+            Run(f => f.GetData(), (f, a) => a.ShouldThrow<Exception>().WithMessage($"The key '{typeof(object).FullName}' was not present in the unit of work context"));
         }
 
         [Test]
-        public void TryGet_WhenGettingData_ThenShouldReturnData()
+        public void Find_WhenGettingData_ThenShouldReturnData()
         {
-            Run(f => f.SetData(), f => f.TryGetData(), (f, d) => d.Should().Be(f.Data));
+            Run(f => f.SetData(), f => f.FindData(), (f, d) => d.Should().Be(f.Data));
         }
 
         [Test]
-        public void TryGet_WhenGettingDataAndKeyDoesNotExist_ThenShouldReturnNull()
+        public void Find_WhenGettingDataAndKeyDoesNotExist_ThenShouldReturnNull()
         {
-            Run(f => f.TryGetData(), (f, d) => d.Should().BeNull());
+            Run(f => f.FindData(), (f, d) => d.Should().BeNull());
         }
 
         [Test]
@@ -178,9 +178,9 @@ namespace SFA.DAS.UnitOfWork.UnitTests
             return this;
         }
 
-        public object TryGetData()
+        public object FindData()
         {
-            return UnitOfWorkContextInstance.TryGet<object>();
+            return UnitOfWorkContextInstance.Find<object>();
         }
     }
 }

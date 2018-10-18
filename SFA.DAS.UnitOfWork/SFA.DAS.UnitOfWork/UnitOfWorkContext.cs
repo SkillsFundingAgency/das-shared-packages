@@ -37,7 +37,12 @@ namespace SFA.DAS.UnitOfWork
             AddEvent(action);
         }
 
-        public T Get<T>()
+        public T Find<T>() where T : class
+        {
+            return _data.TryGetValue(typeof(T).FullName, out var value) ? (T)value : null;
+        }
+
+        public T Get<T>() where T : class
         {
             var key = typeof(T).FullName;
 
@@ -46,7 +51,7 @@ namespace SFA.DAS.UnitOfWork
                 return (T)value;
             }
 
-            throw new KeyNotFoundException($"The key '{key}' was not present in the dictionary");
+            throw new KeyNotFoundException($"The key '{key}' was not present in the unit of work context");
         }
 
         public IEnumerable<object> GetEvents()
@@ -54,14 +59,9 @@ namespace SFA.DAS.UnitOfWork
             return Events.Value.Select(e => e());
         }
 
-        public void Set<T>(T value)
+        public void Set<T>(T value) where T : class
         {
             _data[typeof(T).FullName] = value;
-        }
-
-        public T TryGet<T>() where T : class
-        {
-            return _data.TryGetValue(typeof(T).FullName, out var value) ? (T) value : null;
         }
     }
 }
