@@ -64,14 +64,14 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetCommandText);
                 f.Command.VerifySet(c => c.Transaction = f.Transaction.Object);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "MessageId" && p.Value as Guid? == f.ClientOutboxMessage.MessageId)));
-                r.ShouldBeEquivalentTo(f.ClientOutboxMessage);
+                r.Should().BeEquivalentTo(f.ClientOutboxMessage);
             });
         }
 
         [Test]
         public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldThrowAnException()
         {
-            return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.ShouldThrow<KeyNotFoundException>()
+            return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().Throw<KeyNotFoundException>()
                 .WithMessage($"Client outbox data not found where MessageId = '{f.ClientOutboxMessage.MessageId}'"));
         }
 
@@ -84,7 +84,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
                 f.Connection.Verify(c => c.Close(), Times.Once);
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetAwaitingDispatchCommandText);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? <= f.Now)));
-                r.ShouldAllBeEquivalentTo(f.OutboxMessages);
+                r.Should().BeEquivalentTo(f.OutboxMessages);
             });
         }
 
@@ -103,7 +103,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
     }
 
-    public class ClientOutboxPersisterTestsFixture : FluentTestFixture
+    public class ClientOutboxPersisterTestsFixture
     {
         public DateTime Now { get; set; }
         public IClientOutboxStorage ClientOutboxStorage { get; set; }

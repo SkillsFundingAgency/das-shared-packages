@@ -49,7 +49,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
     }
 
-    public class SqlClientOutboxTransactionTestsFixture : FluentTestFixture
+    public class SqlClientOutboxTransactionTestsFixture
     {
         public Mock<DbConnection> Connection { get; set; }
         public Mock<DbTransaction> Transaction { get; set; }

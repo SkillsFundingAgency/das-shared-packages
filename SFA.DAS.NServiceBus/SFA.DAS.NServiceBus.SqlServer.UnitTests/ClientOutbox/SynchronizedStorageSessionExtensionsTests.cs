@@ -21,12 +21,12 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         [Test]
         public void GetSqlSession_WhenGettingTheSqlSessionAndItIsNotASqlStorageSession_ThenShouldThrowAnException()
         {
-            Run(f => f.SetNonSqlSession(), f => f.GetSqlSession(), (f, a) => a.ShouldThrow<Exception>()
+            Run(f => f.SetNonSqlSession(), f => f.GetSqlSession(), (f, a) => a.Should().Throw<Exception>()
                 .WithMessage("Cannot access the SQL session"));
         }
     }
 
-    public class SynchronizedStorageSessionExtensionsTestsFixture : FluentTestFixture
+    public class SynchronizedStorageSessionExtensionsTestsFixture
     {
         public Mock<SynchronizedStorageSession> Session { get; set; }
         public Mock<ISqlStorageSession> SqlSession { get; set; }

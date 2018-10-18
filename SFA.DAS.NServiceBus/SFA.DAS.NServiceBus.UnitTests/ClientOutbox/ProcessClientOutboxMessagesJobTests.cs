@@ -21,7 +21,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
             return RunAsync(f => f.SetClientOutboxMessagesAwaitingDispatch(), f => f.RunAsync(), f =>
             {
                 f.MessageSession.SentMessages.Select(m => m.Message).Should().HaveCount(2).And.ContainItemsAssignableTo<ProcessClientOutboxMessageCommand>();
-                f.MessageSession.SentMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), EndpointName = m.Options.GetDestination() }).ShouldAllBeEquivalentTo(f.ClientOutboxMessages);
+                f.MessageSession.SentMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), EndpointName = m.Options.GetDestination() }).Should().BeEquivalentTo(f.ClientOutboxMessages);
             });
         }
 
@@ -32,7 +32,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         }
     }
 
-    public class ProcessOutboxMessagesJobTestsFixture : FluentTestFixture
+    public class ProcessOutboxMessagesJobTestsFixture
     {
         public TestableMessageSession MessageSession { get; set; }
         public List<IClientOutboxMessageAwaitingDispatch> ClientOutboxMessages { get; set; }

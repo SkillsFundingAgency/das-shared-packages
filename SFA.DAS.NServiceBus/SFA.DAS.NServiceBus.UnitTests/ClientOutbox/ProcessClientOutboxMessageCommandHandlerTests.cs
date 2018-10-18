@@ -27,7 +27,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         }
     }
 
-    public class ProcessClientOutboxMessageCommandHandlerTestsFixture : FluentTestFixture
+    public class ProcessClientOutboxMessageCommandHandlerTestsFixture
     {
         public DateTime Now { get; set; }
         public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }
