@@ -27,7 +27,6 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
         public void Dispose()
         {
             Transaction.Dispose();
-            Connection.Dispose();
         }
 
         public void OnSaveChanges(Func<ISqlStorageSession, Task> callback)
