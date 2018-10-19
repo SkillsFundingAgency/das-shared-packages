@@ -31,6 +31,8 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
 
             if (string.IsNullOrEmpty(messageQueueConnectionString))
             {
+                _logger.Info("Using FileSystemMessagePublisher (messageQueueConnectionString not found)");
+
                 var groupFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + $"/{_serviceName}/";
 
                 var publisher = new FileSystemMessagePublisher(groupFolder);
@@ -38,7 +40,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus.StructureMap
             }
             else
             {
-                
+                _logger.Info("Using TopicMessagePublisher");
                 var publisher = new TopicMessagePublisher(messageQueueConnectionString, _logger);
                 instance.Dependencies.AddForConstructorParameter(messagePublisher, publisher);
             }
