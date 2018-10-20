@@ -7,6 +7,7 @@ namespace SFA.DAS.UnitOfWork
         public UnitOfWorkRegistry()
         {
             For<IUnitOfWorkContext>().Use<UnitOfWorkContext>();
+            For<IUnitOfWorkScope>().Use<UnitOfWorkScope>();
         }
     }
 }
