@@ -119,16 +119,19 @@ namespace SFA.DAS.Testing
             assert(testFixture, actionResult);
         }
 
+        [Obsolete("Please use method RunAsycCheckException")]
         public Task RunAsync<TException>(Func<T, Func<Task>, ExceptionAssertions<TException>> assert) where TException : Exception
         {
             return RunAsync(null, null, assert);
         }
 
+        [Obsolete("Please use method RunAsycCheckException")]
         public Task RunAsync<TException>(Func<T, Task> act, Func<T, Func<Task>, ExceptionAssertions<TException>> assert) where TException : Exception
         {
             return RunAsync(null, act, assert);
         }
 
+        [Obsolete("Please use method RunAsycCheckException")]
         public Task RunAsync<TException>(Action<T> arrange, Func<T, Task> act, Func<T, Func<Task>, ExceptionAssertions<TException>> assert) where TException : Exception
         {
             var testFixture = new T();
@@ -145,5 +148,29 @@ namespace SFA.DAS.Testing
 
             return Task.CompletedTask;
         }
+
+        public Task RunAsyncCheckException(Func<T, Task> act,
+            Action<T, Func<Task>> assert)
+        {
+            return RunAsyncCheckException(null, act, assert);
+        }
+
+        public Task RunAsyncCheckException(Action<T> arrange,
+            Func<T, Task> act,
+            Action<T, Func<Task>> assert)
+        {
+
+            if (act == null) throw new ArgumentNullException(nameof(act));
+            if (act == null) throw new ArgumentNullException(nameof(assert));
+
+            var testFixture = new T();
+
+            arrange?.Invoke(testFixture);
+
+            assert(testFixture, async () => await act(testFixture));
+
+            return Task.CompletedTask;
+        }
+
     }
 }
