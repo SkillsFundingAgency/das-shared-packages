@@ -18,7 +18,7 @@ namespace SFA.DAS.Messaging
         /// <remarks>
         ///     This allows arbitrary objects to be provided to the logger (using the overloads that accept an IIDictionary)
         /// </remarks>
-        public static Dictionary<string, object> ToDictionary(this object obj)
+        public static IDictionary<string, object> ToDictionary(this object obj)
         {
             var properties = TypeCache.GetOrAdd(obj.GetType(), type => type.GetProperties());
 
