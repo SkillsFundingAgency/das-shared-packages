@@ -61,7 +61,7 @@ namespace SFA.DAS.Testing
         public void RunCheckException<TException>(Action<T> arrange, Action<T> act, Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
         {
             if (act == null) throw new ArgumentNullException(nameof(act));
-            if (act == null) throw new ArgumentNullException(nameof(assert));
+            if (assert == null) throw new ArgumentNullException(nameof(assert));
 
             var testFixture = new T();
 
@@ -72,7 +72,7 @@ namespace SFA.DAS.Testing
         public void RunCheckException(Action<T> arrange, Action<T> act, Func<T, Action, AndConstraint<ObjectAssertions>> assert)
         {
             if (act == null) throw new ArgumentNullException(nameof(act));
-            if (act == null) throw new ArgumentNullException(nameof(assert));
+            if (assert == null) throw new ArgumentNullException(nameof(assert));
 
             var testFixture = new T();
 
@@ -142,7 +142,7 @@ namespace SFA.DAS.Testing
         {
 
             if (act == null) throw new ArgumentNullException(nameof(act));
-            if (act == null) throw new ArgumentNullException(nameof(assert));
+            if (assert == null) throw new ArgumentNullException(nameof(assert));
 
             var testFixture = new T();
 
