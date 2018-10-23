@@ -70,7 +70,7 @@ namespace SFA.DAS.Messaging
                             continue;
                         }
 
-                        Log.Debug($"Processing message of type {typeof(T).FullName}");
+                        Log.Debug($"Processing message of type {typeof(T).FullName}", message.Content.ToDictionary());
                         try
                         {
                             _messageContextProvider.StoreMessageContext(message);
