@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentAssertions;
+using FluentAssertions.Primitives;
 using FluentAssertions.Specialized;
 
 namespace SFA.DAS.Testing
@@ -51,22 +53,31 @@ namespace SFA.DAS.Testing
             assert(testFixture, actionResult);
         }
 
-        public void Run<TException>(Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
+        public void RunCheckException<TException>(Action<T> act, Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
         {
-            Run(null, null, assert);
+            RunCheckException(null, act, assert);
         }
 
-        public void Run<TException>(Action<T> act, Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
+        public void RunCheckException<TException>(Action<T> arrange, Action<T> act, Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
         {
-            Run(null, act, assert);
-        }
+            if (act == null) throw new ArgumentNullException(nameof(act));
+            if (act == null) throw new ArgumentNullException(nameof(assert));
 
-        public void Run<TException>(Action<T> arrange, Action<T> act, Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
-        {
             var testFixture = new T();
 
             arrange?.Invoke(testFixture);
-            assert(testFixture, () => act?.Invoke(testFixture));
+            assert(testFixture, () => act.Invoke(testFixture));
+        }
+
+        public void RunCheckException(Action<T> arrange, Action<T> act, Func<T, Action, AndConstraint<ObjectAssertions>> assert)
+        {
+            if (act == null) throw new ArgumentNullException(nameof(act));
+            if (act == null) throw new ArgumentNullException(nameof(assert));
+
+            var testFixture = new T();
+
+            arrange?.Invoke(testFixture);
+            assert(testFixture, () => act.Invoke(testFixture));
         }
 
         public Task RunAsync(Action<T> assert)
@@ -117,36 +128,6 @@ namespace SFA.DAS.Testing
             }
 
             assert(testFixture, actionResult);
-        }
-
-        [Obsolete("Please use method RunAsycCheckException")]
-        public Task RunAsync<TException>(Func<T, Func<Task>, ExceptionAssertions<TException>> assert) where TException : Exception
-        {
-            return RunAsync(null, null, assert);
-        }
-
-        [Obsolete("Please use method RunAsycCheckException")]
-        public Task RunAsync<TException>(Func<T, Task> act, Func<T, Func<Task>, ExceptionAssertions<TException>> assert) where TException : Exception
-        {
-            return RunAsync(null, act, assert);
-        }
-
-        [Obsolete("Please use method RunAsycCheckException")]
-        public Task RunAsync<TException>(Action<T> arrange, Func<T, Task> act, Func<T, Func<Task>, ExceptionAssertions<TException>> assert) where TException : Exception
-        {
-            var testFixture = new T();
-
-            arrange?.Invoke(testFixture);
-
-            assert(testFixture, async () =>
-            {
-                if (act != null)
-                {
-                    await act(testFixture);
-                }
-            });
-
-            return Task.CompletedTask;
         }
 
         public Task RunAsyncCheckException(Func<T, Task> act,
