@@ -74,6 +74,7 @@
     <Compile Include="Helpers\MessageGroupHelperTests\WhenIGetAMessageGroupNameFromObject.cs" />
     <Compile Include="MessageContextProviderTests.cs" />
     <Compile Include="MessageProcessorTests\WhenAMessageIsReceived.cs" />
+    <Compile Include="ObjectExtensionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
