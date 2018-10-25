@@ -78,6 +78,7 @@
     <Compile Include="MessageContext.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="PollingToEventSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
