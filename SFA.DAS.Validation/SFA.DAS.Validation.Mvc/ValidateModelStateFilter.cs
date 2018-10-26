@@ -1,7 +1,7 @@
 ﻿#if NET462
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 
 namespace SFA.DAS.Validation.Mvc
@@ -19,7 +19,7 @@ namespace SFA.DAS.Validation.Mvc
             {
                 if (!filterContext.Controller.ViewData.ModelState.IsValid)
                 {
-                    filterContext.Result = new HttpNotFoundResult();
+                    filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
 
                 var serializableModelState = filterContext.Controller.TempData[ModelStateKey] as SerializableModelStateDictionary;
