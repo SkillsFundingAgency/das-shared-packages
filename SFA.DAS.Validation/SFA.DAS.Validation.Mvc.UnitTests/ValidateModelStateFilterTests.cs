@@ -58,9 +58,9 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecutingAGetRequestAndTheModelStateIsInvalid_ThenShouldSetHttpBadRequestResult()
+        public void OnActionExecuting_WhenAnActionIsExecutingAGetRequestAndTheModelStateIsInvalid_ThenShouldSetHttpNotFoundResult()
         {
-            Run(f => f.SetGetRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().NotBeNull().And.Match<HttpStatusCodeResult>(r => r.StatusCode == (int)HttpStatusCode.BadRequest));
+            Run(f => f.SetGetRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().NotBeNull().And.BeOfType<HttpNotFoundResult>());
         }
 
         [Test]

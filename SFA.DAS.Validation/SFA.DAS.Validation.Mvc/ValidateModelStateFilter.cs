@@ -19,7 +19,7 @@ namespace SFA.DAS.Validation.Mvc
             {
                 if (!filterContext.Controller.ViewData.ModelState.IsValid)
                 {
-                    filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    filterContext.Result = new HttpNotFoundResult();
                 }
                 else
                 {
