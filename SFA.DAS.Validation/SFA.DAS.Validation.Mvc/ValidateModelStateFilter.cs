@@ -17,6 +17,11 @@ namespace SFA.DAS.Validation.Mvc
 
             if (filterContext.HttpContext.Request.HttpMethod == "GET")
             {
+                if (!filterContext.Controller.ViewData.ModelState.IsValid)
+                {
+                    filterContext.Result = new HttpNotFoundResult();
+                }
+
                 var serializableModelState = filterContext.Controller.TempData[ModelStateKey] as SerializableModelStateDictionary;
                 var modelState = serializableModelState?.ToModelState();
 

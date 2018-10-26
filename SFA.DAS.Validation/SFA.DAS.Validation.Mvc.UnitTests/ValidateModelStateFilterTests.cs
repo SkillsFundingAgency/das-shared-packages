@@ -45,6 +45,18 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
+        public void OnActionExecuting_WhenAnActionIsExecutingAGetRequestAndTheModelStateIsValid_ThenShouldNotSetResult()
+        {
+            Run(f => f.SetGetRequest(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().BeNull());
+        }
+
+        [Test]
+        public void OnActionExecuting_WhenAnActionIsExecutingAGetRequestAndTheModelStateIsInvalid_ThenShouldSetResult()
+        {
+            Run(f => f.SetGetRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().NotBeNull().And.BeOfType<HttpNotFoundResult>());
+        }
+
+        [Test]
         public void OnActionExecuting_WhenAnActionIsExecutingAGetRequestAndTheTempDataModelStateIsValid_ThenModelStateShouldBeValid()
         {
             Run(f => f.SetGetRequest(), f => f.OnActionExecuting(), f => f.Controller.Object.ViewData.ModelState.IsValid.Should().BeTrue());
