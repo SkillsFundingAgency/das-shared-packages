@@ -28,6 +28,12 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
+        public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndAnActionParameterIsNull_ThenShouldSetHttpBadRequestResult()
+        {
+            Run(f => f.SetPostRequest().SetNullActionParameter(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().NotBeNull().And.Match<HttpStatusCodeResult>(r => r.StatusCode == (int)HttpStatusCode.BadRequest));
+        }
+
+        [Test]
         public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetTempDataModelState()
         {
             Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.Controller.Object.TempData["__ModelState__"].Should().NotBeNull());
@@ -52,7 +58,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecutingAGetRequestAndTheModelStateIsInvalid_ThenShouldSetResult()
+        public void OnActionExecuting_WhenAnActionIsExecutingAGetRequestAndTheModelStateIsInvalid_ThenShouldSetHttpBadRequestResult()
         {
             Run(f => f.SetGetRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().NotBeNull().And.Match<HttpStatusCodeResult>(r => r.StatusCode == (int)HttpStatusCode.BadRequest));
         }
@@ -94,7 +100,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetResult()
+        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetRedirectToRouteResult()
         {
             Run(f => f.SetViewDataActionParameters().SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.Match<RedirectToRouteResult>(r => r.RouteValues == f.RouteData.Values));
         }
@@ -216,6 +222,13 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         {
             HttpContext.Setup(c => c.Request.HttpMethod).Returns("POST");
 
+            return this;
+        }
+
+        public ValidateModelStateFilterTestsFixture SetNullActionParameter()
+        {
+            ActionExecutingContext.ActionParameters.Add("foo", null);
+            
             return this;
         }
 

@@ -21,11 +21,17 @@ namespace SFA.DAS.Validation.Mvc
                 {
                     filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
+                else
+                {
+                    var serializableModelState = filterContext.Controller.TempData[ModelStateKey] as SerializableModelStateDictionary;
+                    var modelState = serializableModelState?.ToModelState();
 
-                var serializableModelState = filterContext.Controller.TempData[ModelStateKey] as SerializableModelStateDictionary;
-                var modelState = serializableModelState?.ToModelState();
-
-                filterContext.Controller.ViewData.ModelState.Merge(modelState);
+                    filterContext.Controller.ViewData.ModelState.Merge(modelState);
+                }
+            }
+            else if (filterContext.ActionParameters.Values.Contains(null))
+            {
+                filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             else if (!filterContext.Controller.ViewData.ModelState.IsValid)
             {
