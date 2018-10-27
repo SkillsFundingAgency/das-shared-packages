@@ -29,10 +29,6 @@ namespace SFA.DAS.Validation.Mvc
                     filterContext.Controller.ViewData.ModelState.Merge(modelState);
                 }
             }
-            else if (filterContext.ActionParameters.Values.Contains(null))
-            {
-                filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             else if (!filterContext.Controller.ViewData.ModelState.IsValid)
             {
                 var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();

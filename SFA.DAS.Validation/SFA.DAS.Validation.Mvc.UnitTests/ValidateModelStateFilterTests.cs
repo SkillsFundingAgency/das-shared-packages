@@ -28,12 +28,6 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndAnActionParameterIsNull_ThenShouldSetHttpBadRequestResult()
-        {
-            Run(f => f.SetPostRequest().SetNullActionParameter(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().NotBeNull().And.Match<HttpStatusCodeResult>(r => r.StatusCode == (int)HttpStatusCode.BadRequest));
-        }
-
-        [Test]
         public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetTempDataModelState()
         {
             Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.Controller.Object.TempData["__ModelState__"].Should().NotBeNull());
