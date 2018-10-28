@@ -228,7 +228,7 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
 
         public ValidateModelStateFilterTestsFixture SetValidationException()
         {
-            ActionExecutedContext.Exception = new ValidationException("Oops!").AddError(Model.Bar, m => m.Value, "Value is invalid");
+            ActionExecutedContext.Exception = new ValidationException("Oops!").AddError<Foo>(m => m.Bar.Value, "Value is invalid");
 
             return this;
         }

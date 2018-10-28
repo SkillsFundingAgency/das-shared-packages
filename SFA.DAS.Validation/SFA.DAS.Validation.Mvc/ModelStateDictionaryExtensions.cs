@@ -15,9 +15,7 @@ namespace SFA.DAS.Validation.Mvc
 
             foreach (var validationError in ex.ValidationErrors)
             {
-                var parentKey = model?.GetPath(validationError.Instance);
-                var childKey = ExpressionHelper.GetExpressionText(validationError.Property);
-                var key = $"{parentKey}.{childKey}".Trim('.');
+                var key = ExpressionHelper.GetExpressionText(validationError.Property);
 
                 modelState.AddModelError(key, validationError.Message);
             }

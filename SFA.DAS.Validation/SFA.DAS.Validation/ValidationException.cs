@@ -20,9 +20,9 @@ namespace SFA.DAS.Validation
         {
         }
 
-        public ValidationException AddError<T>(T instance, Expression<Func<T, object>> property, string message) where T : class
+        public ValidationException AddError<T>(Expression<Func<T, object>> property, string message) where T : class
         {
-            _validationErrors.Add(new ValidationError(instance, property, message));
+            _validationErrors.Add(new ValidationError(property, message));
 
             return this;
         }

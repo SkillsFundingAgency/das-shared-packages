@@ -36,7 +36,7 @@ namespace SFA.DAS.Validation.UnitTests
         [Test]
         public void Initialize_WhenInitializingWithErrors_ThenShouldHaveValidationErrorsForSpecificProperties()
         {
-            Run(f => f.SetErrors(), f => f.Initialize(), (f, r) => r.ValidationErrors.ToList().ForEach(e => e.Should().Match<ValidationError>(e2 => e2.Property.Compile().DynamicInvoke(e2.Instance) as string == e2.Message)));
+            Run(f => f.SetErrors(), f => f.Initialize(), (f, r) => r.ValidationErrors.ToList().ForEach(e => e.Should().Match<ValidationError>(e2 => e2.Property.Compile().DynamicInvoke(f) as string == e2.Message)));
         }
     }
 
@@ -57,7 +57,7 @@ namespace SFA.DAS.Validation.UnitTests
             for (var i = 0; i < Errors.Count; i++)
             {
                 var i1 = i;
-                ex.AddError(this, f => f.Errors[i1], Errors[i]);
+                ex.AddError<ValidationExceptionTestsFixture>(f => f.Errors[i1], Errors[i]);
             }
 
             return ex;
