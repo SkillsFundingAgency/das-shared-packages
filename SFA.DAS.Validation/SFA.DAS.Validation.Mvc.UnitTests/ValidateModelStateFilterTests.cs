@@ -22,12 +22,6 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetTempDataModelState()
-        {
-            Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
-        }
-
-        [Test]
         public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetRouteData()
         {
             Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.RouteData.Values.Should().HaveCount(f.QueryString.Count));
@@ -64,45 +58,57 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndValidationExceptionHasNotBeenThrown_ThenShouldNotSetResult()
+        public void OnActionExecuted_WhenAnActionHasExecutedAPostRequestAndValidationExceptionHasNotBeenThrown_ThenShouldNotSetResult()
         {
-            Run(f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.BeOfType<EmptyResult>());
+            Run(f => f.SetPostRequest(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.BeOfType<EmptyResult>());
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldUpdateModelState()
+        public void OnActionExecuted_WhenAnActionHasExecutedAPostRequestAndAValidationExceptionHasBeenThrown_ThenShouldUpdateModelState()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.Controller.Object.ViewData.ModelState.IsValid.Should().BeFalse());
+            Run(f => f.SetPostRequest().SetValidationException(), f => f.OnActionExecuted(), f => f.Controller.Object.ViewData.ModelState.IsValid.Should().BeFalse());
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetTempDataModelState()
+        public void OnActionExecuted_WhenAnActionHasExecutedAPostRequestAndAValidationExceptionHasBeenThrown_ThenShouldSetTempDataModelState()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
+            Run(f => f.SetPostRequest().SetValidationException(), f => f.OnActionExecuted(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetRouteData()
+        public void OnActionExecuted_WhenAnActionHasExecutedAPostRequestAndAValidationExceptionHasBeenThrown_ThenShouldSetRouteData()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.RouteData.Values.Should().HaveCount(f.QueryString.Count));
+            Run(f => f.SetPostRequest().SetValidationException(), f => f.OnActionExecuted(), f => f.RouteData.Values.Should().HaveCount(f.QueryString.Count));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetRedirectToRouteResult()
+        public void OnActionExecuted_WhenAnActionHasExecutedAPostRequestAndAValidationExceptionHasBeenThrown_ThenShouldSetRedirectToRouteResult()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.Match<RedirectToRouteResult>(r => r.RouteValues == f.RouteData.Values));
+            Run(f => f.SetPostRequest().SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.Result.Should().NotBeNull().And.Match<RedirectToRouteResult>(r => r.RouteValues == f.RouteData.Values));
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndAValidationExceptionHasBeenThrown_ThenShouldSetExceptionHandled()
+        public void OnActionExecuted_WhenAnActionHasExecutedAPostRequestAndAValidationExceptionHasBeenThrown_ThenShouldSetExceptionHandled()
         {
-            Run(f => f.SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.ExceptionHandled.Should().BeTrue());
+            Run(f => f.SetPostRequest().SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutedContext.ExceptionHandled.Should().BeTrue());
         }
 
         [Test]
-        public void OnActionExecuted_WhenAnActionHasExecutedAndModelStateIsInvalid_ThenShouldSetTempDataModelState()
+        public void OnActionExecuted_WhenAnActionHasExecutedAGetRequestAndAValidationExceptionHasBeenThrown_ThenShouldNotSetResult()
         {
-            Run(f => f.SetInvalidModelState(), f => f.OnActionExecuted(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
+            Run(f => f.SetGetRequest().SetValidationException(), f => f.OnActionExecuted(), f => f.ActionExecutingContext.Result.Should().BeNull());
+        }
+
+        [Test]
+        public void OnActionExecuted_WhenAnActionHasExecutedAPostRequestAndModelStateIsInvalid_ThenShouldSetTempDataModelState()
+        {
+            Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuted(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
+        }
+
+        [Test]
+        public void OnActionExecuted_WhenAnActionHasExecutedAGetRequestAndTheModelStateIsInvalid_ThenShouldNotSetTempDataModelState()
+        {
+            Run(f => f.SetGetRequest().SetInvalidModelState(), f => f.OnActionExecuted(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().BeNull());
         }
     }
 

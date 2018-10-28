@@ -25,9 +25,6 @@ namespace SFA.DAS.Validation.Mvc
             }
             else if (!filterContext.Controller.ViewData.ModelState.IsValid)
             {
-                var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                
-                filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
                 filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
                 filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
             }
@@ -35,22 +32,22 @@ namespace SFA.DAS.Validation.Mvc
 
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
-            if (filterContext.Exception is ValidationException validationException)
+            if (filterContext.HttpContext.Request.HttpMethod != "GET")
             {
-                filterContext.Controller.ViewData.ModelState.AddModelError(validationException);
+                if (filterContext.Exception is ValidationException validationException)
+                {
+                    filterContext.Controller.ViewData.ModelState.AddModelError(validationException);
+                    filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
+                    filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
+                    filterContext.ExceptionHandled = true;
+                }
                 
-                var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                
-                filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
-                filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
-                filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
-                filterContext.ExceptionHandled = true;
-            }
-            else if (!filterContext.Controller.ViewData.ModelState.IsValid)
-            {
-                var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                
-                filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
+                if (!filterContext.Controller.ViewData.ModelState.IsValid)
+                {
+                    var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
+
+                    filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
+                }
             }
         }
     }
