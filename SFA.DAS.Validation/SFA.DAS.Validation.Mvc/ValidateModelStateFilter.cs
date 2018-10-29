@@ -25,6 +25,9 @@ namespace SFA.DAS.Validation.Mvc
             }
             else if (!filterContext.Controller.ViewData.ModelState.IsValid)
             {
+                var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
+                
+                filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
                 filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
                 filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
             }
@@ -37,12 +40,15 @@ namespace SFA.DAS.Validation.Mvc
                 if (filterContext.Exception is ValidationException validationException)
                 {
                     filterContext.Controller.ViewData.ModelState.AddModelError(validationException);
+                    
+                    var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
+                    
+                    filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
                     filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
                     filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
                     filterContext.ExceptionHandled = true;
                 }
-                
-                if (!filterContext.Controller.ViewData.ModelState.IsValid)
+                else if (!filterContext.Controller.ViewData.ModelState.IsValid)
                 {
                     var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
 

@@ -1,7 +1,6 @@
 ﻿#if NET462
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -19,6 +18,12 @@ namespace SFA.DAS.Validation.Mvc.UnitTests
         public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsValid_ThenShouldNotSetResult()
         {
             Run(f => f.SetPostRequest(), f => f.OnActionExecuting(), f => f.ActionExecutingContext.Result.Should().BeNull());
+        }
+
+        [Test]
+        public void OnActionExecuting_WhenAnActionIsExecutingAPostRequestAndTheModelStateIsInvalid_ThenShouldSetTempDataModelState()
+        {
+            Run(f => f.SetPostRequest().SetInvalidModelState(), f => f.OnActionExecuting(), f => f.Controller.Object.TempData[typeof(SerializableModelStateDictionary).FullName].Should().NotBeNull());
         }
 
         [Test]
