@@ -2,6 +2,7 @@
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
 {
@@ -183,7 +184,7 @@ namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
             var configurationService = new ConfigurationService(_configurationRepo.Object, options, cache.Object);
 
             cache.Setup(x => x.Get<string>(It.IsAny<string>()));
-            _configurationRepo.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(null);
+            _configurationRepo.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("");
 
             // Act
             await configurationService.GetAsync<TestConfiguration>();

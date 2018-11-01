@@ -2,6 +2,7 @@
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace SFA.DAS.Configuration.UnitTests.ConfigurationServiceTests
 {

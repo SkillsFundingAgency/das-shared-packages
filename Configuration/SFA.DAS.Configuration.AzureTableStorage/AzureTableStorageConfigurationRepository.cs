@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.WindowsAzure;
+using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -7,7 +7,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 {
     public class AzureTableStorageConfigurationRepository : IConfigurationRepository
     {
-        private CloudStorageAccount _storageAccount;
+        private readonly CloudStorageAccount _storageAccount;
 
         public AzureTableStorageConfigurationRepository()
             : this(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"))
@@ -22,7 +22,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         {
             var table = GetTable();
             var operation = GetOperation(serviceName, environmentName, version);
-            var result = table.Execute(operation);
+            var result = table.ExecuteAsync(operation).Result;
 
             var configItem = (ConfigurationItem)result.Result;
             return configItem?.Data;
