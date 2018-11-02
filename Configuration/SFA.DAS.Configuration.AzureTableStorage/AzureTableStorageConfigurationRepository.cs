@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -9,10 +8,6 @@ namespace SFA.DAS.Configuration.AzureTableStorage
     {
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureTableStorageConfigurationRepository()
-            : this(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"))
-        {
-        }
         public AzureTableStorageConfigurationRepository(string storageConnectionString)
         {
             _storageAccount = CloudStorageAccount.Parse(storageConnectionString);

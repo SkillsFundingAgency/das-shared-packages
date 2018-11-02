@@ -25,7 +25,7 @@ namespace GettingConfiguration
                 switch (input)
                 {
                     case "1":
-                        repo = new AzureTableStorageConfigurationRepository();
+                        repo = new AzureTableStorageConfigurationRepository("UseDevelopmentStorage=true;");
                         break;
                     case "2":
                         repo = new FileStorageConfigurationRepository();
