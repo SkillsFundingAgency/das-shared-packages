@@ -1,16 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <ApplicationIcon />
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
-    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Configuration.AzureTableStorage\SFA.DAS.Configuration.AzureTableStorage.csproj" />
     <ProjectReference Include="..\SFA.DAS.Configuration.FileStorage\SFA.DAS.Configuration.FileStorage.csproj" />
     <ProjectReference Include="..\SFA.DAS.Configuration\SFA.DAS.Configuration.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="App_Data\DEV_GettingConfiguration_1.0.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

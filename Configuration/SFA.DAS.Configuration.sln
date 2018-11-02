@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration", "SFA.DAS.Configuration\SFA.DAS.Configuration.csproj", "{01489492-DC61-4F97-8047-1A8BC6CC399B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Configuration", "SFA.DAS.Configuration\SFA.DAS.Configuration.csproj", "{01489492-DC61-4F97-8047-1A8BC6CC399B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A71A2CA0-779F-4F53-A5FE-01CBB8DCA6ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration.UnitTests", "SFA.DAS.Configuration.UnitTests\SFA.DAS.Configuration.UnitTests.csproj", "{DCAE686F-CD1B-4534-A735-C478BE92E1FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Configuration.UnitTests", "SFA.DAS.Configuration.UnitTests\SFA.DAS.Configuration.UnitTests.csproj", "{DCAE686F-CD1B-4534-A735-C478BE92E1FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration.AzureTableStorage", "SFA.DAS.Configuration.AzureTableStorage\SFA.DAS.Configuration.AzureTableStorage.csproj", "{81BDDA54-55F6-4694-A474-31BBD30F3EF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Configuration.AzureTableStorage", "SFA.DAS.Configuration.AzureTableStorage\SFA.DAS.Configuration.AzureTableStorage.csproj", "{81BDDA54-55F6-4694-A474-31BBD30F3EF6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F571B0F9-901A-4DD3-8C1D-337D5EDC8185}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GettingConfiguration", "GettingConfiguration\GettingConfiguration.csproj", "{8F7569FB-5A78-4C50-86A7-CACA49AEC5F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GettingConfiguration", "GettingConfiguration\GettingConfiguration.csproj", "{8F7569FB-5A78-4C50-86A7-CACA49AEC5F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildAndDeploy", "BuildAndDeploy", "{FA2D37AE-A87A-40A0-A18F-F3B205975397}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildAndDeploy", "BuildAndD
 		RunBuild.bat = RunBuild.bat
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration.FileStorage", "SFA.DAS.Configuration.FileStorage\SFA.DAS.Configuration.FileStorage.csproj", "{6DF8D733-71BF-4652-8294-CE5AF2AC73DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Configuration.FileStorage", "SFA.DAS.Configuration.FileStorage\SFA.DAS.Configuration.FileStorage.csproj", "{6DF8D733-71BF-4652-8294-CE5AF2AC73DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
