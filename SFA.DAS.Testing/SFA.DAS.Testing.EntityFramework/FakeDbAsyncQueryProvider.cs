@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Testing.EntityFramework
 {
-    public class DbAsyncQueryProviderStub<TEntity> : IDbAsyncQueryProvider
+    public class FakeDbAsyncQueryProvider<TEntity> : IDbAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
 
-        public DbAsyncQueryProviderStub(IQueryProvider inner)
+        public FakeDbAsyncQueryProvider(IQueryProvider inner)
         {
             _inner = inner;
         }
@@ -22,17 +22,17 @@ namespace SFA.DAS.Testing.EntityFramework
             {
                 var resultType = methodCallExpression.Method.ReturnType;
                 var elementType = resultType.GetGenericArguments()[0];
-                var queryableType = typeof(DbAsyncEnumerableStub<>).MakeGenericType(elementType);
+                var queryableType = typeof(FakeDbAsyncEnumerable<>).MakeGenericType(elementType);
 
                 return (IQueryable)Activator.CreateInstance(queryableType, expression);
             }
 
-            return new DbAsyncEnumerableStub<TEntity>(expression);
+            return new FakeDbAsyncEnumerable<TEntity>(expression);
         }
 
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
         {
-            return new DbAsyncEnumerableStub<TElement>(expression);
+            return new FakeDbAsyncEnumerable<TElement>(expression);
         }
 
         public object Execute(Expression expression)

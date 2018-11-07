@@ -12,21 +12,21 @@ namespace SFA.DAS.Testing.EntityFramework
     /// <remarks>
     /// See https://docs.microsoft.com/en-us/ef/ef6/fundamentals/testing/writing-test-doubles
     /// </remarks>
-    public class DbSetStub<T> : DbSet<T>, IDbAsyncEnumerable<T>, IQueryable<T> where T : class
+    public class FakeDbSet<T> : DbSet<T>, IDbAsyncEnumerable<T>, IQueryable<T> where T : class
     {
         public Expression Expression => _query.Expression;
         public Type ElementType => _query.ElementType;
         public override ObservableCollection<T> Local => _local;
-        public IQueryProvider Provider => new DbAsyncQueryProviderStub<T>(_query.Provider);
+        public IQueryProvider Provider => new FakeDbAsyncQueryProvider<T>(_query.Provider);
 
         private readonly IQueryable<T> _query;
         private readonly ObservableCollection<T> _local;
 
-        public DbSetStub(params T[] data) : this(data.AsEnumerable())
+        public FakeDbSet(params T[] data) : this(data.AsEnumerable())
         {
         }
 
-        public DbSetStub(IEnumerable<T> data)
+        public FakeDbSet(IEnumerable<T> data)
         {
             _query = data.AsQueryable();
             _local = new ObservableCollection<T>(_query);
@@ -34,7 +34,7 @@ namespace SFA.DAS.Testing.EntityFramework
 
         public IDbAsyncEnumerator<T> GetAsyncEnumerator()
         {
-            return new DbAsyncEnumeratorStub<T>(_local.GetEnumerator());
+            return new FakeDbAsyncEnumerator<T>(_local.GetEnumerator());
         }
 
         IDbAsyncEnumerator IDbAsyncEnumerable.GetAsyncEnumerator()

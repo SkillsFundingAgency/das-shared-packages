@@ -5,23 +5,23 @@ using System.Linq.Expressions;
 
 namespace SFA.DAS.Testing.EntityFramework
 {
-    public class DbAsyncEnumerableStub<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T>
+    public class FakeDbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T>
     {
-        IQueryProvider IQueryable.Provider => new DbAsyncQueryProviderStub<T>(this);
+        IQueryProvider IQueryable.Provider => new FakeDbAsyncQueryProvider<T>(this);
 
-        public DbAsyncEnumerableStub(IEnumerable<T> enumerable)
+        public FakeDbAsyncEnumerable(IEnumerable<T> enumerable)
             : base(enumerable)
         {
         }
 
-        public DbAsyncEnumerableStub(Expression expression)
+        public FakeDbAsyncEnumerable(Expression expression)
             : base(expression)
         {
         }
 
         public IDbAsyncEnumerator<T> GetAsyncEnumerator()
         {
-            return new DbAsyncEnumeratorStub<T>(this.AsEnumerable().GetEnumerator());
+            return new FakeDbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
         }
 
         IDbAsyncEnumerator IDbAsyncEnumerable.GetAsyncEnumerator()
