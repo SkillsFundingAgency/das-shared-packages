@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.CosmosDb", "SFA.DAS.CosmosDb\SFA.DAS.CosmosDb.csproj", "{84E442A1-CA49-4707-818F-52F0E9BEB540}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{683B9542-A6FB-468F-9442-FDA675714DF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.CosmosDb.UnitTests", "SFA.DAS.CosmosDb.UnitTests\SFA.DAS.CosmosDb.UnitTests.csproj", "{42AD4771-E9B8-47D8-A997-6F005652B5C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.CosmosDb.Testing", "SFA.DAS.CosmosDb.Testing\SFA.DAS.CosmosDb.Testing.csproj", "{C87AAA19-EFDC-415A-A35D-15AA9F2E953F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84E442A1-CA49-4707-818F-52F0E9BEB540}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84E442A1-CA49-4707-818F-52F0E9BEB540}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84E442A1-CA49-4707-818F-52F0E9BEB540}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84E442A1-CA49-4707-818F-52F0E9BEB540}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42AD4771-E9B8-47D8-A997-6F005652B5C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42AD4771-E9B8-47D8-A997-6F005652B5C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42AD4771-E9B8-47D8-A997-6F005652B5C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42AD4771-E9B8-47D8-A997-6F005652B5C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C87AAA19-EFDC-415A-A35D-15AA9F2E953F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C87AAA19-EFDC-415A-A35D-15AA9F2E953F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C87AAA19-EFDC-415A-A35D-15AA9F2E953F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C87AAA19-EFDC-415A-A35D-15AA9F2E953F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{42AD4771-E9B8-47D8-A997-6F005652B5C5} = {683B9542-A6FB-468F-9442-FDA675714DF8}
+	EndGlobalSection
+EndGlobal

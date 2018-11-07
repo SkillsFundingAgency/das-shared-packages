@@ -41,12 +41,6 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         {
             Run(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true));
         }
-
-        [Test]
-        public void Dispose_WhenDisposing_ThenShouldDisposeTheConnection()
-        {
-            Run(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Connection.Protected().Verify("Dispose", Times.Once(), true));
-        }
     }
 
     public class SqlClientOutboxTransactionTestsFixture
