@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FluentAssertions;
-using FluentAssertions.Primitives;
-using FluentAssertions.Specialized;
 
 namespace SFA.DAS.Testing
 {
@@ -53,27 +50,18 @@ namespace SFA.DAS.Testing
             assert(testFixture, actionResult);
         }
 
-        public void TestException<TException>(Action<T> act, Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
+        public void TestException(Action<T, Action> assert)
+        {
+            TestException(null, null, assert);
+        }
+
+        public void TestException(Action<T> act, Action<T, Action> assert)
         {
             TestException(null, act, assert);
         }
 
-        public void TestException<TException>(Action<T> arrange, Action<T> act, Func<T, Action, ExceptionAssertions<TException>> assert) where TException : Exception
+        public void TestException(Action<T> arrange, Action<T> act, Action<T, Action> assert)
         {
-            if (act == null) throw new ArgumentNullException(nameof(act));
-            if (assert == null) throw new ArgumentNullException(nameof(assert));
-
-            var testFixture = new T();
-
-            arrange?.Invoke(testFixture);
-            assert(testFixture, () => act.Invoke(testFixture));
-        }
-
-        public void TestException(Action<T> arrange, Action<T> act, Func<T, Action, AndConstraint<ObjectAssertions>> assert)
-        {
-            if (act == null) throw new ArgumentNullException(nameof(act));
-            if (assert == null) throw new ArgumentNullException(nameof(assert));
-
             var testFixture = new T();
 
             arrange?.Invoke(testFixture);
@@ -130,28 +118,24 @@ namespace SFA.DAS.Testing
             assert(testFixture, actionResult);
         }
 
-        public Task TestExceptionAsync(Func<T, Task> act,
-            Action<T, Func<Task>> assert)
+        public Task TestExceptionAsync(Action<T, Func<Task>> assert)
+        {
+            return TestExceptionAsync(null, null, assert);
+        }
+
+        public Task TestExceptionAsync(Func<T, Task> act, Action<T, Func<Task>> assert)
         {
             return TestExceptionAsync(null, act, assert);
         }
 
-        public Task TestExceptionAsync(Action<T> arrange,
-            Func<T, Task> act,
-            Action<T, Func<Task>> assert)
+        public Task TestExceptionAsync(Action<T> arrange, Func<T, Task> act, Action<T, Func<Task>> assert)
         {
-
-            if (act == null) throw new ArgumentNullException(nameof(act));
-            if (assert == null) throw new ArgumentNullException(nameof(assert));
-
             var testFixture = new T();
 
             arrange?.Invoke(testFixture);
-
             assert(testFixture, async () => await act(testFixture));
 
             return Task.CompletedTask;
         }
-
     }
 }
