@@ -18,14 +18,21 @@ namespace SFA.DAS.CosmosDb.UnitTests
 {
     [TestFixture]
     [Parallelizable]
-    public class DocumentRepositoryTests : FluentTest<DocumentReadOnlyRepositoryTestsFixture>
+    public class DocumentRepositoryTests : FluentTest<DocumentRepositoryTestsFixture>
     {
         [Test]
-        public void Add_WhenAddingDocument_ThenShouldAddDocument()
+        public Task Add_WhenAddingDocument_ThenShouldAddDocumentAndGenerateId()
         {
-            Run(f => f.Add(), f => f.DocumentClient.Verify(c => c.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName), f.Document, f.RequestOptions, false, CancellationToken.None), Times.Once));
+            return RunAsync(f => f.Add(), f => f.DocumentClient.Verify(c => c.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName), f.Document, f.RequestOptions, true, CancellationToken.None), Times.Once));
         }
-        
+
+        [Test]
+        public Task Add_WhenAddingDocumentWithAnEmptyId_ThenShouldAddDocumentAndAskCosmsToGenerateId()
+        {
+            return RunAsync(f => f.Add(f.DocumentWithoutId), f => f.DocumentClient.Verify(c => c.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName),
+                It.Is<Dummy>(m => m.Id != Guid.Empty), f.RequestOptions, true, CancellationToken.None), Times.Once));
+        }
+
         [Test]
         public void CreateQuery_WhenCreatingQuery_ThenShouldReturnIQueryable()
         {
@@ -37,13 +44,13 @@ namespace SFA.DAS.CosmosDb.UnitTests
         {
             Run(f => f.SetDocuments(), f => f.CreateQueryWithFeedOptions(), (f, r) => r.Should().NotBeNull().And.BeSameAs(f.DocumentsQuery));
         }
-        
+
         [Test]
         public Task GetById_WhenDocumentExists_ThenShouldReturnDocument()
         {
             return RunAsync(f => f.SetDocument(), f => f.GetById(), (f, r) => r.Should().IsSameOrEqualTo(f.Document));
         }
-        
+
         [Test]
         public Task GetById_WhenDocumentExistsWithRequestOptions_ThenShouldReturnDocument()
         {
@@ -57,43 +64,69 @@ namespace SFA.DAS.CosmosDb.UnitTests
         }
 
         [Test]
-        public void Remove_WhenRemovingDocument_ThenShouldRemoveDocument()
+        public Task Remove_WhenRemovingDocument_ThenShouldRemoveDocument()
         {
-            Run(f => f.Remove(), f => f.DocumentClient.Verify(c => c.DeleteDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.Document.Id.ToString()), f.RequestOptions, CancellationToken.None), Times.Once));
+            return RunAsync(f => f.Remove(), f => f.DocumentClient.Verify(c => c.DeleteDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.Document.Id.ToString()), f.RequestOptions, CancellationToken.None), Times.Once));
         }
 
         [Test]
-        public void Update_WhenUpdatingDocument_ThenShouldUpdateDocument()
+        public Task Update_WhenUpdatingDocument_ThenShouldUpdateDocumentWithoutCheckingETag()
         {
-            Run(f => f.Update(), f => f.DocumentClient.Verify(c => c.ReplaceDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName), f.Document, f.RequestOptions, CancellationToken.None), Times.Once));
+            return RunAsync(f => f.Update(), f => f.DocumentClient.Verify(c =>
+                c.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.Document.Id.ToString()), f.Document, It.Is<RequestOptions>(o => o.AccessCondition == null), CancellationToken.None), Times.Once));
+        }
+        [Test]
+        public Task Update_WhenUpdatingDocumentWithEmptyId_ThenShouldThrowExcepton()
+        {
+            return RunAsync(f => f.Update(f.DocumentWithoutId), (f, r) => r.Should().Throw<Exception>());
+        }
+        [Test]
+        public Task Update_WhenUpdatingDocumentWithAnETag_ThenShouldUpdateDocumentCheckingETag()
+        {
+            return RunAsync(f => f.Update(f.DocumentWithETag), f => f.DocumentClient.Verify(c =>
+                c.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.DocumentWithETag.Id.ToString()), f.DocumentWithETag,
+                    It.Is<RequestOptions>(o => o.AccessCondition.Type == AccessConditionType.IfMatch && o.AccessCondition.Condition == f.DocumentWithETag.ETag),
+                    CancellationToken.None), Times.Once));
         }
     }
 
-    public class DocumentReadOnlyRepositoryTestsFixture
+    public class DocumentRepositoryTestsFixture
     {
         public DocumentRepository<Dummy> DocumentRepository { get; set; }
         public Mock<IDocumentClient> DocumentClient { get; set; }
         public string DatabaseName { get; set; }
         public string CollectionName { get; set; }
         public Dummy Document { get; set; }
+        public Dummy DocumentWithoutId { get; set; }
+        public Dummy DocumentWithETag { get; set; }
         public List<Dummy> Documents { get; set; }
         public IOrderedQueryable<Dummy> DocumentsQuery { get; set; }
         public FeedOptions FeedOptions { get; set; }
         public RequestOptions RequestOptions { get; set; }
 
-        public DocumentReadOnlyRepositoryTestsFixture()
+        public DocumentRepositoryTestsFixture()
         {
             DocumentClient = new Mock<IDocumentClient>();
             DatabaseName = "test";
             CollectionName = "stubs";
+
             DocumentRepository = new DummyRepository(DocumentClient.Object, DatabaseName, CollectionName);
-            
-            Document = new Dummy
-            {
+
+            Document = new Dummy {
                 Id = Guid.NewGuid(),
                 Name = "Test"
             };
-            
+
+            DocumentWithoutId = new Dummy {
+                Name = "NoIdTest"
+            };
+
+            DocumentWithETag = new Dummy {
+                Id = Guid.NewGuid(),
+                Name = "Test",
+                ETag = "ETag"
+            };
+
             Documents = new List<Dummy>
             {
                 new Dummy
@@ -119,7 +152,7 @@ namespace SFA.DAS.CosmosDb.UnitTests
         public IQueryable<Dummy> CreateQueryWithFeedOptions()
         {
             FeedOptions = new FeedOptions();
-            
+
             return DocumentRepository.CreateQuery(FeedOptions);
         }
 
@@ -130,14 +163,13 @@ namespace SFA.DAS.CosmosDb.UnitTests
 
         public Task<Dummy> GetByIdWithRequestOptions()
         {
-            RequestOptions = new RequestOptions();
-            
             return DocumentRepository.GetById(Document.Id, RequestOptions);
         }
 
-        public Task Add()
+        public Task Add(Dummy document = null)
         {
-            return DocumentRepository.Add(Document, RequestOptions);
+            document = document ?? Document;
+            return DocumentRepository.Add(document, RequestOptions);
         }
 
         public Task Remove()
@@ -145,20 +177,21 @@ namespace SFA.DAS.CosmosDb.UnitTests
             return DocumentRepository.Remove(Document.Id, RequestOptions);
         }
 
-        public Task Update()
+        public Task Update(Dummy document = null)
         {
-            return DocumentRepository.Update(Document, RequestOptions);
+            document = document ?? Document;
+            return DocumentRepository.Update(document, RequestOptions);
         }
 
-        public DocumentReadOnlyRepositoryTestsFixture SetDocument()
+        public DocumentRepositoryTestsFixture SetDocument()
         {
             DocumentClient.Setup(c => c.ReadDocumentAsync<Dummy>(UriFactory.CreateDocumentUri(DatabaseName, CollectionName, Document.Id.ToString()), It.Is<RequestOptions>(r => r == RequestOptions), CancellationToken.None))
                 .ReturnsAsync(new DocumentResponse<Dummy>(Document));
-            
+
             return this;
         }
 
-        public DocumentReadOnlyRepositoryTestsFixture SetDocumentNotFound()
+        public DocumentRepositoryTestsFixture SetDocumentNotFound()
         {
             DocumentClient.Setup(c => c.ReadDocumentAsync<Dummy>(UriFactory.CreateDocumentUri(DatabaseName, CollectionName, Document.Id.ToString()), It.Is<RequestOptions>(r => r == RequestOptions), CancellationToken.None))
                 .ThrowsAsync(DocumentClientExceptionBuilder.Build(new Error(), HttpStatusCode.NotFound));
@@ -166,11 +199,11 @@ namespace SFA.DAS.CosmosDb.UnitTests
             return this;
         }
 
-        public DocumentReadOnlyRepositoryTestsFixture SetDocuments()
+        public DocumentRepositoryTestsFixture SetDocuments()
         {
             DocumentClient.Setup(c => c.CreateDocumentQuery<Dummy>(UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName), It.Is<FeedOptions>(f => f == FeedOptions)))
                 .Returns(DocumentsQuery);
-            
+
             return this;
         }
     }

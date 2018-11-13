@@ -243,3 +243,4 @@ Messaging/SFA.DAS.Messaging.v3.ncrunchsolution
 
 # JetBrains Rider
 .idea/
+*.DotSettings
