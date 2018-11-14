@@ -6,6 +6,7 @@ using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Messaging
 {
+    [Obsolete("Use MessageProcessor2 instead")]
     public abstract class MessageProcessor<T> : IMessageProcessor where T: class, new()
     {
         private readonly IMessageSubscriberFactory _messageSubscriberFactory;
