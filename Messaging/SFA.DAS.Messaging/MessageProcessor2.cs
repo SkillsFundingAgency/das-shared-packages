@@ -13,6 +13,8 @@ namespace SFA.DAS.Messaging
 
         private readonly IMessageSubscriberFactory _messageSubscriberFactory;
         private readonly IMessageContextProvider _messageContextProvider;
+        private int _nullMessageCount = 0;
+        private int _nullMessageContentCount = 0;
         protected readonly ILog Log;
 
         protected MessageProcessor2(
@@ -82,9 +84,6 @@ namespace SFA.DAS.Messaging
 
             await HandleMessageWithContent(message);
         }
-
-        private int _nullMessageCount = 0;
-        private int _nullMessageContentCount = 0;
 
         private async Task<bool> IsNoMessage(IMessage<T> message, CancellationToken cancellationToken)
         {
@@ -157,7 +156,7 @@ namespace SFA.DAS.Messaging
             {
                 Log.Error(ex, $"Failed to process message {typeof(T).FullName}");
 
-                if (message != null && message.Content != null)
+                if (message?.Content != null)
                 {
                     await message.AbortAsync();
                 }
