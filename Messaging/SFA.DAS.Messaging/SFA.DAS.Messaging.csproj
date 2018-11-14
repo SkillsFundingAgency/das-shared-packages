@@ -70,12 +70,14 @@
     <Compile Include="Interfaces\IEventingMessageReceiver.cs" />
     <Compile Include="Interfaces\IMessage.cs" />
     <Compile Include="Interfaces\IMessageProcessor.cs" />
+    <Compile Include="Interfaces\IMessageProcessor2.cs" />
     <Compile Include="Interfaces\IMessagePublisher.cs" />
     <Compile Include="Interfaces\IMessageSubscriber.cs" />
     <Compile Include="Interfaces\IMessageSubscriberFactory.cs" />
     <Compile Include="MessageContextProvider.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageContext.cs" />
+    <Compile Include="MessageProcessor2.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="ObjectExtensions.cs" />
