@@ -6,6 +6,7 @@ using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.Messaging
 {
+    [Obsolete("Use the MessageProcessor2 class instead as that will accept a more conventional cancellation token (rather than cancellation token source) and won't create large numbers of irrelevant log messages.")]
     public abstract class MessageProcessor<T> : IMessageProcessor where T: class, new()
     {
         private readonly IMessageSubscriberFactory _messageSubscriberFactory;
