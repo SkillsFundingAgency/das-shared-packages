@@ -121,7 +121,7 @@ namespace SFA.DAS.Messaging
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                Task.Delay(logInterval, cancellationToken)
+                var logTask = Task.Delay(logInterval, cancellationToken)
                     .ContinueWith(task =>
                     {
                         var nullMessageCount = Interlocked.Exchange(ref _nullMessageCount, 0);
@@ -131,6 +131,8 @@ namespace SFA.DAS.Messaging
                             $"In the last {logInterval.TotalSeconds} seconds there have been {nullMessageCount} null messages of type {typeof(T).FullName} and {nullMessageContentCount} messages with null content");
 
                     }, cancellationToken);
+
+                logTask.Wait((int) logInterval.TotalMilliseconds, cancellationToken);
             }
         }
 
