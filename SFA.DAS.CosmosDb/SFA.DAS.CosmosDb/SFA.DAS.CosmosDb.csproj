@@ -18,7 +18,6 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
         <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.1.3" />
-        <PackageReference Include="StructureMap" Version="4.7.0" />
     </ItemGroup>
 
 </Project>
