@@ -27,13 +27,6 @@ namespace SFA.DAS.CosmosDb.UnitTests
         }
 
         [Test]
-        public Task Add_WhenAddingDocumentWithAnEmptyId_ThenShouldAddDocumentAndAskCosmsToGenerateId()
-        {
-            return RunAsync(f => f.Add(f.DocumentWithoutId), f => f.DocumentClient.Verify(c => c.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName),
-                It.Is<Dummy>(m => m.Id != Guid.Empty), f.RequestOptions, true, CancellationToken.None), Times.Once));
-        }
-
-        [Test]
         public void CreateQuery_WhenCreatingQuery_ThenShouldReturnIQueryable()
         {
             Run(f => f.SetDocuments(), f => f.CreateQuery(), (f, r) => r.Should().NotBeNull().And.BeSameAs(f.DocumentsQuery));

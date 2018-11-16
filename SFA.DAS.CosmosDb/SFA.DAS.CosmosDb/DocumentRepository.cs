@@ -24,7 +24,6 @@ namespace SFA.DAS.CosmosDb
         public virtual Task Add(TDocument document, RequestOptions requestOptions = null, CancellationToken cancellationToken = default)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
-            document.Id = document.Id != Guid.Empty ? document.Id : Guid.NewGuid();
             return _documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName), document, requestOptions, true, cancellationToken);
         }
 
