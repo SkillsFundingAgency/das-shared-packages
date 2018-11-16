@@ -24,6 +24,7 @@ namespace SFA.DAS.CosmosDb
         public virtual Task Add(TDocument document, RequestOptions requestOptions = null, CancellationToken cancellationToken = default)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
+            if (document.Id == Guid.Empty) throw new Exception("Id must not be Empty");
             return _documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName), document, requestOptions, true, cancellationToken);
         }
 
@@ -59,7 +60,7 @@ namespace SFA.DAS.CosmosDb
         public virtual Task Update(TDocument document, RequestOptions requestOptions = null, CancellationToken cancellationToken = default)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
-            if (document.Id == Guid.Empty) throw new Exception("Document expected to implement an IDocument and must have a valid Id");
+            if (document.Id == Guid.Empty) throw new Exception("Id must not be Empty");
 
             requestOptions = AddOptimisticLockingIfETagSetAndNoAccessConditionDefined(document, requestOptions);
 

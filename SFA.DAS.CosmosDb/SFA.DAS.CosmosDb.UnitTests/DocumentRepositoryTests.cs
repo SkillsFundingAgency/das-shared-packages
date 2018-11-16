@@ -21,9 +21,15 @@ namespace SFA.DAS.CosmosDb.UnitTests
     public class DocumentRepositoryTests : FluentTest<DocumentRepositoryTestsFixture>
     {
         [Test]
-        public Task Add_WhenAddingDocument_ThenShouldAddDocumentAndGenerateId()
+        public Task Add_WhenAddingDocument_ThenShouldAddDocument()
         {
             return RunAsync(f => f.Add(), f => f.DocumentClient.Verify(c => c.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName), f.Document, f.RequestOptions, true, CancellationToken.None), Times.Once));
+        }
+
+        [Test]
+        public Task Add_WhenAddingDocument_ThenShouldThrowErrorIfDocumentIdIsEmpty()
+        {
+            return RunAsync(f => f.Add(f.DocumentWithoutId), (f,r) => r.Should().Throw<Exception>().WithMessage("Id must not be Empty"));
         }
 
         [Test]
@@ -71,7 +77,7 @@ namespace SFA.DAS.CosmosDb.UnitTests
         [Test]
         public Task Update_WhenUpdatingDocumentWithEmptyId_ThenShouldThrowExcepton()
         {
-            return RunAsync(f => f.Update(f.DocumentWithoutId), (f, r) => r.Should().Throw<Exception>());
+            return RunAsync(f => f.Update(f.DocumentWithoutId), (f, r) => r.Should().Throw<Exception>().WithMessage("Id must not be Empty"));
         }
         [Test]
         public Task Update_WhenUpdatingDocumentWithAnETag_ThenShouldUpdateDocumentCheckingETag()
