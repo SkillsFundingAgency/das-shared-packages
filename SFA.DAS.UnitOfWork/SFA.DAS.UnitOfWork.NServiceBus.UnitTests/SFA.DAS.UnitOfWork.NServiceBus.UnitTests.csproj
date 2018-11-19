@@ -13,7 +13,7 @@
         <PackageReference Include="NServiceBus.UniformSession" Version="2.1.0" />
         <PackageReference Include="NUnit" Version="3.10.1" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
-        <PackageReference Include="SFA.DAS.NServiceBus" Version="6.0.1" />
+        <PackageReference Include="SFA.DAS.NServiceBus" Version="6.0.4" />
         <PackageReference Include="SFA.DAS.Testing" Version="2.0.5" />
     </ItemGroup>
 
