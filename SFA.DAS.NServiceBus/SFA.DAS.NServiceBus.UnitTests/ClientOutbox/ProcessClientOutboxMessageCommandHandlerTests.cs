@@ -17,7 +17,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         [Test]
         public Task Handle_WhenHandlingAProcessClientOutboxMessageCommand_ThenShouldPublishTheClientOutboxMessageEvents()
         {
-            return RunAsync(f => f.Handle(), f => f.Context.PublishedMessages.Select(m => m.Message).Cast<Event>().Should().BeEquivalentTo(f.Events));
+            return RunAsync(f => f.Handle(), f => f.Context.PublishedMessages.Select(m => m.Message).Should().BeEquivalentTo(f.Events));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         public ProcessClientOutboxMessageCommandHandler Handler { get; set; }
         public ClientOutboxMessage ClientOutboxMessage { get; set; }
         public string EndpointName { get; set; }
-        public List<Event> Events { get; set; }
+        public List<object> Events { get; set; }
         
         public ProcessClientOutboxMessageCommandHandlerTestsFixture()
         {
@@ -44,10 +44,10 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
 
             EndpointName = "SFA.DAS.NServiceBus";
 
-            Events = new List<Event>
+            Events = new List<object>
             {
-                new FooEvent { Created = Now.AddDays(-1) },
-                new BarEvent { Created = Now }
+                new FooEvent(Now.AddDays(-1)),
+                new BarEvent(Now)
             };
 
             ClientOutboxMessage = new ClientOutboxMessage(GuidComb.NewGuidComb(), EndpointName, Events);

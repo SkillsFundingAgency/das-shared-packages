@@ -32,6 +32,17 @@ namespace SFA.DAS.NServiceBus
 
             return config;
         }
+        
+        public static EndpointConfiguration UseMessageConventions(this EndpointConfiguration config)
+        {
+            var conventions = config.Conventions();
+
+            conventions.DefiningCommandsAs(t => t.Namespace != null && t.Namespace.EndsWith("Commands"));
+            conventions.DefiningEventsAs(t => t.Namespace != null && t.Namespace.EndsWith("Events"));
+            conventions.DefiningMessagesAs(t => t.Namespace != null && t.Namespace.EndsWith("Messages"));
+
+            return config;
+        }
 
         public static EndpointConfiguration UseMetrics(this EndpointConfiguration config)
         {

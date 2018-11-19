@@ -53,7 +53,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
                     if (await reader.ReadAsync().ConfigureAwait(false))
                     {
                         var endpointName = reader.GetString(0);
-                        var operations = JsonConvert.DeserializeObject<List<Event>>(reader.GetString(1), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                        var operations = JsonConvert.DeserializeObject<List<object>>(reader.GetString(1), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
                         var clientOutboxMessage = new ClientOutboxMessage(messageId, endpointName, operations);
 
                         return clientOutboxMessage;

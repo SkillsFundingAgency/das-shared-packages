@@ -114,7 +114,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         public Mock<DbParameterCollection> Parameters { get; set; }
         public IClientOutboxTransaction ClientOutboxTransaction { get; set; }
         public string EndpointName { get; set; }
-        public List<Event> Events { get; set; }
+        public List<object> Events { get; set; }
         public string EventsData { get; set; }
         public ClientOutboxMessage ClientOutboxMessage { get; set; }
         public Mock<SynchronizedStorageSession> SynchronizedStorageSession { get; set; }
@@ -133,10 +133,10 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             ClientOutboxTransaction = new SqlClientOutboxTransaction(Connection.Object, Transaction.Object);
             EndpointName = "SFA.DAS.NServiceBus";
 
-            Events = new List<Event>
+            Events = new List<object>
             {
-                new FooEvent { Created = Now.AddDays(-1) },
-                new BarEvent { Created = Now }
+                new FooEvent(Now.AddDays(-1)),
+                new BarEvent(Now)
             };
 
             EventsData = JsonConvert.SerializeObject(Events, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });

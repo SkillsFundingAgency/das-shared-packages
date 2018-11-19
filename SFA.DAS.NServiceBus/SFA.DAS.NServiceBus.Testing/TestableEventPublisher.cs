@@ -7,18 +7,18 @@ namespace SFA.DAS.NServiceBus.Testing
 {
     public class TestableEventPublisher : IEventPublisher
     {
-        public IEnumerable<Event> Events => _events;
+        public IEnumerable<object> Events => _events;
 
-        private readonly ConcurrentQueue<Event> _events = new ConcurrentQueue<Event>();
+        private readonly ConcurrentQueue<object> _events = new ConcurrentQueue<object>();
 
-        public Task Publish<T>(T message) where T : Event
+        public Task Publish<T>(T message) where T : class
         {
             _events.Enqueue(message);
 
             return Task.CompletedTask;
         }
 
-        public Task Publish<T>(Func<T> messageFactory) where T : Event
+        public Task Publish<T>(Func<T> messageFactory) where T : class
         {
             var message = messageFactory();
             

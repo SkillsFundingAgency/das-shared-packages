@@ -1,6 +1,8 @@
-﻿namespace SFA.DAS.NServiceBus.ClientOutbox
+﻿using NServiceBus;
+
+namespace SFA.DAS.NServiceBus.ClientOutbox
 {
-    public class ProcessClientOutboxMessageCommand : Command
+    public class ProcessClientOutboxMessageCommand : ICommand
     {
     }
 }
