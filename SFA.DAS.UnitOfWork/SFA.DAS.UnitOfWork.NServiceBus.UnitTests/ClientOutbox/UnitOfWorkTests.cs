@@ -8,7 +8,6 @@ using NServiceBus.Settings;
 using NServiceBus.Testing;
 using NServiceBus.UniformSession;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus;
 using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.Testing;
 
@@ -60,7 +59,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         public Mock<Func<Task>> NextTask { get; set; }
         public bool NextTaskInvoked { get; set; }
         public string EndpointName { get; set; }
-        public List<Event> Events { get; set; }
+        public List<object> Events { get; set; }
         public ClientOutboxMessage ClientOutboxMessage { get; set; }
 
         public UnitOfWorkTestsFixture()
@@ -74,10 +73,10 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
             NextTask = new Mock<Func<Task>>();
             EndpointName = "SFA.DAS.NServiceBus";
 
-            Events = new List<Event>
+            Events = new List<object>
             {
-                new FooEvent(),
-                new BarEvent()
+                new FooEvent(DateTime.UtcNow),
+                new BarEvent(DateTime.UtcNow)
             };
 
             UnitOfWorkContext.Setup(c => c.Get<IClientOutboxTransaction>()).Returns(ClientOutboxTransaction.Object);

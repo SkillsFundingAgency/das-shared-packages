@@ -30,8 +30,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
 
         public EventPublisherTestsFixture()
         {
-            FooEvent = new FooEvent { Created = DateTime.UtcNow };
-            BarEvent = () => new BarEvent { Created = DateTime.Now };
+            FooEvent = new FooEvent(DateTime.UtcNow);
+            BarEvent = () => new BarEvent(DateTime.Now);
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             EventPublisher = new EventPublisher(UnitOfWorkContext.Object);
         }

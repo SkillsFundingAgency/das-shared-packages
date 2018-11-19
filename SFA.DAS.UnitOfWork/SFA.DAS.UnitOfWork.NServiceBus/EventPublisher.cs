@@ -13,14 +13,14 @@ namespace SFA.DAS.UnitOfWork.NServiceBus
             _unitOfWorkContext = unitOfWorkContext;
         }
 
-        public Task Publish<T>(T message) where T : Event
+        public Task Publish<T>(T message) where T : class
         {
             _unitOfWorkContext.AddEvent(message);
 
             return Task.CompletedTask;
         }
 
-        public Task Publish<T>(Func<T> messageFactory) where T : Event
+        public Task Publish<T>(Func<T> messageFactory) where T : class
         {
             _unitOfWorkContext.AddEvent(messageFactory);
 

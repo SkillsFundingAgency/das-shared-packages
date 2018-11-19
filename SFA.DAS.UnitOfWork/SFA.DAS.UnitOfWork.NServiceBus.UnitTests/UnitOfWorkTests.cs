@@ -5,7 +5,6 @@ using Moq;
 using NServiceBus;
 using NServiceBus.UniformSession;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
@@ -27,7 +26,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
     public class UnitOfWorkTestsFixture
     {
         public Mock<IUniformSession> UniformSession { get; set; }
-        public List<Event> Events { get; set; }
+        public List<object> Events { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public UnitOfWork UnitOfWork { get; set; }
         public Mock<Func<Task>> NextTask { get; set; }
@@ -37,10 +36,10 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests
         {
             UniformSession = new Mock<IUniformSession>();
 
-            Events = new List<Event>
+            Events = new List<object>
             {
-                new FooEvent(),
-                new BarEvent()
+                new FooEvent(DateTime.UtcNow),
+                new BarEvent(DateTime.UtcNow)
             };
 
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
