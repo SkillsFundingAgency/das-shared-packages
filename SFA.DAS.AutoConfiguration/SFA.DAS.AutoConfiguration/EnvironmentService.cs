@@ -18,16 +18,4 @@ namespace SFA.DAS.AutoConfiguration
             return environment.Any(x => x == (DasEnv)Enum.Parse(typeof(DasEnv), GetVariable(EnvironmentName)));
         }
     }
-
-    public enum DasEnv
-    {
-        LOCAL,
-        AT,
-        TEST,
-        TEST2,
-        PREPROD,
-        PROD,
-        MO,
-        DEMO
-    }
 }
