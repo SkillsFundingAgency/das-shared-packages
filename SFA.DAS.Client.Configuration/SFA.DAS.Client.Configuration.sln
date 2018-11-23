@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Client.Configuration", "SFA.DAS.Client.Configuration\SFA.DAS.Client.Configuration.csproj", "{6CF31C8E-ABAB-4E61-A720-A2599D68C411}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Client.Configuration.UnitTests", "SFA.DAS.Client.Configuration.UnitTests\SFA.DAS.Client.Configuration.UnitTests.csproj", "{F3458B81-6C86-4380-B00E-913736043096}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CF31C8E-ABAB-4E61-A720-A2599D68C411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CF31C8E-ABAB-4E61-A720-A2599D68C411}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CF31C8E-ABAB-4E61-A720-A2599D68C411}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CF31C8E-ABAB-4E61-A720-A2599D68C411}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3458B81-6C86-4380-B00E-913736043096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3458B81-6C86-4380-B00E-913736043096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3458B81-6C86-4380-B00E-913736043096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3458B81-6C86-4380-B00E-913736043096}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50AFE325-2DB9-4CFD-BCC9-6073815B2068}
+	EndGlobalSection
+EndGlobal
