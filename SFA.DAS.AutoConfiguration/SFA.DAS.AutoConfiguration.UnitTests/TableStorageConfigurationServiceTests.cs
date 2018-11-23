@@ -66,8 +66,8 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
     public class TableStorageConfigurationServiceTestsFixture
     {
         public TableStorageConfigurationService TableStorageConfigurationService { get; set; }
-        public Mock<IEnvironmentService> MockEnvironmentService { get; set; }
-        public Mock<IAzureTableStorageConnectionAdapter> MockAzureTableStorageConnectionAdapter { get; set; }
+        public Mock<IEnvironmentService> EnvironmentService { get; set; }
+        public Mock<IAzureTableStorageConnectionAdapter> AzureTableStorageConnectionAdapter { get; set; }
         public string ExpectedPropertyValue { get; set; }
         public string ExpectedEnvironment { get; set; }
         public string ExpectedConfigurationConnectionString { get; set; }
@@ -80,11 +80,11 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
 
         public TableStorageConfigurationServiceTestsFixture()
         {
-            MockEnvironmentService = new Mock<IEnvironmentService>();
+            EnvironmentService = new Mock<IEnvironmentService>();
 
-            MockAzureTableStorageConnectionAdapter = new Mock<IAzureTableStorageConnectionAdapter>();
+            AzureTableStorageConnectionAdapter = new Mock<IAzureTableStorageConnectionAdapter>();
 
-            TableStorageConfigurationService = new TableStorageConfigurationService(MockEnvironmentService.Object, MockAzureTableStorageConnectionAdapter.Object);
+            TableStorageConfigurationService = new TableStorageConfigurationService(EnvironmentService.Object, AzureTableStorageConnectionAdapter.Object);
 
             ExpectedPropertyValue = "Sample Property Value";
             ExpectedEnvironment = "Test Environment";
@@ -99,41 +99,41 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
 
         public TableStorageConfigurationServiceTestsFixture SetupEnvironmentService()
         {
-            MockEnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment)).Returns(ExpectedEnvironment);
-            MockEnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString)).Returns(ExpectedConfigurationConnectionString);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment)).Returns(ExpectedEnvironment);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString)).Returns(ExpectedConfigurationConnectionString);
 
             return this;
         }
 
         public TableStorageConfigurationServiceTestsFixture SetupEnvironmentServiceWithoutEnvironmentName()
         {
-            MockEnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString)).Returns(ExpectedConfigurationConnectionString);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString)).Returns(ExpectedConfigurationConnectionString);
 
             return this;
         }
 
         public TableStorageConfigurationServiceTestsFixture SetupEnvironmentServiceWithoutConnectionString()
         {
-            MockEnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment)).Returns(ExpectedEnvironment);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment)).Returns(ExpectedEnvironment);
 
             return this;
         }
 
         public void VerifyEnvironmentServiceWasCalledCorrectlyForTheEnvironment()
         {
-            MockEnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.Environment));
+            EnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.Environment));
         }
 
         public void VerifyEnvironmentServiceWasCalledCorrectlyForTheConfigurationStorageConnectionString()
         {
-            MockEnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString));
+            EnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString));
         }
 
         public TableStorageConfigurationServiceTestsFixture SetupAzureTableStorageConnectionAdapter()
         {
-            MockAzureTableStorageConnectionAdapter.Setup(x => x.GetTableReference(It.IsAny<string>(), It.IsAny<string>())).Returns(ExpectedCloudTable);
-            MockAzureTableStorageConnectionAdapter.Setup(x => x.GetRetrieveOperation(ExpectedEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0")).Returns(ExpectedOperation);
-            MockAzureTableStorageConnectionAdapter.Setup(x => x.Execute(ExpectedCloudTable, ExpectedOperation))
+            AzureTableStorageConnectionAdapter.Setup(x => x.GetTableReference(It.IsAny<string>(), It.IsAny<string>())).Returns(ExpectedCloudTable);
+            AzureTableStorageConnectionAdapter.Setup(x => x.GetRetrieveOperation(ExpectedEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0")).Returns(ExpectedOperation);
+            AzureTableStorageConnectionAdapter.Setup(x => x.Execute(ExpectedCloudTable, ExpectedOperation))
                 .Returns(new TableResult() {Result = new DynamicTableEntity { Properties = new Dictionary<string, EntityProperty>( new[]{ new KeyValuePair<string, EntityProperty>("Data", new EntityProperty(GetJsonData()) ) } )}});
 
             return this;
@@ -141,27 +141,27 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
 
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheTableReference()
         {
-            MockAzureTableStorageConnectionAdapter.Verify(x => x.GetTableReference(ExpectedConfigurationConnectionString, "Configuration"));
+            AzureTableStorageConnectionAdapter.Verify(x => x.GetTableReference(ExpectedConfigurationConnectionString, "Configuration"));
         }
 
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperation()
         {
-            MockAzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(ExpectedEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0"));
+            AzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(ExpectedEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0"));
         }
 
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperationWithDefaultedEnvironmentName()
         {
-            MockAzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(DefaultEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0"));
+            AzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(DefaultEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0"));
         }
 
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheTableReferenceWithDefaultedConnectionString()
         {
-            MockAzureTableStorageConnectionAdapter.Verify(x => x.GetTableReference(DefaultConnectionString, "Configuration"));
+            AzureTableStorageConnectionAdapter.Verify(x => x.GetTableReference(DefaultConnectionString, "Configuration"));
         }
 
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForExecute()
         {
-            MockAzureTableStorageConnectionAdapter.Verify(x => x.Execute(ExpectedCloudTable, ExpectedOperation));
+            AzureTableStorageConnectionAdapter.Verify(x => x.Execute(ExpectedCloudTable, ExpectedOperation));
         }
 
         private string GetJsonData()
