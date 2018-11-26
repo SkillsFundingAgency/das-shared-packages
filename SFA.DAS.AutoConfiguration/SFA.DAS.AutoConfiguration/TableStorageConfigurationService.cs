@@ -30,10 +30,7 @@ namespace SFA.DAS.AutoConfiguration
         {
             var environmentName = _environmentService.GetVariable(EnvironmentVariableNames.Environment) ?? DefaultEnvironment;
             var storageConnectionString = _environmentService.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString) ?? DefaultStorageConnectionString;
-            if (rowKey == null)
-            {
-                rowKey = $"{Assembly.GetAssembly(typeof(T)).GetName().Name}_{DefaultVersion}";
-            }
+            rowKey = rowKey ?? $"{Assembly.GetAssembly(typeof(T)).GetName().Name}_{DefaultVersion}";
 
             var table = _azureTableStorageConnectionAdapter.GetTableReference(storageConnectionString, ConfigurationTableReference);
 
