@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.NServiceBus.ClientOutbox.Commands;
 
 namespace SFA.DAS.NServiceBus.ClientOutbox
 {

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.AutoConfiguration", "SFA.DAS.AutoConfiguration\SFA.DAS.AutoConfiguration.csproj", "{EF3E1A83-CA69-4AB6-B0AD-048427245E85}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.AutoConfiguration.UnitTests", "SFA.DAS.AutoConfiguration.UnitTests\SFA.DAS.AutoConfiguration.UnitTests.csproj", "{CB6447BF-0DE0-4E67-A6B8-8FA6C6B6597F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF3E1A83-CA69-4AB6-B0AD-048427245E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF3E1A83-CA69-4AB6-B0AD-048427245E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF3E1A83-CA69-4AB6-B0AD-048427245E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF3E1A83-CA69-4AB6-B0AD-048427245E85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB6447BF-0DE0-4E67-A6B8-8FA6C6B6597F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB6447BF-0DE0-4E67-A6B8-8FA6C6B6597F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB6447BF-0DE0-4E67-A6B8-8FA6C6B6597F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB6447BF-0DE0-4E67-A6B8-8FA6C6B6597F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {23FF69F1-3570-44C2-A474-01C65234D5D4}
+	EndGlobalSection
+EndGlobal

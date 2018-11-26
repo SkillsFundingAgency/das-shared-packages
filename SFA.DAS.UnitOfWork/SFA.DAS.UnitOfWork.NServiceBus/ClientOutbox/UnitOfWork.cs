@@ -5,6 +5,7 @@ using NServiceBus;
 using NServiceBus.Settings;
 using NServiceBus.UniformSession;
 using SFA.DAS.NServiceBus.ClientOutbox;
+using SFA.DAS.NServiceBus.ClientOutbox.Commands;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
 {
