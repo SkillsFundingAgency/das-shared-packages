@@ -3,5 +3,7 @@
     public interface ITableStorageConfigurationService
     {
         T Get<T>();
+
+        T Get<T>(string rowKey);
     }
 }

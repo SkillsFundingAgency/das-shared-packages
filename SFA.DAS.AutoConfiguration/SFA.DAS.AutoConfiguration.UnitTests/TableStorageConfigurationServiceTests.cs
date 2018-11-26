@@ -45,6 +45,12 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         }
 
         [Test]
+        public void Get_ShouldCallTheAzureTableStorageConnectionAdapterCorrectlyForTheRetrieveOperationWhenASpecificRowKeyIsSupplied()
+        {
+            Run(f => f.SetupEnvironmentService().SetupAzureTableStorageConnectionAdapter(), f => f.GetResultSpecificRowKey(), f => f.VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperationWithSpecifiedRowKey());
+        }
+
+        [Test]
         public void Get_ShouldCallTheAzureTableStorageConnectionAdapterCorrectlyForExecute()
         {
             Run(f => f.SetupEnvironmentService().SetupAzureTableStorageConnectionAdapter(), f => f.GetResult(), f => f.VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForExecute());
@@ -73,6 +79,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         public string ExpectedConfigurationConnectionString { get; set; }
         public CloudTable ExpectedCloudTable { get; set; }
         public TableOperation ExpectedOperation { get; set; }
+        public string ExpectedSpecificRowKey { get; set; }
 
         public const string DefaultEnvironment = "LOCAL";
         public const string DefaultConnectionString = "UseDevelopmentStorage=true";
@@ -90,11 +97,17 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
             ExpectedEnvironment = "Test Environment";
             ExpectedConfigurationConnectionString = "Test Connection String";
             ExpectedCloudTable = new CloudTable(new Uri("http://example.com"));
+            ExpectedSpecificRowKey = "Test Row Key";
         }
 
         public SampleDataType GetResult()
         {
             return TableStorageConfigurationService.Get<SampleDataType>();
+        }
+
+        public SampleDataType GetResultSpecificRowKey()
+        {
+            return TableStorageConfigurationService.Get<SampleDataType>(ExpectedSpecificRowKey);
         }
 
         public TableStorageConfigurationServiceTestsFixture SetupEnvironmentService()
@@ -132,7 +145,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         public TableStorageConfigurationServiceTestsFixture SetupAzureTableStorageConnectionAdapter()
         {
             AzureTableStorageConnectionAdapter.Setup(x => x.GetTableReference(It.IsAny<string>(), It.IsAny<string>())).Returns(ExpectedCloudTable);
-            AzureTableStorageConnectionAdapter.Setup(x => x.GetRetrieveOperation(ExpectedEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0")).Returns(ExpectedOperation);
+            AzureTableStorageConnectionAdapter.Setup(x => x.GetRetrieveOperation(ExpectedEnvironment, It.IsAny<string>())).Returns(ExpectedOperation);
             AzureTableStorageConnectionAdapter.Setup(x => x.Execute(ExpectedCloudTable, ExpectedOperation))
                 .Returns(new TableResult() {Result = new DynamicTableEntity { Properties = new Dictionary<string, EntityProperty>( new[]{ new KeyValuePair<string, EntityProperty>("Data", new EntityProperty(GetJsonData()) ) } )}});
 
@@ -147,6 +160,10 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperation()
         {
             AzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(ExpectedEnvironment, $"{Assembly.GetAssembly(typeof(SampleDataType)).GetName().Name}_1.0"));
+        }
+        public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperationWithSpecifiedRowKey()
+        {
+            AzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(ExpectedEnvironment, ExpectedSpecificRowKey));
         }
 
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperationWithDefaultedEnvironmentName()

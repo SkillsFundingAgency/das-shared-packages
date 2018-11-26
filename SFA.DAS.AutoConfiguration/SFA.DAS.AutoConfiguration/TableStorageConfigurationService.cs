@@ -23,9 +23,17 @@ namespace SFA.DAS.AutoConfiguration
 
         public T Get<T>()
         {
+            return Get<T>(null);
+        }
+
+        public T Get<T>(string rowKey)
+        {
             var environmentName = _environmentService.GetVariable(EnvironmentVariableNames.Environment) ?? DefaultEnvironment;
             var storageConnectionString = _environmentService.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString) ?? DefaultStorageConnectionString;
-            var rowKey = $"{Assembly.GetAssembly(typeof(T)).GetName().Name}_{DefaultVersion}";
+            if (rowKey == null)
+            {
+                rowKey = $"{Assembly.GetAssembly(typeof(T)).GetName().Name}_{DefaultVersion}";
+            }
 
             var table = _azureTableStorageConnectionAdapter.GetTableReference(storageConnectionString, ConfigurationTableReference);
 
