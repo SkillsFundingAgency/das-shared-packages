@@ -7,6 +7,7 @@ namespace SFA.DAS.AutoConfiguration
     {
         private const string Prefix = "AppSettings_";
         private const string EnvironmentName = "EnvironmentName";
+        private const string DefaultEnvironment = "LOCAL";
 
         public string GetVariable(string variableName)
         {
@@ -15,7 +16,7 @@ namespace SFA.DAS.AutoConfiguration
 
         public bool IsCurrent(params DasEnv[] environment)
         {
-            return environment.Any(x => x == (DasEnv)Enum.Parse(typeof(DasEnv), GetVariable(EnvironmentName)));
+            return environment.Any(x => x == (DasEnv)Enum.Parse(typeof(DasEnv), GetVariable(EnvironmentName) ?? DefaultEnvironment));
         }
     }
 }
