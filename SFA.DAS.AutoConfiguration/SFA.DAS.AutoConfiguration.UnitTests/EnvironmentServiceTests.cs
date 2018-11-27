@@ -42,7 +42,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         [Test]
         public void WhenLOCALEnvironmentIsCheckedButTheCurrentEnvironmentIsNotSet_TheShouldReturnTrue()
         {
-            Run(f => f.IsCurrent(new [] { DasEnv.LOCAL }), (f, r) => r.Should().BeTrue());
+            Run(f => f.ClearCurrentEnvironment(), f => f.IsCurrent(new [] { DasEnv.LOCAL }), (f, r) => r.Should().BeTrue());
         }
     }
 
@@ -66,6 +66,12 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         public EnvironmentTestsFixture SetCurrent(DasEnv environment)
         {
             Environment.SetEnvironmentVariable("AppSettings_EnvironmentName", environment.ToString());
+            return this;
+        }
+
+        public EnvironmentTestsFixture ClearCurrentEnvironment()
+        {
+            Environment.SetEnvironmentVariable("AppSettings_EnvironmentName", null);
             return this;
         }
 
