@@ -163,7 +163,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         }
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperationWithSpecifiedRowKey()
         {
-            AzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(ExpectedEnvironment, ExpectedSpecificRowKey));
+            AzureTableStorageConnectionAdapter.Verify(x => x.GetRetrieveOperation(ExpectedEnvironment, $"{ExpectedSpecificRowKey}_1.0"));
         }
 
         public void VerifyAzureTableStorageConnectionAdapterWasCalledCorrectlyForTheRetrieveOperationWithDefaultedEnvironmentName()
