@@ -40,7 +40,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         }
 
         [Test]
-        public void WhenEnvironmentIsCheckedButTheCurrentEnvironmentIsNotSet_TheShouldReturnCorrectIfLOCAL()
+        public void WhenLOCALEnvironmentIsCheckedButTheCurrentEnvironmentIsNotSet_TheShouldReturnTrue()
         {
             Run(f => f.IsCurrent(new [] { DasEnv.LOCAL }), (f, r) => r.Should().BeTrue());
         }
