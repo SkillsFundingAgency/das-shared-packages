@@ -38,6 +38,12 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
         {
             Run(f => f.SetVariable(f.ExpectedKey, f.ExpectedValue), f => f.GetVariable(f.ExpectedKey), (f, r) => r.Should().Be(f.ExpectedValue));
         }
+
+        [Test]
+        public void WhenLOCALEnvironmentIsCheckedButTheCurrentEnvironmentIsNotSet_TheShouldReturnTrue()
+        {
+            Run(f => f.IsCurrent(new [] { DasEnv.LOCAL }), (f, r) => r.Should().BeTrue());
+        }
     }
 
     public class EnvironmentTestsFixture
