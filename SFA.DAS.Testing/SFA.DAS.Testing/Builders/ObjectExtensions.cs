@@ -7,7 +7,7 @@ namespace SFA.DAS.Testing.Builders
 {
     public static class ObjectExtensions
     {
-        public static T Set<T, TProperty>(this T @object, Expression<Func<T, TProperty>> property, TProperty value) where T : class
+        public static TObject Set<TObject, TProperty>(this TObject @object, Expression<Func<TObject, TProperty>> property, TProperty value) where TObject : class
         {
             var memberExpression = (MemberExpression)property.Body;
             var member = memberExpression.Member;
@@ -27,20 +27,20 @@ namespace SFA.DAS.Testing.Builders
             return @object;
         }
 
-        public static T Add<T, TProperty, TItem>(this T @object, Expression<Func<T, TProperty>> property, TItem item) where T : class where TProperty : IEnumerable<TItem>
+        public static TObject Add<TObject, TProperty, TItem>(this TObject @object, Expression<Func<TObject, TProperty>> property, TItem item) where TObject : class where TProperty : IEnumerable<TItem>
         {
             var memberExpression = (MemberExpression)property.Body;
-            var collection = GetCollection<T, TItem>(@object, memberExpression);
+            var collection = GetCollection<TObject, TItem>(@object, memberExpression);
             collection.Add(item);
 
             return @object;
         }
 
 
-        public static T AddRange<T, TProperty, TItem>(this T @object, Expression<Func<T, TProperty>> property, IEnumerable<TItem> items) where T : class where TProperty : IEnumerable<TItem>
+        public static TObject AddRange<TObject, TProperty, TItem>(this TObject @object, Expression<Func<TObject, TProperty>> property, IEnumerable<TItem> items) where TObject : class where TProperty : IEnumerable<TItem>
         {
             var memberExpression = (MemberExpression)property.Body;
-            var collection = GetCollection<T, TItem>(@object, memberExpression);
+            var collection = GetCollection<TObject, TItem>(@object, memberExpression);
 
             foreach (var item in items)
             {
@@ -50,8 +50,8 @@ namespace SFA.DAS.Testing.Builders
             return @object;
         }
 
-        private static ICollection<TItem> GetCollection<T, TItem>(T @object, MemberExpression memberExpression)
-            where T : class
+        private static ICollection<TItem> GetCollection<TObject, TItem>(TObject @object, MemberExpression memberExpression)
+            where TObject : class
         {
             ICollection<TItem> collection;
 
