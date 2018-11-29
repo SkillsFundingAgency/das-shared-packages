@@ -5,7 +5,7 @@ namespace SFA.DAS.AutoConfiguration
 {
     public class EnvironmentService : IEnvironmentService
     {
-        private const string Prefix = "AppSettings_";
+        private const string Prefix = "APPSETTING_";
         private const string EnvironmentName = "EnvironmentName";
         private const string DefaultEnvironment = "LOCAL";
 
