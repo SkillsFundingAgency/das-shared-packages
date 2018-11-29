@@ -52,8 +52,6 @@ namespace SFA.DAS.Testing.UnitTests.Builder
         {
             Test(f => f.Activate().AddRange(x => x.PropertyListOfObjects, new List<string> { "New Item", "Another" }).ListOfObjects.Count().Should().Be(2));
         }
-
-
     }
 
     public class ObjectExtensonsTestsFixture

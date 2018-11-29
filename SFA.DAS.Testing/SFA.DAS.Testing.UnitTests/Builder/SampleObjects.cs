@@ -18,7 +18,6 @@ namespace SFA.DAS.Testing.UnitTests.Builder
 
         private ObjectWithPrivateProperties()
         {
-
         }
     }
 
@@ -34,5 +33,4 @@ namespace SFA.DAS.Testing.UnitTests.Builder
             StringProperty = stringProperty;
         }
     }
-
 }

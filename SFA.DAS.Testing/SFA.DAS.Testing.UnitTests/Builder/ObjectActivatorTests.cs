@@ -18,22 +18,21 @@ namespace SFA.DAS.Testing.UnitTests.Builder
         [Test]
         public void ObjectActivator_WhenActivatingClassWithoutParameterlessConstructor_ThenShouldThrowException()
         {
-            TestException(f => f.ActivateObjectWitNoParameterlessConstructor(), (f, r) => r.Should().Throw<MissingMethodException>());
+            TestException(f => f.ActivateObjectWitNoParameterlessConstructor(),
+                (f, r) => r.Should().Throw<MissingMethodException>());
         }
     }
 
     public class ObjectActivatorTestsFixture
     {
-        public Object ActivateObjectWithAPrivateParameterlessConstructor()
+        public object ActivateObjectWithAPrivateParameterlessConstructor()
         {
             return ObjectActivator.CreateInstance<ObjectWithPrivateProperties>();
         }
 
-        public Object ActivateObjectWitNoParameterlessConstructor()
+        public object ActivateObjectWitNoParameterlessConstructor()
         {
             return ObjectActivator.CreateInstance<ObjectWithNoParameterlessConstructor>();
         }
     }
 }
-
-
