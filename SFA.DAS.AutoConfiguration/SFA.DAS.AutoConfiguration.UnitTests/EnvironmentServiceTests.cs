@@ -59,19 +59,19 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
             AppSettings = new NameValueCollection();
             ExpectedKey = "keyone";
             ExpectedValue = "valueone";
-            ExpectedPrefix = "AppSettings_";
+            ExpectedPrefix = "APPSETTING_";
             EnvironmentService = new EnvironmentService();
         }
 
         public EnvironmentTestsFixture SetCurrent(DasEnv environment)
         {
-            Environment.SetEnvironmentVariable("AppSettings_EnvironmentName", environment.ToString());
+            Environment.SetEnvironmentVariable(ExpectedPrefix + "EnvironmentName", environment.ToString());
             return this;
         }
 
         public EnvironmentTestsFixture ClearCurrentEnvironment()
         {
-            Environment.SetEnvironmentVariable("AppSettings_EnvironmentName", null);
+            Environment.SetEnvironmentVariable(ExpectedPrefix + "EnvironmentName", null);
             return this;
         }
 
