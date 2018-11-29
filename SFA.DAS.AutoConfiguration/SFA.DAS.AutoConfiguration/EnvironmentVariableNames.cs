@@ -2,7 +2,7 @@
 {
     public static class EnvironmentVariableNames
     {
-        public const string Environment = "ENV";
+        public const string Environment = "EnvironmentName";
         public const string ConfigurationStorageConnectionString = "ConfigurationStorageConnectionString";
     }
 }
