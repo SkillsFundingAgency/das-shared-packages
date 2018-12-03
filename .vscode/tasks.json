@@ -1,0 +1,22 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-vacancy-analytics-client",
+            "command": "dotnet",
+            "type": "shell",
+            "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "args": [
+                "build",
+                "${workspaceFolder}/SFA.DAS.Vacancy.Analytics.Client/SFA.DAS.Vacancy.Analytics.Client.sln",
+                "/p:TargetFramework=netstandard2.0;GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
