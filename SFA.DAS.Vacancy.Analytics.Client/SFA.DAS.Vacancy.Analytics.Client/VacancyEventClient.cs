@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
 using Newtonsoft.Json;
@@ -9,15 +10,21 @@ namespace Esfa.Vacancy.Analytics
 {
     public class VacancyEventClient : IVacancyEventClient
     {
+        private const string EventHubPartitionKey = "VacancyEvent";
+        private const int DefaultMaxRetrySendAttempts = 3;
         private readonly string _eventHubSendConnectionString;
         private readonly string _publisherId;
         private readonly ILogger<VacancyEventClient> _logger;
+        private readonly RetryPolicy _retryPolicy = new RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(3), DefaultMaxRetrySendAttempts);
 
-        public VacancyEventClient(string eventHubSendConnectionString, string publisherId, ILogger<VacancyEventClient> logger)
+        public VacancyEventClient(string eventHubSendConnectionString, string publisherId, ILogger<VacancyEventClient> logger, RetryPolicy retryPolicy = null)
         {
             _eventHubSendConnectionString = eventHubSendConnectionString;
             _publisherId = publisherId;
             _logger = logger;
+
+            if (retryPolicy != null)
+                _retryPolicy = retryPolicy;
         }
 
         public async Task PushApprenticeshipSearchEventAsync(long vacancyReference)
@@ -63,16 +70,20 @@ namespace Esfa.Vacancy.Analytics
             try
             {
                 var client = GetClient();
-                await client.SendAsync(evtData);
+                await client.SendAsync(evtData, EventHubPartitionKey);
                 await client.CloseAsync();
             }
             catch (EventHubsException ex)
             {
-                _logger.LogError($"Error publishing event {evt.EventType}.", ex);
+                _logger.LogError($"Error publishing event: {evt.EventType}.", ex);
             }
         }
 
         private EventHubClient GetClient()
-            => EventHubClient.CreateFromConnectionString(_eventHubSendConnectionString);
+        {
+            var client = EventHubClient.CreateFromConnectionString(_eventHubSendConnectionString);
+            client.RetryPolicy = _retryPolicy;
+            return client;
+        }
     }
 }
