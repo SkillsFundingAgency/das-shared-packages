@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.VacancyServices.Search.Entities;
 
 namespace SFA.DAS.VacancyServices.Search.Requests
@@ -9,6 +10,9 @@ namespace SFA.DAS.VacancyServices.Search.Requests
         public string CategoryCode { get; set; }
         public bool DisabilityConfidentOnly { get; set; }
         public IEnumerable<int> ExcludeVacancyIds { get; set; }
+        public List<string> FrameworkLarsCodes { get; set; } = new List<string>();
+        public List<string> StandardLarsCodes { get; set; } = new List<string>();
+        public DateTime? FromDate { get; set; }
         public string Keywords { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }

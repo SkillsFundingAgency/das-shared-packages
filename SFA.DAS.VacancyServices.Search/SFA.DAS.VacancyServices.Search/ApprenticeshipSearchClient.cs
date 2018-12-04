@@ -108,35 +108,39 @@ namespace SFA.DAS.VacancyServices.Search
 
                 s.TrackScores();
 
-                s.Query(q =>
-                {
-                    if(string.IsNullOrEmpty(parameters.VacancyReference))
-                        return GetQuery(parameters, q);
-
-                    return q.Filtered(sl =>
-                        sl.Filter(fs =>
-                            fs.Term(f =>
-                                f.VacancyReference, parameters.VacancyReference)));
-                });
+                s.Query(q => GetQuery(parameters, q));
 
                 switch (parameters.SortType)
                 {
                     case VacancySearchSortType.RecentlyAdded:
 
-                        s.Sort(v => v.OnField(f => f.PostedDate).Descending());
+                        s.SortDescending(summary => summary.PostedDate);
                         s.TrySortByGeoDistance(parameters);
+                        s.SortDescending(summary => summary.VacancyReference);
 
                         break;
                     case VacancySearchSortType.Distance:
 
                         s.TrySortByGeoDistance(parameters);
 
+                        s.SortDescending(summary => summary.PostedDate);
+                        s.SortDescending(summary => summary.VacancyReference);
+
                         break;
                     case VacancySearchSortType.ClosingDate:
 
-                        s.Sort(v => v.OnField(f => f.ClosingDate).Ascending());
+                        s.SortAscending(summary => summary.ClosingDate);
                         s.TrySortByGeoDistance(parameters);
                         
+                        break;
+
+                    case VacancySearchSortType.ExpectedStartDate:
+
+                        s.SortAscending(summary => summary.StartDate);
+                        s.SortAscending(summary => summary.VacancyReference);
+
+                        s.TrySortByGeoDistance(parameters);
+
                         break;
                     case VacancySearchSortType.Relevancy:
 
@@ -159,13 +163,10 @@ namespace SFA.DAS.VacancyServices.Search
 
                 s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode).Size(0)));
 
+                //Post aggregation calculation filters
                 if (parameters.SubCategoryCodes != null && parameters.SubCategoryCodes.Any())
                 {
-                    var subCategoryCodes = new List<string>();
-
-                    subCategoryCodes.AddRange(parameters.SubCategoryCodes);
-
-                    s.Filter(ff => ff.Terms(f => f.SubCategoryCode, subCategoryCodes.Distinct()));
+                    s.Filter(ff => ff.Terms(f => f.SubCategoryCode, parameters.SubCategoryCodes.Distinct()));
                 }
 
                 return s;
@@ -176,40 +177,24 @@ namespace SFA.DAS.VacancyServices.Search
 
         private QueryContainer GetQuery(ApprenticeshipSearchRequestParameters parameters, QueryDescriptor<ApprenticeshipSearchResult> q)
         {
+            if (!string.IsNullOrEmpty(parameters.VacancyReference))
+            {
+                return q.Filtered(fq =>
+                    fq.Filter(f =>
+                        f.Term(t =>
+                            t.VacancyReference, parameters.VacancyReference)));
+            }
+
             QueryContainer query = null;
 
-            if (!string.IsNullOrWhiteSpace(parameters.Keywords)
-                && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.JobTitle))
-            {
-                var queryClause = q.Match(m =>
-                {
-                    m.OnField(f => f.Title).Query(parameters.Keywords);
-                    BuildFieldQuery(m, _searchFactorConfiguration.JobTitleFactors);
-                });
+            query &= GetKeywordQuery(parameters, q);
 
-                query = BuildContainer(null, queryClause);
-            }
-
-            if (!string.IsNullOrWhiteSpace(parameters.Keywords)
-                && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.Description))
+            if (parameters.FrameworkLarsCodes.Any() || parameters.StandardLarsCodes.Any())
             {
-                var queryClause = q.Match(m =>
-                {
-                    m.OnField(f => f.Description).Query(parameters.Keywords);
-                    BuildFieldQuery(m, _searchFactorConfiguration.DescriptionFactors);
-                });
-                query = BuildContainer(query, queryClause);
-            }
+                var queryClause = q.Terms(apprenticeship => apprenticeship.FrameworkLarsCode, parameters.FrameworkLarsCodes)
+                                  || q.Terms(apprenticeship => apprenticeship.StandardLarsCode, parameters.StandardLarsCodes);
 
-            if (!string.IsNullOrWhiteSpace(parameters.Keywords)
-                && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.Employer))
-            {
-                var exactMatchClause = q.Match(m =>
-                {
-                    m.OnField(f => f.EmployerName).Query(parameters.Keywords);
-                    BuildFieldQuery(m, _searchFactorConfiguration.EmployerFactors);
-                });
-                query = BuildContainer(query, exactMatchClause);
+                query &= queryClause;
             }
 
             if (!string.IsNullOrWhiteSpace(parameters.CategoryCode))
@@ -221,20 +206,29 @@ namespace SFA.DAS.VacancyServices.Search
 
                 var queryCategory = q.Terms(f => f.CategoryCode, categoryCodes.Distinct());
 
-                query = query && queryCategory;
+                query &= queryCategory;
             }
 
             if (parameters.ExcludeVacancyIds != null && parameters.ExcludeVacancyIds.Any())
             {
                 var queryExcludeVacancyIds = !q.Ids(parameters.ExcludeVacancyIds.Select(x => x.ToString(CultureInfo.InvariantCulture)));
-                query = query && queryExcludeVacancyIds;
+                query &= queryExcludeVacancyIds;
             }
 
             if (parameters.VacancyLocationType != VacancyLocationType.Unknown)
             {
                 var queryVacancyLocation = q.Match(m => m.OnField(f => f.VacancyLocationType).Query(parameters.VacancyLocationType.ToString()));
 
-                query = query && queryVacancyLocation;
+                query &= queryVacancyLocation;
+            }
+
+            if (parameters.FromDate.HasValue)
+            {
+                var queryClause = q.Range(range =>
+                    range.OnField(apprenticeship => apprenticeship.PostedDate)
+                        .GreaterOrEquals(parameters.FromDate));
+
+                query &= queryClause;
             }
 
             if (!string.IsNullOrWhiteSpace(parameters.ApprenticeshipLevel) && parameters.ApprenticeshipLevel != "All")
@@ -242,14 +236,14 @@ namespace SFA.DAS.VacancyServices.Search
                 var queryClause = q
                     .Match(m => m.OnField(f => f.ApprenticeshipLevel)
                         .Query(parameters.ApprenticeshipLevel));
-                query = query && queryClause;
+                query &= queryClause;
             }
 
             if (parameters.DisabilityConfidentOnly)
             {
                 var queryDisabilityConfidentOnly = q.Match(m => m.OnField(f => f.IsDisabilityConfident)
                                                                  .Query(parameters.DisabilityConfidentOnly.ToString()));
-                query = query && queryDisabilityConfidentOnly;
+                query &= queryDisabilityConfidentOnly;
             }
 
             if (parameters.IsLatLongSearch && parameters.SearchRadius != 0)
@@ -259,24 +253,53 @@ namespace SFA.DAS.VacancyServices.Search
                         .Location, descriptor => descriptor
                             .Location(parameters.Latitude.Value, parameters.Longitude.Value)
                             .Distance(parameters.SearchRadius, GeoUnit.Miles))));
-                query = query && queryClause;
+
+                query &= queryClause;
             }
 
             return query;
         }
 
-        private QueryContainer BuildContainer(QueryContainer queryContainer, QueryContainer queryClause)
+        private QueryContainer GetKeywordQuery(ApprenticeshipSearchRequestParameters parameters, QueryDescriptor<ApprenticeshipSearchResult> q)
         {
-            if (queryContainer == null)
+            QueryContainer keywordQuery = null;
+            if (!string.IsNullOrWhiteSpace(parameters.Keywords)
+                && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.JobTitle))
             {
-                queryContainer = queryClause;
-            }
-            else
-            {
-                queryContainer |= queryClause;
+                var queryClause = q.Match(m =>
+                {
+                    m.OnField(f => f.Title).Query(parameters.Keywords);
+                    BuildFieldQuery(m, _searchFactorConfiguration.JobTitleFactors);
+                });
+
+                keywordQuery |= queryClause;
             }
 
-            return queryContainer;
+            if (!string.IsNullOrWhiteSpace(parameters.Keywords)
+                && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.Description))
+            {
+                var queryClause = q.Match(m =>
+                {
+                    m.OnField(f => f.Description).Query(parameters.Keywords);
+                    BuildFieldQuery(m, _searchFactorConfiguration.DescriptionFactors);
+                });
+
+                keywordQuery |= queryClause;
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.Keywords)
+                && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.Employer))
+            {
+                var queryClause = q.Match(m =>
+                {
+                    m.OnField(f => f.EmployerName).Query(parameters.Keywords);
+                    BuildFieldQuery(m, _searchFactorConfiguration.EmployerFactors);
+                });
+
+                keywordQuery |= queryClause;
+            }
+
+            return keywordQuery;
         }
 
         private static void BuildFieldQuery(MatchQueryDescriptor<ApprenticeshipSearchResult> queryDescriptor,
