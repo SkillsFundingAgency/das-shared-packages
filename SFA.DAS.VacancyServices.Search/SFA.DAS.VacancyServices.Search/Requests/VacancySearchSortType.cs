@@ -5,6 +5,7 @@
         Relevancy,
         Distance,
         ClosingDate,
-        RecentlyAdded
+        RecentlyAdded,
+        ExpectedStartDate
     }
 }

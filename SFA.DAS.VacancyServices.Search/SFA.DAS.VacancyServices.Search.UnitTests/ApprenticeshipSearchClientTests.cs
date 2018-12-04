@@ -16,6 +16,183 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
     [TestFixture]
     public class ApprenticeshipSearchClientTests
     {
+        #region Vacancy API searches
+
+        [Test]
+        public void Search_ShouldSearchByStandardLarsCode()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                StandardLarsCodes = new List<string>{"123","124"},
+                SortType = VacancySearchSortType.RecentlyAdded
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSearchByFrameworkLarsCode()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                FrameworkLarsCodes = new List<string> { "502","501" },
+                SortType = VacancySearchSortType.RecentlyAdded
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSearchByPostedInLastNumberOfDays()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                FromDate = DateTime.Parse("2018-12-01"),
+                SortType = VacancySearchSortType.RecentlyAdded
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-12-01T00:00:00\"}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSearchByNationwideOnly()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.National,
+                SortType = VacancySearchSortType.RecentlyAdded
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSearchByLatAndLongAndSortByDistance()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                Latitude = 52.4088862063274,
+                Longitude = 1.50554768088033,
+                SearchRadius = 40,
+                SortType = VacancySearchSortType.Distance
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSortByAge()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                StandardLarsCodes = new List<string> { "123", "124" },
+                SortType = VacancySearchSortType.RecentlyAdded
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSortByExpectedStartDate()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                StandardLarsCodes = new List<string> { "123", "124" },
+                SortType = VacancySearchSortType.ExpectedStartDate
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSearchByCombination()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 2,
+                PageSize = 50,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                StandardLarsCodes = new List<string> { "123", "124" },
+                FrameworkLarsCodes = new List<string> { "502", "501" },
+                Latitude = 52.4088862063274,
+                Longitude = 1.50554768088033,
+                SearchRadius = 40,
+                FromDate = DateTime.Parse("2018-11-24"),
+                SortType = VacancySearchSortType.ExpectedStartDate
+            };
+
+            const string expectedJsonQuery = "{\"from\":50,\"size\":50,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}},{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-11-24T00:00:00\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        #endregion
+
+        #region FAA searches
+        [Test]
+        public void Search_ShouldSearchByVacancyReference()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 1,
+                VacancyReference = "123456789"
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":1,\"track_scores\":true,\"fields\":[\"_source\"],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"123456789\"}}}}}";
+
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSearchBySubCategoryCode()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 1,
+                PageSize = 5,
+                SubCategoryCodes = new[] {"sub-code"}
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"fields\":[\"_source\"],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"filter\":{\"terms\":{\"subCategoryCode\":[\"sub-code\"]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
         [Test]
         public void Search_ShouldSearchByLatAndLong()
         {
@@ -33,7 +210,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyLocationType = VacancyLocationType.NonNational
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"match\":{\"title\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":1.5,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}},{\"match\":{\"description\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"slop\":2,\"boost\":1.0,\"minimum_should_match\":\"2<75%\"}}},{\"match\":{\"employerName\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":5.0,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"match\":{\"title\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":1.5,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}},{\"match\":{\"description\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"slop\":2,\"boost\":1.0,\"minimum_should_match\":\"2<75%\"}}},{\"match\":{\"employerName\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":5.0,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -94,8 +271,8 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyLocationType = VacancyLocationType.NonNational
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"unit\":\"mi\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"categoryCode\":[\"SSAT1.00\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"distance\":5.0,\"unit\":\"mi\"}}}}],\"must_not\":[{\"ids\":{\"values\":[\"123456\",\"789012\"]}}]}}}";
-
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"categoryCode\":[\"SSAT1.00\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"distance\":5.0,\"unit\":\"mi\"}}}}],\"must_not\":[{\"ids\":{\"values\":[\"123456\",\"789012\"]}}]}}}";
+            
             AssertSearch(parameters, expectedJsonQuery);
         }
 
@@ -169,6 +346,8 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 
             mockClient.Verify(c => c.Scroll<ApprenticeshipSearchResult>(It.IsAny<ScrollRequest>()), Times.Exactly(3));
         }
+
+        #endregion
 
         private void AssertSearch(ApprenticeshipSearchRequestParameters parameters, string expectedJsonQuery)
         {
