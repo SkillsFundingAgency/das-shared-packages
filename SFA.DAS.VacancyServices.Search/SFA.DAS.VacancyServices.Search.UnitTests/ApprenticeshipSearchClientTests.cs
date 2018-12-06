@@ -173,8 +173,8 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyReference = "123456789"
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":1,\"track_scores\":true,\"fields\":[\"_source\"],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"123456789\"}}}}}";
-
+            const string expectedJsonQuery = "{\"from\":0,\"size\":1,\"track_scores\":true,\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"123456789\"}}}}}";
+            
             AssertSearch(parameters, expectedJsonQuery);
         }
 
@@ -188,7 +188,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SubCategoryCodes = new[] {"sub-code"}
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"fields\":[\"_source\"],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"filter\":{\"terms\":{\"subCategoryCode\":[\"sub-code\"]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"filter\":{\"terms\":{\"subCategoryCode\":[\"sub-code\"]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }

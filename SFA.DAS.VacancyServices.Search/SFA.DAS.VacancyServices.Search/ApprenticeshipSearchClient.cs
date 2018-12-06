@@ -43,8 +43,6 @@ namespace SFA.DAS.VacancyServices.Search
 
             var results = PerformSearch(searchParameters);
 
-            SetPostSearchValues(searchParameters, results);
-
             var aggregationResults = GetAggregationResultsFrom(results.Aggs);
             var response = new ApprenticeshipSearchResponse(results.Total, results.Documents, aggregationResults, searchParameters);
 
@@ -84,86 +82,39 @@ namespace SFA.DAS.VacancyServices.Search
 
         private void SanitizeSearchParameters(ApprenticeshipSearchRequestParameters parameters)
         {
-            if (!string.IsNullOrEmpty(parameters.Keywords))
-            {
-                parameters.Keywords = parameters.Keywords.ToLower();
+            if (string.IsNullOrEmpty(parameters.Keywords))
+                return;
 
-                foreach (var excludedTerm in _keywordExcludedTerms)
-                {
-                    parameters.Keywords = parameters.Keywords.Replace(excludedTerm, "");
-                }
+            parameters.Keywords = parameters.Keywords.ToLower();
+
+            foreach (var excludedTerm in _keywordExcludedTerms)
+            {
+                parameters.Keywords = parameters.Keywords.Replace(excludedTerm, "");
             }
         }
 
         private ISearchResponse<ApprenticeshipSearchResult> PerformSearch(ApprenticeshipSearchRequestParameters parameters)
         {
+            int geoDistanceSortPosition = -1;
+
             var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
 
-            var result = client.Search<ApprenticeshipSearchResult>(s =>
+            var results = client.Search<ApprenticeshipSearchResult>(s =>
             {
                 s.Index(_config.ApprenticeshipsIndex);
                 s.Type(ElasticTypes.Apprenticeship);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
                 s.Take(parameters.PageSize);
-
+                
                 s.TrackScores();
 
                 s.Query(q => GetQuery(parameters, q));
 
-                switch (parameters.SortType)
-                {
-                    case VacancySearchSortType.RecentlyAdded:
-
-                        s.SortDescending(summary => summary.PostedDate);
-                        s.TrySortByGeoDistance(parameters);
-                        s.SortDescending(summary => summary.VacancyReference);
-
-                        break;
-                    case VacancySearchSortType.Distance:
-
-                        s.TrySortByGeoDistance(parameters);
-
-                        s.SortDescending(summary => summary.PostedDate);
-                        s.SortDescending(summary => summary.VacancyReference);
-
-                        break;
-                    case VacancySearchSortType.ClosingDate:
-
-                        s.SortAscending(summary => summary.ClosingDate);
-                        s.TrySortByGeoDistance(parameters);
-                        
-                        break;
-
-                    case VacancySearchSortType.ExpectedStartDate:
-
-                        s.SortAscending(summary => summary.StartDate);
-                        s.SortAscending(summary => summary.VacancyReference);
-
-                        s.TrySortByGeoDistance(parameters);
-
-                        break;
-                    case VacancySearchSortType.Relevancy:
-
-                        s.Fields("_source");
-                        if (parameters.IsLatLongSearch == false)
-                        {
-                            break;
-                        }
-                        s.ScriptFields(sf =>
-                            sf.Add("distance", sfd => sfd
-                                .Params(fp =>
-                                {
-                                    fp.Add(nameof(GeoPoint.lat), parameters.Latitude);
-                                    fp.Add(nameof(GeoPoint.lon), parameters.Longitude);
-                                    return fp;
-                                })
-                                .Script($"doc['location'].arcDistanceInMiles({nameof(GeoPoint.lat)}, {nameof(GeoPoint.lon)})")));
-                        break;
-                }
+                geoDistanceSortPosition = SetSort(s, parameters);
 
                 s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode).Size(0)));
 
-                //Post aggregation calculation filters
+                //Filters to run after the aggregations have been calculated
                 if (parameters.SubCategoryCodes != null && parameters.SubCategoryCodes.Any())
                 {
                     s.Filter(ff => ff.Terms(f => f.SubCategoryCode, parameters.SubCategoryCodes.Distinct()));
@@ -172,7 +123,9 @@ namespace SFA.DAS.VacancyServices.Search
                 return s;
             });
 
-            return result;
+            SetPostSearchValues(parameters, results, geoDistanceSortPosition);
+
+            return results;
         }
 
         private QueryContainer GetQuery(ApprenticeshipSearchRequestParameters parameters, QueryDescriptor<ApprenticeshipSearchResult> q)
@@ -260,6 +213,58 @@ namespace SFA.DAS.VacancyServices.Search
             return query;
         }
 
+        /// <summary>
+        /// Returns the sort position of the GeoDistance sort if applicable.
+        /// If the search is not a GeoDistance search then returns -1.
+        /// </summary>
+        /// <param name="search"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private int SetSort(SearchDescriptor<ApprenticeshipSearchResult> search, ApprenticeshipSearchRequestParameters parameters)
+        {
+
+            //Rule: Always call TrySortByGeoDistance. This will populate the HitsMetaData.Hits.Sorts so we can display the distance in the results
+            switch (parameters.SortType)
+            {
+                case VacancySearchSortType.RecentlyAdded:
+
+                    search.SortDescending(r => r.PostedDate);
+                    search.TrySortByGeoDistance(parameters);
+                    search.SortDescending(r => r.VacancyReference);
+
+                    return parameters.IsLatLongSearch ? 1 : -1;
+
+                case VacancySearchSortType.Distance:
+
+                    search.TrySortByGeoDistance(parameters);
+                    search.SortDescending(r => r.PostedDate);
+                    search.SortDescending(r => r.VacancyReference);
+
+                    return parameters.IsLatLongSearch ? 0 : -1;
+
+                case VacancySearchSortType.ClosingDate:
+
+                    search.SortAscending(r => r.ClosingDate);
+                    search.TrySortByGeoDistance(parameters);
+
+                    return parameters.IsLatLongSearch ? 1 : -1;
+
+                case VacancySearchSortType.ExpectedStartDate:
+
+                    search.SortAscending(r => r.StartDate);
+                    search.SortAscending(r => r.VacancyReference);
+                    search.TrySortByGeoDistance(parameters);
+
+                    return parameters.IsLatLongSearch ? 2 : -1;
+                default:
+
+                    search.Sort(sort => sort.OnField("_score").Descending());
+                    search.TrySortByGeoDistance(parameters);
+
+                    return parameters.IsLatLongSearch ? 1 : -1;
+            }
+        }
+
         private QueryContainer GetKeywordQuery(ApprenticeshipSearchRequestParameters parameters, QueryDescriptor<ApprenticeshipSearchResult> q)
         {
             QueryContainer keywordQuery = null;
@@ -336,28 +341,14 @@ namespace SFA.DAS.VacancyServices.Search
             }
         }
 
-        private void SetPostSearchValues(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results)
+        private void SetPostSearchValues(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results, int geoDistanceSortPosition)
         {
             foreach (var result in results.Documents)
             {
                 var hitMd = results.HitsMetaData.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
-                if (searchParameters.IsLatLongSearch)
-                {
-                    if (searchParameters.SortType == VacancySearchSortType.ClosingDate ||
-                        searchParameters.SortType == VacancySearchSortType.Distance ||
-                        searchParameters.SortType == VacancySearchSortType.RecentlyAdded)
-                    {
-                        result.Distance = double.Parse(hitMd.Sorts.Skip(hitMd.Sorts.Count() - 1).First().ToString());
-                    }
-                    else
-                    {
-                        var array = hitMd.Fields.FieldValues<JArray>("distance");
-                        var value = array[0];
-
-                        result.Distance = double.Parse(value.ToString());
-                    }
-                }
+                if(searchParameters.IsLatLongSearch)
+                    result.Distance = (double)hitMd.Sorts.ElementAt(geoDistanceSortPosition);
 
                 result.Score = hitMd.Score;
             }
