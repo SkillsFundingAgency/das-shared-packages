@@ -147,7 +147,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
             AzureTableStorageConnectionAdapter.Setup(x => x.GetTableReference(It.IsAny<string>(), It.IsAny<string>())).Returns(ExpectedCloudTable);
             AzureTableStorageConnectionAdapter.Setup(x => x.GetRetrieveOperation(ExpectedEnvironment, It.IsAny<string>())).Returns(ExpectedOperation);
             AzureTableStorageConnectionAdapter.Setup(x => x.Execute(ExpectedCloudTable, ExpectedOperation))
-                .Returns(new TableResult() {Result = new DynamicTableEntity { Properties = new Dictionary<string, EntityProperty>( new[]{ new KeyValuePair<string, EntityProperty>("Data", new EntityProperty(GetJsonData()) ) } )}});
+                .Returns(new TableResult { Result = new DynamicTableEntity { Properties = new Dictionary<string, EntityProperty> { { "Data", new EntityProperty(GetJsonData()) } } } });
 
             return this;
         }
