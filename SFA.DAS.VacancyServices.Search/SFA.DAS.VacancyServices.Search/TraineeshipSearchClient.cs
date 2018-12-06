@@ -65,8 +65,6 @@ namespace SFA.DAS.VacancyServices.Search
         {
             var results = PerformSearch(searchParameters);
 
-            SetPostSearchValues(searchParameters, results);
-            
             var response = new TraineeshipSearchResponse(results.Total, results.Documents, searchParameters);
 
             return response;
@@ -74,9 +72,11 @@ namespace SFA.DAS.VacancyServices.Search
         
         private ISearchResponse<TraineeshipSearchResult> PerformSearch(TraineeshipSearchRequestParameters parameters)
         {
+            int geoDistanceSortPosition = -1;
+
             var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
 
-            var result = client.Search<TraineeshipSearchResult>(s =>
+            var results = client.Search<TraineeshipSearchResult>(s =>
             {
                 s.Index(_config.TraineeshipsIndex);
                 s.Type(ElasticTypes.Traineeship);
@@ -85,46 +85,28 @@ namespace SFA.DAS.VacancyServices.Search
 
                 s.TrackScores();
 
-                s.Query(q =>
-                {
-                    if(string.IsNullOrEmpty(parameters.VacancyReference))
-                        return GetQuery(parameters, q);
+                s.Query(q => GetQuery(parameters, q));
 
-                    return q.Filtered(sl =>
-                        sl.Filter(fs =>
-                            fs.Term(f =>
-                                f.VacancyReference, parameters.VacancyReference)));
-                });
-
-                switch (parameters.SortType)
-                {
-                    case VacancySearchSortType.RecentlyAdded:
-
-                        s.Sort(v => v.OnField(f => f.PostedDate).Descending());
-                        s.TrySortByGeoDistance(parameters);
-
-                        break;
-                    case VacancySearchSortType.Distance:
-
-                        s.TrySortByGeoDistance(parameters);
-
-                        break;
-                    case VacancySearchSortType.ClosingDate:
-
-                        s.Sort(v => v.OnField(f => f.ClosingDate).Ascending());
-                        s.TrySortByGeoDistance(parameters);
-                        
-                        break;
-                }
+                geoDistanceSortPosition = SetSort(s, parameters);
 
                 return s;
             });
 
-            return result;
+            SetPostSearchValues(parameters, results, geoDistanceSortPosition);
+
+            return results;
         }
 
         private QueryContainer GetQuery(TraineeshipSearchRequestParameters parameters, QueryDescriptor<TraineeshipSearchResult> q)
         {
+            if (!string.IsNullOrEmpty(parameters.VacancyReference))
+            {
+                return q.Filtered(fq =>
+                    fq.Filter(f =>
+                        f.Term(t =>
+                            t.VacancyReference, parameters.VacancyReference)));
+            }
+
             QueryContainer query = null;
             
             if (parameters.IsLatLongSearch && parameters.SearchRadius != 0)
@@ -134,27 +116,62 @@ namespace SFA.DAS.VacancyServices.Search
                         .Location, descriptor => descriptor
                             .Location(parameters.Latitude.Value, parameters.Longitude.Value)
                             .Distance(parameters.SearchRadius, GeoUnit.Miles))));
-                query = query && queryClause;
+                query &= queryClause;
             }
 
             return query;
         }
 
-        private void SetPostSearchValues(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results)
+        /// <summary>
+        /// Returns the sort position of the GeoDistance sort if applicable.
+        /// If the search is not a GeoDistance search then returns -1.
+        /// </summary>
+        /// <param name="search"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private int SetSort(SearchDescriptor<TraineeshipSearchResult> search, TraineeshipSearchRequestParameters parameters)
+        {
+
+            //Rule: Always call TrySortByGeoDistance. This will populate the HitsMetaData.Hits.Sorts so we can display the distance in the results
+            switch (parameters.SortType)
+            {
+                case VacancySearchSortType.RecentlyAdded:
+
+                    search.SortDescending(r => r.PostedDate);
+                    search.TrySortByGeoDistance(parameters);
+
+                    return parameters.IsLatLongSearch ? 1 : -1;
+
+                case VacancySearchSortType.Distance:
+
+                    search.TrySortByGeoDistance(parameters);
+
+                    return parameters.IsLatLongSearch ? 0 : -1;
+
+                case VacancySearchSortType.ClosingDate:
+
+                    search.SortAscending(r => r.ClosingDate);
+                    search.TrySortByGeoDistance(parameters);
+
+                    return parameters.IsLatLongSearch ? 1 : -1;
+
+                default:
+
+                    search.Sort(sort => sort.OnField("_score").Descending());
+                    search.TrySortByGeoDistance(parameters);
+
+                    return parameters.IsLatLongSearch ? 1 : -1;
+            }
+        }
+
+        private void SetPostSearchValues(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results, int geoDistanceSortPosition)
         {
             foreach (var result in results.Documents)
             {
                 var hitMd = results.HitsMetaData.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
                 if (searchParameters.IsLatLongSearch)
-                {
-                    if (searchParameters.SortType == VacancySearchSortType.ClosingDate ||
-                        searchParameters.SortType == VacancySearchSortType.Distance ||
-                        searchParameters.SortType == VacancySearchSortType.RecentlyAdded)
-                    {
-                        result.Distance = double.Parse(hitMd.Sorts.Skip(hitMd.Sorts.Count() - 1).First().ToString());
-                    }
-                }
+                    result.Distance = (double)hitMd.Sorts.ElementAt(geoDistanceSortPosition);
 
                 result.Score = hitMd.Score;
             }

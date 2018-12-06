@@ -31,7 +31,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             };
 
             const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\":40.0,\"unit\":\"mi\"}}}}}";
-
+            
             AssertSearch(parameters, expectedJsonQuery);
         }
 
@@ -48,8 +48,8 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyReference = "1104004"
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"1104004\"}}}}}";
-
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_score\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"1104004\"}}}}}";
+            
             AssertSearch(parameters, expectedJsonQuery);
         }
 
