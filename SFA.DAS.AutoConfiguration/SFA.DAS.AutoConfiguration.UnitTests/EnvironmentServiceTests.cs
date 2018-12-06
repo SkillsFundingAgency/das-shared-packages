@@ -3,11 +3,13 @@ using System.Collections.Specialized;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Testing;
+#if NET462
+using System.Configuration;
+#endif
 
 namespace SFA.DAS.AutoConfiguration.UnitTests
 {
     [TestFixture]
-    [Parallelizable]
     public class EnvironmentServiceTests : FluentTest<EnvironmentTestsFixture>
     {
         [TestCase(DasEnv.LOCAL)]
@@ -65,19 +67,34 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
 
         public EnvironmentTestsFixture SetCurrent(DasEnv environment)
         {
+#if NET462
+            ConfigurationManager.AppSettings["EnvironmentName"] = environment.ToString();
+#else
             Environment.SetEnvironmentVariable(ExpectedPrefix + "EnvironmentName", environment.ToString());
+#endif
+            
             return this;
         }
 
         public EnvironmentTestsFixture ClearCurrentEnvironment()
         {
+#if NET462
+            ConfigurationManager.AppSettings["EnvironmentName"] = null;
+#else
             Environment.SetEnvironmentVariable(ExpectedPrefix + "EnvironmentName", null);
+#endif
+            
             return this;
         }
 
         public EnvironmentTestsFixture SetVariable(string key, string value)
         {
+#if NET462
+            ConfigurationManager.AppSettings[key] = value;
+#else
             Environment.SetEnvironmentVariable(ExpectedPrefix + key, value);
+#endif
+            
             return this;
         }
 

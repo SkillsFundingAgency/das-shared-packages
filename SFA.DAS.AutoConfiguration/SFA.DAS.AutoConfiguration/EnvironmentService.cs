@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+#if NET462
+using Microsoft.Azure;
+#endif
 
 namespace SFA.DAS.AutoConfiguration
 {
@@ -11,7 +14,11 @@ namespace SFA.DAS.AutoConfiguration
 
         public string GetVariable(string variableName)
         {
+#if NET462
+            return CloudConfigurationManager.GetSetting(variableName);
+#else    
             return Environment.GetEnvironmentVariable(Prefix + variableName);
+#endif
         }
 
         public bool IsCurrent(params DasEnv[] environment)
