@@ -10,14 +10,14 @@
     {
         public const int MaxResults = 50;
         private readonly IElasticSearchFactory _elasticSearchFactory;
-        private readonly VacancyServicesSearchConfiguration _config;
+        private readonly LocationSearchClientConfiguration _config;
 
-        public LocationSearchClient(VacancyServicesSearchConfiguration config)
+        public LocationSearchClient(LocationSearchClientConfiguration config)
             : this(new ElasticSearchFactory(), config)
         {
         }
 
-        internal LocationSearchClient(IElasticSearchFactory elasticSearchFactory, VacancyServicesSearchConfiguration config)
+        internal LocationSearchClient(IElasticSearchFactory elasticSearchFactory, LocationSearchClientConfiguration config)
         {
             _elasticSearchFactory = elasticSearchFactory;
             _config = config;
@@ -47,7 +47,7 @@
             var term = placeName.ToLowerInvariant();
 
             var exactMatchResults = client.Search<LocationSearchResult>(s => s
-                .Index(_config.LocationsIndex)
+                .Index(_config.Index)
                 .Type(ElasticTypes.Location)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
@@ -67,7 +67,7 @@
             var term = placeName.ToLowerInvariant();
 
             var prefixMatchResults = client.Search<LocationSearchResult>(s => s
-                .Index(_config.LocationsIndex)
+                .Index(_config.Index)
                 .Type(ElasticTypes.Location)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
@@ -86,7 +86,7 @@
             var term = placeName.ToLowerInvariant();
 
             var fuzzyMatchResults = client.Search<LocationSearchResult>(s => s
-                .Index(_config.LocationsIndex)
+                .Index(_config.Index)
                 .Type(ElasticTypes.Location)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 =>

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.VacancyServices.Search.Requests;
+﻿using System;
+using SFA.DAS.VacancyServices.Search.Requests;
 
 namespace SFA.DAS.VacancyServices.Search.Responses
 {
@@ -23,5 +24,7 @@ namespace SFA.DAS.VacancyServices.Search.Responses
         public IEnumerable<ApprenticeshipSearchResult> Results { get;}
         public IEnumerable<AggregationResult> AggregationResults { get;}
         public ApprenticeshipSearchRequestParameters SearchParameters { get;}
+
+        public double TotalPages => Math.Ceiling((double) Total / SearchParameters.PageSize);
     }
 }

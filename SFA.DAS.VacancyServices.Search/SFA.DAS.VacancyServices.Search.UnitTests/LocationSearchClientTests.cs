@@ -76,7 +76,7 @@
             var factory = new Mock<IElasticSearchFactory>();
             factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
 
-            var sut = new LocationSearchClient(factory.Object, new VacancyServicesSearchConfiguration());
+            var sut = new LocationSearchClient(factory.Object, new LocationSearchClientConfiguration());
 
             var response = searchFunc(sut);
 

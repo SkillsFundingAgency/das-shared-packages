@@ -26,11 +26,11 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 Longitude = -1.88983017452229,
                 PageNumber = 1,
                 PageSize = 5,
-                SearchRadius = 40,
+                SearchRadius = 40.5d,
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\":40.0,\"unit\":\"mi\"}}}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\":40.5,\"unit\":\"mi\"}}}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -97,7 +97,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var factory = new Mock<IElasticSearchFactory>();
             factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
 
-            var sut = new TraineeshipSearchClient(factory.Object, new VacancyServicesSearchConfiguration());
+            var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
 
             var actualResponse = sut.GetAllVacancyIds().ToList();
 
@@ -141,7 +141,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var factory = new Mock<IElasticSearchFactory>();
             factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
 
-            var sut = new TraineeshipSearchClient(factory.Object, new VacancyServicesSearchConfiguration());
+            var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
 
             var response = sut.Search(parameters);
 

@@ -95,11 +95,11 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyLocationType = VacancyLocationType.NonNational,
                 Latitude = 52.4088862063274,
                 Longitude = 1.50554768088033,
-                SearchRadius = 40,
+                SearchRadius = 40.5,
                 SortType = VacancySearchSortType.Distance
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.5,\"unit\":\"mi\"}}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -320,7 +320,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var factory = new Mock<IElasticSearchFactory>();
             factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
 
-            var sut = new ApprenticeshipSearchClient(factory.Object, new VacancyServicesSearchConfiguration());
+            var sut = new ApprenticeshipSearchClient(factory.Object, new ApprenticeshipSearchClientConfiguration());
 
             var actualResponse = sut.GetAllVacancyIds().ToList();
 
@@ -366,7 +366,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var factory = new Mock<IElasticSearchFactory>();
             factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
 
-            var sut = new ApprenticeshipSearchClient(factory.Object, new VacancyServicesSearchConfiguration());
+            var sut = new ApprenticeshipSearchClient(factory.Object, new ApprenticeshipSearchClientConfiguration());
 
             var response = sut.Search(parameters);
 
