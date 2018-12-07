@@ -3,6 +3,21 @@
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard1.0;netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
+    <Copyright>Education &amp; Skills Funding Agency 2018</Copyright>
+    <Authors>DAS</Authors>
+    <Company>Education &amp; Skill Funding Agency</Company>
+    <Description>Common location for National Minimum Wage rates plus helper methods for various wage calculations and wage display formats.</Description>
+    <RepositoryUrl>https://github.com/SkillsFundingAgency/das-shared-packages</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+    <DocumentationFile>D:\Dev\das-shared-packages\VacancyServices.Wage\SFA.DAS.VacancyServices.Wage\SFA.DAS.VacancyServices.Wage.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
