@@ -31,6 +31,7 @@ namespace SFA.DAS.UnitOfWork.SqlServer
 
         public async Task EndAsync(Exception ex = null)
         {
+            using (_connection)
             using (_transaction)
             {
                 if (ex == null)

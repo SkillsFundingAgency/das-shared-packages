@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NServiceBus.Persistence;
 using SFA.DAS.NServiceBus.ClientOutbox;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
@@ -24,6 +25,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
             _transaction = await _clientOutboxStorage.BeginTransactionAsync().ConfigureAwait(false);
 
             _unitOfWorkContext.Set(_transaction);
+            _unitOfWorkContext.Set<SynchronizedStorageSession>(_transaction);
         }
 
         public async Task EndAsync(Exception ex = null)

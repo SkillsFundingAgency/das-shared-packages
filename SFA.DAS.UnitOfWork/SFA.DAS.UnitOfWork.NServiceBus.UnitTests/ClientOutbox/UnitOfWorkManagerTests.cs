@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using NServiceBus.Persistence;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.Testing;
@@ -23,6 +24,12 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         public Task BeginAsync_WhenBeginning_ThenShouldSetUnitOfWorkContextTransaction()
         {
             return RunAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.ClientOutboxTransaction.Object), Times.Once));
+        }
+
+        [Test]
+        public Task BeginAsync_WhenBeginning_ThenShouldSetUnitOfWorkContextSynchronizedStorageSession()
+        {
+            return RunAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.SynchronizedStorageSession.Object)));
         }
 
         [Test]
@@ -63,6 +70,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         public List<Mock<IUnitOfWork>> UnitsOfWork { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public Mock<IClientOutboxTransaction> ClientOutboxTransaction { get; set; }
+        public Mock<SynchronizedStorageSession> SynchronizedStorageSession { get; set; }
         public int CommittedUnitsOfWork { get; set; }
 
         public UnitOfWorkManagerTestsFixture()
@@ -78,6 +86,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
 
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             ClientOutboxTransaction = new Mock<IClientOutboxTransaction>();
+            SynchronizedStorageSession = ClientOutboxTransaction.As<SynchronizedStorageSession>();
 
             ClientOutboxTransaction.Setup(t => t.CommitAsync()).Callback(() =>
             {
