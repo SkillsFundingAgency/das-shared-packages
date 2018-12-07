@@ -4,25 +4,24 @@ using Moq;
 using NServiceBus.Persistence;
 using NServiceBus.Persistence.Sql;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.SqlServer.ClientOutbox;
 using SFA.DAS.Testing;
 
-namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
+namespace SFA.DAS.NServiceBus.SqlServer.UnitTests
 {
     [TestFixture]
     public class SynchronizedStorageSessionExtensionsTests : FluentTest<SynchronizedStorageSessionExtensionsTestsFixture>
     {
         [Test]
-        public void GetSqlSession_WhenGettingTheSqlSession_TheShouldReturnTheSqlSession()
+        public void GetSqlStorageSession_WhenGettingTheSqlSession_TheShouldReturnTheSqlSession()
         {
-            Run(f => f.SetSqlSession(), f => f.GetSqlSession(), (f, r) => r.Should().Be(f.Session.Object));
+            Run(f => f.SetSqlSession(), f => f.GetSqlStorageSession(), (f, r) => r.Should().Be(f.Session.Object));
         }
 
         [Test]
-        public void GetSqlSession_WhenGettingTheSqlSessionAndItIsNotASqlStorageSession_ThenShouldThrowAnException()
+        public void GetSqlStorageSession_WhenGettingTheSqlSessionAndItIsNotASqlStorageSession_ThenShouldThrowAnException()
         {
-            Run(f => f.SetNonSqlSession(), f => f.GetSqlSession(), (f, a) => a.Should().Throw<Exception>()
-                .WithMessage("Cannot access the SQL session"));
+            Run(f => f.SetNonSqlSession(), f => f.GetSqlStorageSession(), (f, a) => a.Should().Throw<Exception>()
+                .WithMessage("Cannot access the SQL storage session"));
         }
     }
 
@@ -31,9 +30,9 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         public Mock<SynchronizedStorageSession> Session { get; set; }
         public Mock<ISqlStorageSession> SqlSession { get; set; }
 
-        public ISqlStorageSession GetSqlSession()
+        public ISqlStorageSession GetSqlStorageSession()
         {
-            return Session.Object.GetSqlSession();
+            return Session.Object.GetSqlStorageSession();
         }
 
         public SynchronizedStorageSessionExtensionsTestsFixture SetSqlSession()

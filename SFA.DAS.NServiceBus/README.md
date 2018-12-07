@@ -16,6 +16,7 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandle
     .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .UseErrorQueue()
     .UseInstallers()
+    .UseMessageConventions()
     .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
     .UseNewtonsoftJsonSerializer()
     .UseNLogFactory()
@@ -33,6 +34,7 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
     .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .UseErrorQueue()
     .UseInstallers()
+    .UseMessageConventions()
     .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
     .UseNewtonsoftJsonSerializer()
     .UseNLogFactory()
@@ -52,6 +54,7 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
     .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .UseErrorQueue()
     .UseInstallers()
+    .UseMessageConventions()
     .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
     .UseNewtonsoftJsonSerializer()
     .UseNLogFactory()
@@ -71,6 +74,7 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
     .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .UseErrorQueue()
     .UseInstallers()
+    .UseMessageConventions()
     .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
     .UseNewtonsoftJsonSerializer()
     .UseNLogFactory()
@@ -137,22 +141,11 @@ GO
 
 To ensure data is saved and messages are published as part of the same transaction then any database operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.NServiceBus.IUnitOfWorkContext` this will give you access to the current request's persistence session, for example if you're using an SQL database:
 
-### Client
-
 ```c#
-var session = _unitOfWorkContext.Get<IClientOutboxTransaction>();
-var sqlSession = session.GetSqlSession();
-var connection = sqlSession.Connection;
-var transaction = sqlSession.Transaction;
-```
-
-### Server
-
-```c#
-var session = _unitOfWorkContext.Get<SynchronizedStorageSession>();
-var sqlSession = session.GetSqlSession();
-var connection = sqlSession.Connection;
-var transaction = sqlSession.Transaction;
+var synchronizedStorageSession = _unitOfWorkContext.Get<SynchronizedStorageSession>();
+var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
+var connection = sqlStorageSession.Connection;
+var transaction = sqlStorageSession.Transaction;
 ```
 
 ### Publishing Messages

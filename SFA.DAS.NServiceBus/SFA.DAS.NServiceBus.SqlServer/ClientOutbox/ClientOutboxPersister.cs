@@ -39,7 +39,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public async Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
-            var sqlSession = synchronizedStorageSession.GetSqlSession();
+            var sqlSession = synchronizedStorageSession.GetSqlStorageSession();
 
             using (var command = sqlSession.Connection.CreateCommand())
             {
@@ -101,7 +101,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
-            var sqlSession = synchronizedStorageSession.GetSqlSession();
+            var sqlSession = synchronizedStorageSession.GetSqlStorageSession();
 
             using (var command = sqlSession.Connection.CreateCommand())
             {
