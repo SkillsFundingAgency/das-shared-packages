@@ -19,12 +19,12 @@ namespace SFA.DAS.VacancyServices.Search.Requests
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public ApprenticeshipSearchField SearchField { get; set; }
-        public int SearchRadius { get; set; }
+        public double? SearchRadius { get; set; }
         public VacancySearchSortType SortType { get; set; }
         public string[] SubCategoryCodes { get; set; }
         public VacancyLocationType VacancyLocationType { get; set; }
         public string VacancyReference { get; set; }
 
-        public bool IsLatLongSearch => Latitude.HasValue && Longitude.HasValue;
+        public bool IsLatLongSearch => Latitude.HasValue && Longitude.HasValue && SearchRadius.HasValue;
     }
 }

@@ -17,14 +17,14 @@ namespace SFA.DAS.VacancyServices.Search
         private const string ScrollTimeout = "5s";
 
         private readonly IElasticSearchFactory _elasticSearchFactory;
-        private readonly VacancyServicesSearchConfiguration _config;
+        private readonly TraineeshipSearchClientConfiguration _config;
 
-        public TraineeshipSearchClient(VacancyServicesSearchConfiguration config)
+        public TraineeshipSearchClient(TraineeshipSearchClientConfiguration config)
             : this(new ElasticSearchFactory(), config)
         {
         }
 
-        internal TraineeshipSearchClient(IElasticSearchFactory elasticSearchFactory, VacancyServicesSearchConfiguration config)
+        internal TraineeshipSearchClient(IElasticSearchFactory elasticSearchFactory, TraineeshipSearchClientConfiguration config)
         {
             _elasticSearchFactory = elasticSearchFactory;
             _config = config;
@@ -35,7 +35,7 @@ namespace SFA.DAS.VacancyServices.Search
             var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
 
             var scanResults = client.Search<TraineeshipSearchResult>(search => search
-                .Index(_config.TraineeshipsIndex)
+                .Index(_config.Index)
                 .Type(ElasticTypes.Traineeship)
                 .From(0)
                 .Size(ScrollSize)
@@ -78,7 +78,7 @@ namespace SFA.DAS.VacancyServices.Search
 
             var results = client.Search<TraineeshipSearchResult>(s =>
             {
-                s.Index(_config.TraineeshipsIndex);
+                s.Index(_config.Index);
                 s.Type(ElasticTypes.Traineeship);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
                 s.Take(parameters.PageSize);
@@ -109,30 +109,23 @@ namespace SFA.DAS.VacancyServices.Search
 
             QueryContainer query = null;
             
-            if (parameters.IsLatLongSearch && parameters.SearchRadius != 0)
+            if (parameters.IsLatLongSearch)
             {
                 var queryClause = q.Filtered(qf => qf.Filter(f => f
                     .GeoDistance(vs => vs
                         .Location, descriptor => descriptor
                             .Location(parameters.Latitude.Value, parameters.Longitude.Value)
-                            .Distance(parameters.SearchRadius, GeoUnit.Miles))));
+                            .Distance(parameters.SearchRadius.Value, GeoUnit.Miles))));
                 query &= queryClause;
             }
 
             return query;
         }
 
-        /// <summary>
-        /// Returns the sort position of the GeoDistance sort if applicable.
-        /// If the search is not a GeoDistance search then returns -1.
-        /// </summary>
-        /// <param name="search"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
         private int SetSort(SearchDescriptor<TraineeshipSearchResult> search, TraineeshipSearchRequestParameters parameters)
         {
-
             //Rule: Always call TrySortByGeoDistance. This will populate the HitsMetaData.Hits.Sorts so we can display the distance in the results
+            //Return the position of the GeoDistance sort in the sorts.
             switch (parameters.SortType)
             {
                 case VacancySearchSortType.RecentlyAdded:
