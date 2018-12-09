@@ -6,13 +6,17 @@ namespace Esfa.Vacancy.Analytics.Events
     {
         public override string EventType => this.GetType().Name;
         public override DateTime EventTime { get; protected set; }
-        public override string PublisherId { get; protected set; }
+        public override string PublisherId { get; set; }
 
-        public ApprenticeshipApplicationSubmittedEvent(long vacancyReference, string publisherId)
+        public ApprenticeshipApplicationSubmittedEvent(long vacancyReference)
         {
             VacancyReference = vacancyReference;
-            PublisherId = publisherId;
             EventTime = DateTime.UtcNow;
+        }
+
+		internal ApprenticeshipApplicationSubmittedEvent(long vacancyReference, string publisherId) : this(vacancyReference)
+        {
+            PublisherId = publisherId;
         }
     }
 }

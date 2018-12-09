@@ -6,6 +6,7 @@
 
     <PackageId>SFA.DAS.Vacancy.Analytics.Client</PackageId>
     <Authors>ESFA</Authors>
+	<Company>Education &amp; Skill Funding Agency</Company>
     <Title>Vacancy events and event hub publishing client.</Title>
     <Description>Vacancy events and event hub publishing client.</Description>
     <PackageTags>Esfa;Das;</PackageTags>
@@ -14,7 +15,8 @@
     <PackageLicense>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Vacancy.Analytics.Client</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageReleaseNotes>Initial package for publish events from the Find an apprenticeship service.</PackageReleaseNotes>
+    <PackageReleaseNotes>Initial package for publish events from the Find an apprenticeship service and batch events from other ESFA Vacancy services.</PackageReleaseNotes>
+	<RepositoryUrl>https://github.com/SkillsFundingAgency/das-shared-packages</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
