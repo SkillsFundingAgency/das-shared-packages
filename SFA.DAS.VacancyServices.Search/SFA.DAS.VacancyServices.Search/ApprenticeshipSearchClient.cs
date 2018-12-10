@@ -42,8 +42,10 @@ namespace SFA.DAS.VacancyServices.Search
             SanitizeSearchParameters(searchParameters);
 
             var results = PerformSearch(searchParameters);
-
-            var aggregationResults = GetAggregationResultsFrom(results.Aggs);
+           
+            var aggregationResults = searchParameters.CalculateSubCategoryAggregations ? 
+                GetAggregationResultsFrom(results.Aggs) : 
+                null;
             var response = new ApprenticeshipSearchResponse(results.Total, results.Documents, aggregationResults, searchParameters);
 
             return response;
@@ -112,7 +114,8 @@ namespace SFA.DAS.VacancyServices.Search
 
                 geoDistanceSortPosition = SetSort(s, parameters);
 
-                s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode).Size(0)));
+                if(parameters.CalculateSubCategoryAggregations)
+                    s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode).Size(0)));
 
                 //Filters to run after the aggregations have been calculated
                 if (parameters.SubCategoryCodes != null && parameters.SubCategoryCodes.Any())

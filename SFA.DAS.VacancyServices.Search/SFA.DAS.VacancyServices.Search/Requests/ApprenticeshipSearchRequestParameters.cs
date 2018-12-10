@@ -7,6 +7,7 @@ namespace SFA.DAS.VacancyServices.Search.Requests
     public class ApprenticeshipSearchRequestParameters
     {
         public string ApprenticeshipLevel { get; set; }
+        public bool CalculateSubCategoryAggregations { get; set; }
         public string CategoryCode { get; set; }
         public bool DisabilityConfidentOnly { get; set; }
         public IEnumerable<int> ExcludeVacancyIds { get; set; }

@@ -30,7 +30,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -47,7 +47,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -64,7 +64,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-12-01T00:00:00\"}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-12-01T00:00:00\"}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -80,7 +80,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -99,7 +99,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.5,\"unit\":\"mi\"}}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.5,\"unit\":\"mi\"}}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -116,7 +116,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -133,7 +133,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.ExpectedStartDate
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":100,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}}],\"query\":{\"bool\":{\"must\":[{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -155,7 +155,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.ExpectedStartDate
             };
 
-            const string expectedJsonQuery = "{\"from\":50,\"size\":50,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}},{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-11-24T00:00:00\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":50,\"size\":50,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}},{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}}],\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-11-24T00:00:00\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -173,7 +173,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyReference = "123456789"
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":1,\"track_scores\":true,\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"123456789\"}}}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":1,\"track_scores\":true,\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"123456789\"}}}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -185,7 +185,8 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             {
                 PageNumber = 1,
                 PageSize = 5,
-                SubCategoryCodes = new[] {"sub-code"}
+                SubCategoryCodes = new[] {"sub-code"},
+                CalculateSubCategoryAggregations = true
             };
 
             const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"filter\":{\"terms\":{\"subCategoryCode\":[\"sub-code\"]}}}";
@@ -210,7 +211,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyLocationType = VacancyLocationType.NonNational
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"match\":{\"title\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":1.5,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}},{\"match\":{\"description\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"slop\":2,\"boost\":1.0,\"minimum_should_match\":\"2<75%\"}}},{\"match\":{\"employerName\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":5.0,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"match\":{\"title\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":1.5,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}},{\"match\":{\"description\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"slop\":2,\"boost\":1.0,\"minimum_should_match\":\"2<75%\"}}},{\"match\":{\"employerName\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":5.0,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -230,7 +231,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyLocationType = VacancyLocationType.National
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"closingDate\":{\"order\":\"asc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"match\":{\"title\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":1.5,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}},{\"match\":{\"description\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"slop\":2,\"boost\":1.0,\"minimum_should_match\":\"2<75%\"}}},{\"match\":{\"employerName\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":5.0,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"closingDate\":{\"order\":\"asc\"}}],\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"match\":{\"title\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":1.5,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}},{\"match\":{\"description\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"slop\":2,\"boost\":1.0,\"minimum_should_match\":\"2<75%\"}}},{\"match\":{\"employerName\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":5.0,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}}]}}}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -248,7 +249,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyLocationType = VacancyLocationType.National
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"closingDate\":{\"order\":\"asc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}},{\"match\":{\"apprenticeshipLevel\":{\"query\":\"Advanced\"}}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"closingDate\":{\"order\":\"asc\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}},{\"match\":{\"apprenticeshipLevel\":{\"query\":\"Advanced\"}}}]}}}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -271,7 +272,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyLocationType = VacancyLocationType.NonNational
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"query\":{\"bool\":{\"must\":[{\"terms\":{\"categoryCode\":[\"SSAT1.00\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"distance\":5.0,\"unit\":\"mi\"}}}}],\"must_not\":[{\"ids\":{\"values\":[\"123456\",\"789012\"]}}]}}}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"terms\":{\"categoryCode\":[\"SSAT1.00\"]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, -1.50554768088033\",\"distance\":5.0,\"unit\":\"mi\"}}}}],\"must_not\":[{\"ids\":{\"values\":[\"123456\",\"789012\"]}}]}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
