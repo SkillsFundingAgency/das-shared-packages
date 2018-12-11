@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SFA.DAS.VacancyServices.Wage</name>
+    </assembly>
+    <members>
+        <member name="M:SFA.DAS.VacancyServices.Wage.NationalMinimumWageService.GetHourlyRates(System.Nullable{System.DateTime})">
+            <summary>Gets the hourly rates as at a specified date.  If no date specified then will return the latest rates.</summary>
+            <param name="dateTime">The specified date for the rates</param>
+            <returns>The rates as at the specified date or the latest rates if no date specified</returns>
+        </member>
+        <member name="M:SFA.DAS.VacancyServices.Wage.NationalMinimumWageService.GetRatesAsync">
+            <summary>Gets all the rates asynchronously</summary>
+            <returns>An immutable array of rates</returns>
+        </member>
+        <member name="M:SFA.DAS.VacancyServices.Wage.NationalMinimumWageService.GetWeeklyRates(System.Nullable{System.DateTime},System.Decimal)">
+            <summary>
+                Gets the weekly rates as at a specified date and hours per week.  If no date specified then will return the
+                latest rates. If no hours specified then will use 37.5 hours as a standard week.
+            </summary>
+            <param name="dateTime">The specified date for the rates</param>
+            <param name="hoursPerWeek">The specified hours per week</param>
+            <returns>The rates as at the specified date or the latest rates if no date specified</returns>
+        </member>
+        <member name="M:SFA.DAS.VacancyServices.Wage.NationalMinimumWageService.GetAnnualRates(System.Nullable{System.DateTime},System.Decimal)">
+            <summary>
+                Gets the annual rates as at a specified date and hours per week.  If no date specified then will return the
+                latest rates. If no hours specified then will use 37.5 hours as a standard week.
+            </summary>
+            <param name="dateTime">The specified date for the rates</param>
+            <param name="hoursPerWeek">The specified hours per week</param>
+            <returns>The rates as at the specified date or the latest rates if no date specified</returns>
+        </member>
+    </members>
+</doc>
