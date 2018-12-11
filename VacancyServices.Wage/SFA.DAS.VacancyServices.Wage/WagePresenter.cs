@@ -19,8 +19,10 @@ namespace SFA.DAS.VacancyServices.Wage
             return $"{displayAmount} {postfix}";
         }
 
-        public static string GetDisplayText(WageType type, WageUnit unit, WageDetails wageDetails)
+        public static string GetDisplayText(WageType type, WageUnit unit, WageDetails details)
         {
+            WageDetails wageDetails = details ?? new WageDetails();
+
             switch (type)
             {
                 case WageType.Custom:
