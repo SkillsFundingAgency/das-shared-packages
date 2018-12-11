@@ -2,7 +2,7 @@
 {
     public enum WageUnit
     {
-        NotApplicable = 1,
+        NotApplicable,
         Weekly,
         Monthly,
         Annually

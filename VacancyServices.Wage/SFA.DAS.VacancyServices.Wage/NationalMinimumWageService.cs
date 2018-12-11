@@ -13,19 +13,14 @@ namespace SFA.DAS.VacancyServices.Wage
         static NationalMinimumWageService()
         {
             nationalMinimumWageRates = GetNationalMinimumWageRates();
-            CurrentRates = GetHourlyRates(DateTime.Today);
         }
 
-        public static NationalMinimumWageRates CurrentRates { get; }
-
-        /// <summary>Gets the hourly rates as at a specified date.  If no date specified then will return the latest rates.</summary>
+        /// <summary>Gets the hourly rates as at a specified date.</summary>
         /// <param name="dateTime">The specified date for the rates</param>
-        /// <returns>The rates as at the specified date or the latest rates if no date specified</returns>
-        public static NationalMinimumWageRates GetHourlyRates(DateTime? dateTime)
+        /// <returns>The rates as at the specified date</returns>
+        public static NationalMinimumWageRates GetHourlyRates(DateTime dateTime)
         {
-            if (dateTime.HasValue)
-                return nationalMinimumWageRates.Single(r => dateTime >= r.ValidFrom && dateTime < r.ValidTo);
-            return nationalMinimumWageRates.Single(r => DateTime.Today >= r.ValidFrom && DateTime.Today < r.ValidTo);
+            return nationalMinimumWageRates.Single(r => dateTime >= r.ValidFrom && dateTime < r.ValidTo);
         }
 
         /// <summary>Gets all the rates asynchronously</summary>
@@ -36,39 +31,23 @@ namespace SFA.DAS.VacancyServices.Wage
         }
 
         /// <summary>
-        ///     Gets the weekly rates as at a specified date and hours per week.  If no date specified then will return the
-        ///     latest rates. If no hours specified then will use 37.5 hours as a standard week.
+        ///     Gets the weekly rates as at a specified date and hours per week.
         /// </summary>
         /// <param name="dateTime">The specified date for the rates</param>
         /// <param name="hoursPerWeek">The specified hours per week</param>
         /// <returns>The rates as at the specified date or the latest rates if no date specified</returns>
-        public static NationalMinimumWageRates GetWeeklyRates(DateTime? dateTime, decimal hoursPerWeek = 37.5m)
+        public static NationalMinimumWageRates GetWeeklyRates(DateTime dateTime, decimal hoursPerWeek)
         {
-            if (dateTime.HasValue)
-            {
-                NationalMinimumWageRates hourlyRates = nationalMinimumWageRates.Single(r => dateTime >= r.ValidFrom && dateTime < r.ValidTo);
-                return new NationalMinimumWageRates
-                (
-                    hourlyRates.ValidFrom,
-                    hourlyRates.ValidFrom,
-                    hourlyRates.ApprenticeMinimumWage * hoursPerWeek,
-                    hourlyRates.Under18NationalMinimumWage * hoursPerWeek,
-                    hourlyRates.Between18And20NationalMinimumWage * hoursPerWeek,
-                    hourlyRates.Between21And24NationalMinimumWage * hoursPerWeek,
-                    hourlyRates.Over24NationalMinimumWage * hoursPerWeek
-                );
-            }
-
-            NationalMinimumWageRates latestRates = nationalMinimumWageRates.Single(r => DateTime.Today >= r.ValidFrom && DateTime.Today < r.ValidTo);
+            NationalMinimumWageRates hourlyRates = nationalMinimumWageRates.Single(r => dateTime >= r.ValidFrom && dateTime < r.ValidTo);
             return new NationalMinimumWageRates
             (
-                latestRates.ValidFrom,
-                latestRates.ValidFrom,
-                latestRates.ApprenticeMinimumWage * hoursPerWeek,
-                latestRates.Under18NationalMinimumWage * hoursPerWeek,
-                latestRates.Between18And20NationalMinimumWage * hoursPerWeek,
-                latestRates.Between21And24NationalMinimumWage * hoursPerWeek,
-                latestRates.Over24NationalMinimumWage * hoursPerWeek
+                hourlyRates.ValidFrom,
+                hourlyRates.ValidFrom,
+                hourlyRates.ApprenticeMinimumWage * hoursPerWeek,
+                hourlyRates.Under18NationalMinimumWage * hoursPerWeek,
+                hourlyRates.Between18AndUnder21NationalMinimumWage * hoursPerWeek,
+                hourlyRates.Between21AndUnder25NationalMinimumWage * hoursPerWeek,
+                hourlyRates.Over25NationalMinimumWage * hoursPerWeek
             );
         }
 
@@ -79,33 +58,18 @@ namespace SFA.DAS.VacancyServices.Wage
         /// <param name="dateTime">The specified date for the rates</param>
         /// <param name="hoursPerWeek">The specified hours per week</param>
         /// <returns>The rates as at the specified date or the latest rates if no date specified</returns>
-        public static NationalMinimumWageRates GetAnnualRates(DateTime? dateTime, decimal hoursPerWeek = 37.5m)
+        public static NationalMinimumWageRates GetAnnualRates(DateTime dateTime, decimal hoursPerWeek)
         {
-            if (dateTime.HasValue)
-            {
-                NationalMinimumWageRates weeklyRates = GetWeeklyRates(dateTime, hoursPerWeek);
-                return new NationalMinimumWageRates
-                (
-                    weeklyRates.ValidFrom,
-                    weeklyRates.ValidFrom,
-                    weeklyRates.ApprenticeMinimumWage * WeeksPerYear,
-                    weeklyRates.Under18NationalMinimumWage * WeeksPerYear,
-                    weeklyRates.Between18And20NationalMinimumWage * WeeksPerYear,
-                    weeklyRates.Between21And24NationalMinimumWage * WeeksPerYear,
-                    weeklyRates.Over24NationalMinimumWage * WeeksPerYear
-                );
-            }
-
-            NationalMinimumWageRates latestRates = GetWeeklyRates(DateTime.Today, hoursPerWeek);
+            NationalMinimumWageRates weeklyRates = GetWeeklyRates(dateTime, hoursPerWeek);
             return new NationalMinimumWageRates
             (
-                latestRates.ValidFrom,
-                latestRates.ValidFrom,
-                latestRates.ApprenticeMinimumWage * WeeksPerYear,
-                latestRates.Under18NationalMinimumWage * WeeksPerYear,
-                latestRates.Between18And20NationalMinimumWage * WeeksPerYear,
-                latestRates.Between21And24NationalMinimumWage * WeeksPerYear,
-                latestRates.Over24NationalMinimumWage * WeeksPerYear
+                weeklyRates.ValidFrom,
+                weeklyRates.ValidFrom,
+                weeklyRates.ApprenticeMinimumWage * WeeksPerYear,
+                weeklyRates.Under18NationalMinimumWage * WeeksPerYear,
+                weeklyRates.Between18AndUnder21NationalMinimumWage * WeeksPerYear,
+                weeklyRates.Between21AndUnder25NationalMinimumWage * WeeksPerYear,
+                weeklyRates.Over25NationalMinimumWage * WeeksPerYear
             );
         }
 
