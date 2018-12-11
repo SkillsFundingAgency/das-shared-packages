@@ -13,10 +13,11 @@ namespace Esfa.Vacancy.Analytics
 	public class VacancyEventClient : IVacancyEventClient
 	{
 		private const int DefaultMaxRetrySendAttempts = 3;
+		private const string CustomEventDataTypeKey = "Type";
 		private readonly string _eventHubSendConnectionString;
 		private readonly string _publisherId;
 		private readonly ILogger<VacancyEventClient> _logger;
-		private readonly RetryPolicy _retryPolicy = new RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(3), DefaultMaxRetrySendAttempts);
+		private readonly RetryPolicy _retryPolicy = new RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(3), DefaultMaxRetrySendAttempts);		
 
 		public VacancyEventClient(string eventHubSendConnectionString, string publisherId, ILogger<VacancyEventClient> logger, RetryPolicy retryPolicy = null)
 		{
@@ -67,6 +68,7 @@ namespace Esfa.Vacancy.Analytics
 		private async Task PublishEventAsync(VacancyEvent evt)
 		{
 			var evtData = new EventData(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evt)));
+			evtData.Properties.Add(CustomEventDataTypeKey, evt.EventType);
 
 			try
 			{
@@ -108,6 +110,7 @@ namespace Esfa.Vacancy.Analytics
 			{
 				evt.PublisherId = _publisherId;
 				var evtData = new EventData(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evt)));
+				evtData.Properties.Add(CustomEventDataTypeKey, evt.EventType);
 				return batchedEvents.TryAdd(evtData);
 			});
 		}
