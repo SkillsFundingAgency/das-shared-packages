@@ -17,7 +17,7 @@ namespace Esfa.Vacancy.Analytics
 		private readonly string _eventHubSendConnectionString;
 		private readonly string _publisherId;
 		private readonly ILogger<VacancyEventClient> _logger;
-		private readonly RetryPolicy _retryPolicy = new RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(3), DefaultMaxRetrySendAttempts);		
+		private readonly RetryPolicy _retryPolicy = new RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(3), DefaultMaxRetrySendAttempts);
 
 		public VacancyEventClient(string eventHubSendConnectionString, string publisherId, ILogger<VacancyEventClient> logger, RetryPolicy retryPolicy = null)
 		{
@@ -84,12 +84,17 @@ namespace Esfa.Vacancy.Analytics
 
 		public async Task PublishBatchEventsAsync<T>(IEnumerable<T> events) where T : VacancyEvent
 		{
-			var exMsg = $"Error publishing batch events: {nameof(T)}.";
+			if (events.Count() < 1)
+			{
+				throw new ArgumentException("Must supply at least one event to publish as part of batch");
+			}
+
+			var exMsg = $"Error publishing batch events: {typeof(T).Name}.";
 
 			try
 			{
 				var client = GetClient();
-				var batchedEvents = client.CreateBatch(new BatchOptions { MaxMessageSize = events.Count() });
+				var batchedEvents = client.CreateBatch();
 
 				var addedSuccesfully = PopulateBatch(events, batchedEvents);
 
@@ -106,12 +111,15 @@ namespace Esfa.Vacancy.Analytics
 
 		private bool PopulateBatch<T>(IEnumerable<T> events, EventDataBatch batchedEvents) where T : VacancyEvent
 		{
+			_logger.LogDebug($"Attempting to load {events.Count()} events of type {typeof(T).Name} for batch publish.");
+
 			return events.All(evt =>
 			{
 				evt.PublisherId = _publisherId;
 				var evtData = new EventData(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evt)));
 				evtData.Properties.Add(CustomEventDataTypeKey, evt.EventType);
-				return batchedEvents.TryAdd(evtData);
+				var hasAdded = batchedEvents.TryAdd(evtData);
+				return hasAdded;
 			});
 		}
 
