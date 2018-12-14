@@ -4,16 +4,21 @@ namespace SFA.DAS.VacancyServices.Wage
 {
     public static class WageCalculator
     {
+        public static decimal GetHourRateRoundAsMoney(decimal wage, WageUnit wageUnit, decimal hoursPerWeek)
+        {
+            return RoundAsMoney(GetHourRate(wage, wageUnit, hoursPerWeek));
+        }
+
         public static decimal GetHourRate(decimal wage, WageUnit wageUnit, decimal hoursPerWeek)
         {
             switch (wageUnit)
             {
                 case WageUnit.Weekly:
-                    return RoundAsMoney(wage / hoursPerWeek);
+                    return wage / hoursPerWeek;
                 case WageUnit.Annually:
-                    return RoundAsMoney(wage / WageConstants.WeeksPerYear / hoursPerWeek);
+                    return wage / WageConstants.WeeksPerYear / hoursPerWeek;
                 case WageUnit.Monthly:
-                    return RoundAsMoney(wage / WageConstants.WeeksPerYear * WageConstants.MonthPerYear / hoursPerWeek);
+                    return wage / WageConstants.WeeksPerYear * WageConstants.MonthPerYear / hoursPerWeek;
 
                 case WageUnit.NotApplicable:
                     return 0;
