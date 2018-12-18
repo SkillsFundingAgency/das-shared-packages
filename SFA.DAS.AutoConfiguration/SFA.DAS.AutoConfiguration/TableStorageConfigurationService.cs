@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace SFA.DAS.AutoConfiguration
 {
-    public class TableStorageConfigurationService : ITableStorageConfigurationService
+    public class TableStorageConfigurationService : IAutoConfigurationService
     {
         private const string ConfigurationTableReference = "Configuration";
         private const string DefaultVersion = "1.0";

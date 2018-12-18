@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.AutoConfiguration
 {
-    public interface ITableStorageConfigurationService
+    public interface IAutoConfigurationService
     {
         T Get<T>();
 
