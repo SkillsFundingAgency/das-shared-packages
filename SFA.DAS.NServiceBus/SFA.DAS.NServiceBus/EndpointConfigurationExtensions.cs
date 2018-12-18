@@ -36,9 +36,11 @@ namespace SFA.DAS.NServiceBus
         public static EndpointConfiguration UseMessageConventions(this EndpointConfiguration config)
         {
             var conventions = config.Conventions();
-
-            conventions.DefiningCommandsAs(t => t.Namespace != null && t.Namespace.EndsWith("Commands"));
-            conventions.DefiningEventsAs(t => t.Namespace != null && t.Namespace.EndsWith("Events"));
+            
+#pragma warning disable 618
+            conventions.DefiningCommandsAs(t => t.Namespace != null && t.Namespace.EndsWith("Commands") || t == typeof(Command));
+            conventions.DefiningEventsAs(t => t.Namespace != null && t.Namespace.EndsWith("Events") || t == typeof(Event));
+#pragma warning restore 618
             conventions.DefiningMessagesAs(t => t.Namespace != null && t.Namespace.EndsWith("Messages"));
 
             return config;
