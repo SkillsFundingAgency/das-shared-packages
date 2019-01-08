@@ -8,29 +8,29 @@ using Microsoft.Azure.Documents.Client;
 
 namespace SFA.DAS.CosmosDb
 {
-    internal class DocumentRepositoryRead<TDocument> where TDocument : class
+    public class DocumentRepositoryRead<TDocument> where TDocument : class
     {
-        private readonly IDocumentClient _documentClient;
-        private readonly string _databaseName;
-        private readonly string _collectionName;
+        protected internal readonly IDocumentClient DocumentClient;
+        protected internal readonly string DatabaseName;
+        protected internal readonly string CollectionName;
 
-        internal DocumentRepositoryRead(IDocumentClient documentClient, string databaseName, string collectionName)
+        protected internal DocumentRepositoryRead(IDocumentClient documentClient, string databaseName, string collectionName)
         {
-            _documentClient = documentClient;
-            _databaseName = databaseName;
-            _collectionName = collectionName;
+            DocumentClient = documentClient;
+            DatabaseName = databaseName;
+            CollectionName = collectionName;
         }
 
-        internal IQueryable<TDocument> CreateQuery(FeedOptions feedOptions = null)
+        public virtual IQueryable<TDocument> CreateQuery(FeedOptions feedOptions = null)
         {
-            return _documentClient.CreateDocumentQuery<TDocument>(UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName), feedOptions);
+            return DocumentClient.CreateDocumentQuery<TDocument>(UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName), feedOptions);
         }
 
-        internal async Task<TDocument> GetById(Guid id, RequestOptions requestOptions = null, CancellationToken cancellationToken = default)
+        public virtual async Task<TDocument> GetById(Guid id, RequestOptions requestOptions = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await _documentClient.ReadDocumentAsync<TDocument>(UriFactory.CreateDocumentUri(_databaseName, _collectionName, id.ToString()), requestOptions, cancellationToken).ConfigureAwait(false);
+                var response = await DocumentClient.ReadDocumentAsync<TDocument>(UriFactory.CreateDocumentUri(DatabaseName, CollectionName, id.ToString()), requestOptions, cancellationToken).ConfigureAwait(false);
 
                 return response.Document;
             }
