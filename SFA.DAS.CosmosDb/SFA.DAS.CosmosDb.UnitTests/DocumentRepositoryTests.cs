@@ -23,66 +23,66 @@ namespace SFA.DAS.CosmosDb.UnitTests
         [Test]
         public Task Add_WhenAddingDocument_ThenShouldAddDocument()
         {
-            return RunAsync(f => f.Add(), f => f.DocumentClient.Verify(c => c.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName), f.Document, f.RequestOptions, true, CancellationToken.None), Times.Once));
+            return TestAsync(f => f.Add(), f => f.DocumentClient.Verify(c => c.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(f.DatabaseName, f.CollectionName), f.Document, f.RequestOptions, true, CancellationToken.None), Times.Once));
         }
 
         [Test]
         public Task Add_WhenAddingDocument_ThenShouldThrowErrorIfDocumentIdIsEmpty()
         {
-            return RunAsync(f => f.Add(f.DocumentWithoutId), (f,r) => r.Should().Throw<Exception>().WithMessage("Id must not be Empty"));
+            return TestExceptionAsync(f => f.Add(f.DocumentWithoutId), (f,r) => r.Should().Throw<Exception>().WithMessage("Id must not be Empty"));
         }
 
         [Test]
         public void CreateQuery_WhenCreatingQuery_ThenShouldReturnIQueryable()
         {
-            Run(f => f.SetDocuments(), f => f.CreateQuery(), (f, r) => r.Should().NotBeNull().And.BeSameAs(f.DocumentsQuery));
+            Test(f => f.SetDocuments(), f => f.CreateQuery(), (f, r) => r.Should().NotBeNull().And.BeSameAs(f.DocumentsQuery));
         }
 
         [Test]
         public void CreateQuery_WhenCreatingQueryWithFeedOptions_ThenShouldReturnIQueryableWithFeedOptions()
         {
-            Run(f => f.SetDocuments(), f => f.CreateQueryWithFeedOptions(), (f, r) => r.Should().NotBeNull().And.BeSameAs(f.DocumentsQuery));
+            Test(f => f.SetDocuments(), f => f.CreateQueryWithFeedOptions(), (f, r) => r.Should().NotBeNull().And.BeSameAs(f.DocumentsQuery));
         }
 
         [Test]
         public Task GetById_WhenDocumentExists_ThenShouldReturnDocument()
         {
-            return RunAsync(f => f.SetDocument(), f => f.GetById(), (f, r) => r.Should().IsSameOrEqualTo(f.Document));
+            return TestAsync(f => f.SetDocument(), f => f.GetById(), (f, r) => r.Should().IsSameOrEqualTo(f.Document));
         }
 
         [Test]
         public Task GetById_WhenDocumentExistsWithRequestOptions_ThenShouldReturnDocument()
         {
-            return RunAsync(f => f.SetDocument(), f => f.GetByIdWithRequestOptions(), (f, r) => r.Should().IsSameOrEqualTo(f.Document));
+            return TestAsync(f => f.SetDocument(), f => f.GetByIdWithRequestOptions(), (f, r) => r.Should().IsSameOrEqualTo(f.Document));
         }
 
         [Test]
         public Task GetById_WhenDocumentDoesNotExist_ThenShouldReturnNull()
         {
-            return RunAsync(f => f.SetDocumentNotFound(), f => f.GetById(), (f, r) => r.Should().BeNull());
+            return TestAsync(f => f.SetDocumentNotFound(), f => f.GetById(), (f, r) => r.Should().BeNull());
         }
 
         [Test]
         public Task Remove_WhenRemovingDocument_ThenShouldRemoveDocument()
         {
-            return RunAsync(f => f.Remove(), f => f.DocumentClient.Verify(c => c.DeleteDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.Document.Id.ToString()), f.RequestOptions, CancellationToken.None), Times.Once));
+            return TestAsync(f => f.Remove(), f => f.DocumentClient.Verify(c => c.DeleteDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.Document.Id.ToString()), f.RequestOptions, CancellationToken.None), Times.Once));
         }
 
         [Test]
         public Task Update_WhenUpdatingDocument_ThenShouldUpdateDocumentWithoutCheckingETag()
         {
-            return RunAsync(f => f.Update(), f => f.DocumentClient.Verify(c =>
+            return TestAsync(f => f.Update(), f => f.DocumentClient.Verify(c =>
                 c.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.Document.Id.ToString()), f.Document, It.Is<RequestOptions>(o => o.AccessCondition == null), CancellationToken.None), Times.Once));
         }
         [Test]
         public Task Update_WhenUpdatingDocumentWithEmptyId_ThenShouldThrowExcepton()
         {
-            return RunAsync(f => f.Update(f.DocumentWithoutId), (f, r) => r.Should().Throw<Exception>().WithMessage("Id must not be Empty"));
+            return TestExceptionAsync(f => f.Update(f.DocumentWithoutId), (f, r) => r.Should().Throw<Exception>().WithMessage("Id must not be Empty"));
         }
         [Test]
         public Task Update_WhenUpdatingDocumentWithAnETag_ThenShouldUpdateDocumentCheckingETag()
         {
-            return RunAsync(f => f.Update(f.DocumentWithETag), f => f.DocumentClient.Verify(c =>
+            return TestAsync(f => f.Update(f.DocumentWithETag), f => f.DocumentClient.Verify(c =>
                 c.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(f.DatabaseName, f.CollectionName, f.DocumentWithETag.Id.ToString()), f.DocumentWithETag,
                     It.Is<RequestOptions>(o => o.AccessCondition.Type == AccessConditionType.IfMatch && o.AccessCondition.Condition == f.DocumentWithETag.ETag),
                     CancellationToken.None), Times.Once));
