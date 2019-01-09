@@ -7,14 +7,14 @@ using Microsoft.Azure.Documents.Client;
 
 namespace SFA.DAS.CosmosDb
 {
-    public abstract class DocumentRepository<TDocument> : IDocumentRepository<TDocument> where TDocument : class, IDocument
+    public class DocumentRepository<TDocument> : IDocumentRepository<TDocument> where TDocument : class, IDocument
     {
         private readonly ReadOnlyDocumentRepository<TDocument> _readOnlyDocumentRepository;
         private readonly IDocumentClient _documentClient;
         private readonly string _databaseName;
         private readonly string _collectionName;
         
-        protected DocumentRepository(IDocumentClient documentClient, string databaseName, string collectionName)
+        public DocumentRepository(IDocumentClient documentClient, string databaseName, string collectionName)
         {
             _readOnlyDocumentRepository = new ReadOnlyDocumentRepository<TDocument>(documentClient, databaseName, collectionName);
             _documentClient = documentClient;

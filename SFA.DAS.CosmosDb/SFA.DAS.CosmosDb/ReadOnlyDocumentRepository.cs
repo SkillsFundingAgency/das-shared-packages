@@ -14,7 +14,7 @@ namespace SFA.DAS.CosmosDb
         private readonly string _databaseName;
         private readonly string _collectionName;
 
-        protected internal ReadOnlyDocumentRepository(IDocumentClient documentClient, string databaseName, string collectionName)
+        public ReadOnlyDocumentRepository(IDocumentClient documentClient, string databaseName, string collectionName)
         {
             _documentClient = documentClient;
             _databaseName = databaseName;
