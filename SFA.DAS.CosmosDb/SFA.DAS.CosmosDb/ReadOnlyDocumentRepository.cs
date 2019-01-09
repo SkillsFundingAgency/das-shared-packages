@@ -10,27 +10,27 @@ namespace SFA.DAS.CosmosDb
 {
     public class ReadOnlyDocumentRepository<TDocument> : IReadOnlyDocumentRepository<TDocument> where TDocument : class
     {
-        private readonly IDocumentClient _documentClient;
-        private readonly string _databaseName;
-        private readonly string _collectionName;
+        protected readonly IDocumentClient DocumentClient;
+        protected readonly string DatabaseName;
+        protected readonly string CollectionName;
 
         public ReadOnlyDocumentRepository(IDocumentClient documentClient, string databaseName, string collectionName)
         {
-            _documentClient = documentClient;
-            _databaseName = databaseName;
-            _collectionName = collectionName;
+            DocumentClient = documentClient;
+            DatabaseName = databaseName;
+            CollectionName = collectionName;
         }
         
         public virtual IQueryable<TDocument> CreateQuery(FeedOptions feedOptions = null)
         {
-            return _documentClient.CreateDocumentQuery<TDocument>(UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName), feedOptions);
+            return DocumentClient.CreateDocumentQuery<TDocument>(UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName), feedOptions);
         }
 
         public virtual async Task<TDocument> GetById(Guid id, RequestOptions requestOptions = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await _documentClient.ReadDocumentAsync<TDocument>(UriFactory.CreateDocumentUri(_databaseName, _collectionName, id.ToString()), requestOptions, cancellationToken).ConfigureAwait(false);
+                var response = await DocumentClient.ReadDocumentAsync<TDocument>(UriFactory.CreateDocumentUri(DatabaseName, CollectionName, id.ToString()), requestOptions, cancellationToken).ConfigureAwait(false);
 
                 return response.Document;
             }
