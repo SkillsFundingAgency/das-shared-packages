@@ -15,13 +15,13 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
                 return ruleName;
             }
             
-            using (var provider = new MD5CryptoServiceProvider())
+            using (var md5 = new MD5CryptoServiceProvider())
             {
                 var bytes = Encoding.Default.GetBytes(ruleName);
-                var hash = provider.ComputeHash(bytes);
-                var name = new Guid(hash).ToString();
+                var hash = md5.ComputeHash(bytes);
+                var shortenedRuleName = new Guid(hash).ToString();
 
-                return name;
+                return shortenedRuleName;
             }
         }
     }
