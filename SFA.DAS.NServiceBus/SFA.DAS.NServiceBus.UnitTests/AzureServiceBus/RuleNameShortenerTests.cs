@@ -24,7 +24,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.AzureServiceBus
         [Test]
         public void Shorten_WhenRuleNameIsLessThan50Characters_ThenShouldReturnUnshortenedRuleName()
         {
-            Run(f => f.SetRuleNameLength(50), f => f.Shorten(), (f, r) => r.Should().Be(f.RuleName));
+            Run(f => f.SetRuleNameLength(49), f => f.Shorten(), (f, r) => r.Should().Be(f.RuleName));
         }
 
         [Test]
