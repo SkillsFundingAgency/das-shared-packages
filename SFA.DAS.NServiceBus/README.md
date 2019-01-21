@@ -139,7 +139,7 @@ GO
 
 ### Saving Data
 
-To ensure data is saved and messages are published as part of the same transaction then any database operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.NServiceBus.IUnitOfWorkContext` this will give you access to the current request's persistence session, for example if you're using an SQL database:
+To ensure data is saved and messages are published as part of the same transaction then any database operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.UnitOfWork.IUnitOfWorkContext` this will give you access to the current request's persistence session, for example if you're using an SQL database:
 
 ```c#
 var synchronizedStorageSession = _unitOfWorkContext.Get<SynchronizedStorageSession>();
@@ -150,7 +150,7 @@ var transaction = sqlStorageSession.Transaction;
 
 ### Publishing Messages
 
-To ensure data is saved and messages are published as part of the same transaction then any messaging operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.NServiceBus.IUnitOfWorkContext` this will give you access to the current request's events collection, for example:
+To ensure data is saved and messages are published as part of the same transaction then any messaging operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.UnitOfWork.IUnitOfWorkContext` this will give you access to the current request's events collection, for example:
 
 ```c#
 _unitOfWorkContext.AddEvent(new SomethingHappenedEvent());
