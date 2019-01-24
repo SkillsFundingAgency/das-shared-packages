@@ -20,8 +20,10 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
             {
 #if NETSTANDARD2_0
                 var transport = config.UseTransport<AzureServiceBusTransport>();
+                var ruleNameShortener = new RuleNameShortener();
 
                 transport.ConnectionString(connectionStringBuilder);
+                transport.RuleNameShortener(ruleNameShortener.Shorten);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
 
                 routing(transport.Routing());

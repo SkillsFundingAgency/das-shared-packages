@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0-alpha0142" />
+        <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     </ItemGroup>
 
