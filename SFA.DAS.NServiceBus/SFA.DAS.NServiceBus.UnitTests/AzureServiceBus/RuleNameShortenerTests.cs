@@ -12,35 +12,34 @@ namespace SFA.DAS.NServiceBus.UnitTests.AzureServiceBus
         [Test]
         public void Shorten_WhenRuleNameIsGreaterThan50Characters_ThenShouldReturnShortenedRuleName()
         {
-            Run(f => f.SetRuleNameLength(51), f => f.Shorten(), (f, r) => r.Should().NotBeNull().And.BeOfType<string>().Which.Length.Should().BeLessOrEqualTo(50));
+            Run(f => f.SetRuleName(51), f => f.Shorten(), (f, r) => r.Should().NotBeNull().And.BeOfType<string>().Which.Length.Should().BeLessOrEqualTo(50));
         }
-        
-        [Test]
-        public void Shorten_WhenRuleNameIsEqualTo50Characters_ThenShouldReturnUnshortenedRuleName()
+
+        [TestCase(25)]
+        [TestCase(49)]
+        [TestCase(50)]
+        public void Shorten_WhenRuleNameIsLessThanOrEqualTo50Characters_ThenShouldReturnUnshortenedRuleName(int ruleNameLength)
         {
-            Run(f => f.SetRuleNameLength(50), f => f.Shorten(), (f, r) => r.Should().Be(f.RuleName));
-        }
-        
-        [Test]
-        public void Shorten_WhenRuleNameIsLessThan50Characters_ThenShouldReturnUnshortenedRuleName()
-        {
-            Run(f => f.SetRuleNameLength(49), f => f.Shorten(), (f, r) => r.Should().Be(f.RuleName));
+            Run(f => f.SetRuleName(ruleNameLength), f => f.Shorten(), (f, r) => r.Should().Be(f.RuleName));
         }
 
         [Test]
-        public void Shorten_WhenRuleNameIsGreaterThan50Characters_ThenShouldReturnUniqueShortenedRuleName()
+        public void Shorten_WhenRuleNameIsGreaterThan50Characters_ThenShouldReturnDifferentShortenedRuleNamesForDifferentRuleNames()
         {
-            Run(f => f.ShortenMultiple(), (f, r) =>
-            {
-                r[0].Should().NotBe(r[1]);
-                r[1].Should().Be(r[2]);
-            });
+            Run(f => f.SetMultipleRuleNames(51, true), f => f.ShortenMultiple(), (f, r) => r[0].Should().NotBe(r[1]));
+        }
+
+        [Test]
+        public void Shorten_WhenRuleNameIsGreaterThan50Characters_ThenShouldReturnSameShortenedRuleNamesForSameRuleNames()
+        {
+            Run(f => f.SetMultipleRuleNames(51, false), f => f.ShortenMultiple(), (f, r) => r[0].Should().Be(r[1]));
         }
     }
 
     public class RuleNameShortenerTestsFixture
     {
         public string RuleName { get; set; }
+        public string[] RuleNames { get; set; }
         public RuleNameShortener RuleNameShortener { get; set; }
         
         public RuleNameShortenerTestsFixture()
@@ -57,16 +56,26 @@ namespace SFA.DAS.NServiceBus.UnitTests.AzureServiceBus
         {
             return new[]
             {
-                RuleNameShortener.Shorten(new string('0', 51)),
-                RuleNameShortener.Shorten(new string('1', 51)),
-                RuleNameShortener.Shorten(new string('1', 51))
+                RuleNameShortener.Shorten(RuleNames[0]),
+                RuleNameShortener.Shorten(RuleNames[1])
             };
         }
 
-        public RuleNameShortenerTestsFixture SetRuleNameLength(int length)
+        public RuleNameShortenerTestsFixture SetRuleName(int ruleNameLength)
         {
-            RuleName = new string('0', length);
+            RuleName = new string('0', ruleNameLength);
 
+            return this;
+        }
+
+        public RuleNameShortenerTestsFixture SetMultipleRuleNames(int ruleNameLength, bool uniqueRuleNames)
+        {
+            RuleNames = new[]
+            {
+                RuleNameShortener.Shorten(new string('0', ruleNameLength)),
+                RuleNameShortener.Shorten(new string(uniqueRuleNames ? '1' : '0', ruleNameLength))
+            };
+            
             return this;
         }
     }
