@@ -28,6 +28,9 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public string ProgrammeId { get; set; }
         public string ProgrammeLevel { get; set; }
         public string ProgrammeType { get; set; }
+        public string ProviderContactEmail { get; set; }
+        public string ProviderContactName { get; set; }
+        public string ProviderContactPhone { get; set; }
         public IEnumerable<Qualification> Qualifications { get; set; }
         public string ShortDescription { get; set; }
         public IEnumerable<string> Skills { get; set; }
