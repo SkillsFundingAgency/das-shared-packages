@@ -11,6 +11,9 @@ A shared library for storing configuration.
 ### Configuration - Azure table storage
 Configuration is stored in a table called Configuration. The PartitionKey is the environment name, the RowKey is the service name and version number (Major.Minor) separated by an underscore. There is one extra column, Data, which is the Json representation of the configuration class for the service.
 
+#### Debugging
+To debug the package, you may have to add `https://symbols.nuget.org/download/symbols` to your symbol sources. More info [here](https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg#nugetorg-symbol-server).
+
 ## Time Provider
 A shared library for making time-dependent functionality testable. You can download the NuGet package, SFA.DAS.TimeProvider, from nuget.org.
 

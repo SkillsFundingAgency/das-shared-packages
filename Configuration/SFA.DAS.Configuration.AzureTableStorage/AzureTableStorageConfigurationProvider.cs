@@ -9,17 +9,6 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
-    //todo: build process will probably look for nuspec, rather than working off csprpj - will have to ask devops to fix
-    //todo: looks like it's recommended not to put pdb's in the nuget package now, and instead generate a snupkg... https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg
-    //todo: add package props to project files
-    //todo: have config types and config code in different folders/namespaces
-    //todo: implement reload on change if table supports it
-    //todo: inject config into views??
-    //todo: options??
-    //todo: use new table code in cosmos package ?? not currently an option: https://github.com/Azure/azure-cosmos-dotnet-v2/issues/344
-    // ^^ could use this preview package: https://www.nuget.org/packages/Microsoft.Azure.Cosmos.Table/0.10.1-preview
-    //todo: move this provider into a hosting startup (https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/platform-specific-configuration?view=aspnetcore-2.2)
-    //todo: if we need facility to override config from e.g. command line, env variable (so can inject devs own connection string etc), then can stuff config into IOptions
     /// <remarks>
     /// Inspired by...
     /// https://github.com/SkillsFundingAgency/das-reservations/blob/MF-7-reservations-web/src/SFA.DAS.Reservations.Infrastructure/Configuration/AzureTableStorageConfigurationProvider.cs
