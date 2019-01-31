@@ -11,14 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration.UnitT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Configuration.AzureTableStorage", "SFA.DAS.Configuration.AzureTableStorage\SFA.DAS.Configuration.AzureTableStorage.csproj", "{81BDDA54-55F6-4694-A474-31BBD30F3EF6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildAndDeploy", "BuildAndDeploy", "{FA2D37AE-A87A-40A0-A18F-F3B205975397}"
-	ProjectSection(SolutionItems) = preProject
-		Build.fsx = Build.fsx
-		CustomTargets.fsx = CustomTargets.fsx
-		DefaultTargets.fsx = DefaultTargets.fsx
-		RunBuild.bat = RunBuild.bat
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C4929270-331C-4D5E-9571-23557D2450AB}"
 ProjectSection(SolutionItems) = preProject
 	..\.gitignore = ..\.gitignore

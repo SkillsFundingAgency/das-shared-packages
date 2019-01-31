@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
     //todo: build process will probably look for nuspec, rather than working off csprpj - will have to ask devops to fix
+    //todo: looks like it's recommended not to put pdb's in the nuget package now, and instead generate a snupkg... https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg
     //todo: add package props to project files
     //todo: have config types and config code in different folders/namespaces
     //todo: implement reload on change if table supports it
