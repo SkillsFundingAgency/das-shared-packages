@@ -16,13 +16,12 @@ namespace SFA.DAS.Configuration.AzureTableStorage
     public class AzureTableStorageConfigurationProvider : ConfigurationProvider
     {
         // das's tools (das-employer-config) don't currently support different versions, so might as well hardcode it
-        // we provider versioning by appending a 'Vn' on to the name
+        // we provide versioning by appending a 'Vn' on to the name
         private const string Version = "1.0";
         private const string ConfigurationTableName = "Configuration";
         private readonly IEnumerable<string> _configNames;
         private readonly string _environment;
         private readonly CloudStorageAccount _storageAccount;
-        //todo: would be better to create jit
         private readonly ConcurrentDictionary<string, string> _concurrentData;
 
         public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environment, IEnumerable<string> configNames)
