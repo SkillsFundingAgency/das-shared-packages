@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-shared-packages</RepositoryUrl>
     <PackageTags>Esfa;Das;</PackageTags>
-    <PackageReleaseNotes>Now only targets .NetStandard2.0</PackageReleaseNotes>
+    <PackageReleaseNotes>Now only targets .NetStandard2.0. Removed client base and replaced with new rest client for APIs. Class names cleaned up.</PackageReleaseNotes>
 
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
