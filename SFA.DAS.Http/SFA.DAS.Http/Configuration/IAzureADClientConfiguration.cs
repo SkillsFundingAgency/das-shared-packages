@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Http
+﻿namespace SFA.DAS.Http.Configuration
 {
     public interface IAzureADClientConfiguration
     {

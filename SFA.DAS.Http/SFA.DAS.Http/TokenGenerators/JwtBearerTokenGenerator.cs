@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using SFA.DAS.Http.Configuration;
 
 namespace SFA.DAS.Http.TokenGenerators
 {

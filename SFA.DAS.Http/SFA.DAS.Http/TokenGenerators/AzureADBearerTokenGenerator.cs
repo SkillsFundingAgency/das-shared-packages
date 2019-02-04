@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using SFA.DAS.Http.Configuration;
 
 namespace SFA.DAS.Http.TokenGenerators
 {
