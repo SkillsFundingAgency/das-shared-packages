@@ -15,7 +15,7 @@ namespace SFA.DAS.Http.MessageHandlers
             _generator = generator;
         }
 
-        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)
         {
             var bearerToken = await _generator.Generate();
 

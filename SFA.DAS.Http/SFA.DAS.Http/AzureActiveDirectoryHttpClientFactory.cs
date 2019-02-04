@@ -5,11 +5,11 @@ using SFA.DAS.Http.TokenGenerators;
 
 namespace SFA.DAS.Http
 {
-    public class AzureADHttpClientFactory : IHttpClientFactory
+    public class AzureActiveDirectoryHttpClientFactory : IHttpClientFactory
     {
-        private readonly AzureActiveDirectoryClientConfiguration _configuration;
+        private readonly IAzureActiveDirectoryClientConfiguration _configuration;
 
-        public AzureADHttpClientFactory(AzureActiveDirectoryClientConfiguration configuration)
+        public AzureActiveDirectoryHttpClientFactory(IAzureActiveDirectoryClientConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -18,7 +18,7 @@ namespace SFA.DAS.Http
         {
             var httpClient = new HttpClientBuilder()
                 .WithDefaultHeaders()
-                .WithBearerAuthorisationHeader(new AzureADBearerTokenGenerator(_configuration))
+                .WithBearerAuthorisationHeader(new AzureActiveDirectoryBearerTokenGenerator(_configuration))
                 .Build();
             
             httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);

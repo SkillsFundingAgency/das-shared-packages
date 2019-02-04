@@ -47,10 +47,7 @@ namespace SFA.DAS.Http
 
         public static implicit operator HttpClient(HttpClientBuilder handler)
         {
-            if (handler == null)
-                return null;
-
-            return handler.Build();
+            return handler?.Build();
         }
 
         private void AddHandlerToChain(DelegatingHandler newHandler)

@@ -1,6 +1,6 @@
 namespace SFA.DAS.Http.Configuration
 {
-    public class AzureActiveDirectoryClientConfiguration : IAzureADClientConfiguration
+    public class AzureActiveDirectoryClientConfiguration : IAzureActiveDirectoryClientConfiguration
     {
         public string ApiBaseUrl { get; set; }
         public string ClientId { get; set; }

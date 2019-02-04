@@ -5,7 +5,7 @@ namespace SFA.DAS.Http.TokenGenerators
 {
     public class JwtBearerTokenGenerator : IGenerateBearerToken
     {
-        private string _jwtToken;
+        private readonly string _jwtToken;
 
         public JwtBearerTokenGenerator(IJwtClientConfiguration configuration)
         {

@@ -4,11 +4,11 @@ using SFA.DAS.Http.Configuration;
 
 namespace SFA.DAS.Http.TokenGenerators
 {
-    public class AzureADBearerTokenGenerator : IGenerateBearerToken
+    public class AzureActiveDirectoryBearerTokenGenerator : IGenerateBearerToken
     {
-        IAzureADClientConfiguration _config;
+        readonly IAzureActiveDirectoryClientConfiguration _config;
 
-        public AzureADBearerTokenGenerator(IAzureADClientConfiguration configuration)
+        public AzureActiveDirectoryBearerTokenGenerator(IAzureActiveDirectoryClientConfiguration configuration)
         {
             _config = configuration;
         }
