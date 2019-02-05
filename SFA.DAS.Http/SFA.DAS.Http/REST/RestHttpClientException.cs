@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Http.REST
 {
@@ -21,12 +20,6 @@ namespace SFA.DAS.Http.REST
             ErrorResponse = errorResponse;
         }
             
-        // assumes response content hasn't already been read
-        public static async Task<RestHttpClientException> Create(HttpResponseMessage httpResponseMessage)
-        {
-            return new RestHttpClientException(httpResponseMessage, await httpResponseMessage.Content.ReadAsStringAsync());
-        }
-    
         private static string GenerateMessage(HttpResponseMessage httpResponseMessage, string errorResponse)
         {
             return $@"Request '{httpResponseMessage.RequestMessage.RequestUri}' 

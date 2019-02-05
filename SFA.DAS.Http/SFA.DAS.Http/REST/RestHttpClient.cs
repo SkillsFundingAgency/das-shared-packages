@@ -38,7 +38,12 @@ namespace SFA.DAS.Http.REST
             return Get(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
-        private async Task<HttpResponseMessage> GetResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
+        protected virtual Exception CreateClientException(HttpResponseMessage httpResponseMessage, string content)
+        {
+            return new RestHttpClientException(httpResponseMessage, content);
+        }
+
+        protected virtual async Task<HttpResponseMessage> GetResponse(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             if (queryData != null)
             {
@@ -48,7 +53,7 @@ namespace SFA.DAS.Http.REST
             var response = await _httpClient.GetAsync(uri, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                throw await RestHttpClientException.Create(response);
+                throw CreateClientException(response, await response.Content.ReadAsStringAsync());
             }
 
             return response;
