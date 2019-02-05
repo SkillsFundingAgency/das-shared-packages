@@ -9,10 +9,6 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
-    /// <remarks>
-    /// Inspired by...
-    /// https://github.com/SkillsFundingAgency/das-reservations/blob/MF-7-reservations-web/src/SFA.DAS.Reservations.Infrastructure/Configuration/AzureTableStorageConfigurationProvider.cs
-    /// </remarks>
     public class AzureTableStorageConfigurationProvider : ConfigurationProvider
     {
         // das's tools (das-employer-config) don't currently support different versions, so might as well hardcode it
