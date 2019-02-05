@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SFA.DAS.ExceptionHandling.MessageFormatters;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace SFA.DAS.ExceptionHandling.UnitTests
 {
@@ -22,10 +23,17 @@ namespace SFA.DAS.ExceptionHandling.UnitTests
         }
 
         [TestCase(typeof(Exception), typeof(ExceptionMessageFormatter))]
+        [TestCase(typeof(HttpRequestException), typeof(HttpRequestExceptionMessageFormatter))]
+        [TestCase(typeof(AggregateException), typeof(AggregateExceptionMessageFormatter))]
+        // No specific exception handler for this, so should default
+        [TestCase(typeof(InvalidCastException), typeof(ExceptionMessageFormatter))]
         public void GetFormatter_ForException_ShouldGetExceptionFormatter(Type exceptionType, Type expectedFormatterType)
         {
             // Arrange
-            var fixtures = new ExceptionMessageFormatterFactoryTestFixtures();
+            var fixtures = new ExceptionMessageFormatterFactoryTestFixtures()
+                .WithExceptionFormatter(new HttpRequestExceptionMessageFormatter())
+                .WithExceptionFormatter(new AggregateExceptionMessageFormatter());
+
             var factory = fixtures.CreateFactory();
             var exception = Activator.CreateInstance(exceptionType) as Exception;
 
@@ -44,7 +52,13 @@ namespace SFA.DAS.ExceptionHandling.UnitTests
             
         }
 
-        public List<ExceptionMessageFormatter> ExceptionMessageFormatters { get; } = new List<ExceptionMessageFormatter>();
+        public List<IExceptionMessageFormatter> ExceptionMessageFormatters { get; } = new List<IExceptionMessageFormatter>();
+
+        public ExceptionMessageFormatterFactoryTestFixtures WithExceptionFormatter(IExceptionMessageFormatter formatter)
+        {
+            ExceptionMessageFormatters.Add(formatter);
+            return this;
+        }
 
         public ExceptionMessageFormatterFactory CreateFactory()
         {
