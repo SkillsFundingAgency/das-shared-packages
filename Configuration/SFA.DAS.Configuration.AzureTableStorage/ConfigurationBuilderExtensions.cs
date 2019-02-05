@@ -5,9 +5,10 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 {
     public static class ConfigurationBuilderExtensions
     {
-        public static IConfigurationBuilder AddAzureTableStorageConfiguration(this IConfigurationBuilder builder, string connection, string environment, IEnumerable<string> configNames)
+        public static IConfigurationBuilder AddAzureTableStorageConfiguration(this IConfigurationBuilder builder,
+            string connectionString, string environmentName, IEnumerable<string> configurationKeys)
         {
-            return builder.Add(new AzureTableStorageConfigurationSource(connection, environment, configNames));
+            return builder.Add(new AzureTableStorageConfigurationSource(connectionString, environmentName, configurationKeys));
         }
     }
 }
