@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using SFA.DAS.Configuration.Extensions;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
@@ -45,7 +46,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             IEnumerable<Stream> configStreams = null;
             try
             {
-                configStreams = configJsons.Select(GenerateStreamFromString);
+                configStreams = configJsons.Select(cj => cj.ToStream());
 
                 var configNameAndStreams = _configNames.Zip(configStreams, (name, stream) => (name, stream));
 
@@ -59,17 +60,6 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                     stream.Dispose();
                 }
             }
-        }
-
-        /// <returns>Stream that contains the supplied string. The caller is responsible for disposing the stream.</returns>
-        private static Stream GenerateStreamFromString(string s)
-        {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(s);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
         }
         
         private CloudTable GetTable()
