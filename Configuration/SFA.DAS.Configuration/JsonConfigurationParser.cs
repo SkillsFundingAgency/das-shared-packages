@@ -1,4 +1,4 @@
-// based on https://github.com/aspnet/Configuration/blob/master/src/Config.Json/JsonConfigurationFileParser.cs, which is
+// based on https://github.com/aspnet/Configuration/blob/release/2.2/src/Config.Json/JsonConfigurationFileParser.cs, which is
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
