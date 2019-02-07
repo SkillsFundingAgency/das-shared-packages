@@ -52,8 +52,8 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     
     public class TestableAzureTableStorageConfigurationProvider : AzureTableStorageConfigurationProvider
     {
-        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environment, IEnumerable<string> configNames)
-            : base(cloudStorageAccount, environment, configNames)
+        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environment, IEnumerable<string> configKeys)
+            : base(cloudStorageAccount, environment, configKeys)
         {
         }
         
