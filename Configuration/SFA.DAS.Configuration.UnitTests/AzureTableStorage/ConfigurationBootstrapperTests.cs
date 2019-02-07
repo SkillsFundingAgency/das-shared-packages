@@ -3,6 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Testing;
+using Fix = SFA.DAS.Configuration.UnitTests.AzureTableStorage.ConfigurationBootstrapperTestsFixture;
 
 namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 {
@@ -15,10 +16,25 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         {
             Test(f => f.SetEnvironmentVariables(), f => f.GetEnvironmentVariables(), (f, r) => f.AssertAreDefaults(r));
         }
+        
+        [TestCase("LOCAL")]
+        [TestCase("AT")]
+        [TestCase("TEST")]
+        [TestCase("TEST2" )]
+        [TestCase("PREPROD")]
+        [TestCase("PROD")]
+        [TestCase("MO")]
+        [TestCase("DEMO")]
+        public void WhenGettingEnvironmentVariablesAndEnvironmentVariablesAreSet_ThenValuesFromEnvironmentVariablesAreProvided(string environmentName)
+        {
+            Test(f => f.SetEnvironmentVariables(environmentName, Fix.ExampleString), f => f.GetEnvironmentVariables(), (f, r) => f.AssertValues(r.StorageConnectionString, r.EnvironmentName));
+        }
     }
 
     public class ConfigurationBootstrapperTestsFixture
     {
+        public const string ExampleString = "Xyz";
+            
         public void SetEnvironmentVariables(string environmentName = null, string storageConnectionString = null)
         {
             Environment.SetEnvironmentVariable("APPSETTING_EnvironmentName", environmentName, EnvironmentVariableTarget.Process);
@@ -32,8 +48,13 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 
         public void AssertAreDefaults((string StorageConnectionString, string EnvironmentName) retrievedValues)
         {
-            retrievedValues.StorageConnectionString.Should().Be("UseDevelopmentStorage=true");
-            retrievedValues.EnvironmentName.Should().Be("LOCAL");
+            AssertValues("UseDevelopmentStorage=true", "LOCAL");
+        }
+
+        public void AssertValues(string storageConnectionString, string environmentName)
+        {
+            storageConnectionString.Should().Be(storageConnectionString);
+            environmentName.Should().Be(environmentName);
         }
     }
 }
