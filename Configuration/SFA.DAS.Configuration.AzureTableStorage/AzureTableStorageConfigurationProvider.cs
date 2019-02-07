@@ -40,7 +40,8 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         
         public override void Load()
         {
-            var configJsons = GetRows().Select(r => ((ConfigurationRow)r.Result).Data);
+            var rows = GetRows().GetAwaiter().GetResult();
+            var configJsons = rows.Select(r => ((ConfigurationRow)r.Result).Data);
 
             IEnumerable<Stream> configStreams = null;
             try
@@ -66,16 +67,16 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             return tableClient.GetTableReference(ConfigurationTableName);
         }
 
-        private IEnumerable<TableResult> GetRows()
+        private async Task<TableResult[]> GetRows()
         {
             var table = GetTable();
             var operations = _configNames.Select(name => GetTableResult(table, name));
-            return Task.WhenAll(operations).GetAwaiter().GetResult();
+            return await Task.WhenAll(operations).ConfigureAwait(false);
         }
 
-        private Task<TableResult> GetTableResult(CloudTable table, string serviceName)
+        private async Task<TableResult> GetTableResult(CloudTable table, string serviceName)
         {
-            return table.ExecuteAsync(GetOperation(serviceName));
+            return await table.ExecuteAsync(GetOperation(serviceName)).ConfigureAwait(false);
         }
         
         /// <remarks>
