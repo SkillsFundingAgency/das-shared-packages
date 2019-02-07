@@ -16,6 +16,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         // we provide versioning by appending a 'Vn' on to the name
         private const string Version = "1.0";
         private const string ConfigurationTableName = "Configuration";
+        
         private readonly IEnumerable<string> _configNames;
         private readonly string _environment;
         private readonly CloudStorageAccount _storageAccount;
@@ -74,8 +75,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
         private Task<TableResult> GetTableResult(CloudTable table, string serviceName)
         {
-            var tableOperation = GetOperation(serviceName);
-            return table.ExecuteAsync(tableOperation);
+            return table.ExecuteAsync(GetOperation(serviceName));
         }
         
         /// <remarks>
