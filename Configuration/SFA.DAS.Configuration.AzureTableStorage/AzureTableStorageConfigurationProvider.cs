@@ -74,9 +74,9 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             return ((ConfigurationRow) tableResult.Result).Data;
         }
 
-        private async Task<TableResult> GetTableResult(CloudTable table, string serviceName)
+        private async Task<TableResult> GetTableResult(CloudTable table, string configKey)
         {
-            return await table.ExecuteAsync(GetOperation(serviceName)).ConfigureAwait(false);
+            return await table.ExecuteAsync(GetOperation(configKey)).ConfigureAwait(false);
         }
 
         private CloudTable GetTable()
@@ -90,9 +90,9 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         /// bit of a hack, until MS update fakes for core, or they release a easily unit testable library
         /// alternative is to introduce an injected class to provide a level of indirection
         /// </remarks>
-        protected virtual TableOperation GetOperation(string serviceName)
+        protected virtual TableOperation GetOperation(string configKey)
         {
-            return TableOperation.Retrieve<ConfigurationRow>(_environment, $"{serviceName}_{Version}");
+            return TableOperation.Retrieve<ConfigurationRow>(_environment, $"{configKey}_{Version}");
         }
     }
 }
