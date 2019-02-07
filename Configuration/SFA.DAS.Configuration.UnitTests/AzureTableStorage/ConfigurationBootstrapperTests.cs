@@ -12,7 +12,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     public class ConfigurationBootstrapperTests : FluentTest<ConfigurationBootstrapperTestsFixture>
     {
         [Test]
-        public void WhenGettingEnvironmentVariablesOnDeveloperMachineAndNoEnvironmentVariablesAreSet_ThenDefaultsAreProvided()
+        public void WhenGettingEnvironmentVariables_OnDeveloperMachineAndNoEnvironmentVariablesAreSet_ThenDefaultsAreProvided()
         {
             Test(f => f.SetEnvironmentVariables(), f => f.GetEnvironmentVariables(), (f, r) => f.AssertAreDefaults(r));
         }
@@ -25,9 +25,21 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         [TestCase("PROD")]
         [TestCase("MO")]
         [TestCase("DEMO")]
-        public void WhenGettingEnvironmentVariablesAndEnvironmentVariablesAreSet_ThenValuesFromEnvironmentVariablesAreProvided(string environmentName)
+        public void WhenGettingEnvironmentVariables_EnvironmentVariablesAreSet_ThenValuesFromEnvironmentVariablesAreProvided(string environmentName)
         {
             Test(f => f.SetEnvironmentVariables(environmentName, Fix.ExampleString), f => f.GetEnvironmentVariables(), (f, r) => f.AssertValues(r.StorageConnectionString, r.EnvironmentName));
+        }
+
+        [TestCase("AT")]
+        [TestCase("TEST")]
+        [TestCase("TEST2" )]
+        [TestCase("PREPROD")]
+        [TestCase("PROD")]
+        [TestCase("MO")]
+        [TestCase("DEMO")]
+        public void WhenGettingEnvironmentVariables_InCloudEnvironmentAndStorageConnectionStringEnvironmentVariableIsMissing_ThenExceptionIsThrown(string environmentName)
+        {
+            TestException(f => f.SetEnvironmentVariables(environmentName), f => f.GetEnvironmentVariables(), (f, r) => r.Should().Throw<Exception>());
         }
     }
 
