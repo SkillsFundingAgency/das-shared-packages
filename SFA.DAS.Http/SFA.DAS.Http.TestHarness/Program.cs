@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
-using SFA.DAS.Http.REST;
 
 namespace SFA.DAS.Http.TestHarness
 {

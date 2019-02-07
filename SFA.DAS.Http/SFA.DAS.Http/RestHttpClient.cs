@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace SFA.DAS.Http.REST
+namespace SFA.DAS.Http
 {
     public class RestHttpClient: IRestHttpClient
     {

@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 
-namespace SFA.DAS.Http.REST
+namespace SFA.DAS.Http
 {
     public class RestHttpClientException : Exception
     {

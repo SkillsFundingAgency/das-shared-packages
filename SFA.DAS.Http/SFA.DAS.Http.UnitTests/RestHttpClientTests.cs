@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.Http.REST;
 using SFA.DAS.Http.UnitTests.Fakes;
 using SFA.DAS.Testing;
 
@@ -15,7 +14,7 @@ namespace SFA.DAS.Http.UnitTests.REST
 {
     [TestFixture]
     [Parallelizable]
-    public class RestClientTests : FluentTest<RestClientTestsFixture>
+    public class RestHttpClientTests : FluentTest<RestClientTestsFixture>
     {
         [Test]
         public Task WhenCallingGetAndHttpClientReturnsSuccess_ThenShouldReturnResponseBodyAsString()
