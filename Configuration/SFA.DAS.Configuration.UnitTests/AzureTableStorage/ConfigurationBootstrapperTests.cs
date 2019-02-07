@@ -27,7 +27,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         [TestCase("DEMO")]
         public void WhenGettingEnvironmentVariables_EnvironmentVariablesAreSet_ThenValuesFromEnvironmentVariablesAreProvided(string environmentName)
         {
-            Test(f => f.SetEnvironmentVariables(environmentName, Fix.ExampleString), f => f.GetEnvironmentVariables(), (f, r) => f.AssertValues(r.StorageConnectionString, r.EnvironmentName));
+            Test(f => f.SetEnvironmentVariables(storageConnectionString: Fix.ExampleString, environmentName: environmentName), f => f.GetEnvironmentVariables(), (f, r) => f.AssertValues(Fix.ExampleString, environmentName));
         }
 
         [TestCase("AT")]
@@ -39,7 +39,13 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         [TestCase("DEMO")]
         public void WhenGettingEnvironmentVariables_InCloudEnvironmentAndStorageConnectionStringEnvironmentVariableIsMissing_ThenExceptionIsThrown(string environmentName)
         {
-            TestException(f => f.SetEnvironmentVariables(environmentName), f => f.GetEnvironmentVariables(), (f, r) => r.Should().Throw<Exception>());
+            TestException(f => f.SetEnvironmentVariables(environmentName: environmentName), f => f.GetEnvironmentVariables(), (f, r) => r.Should().Throw<Exception>());
+        }
+        
+        [Test]
+        public void WhenGettingEnvironmentVariables_EnvironmentNameEnvironmentVariableIsMissingAndStorageConnectionStringEnvironmentVariableIsPresent_ThenGivenStorageConnectionStringAndDefaultDeveloperEnvironmentNameAreProvided()
+        {
+            TestException(f => f.SetEnvironmentVariables(storageConnectionString: Fix.ExampleString), f => f.GetEnvironmentVariables(), (f, r) => f.AssertValues(Fix.ExampleString, "LOCAL"));
         }
     }
 
@@ -47,7 +53,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     {
         public const string ExampleString = "Xyz";
             
-        public void SetEnvironmentVariables(string environmentName = null, string storageConnectionString = null)
+        public void SetEnvironmentVariables(string storageConnectionString = null, string environmentName = null)
         {
             Environment.SetEnvironmentVariable("APPSETTING_EnvironmentName", environmentName, EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable("APPSETTING_ConfigurationStorageConnectionString", storageConnectionString, EnvironmentVariableTarget.Process);
