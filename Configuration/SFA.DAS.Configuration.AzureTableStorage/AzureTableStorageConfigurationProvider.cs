@@ -26,16 +26,6 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             _environmentName = environmentName;
             _storageAccount = cloudStorageAccount;
         }
-
-        internal interface IConfigurationRow : ITableEntity
-        {
-            string Data { get; set; }
-        }
-        
-        internal class ConfigurationRow : TableEntity, IConfigurationRow
-        {
-            public string Data { get; set; }
-        }
         
         public override void Load()
         {
@@ -88,6 +78,16 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         protected virtual TableOperation GetOperation(string configKey)
         {
             return TableOperation.Retrieve<ConfigurationRow>(_environmentName, $"{configKey}_{Version}");
+        }
+        
+        internal interface IConfigurationRow : ITableEntity
+        {
+            string Data { get; set; }
+        }
+        
+        internal class ConfigurationRow : TableEntity, IConfigurationRow
+        {
+            public string Data { get; set; }
         }
     }
 }
