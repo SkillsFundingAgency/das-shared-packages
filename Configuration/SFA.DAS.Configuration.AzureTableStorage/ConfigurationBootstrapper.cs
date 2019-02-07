@@ -33,7 +33,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
         public static IConfigurationRoot GetConfiguration(string storageConnectionString, string environmentName, params string[] configurationKeys)
         {
-            return new ConfigurationBuilder().AddAzureTableStorageConfiguration(
+            return new ConfigurationBuilder().AddSourcedAzureTableStorageConfiguration(
                 storageConnectionString, environmentName, configurationKeys).Build();
         }
     }
