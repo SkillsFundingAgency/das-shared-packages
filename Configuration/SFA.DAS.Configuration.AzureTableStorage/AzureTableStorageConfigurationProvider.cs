@@ -17,13 +17,13 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private const string ConfigurationTableName = "Configuration";
         
         private readonly IEnumerable<string> _configKeys;
-        private readonly string _environment;
+        private readonly string _environmentName;
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environment, IEnumerable<string> configKeys)
+        public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configKeys)
         {
             _configKeys = configKeys;
-            _environment = environment;
+            _environmentName = environmentName;
             _storageAccount = cloudStorageAccount;
         }
 
@@ -67,16 +67,10 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             }
         }
 
-        //combine next 2?
         private async Task<string> GetRowConfiguration(string configKey)
         {
-            var tableResult = await GetTableResult(GetTable(), configKey).ConfigureAwait(false);
+            var tableResult = await GetTable().ExecuteAsync(GetOperation(configKey)).ConfigureAwait(false);
             return ((ConfigurationRow) tableResult.Result).Data;
-        }
-
-        private async Task<TableResult> GetTableResult(CloudTable table, string configKey)
-        {
-            return await table.ExecuteAsync(GetOperation(configKey)).ConfigureAwait(false);
         }
 
         private CloudTable GetTable()
@@ -92,7 +86,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         /// </remarks>
         protected virtual TableOperation GetOperation(string configKey)
         {
-            return TableOperation.Retrieve<ConfigurationRow>(_environment, $"{configKey}_{Version}");
+            return TableOperation.Retrieve<ConfigurationRow>(_environmentName, $"{configKey}_{Version}");
         }
     }
 }
