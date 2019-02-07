@@ -35,12 +35,5 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             return new ConfigurationBuilder().AddAzureTableStorageConfiguration(
                 storageConnectionString, environmentName, configurationKeys).Build();
         }
-        
-        public static IConfigurationRoot GetConfiguration(params string[] configurationKeys)
-        {
-            var environmentVariables = GetEnvironmentVariables();
-
-            return GetConfiguration(environmentVariables.StorageConnectionString, environmentVariables.EnvironmentName, configurationKeys);
-        }
     }
 }
