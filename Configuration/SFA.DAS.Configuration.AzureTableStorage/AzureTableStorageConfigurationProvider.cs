@@ -19,14 +19,12 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private readonly IEnumerable<string> _configNames;
         private readonly string _environment;
         private readonly CloudStorageAccount _storageAccount;
-        private readonly ConcurrentDictionary<string, string> _concurrentData;
 
         public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environment, IEnumerable<string> configNames)
         {
             _configNames = configNames;
             _environment = environment;
             _storageAccount = cloudStorageAccount;
-            _concurrentData = new ConcurrentDictionary<string, string>();
         }
 
         internal interface IConfigurationRow : ITableEntity
@@ -50,8 +48,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
                 var configNameAndStreams = _configNames.Zip(configStreams, (name, stream) => (name, stream));
 
-                Parallel.ForEach(configNameAndStreams, AddToData);
-                Data = _concurrentData;
+                Data = ParseConfigurationTableRows(configNameAndStreams);
             }
             finally
             {
@@ -91,12 +88,22 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             return TableOperation.Retrieve<ConfigurationRow>(_environment, $"{serviceName}_{Version}");
         }
         
-        private void AddToData((string name, Stream stream) configNameAndStream)
+        private ConcurrentDictionary<string, string> ParseConfigurationTableRows(IEnumerable<(string name, Stream stream)> configNameAndStream)
+        {
+            var concurrentData = new ConcurrentDictionary<string, string>();
+
+            Parallel.ForEach(configNameAndStream, r => ParseConfigurationTableRow(concurrentData, r));
+
+            return concurrentData;
+        }
+
+        //todo: how much can we parallelize?
+        private void ParseConfigurationTableRow(ConcurrentDictionary<string, string> data, (string name, Stream stream) configNameAndStream)
         {
             var configData = JsonConfigurationStreamParser.Parse(configNameAndStream.stream);
 
             foreach (var configItem in configData)
-                _concurrentData.AddOrUpdate($"{configNameAndStream.name}:{configItem.Key}", configItem.Value, (key, oldValue) => configItem.Value);
+                data.AddOrUpdate($"{configNameAndStream.name}:{configItem.Key}", configItem.Value, (key, oldValue) => configItem.Value);
         }
     }
 }
