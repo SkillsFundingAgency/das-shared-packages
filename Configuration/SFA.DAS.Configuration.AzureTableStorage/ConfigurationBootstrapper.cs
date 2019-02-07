@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.Configuration;
+using SFA.DAS.Configuration.AzureTableStorage.Extensions;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
