@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -40,24 +39,53 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         
         public override void Load()
         {
-            var rows = GetRows().GetAwaiter().GetResult();
-            var configJsons = rows.Select(r => ((ConfigurationRow)r.Result).Data);
+            Data = ReadAndParseConfigurationTableRows().GetAwaiter().GetResult();
+//            var rows = GetRows().GetAwaiter().GetResult();
+//            var configJsons = rows.Select(r => ((ConfigurationRow)r.Result).Data);
+//
+//            IEnumerable<Stream> configStreams = null;
+//            try
+//            {
+//                configStreams = configJsons.Select(cj => cj.ToStream());
+//
+//                var configNameAndStreams = _configNames.Zip(configStreams, (name, stream) => (name, stream));
+//
+//                Data = ParseConfigurationTableRows(configNameAndStreams);
+//            }
+//            finally
+//            {
+//                foreach (var stream in configStreams)
+//                {
+//                    stream.Dispose();
+//                }
+//            }
+        }
+        
+        //pass instance props in??
+        private async Task<ConcurrentDictionary<string, string>> ReadAndParseConfigurationTableRows()
+        {
+            var concurrentData = new ConcurrentDictionary<string, string>();
 
-            IEnumerable<Stream> configStreams = null;
-            try
+            //Parallel.ForEach(_configNames, r => ParseConfigurationTableRow(concurrentData, r));
+//do non-parallel first?
+            var parseRowsTasks = _configNames.Select(configKey => ParseConfigurationTableRow(concurrentData, configKey));
+
+            await Task.WhenAll(parseRowsTasks).ConfigureAwait(false);
+            
+            return concurrentData;
+        }
+        
+        //todo: standardize on configKeys?
+        private async Task ParseConfigurationTableRow(ConcurrentDictionary<string, string> data, string configKey)
+        {
+            string config = await GetRowConfiguration(configKey).ConfigureAwait(false);
+
+            using (var stream = config.ToStream())
             {
-                configStreams = configJsons.Select(cj => cj.ToStream());
+                var configData = JsonConfigurationStreamParser.Parse(stream);
 
-                var configNameAndStreams = _configNames.Zip(configStreams, (name, stream) => (name, stream));
-
-                Data = ParseConfigurationTableRows(configNameAndStreams);
-            }
-            finally
-            {
-                foreach (var stream in configStreams)
-                {
-                    stream.Dispose();
-                }
+                foreach (var configItem in configData)
+                    data.AddOrUpdate($"{configKey}:{configItem.Key}", configItem.Value, (key, oldValue) => configItem.Value);
             }
         }
         
@@ -67,11 +95,18 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             return tableClient.GetTableReference(ConfigurationTableName);
         }
 
-        private async Task<TableResult[]> GetRows()
+//        private async Task<TableResult[]> GetRows()
+//        {
+//            var table = GetTable();
+//            var operations = _configNames.Select(name => GetTableResult(table, name));
+//            return await Task.WhenAll(operations).ConfigureAwait(false);
+//        }
+
+        //combine next 2?
+        private async Task<string> GetRowConfiguration(string configKey)
         {
-            var table = GetTable();
-            var operations = _configNames.Select(name => GetTableResult(table, name));
-            return await Task.WhenAll(operations).ConfigureAwait(false);
+            var tableResult = await GetTableResult(GetTable(), configKey).ConfigureAwait(false);
+            return ((ConfigurationRow) tableResult.Result).Data;
         }
 
         private async Task<TableResult> GetTableResult(CloudTable table, string serviceName)
@@ -89,22 +124,22 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             return TableOperation.Retrieve<ConfigurationRow>(_environment, $"{serviceName}_{Version}");
         }
         
-        private ConcurrentDictionary<string, string> ParseConfigurationTableRows(IEnumerable<(string name, Stream stream)> configNameAndStream)
-        {
-            var concurrentData = new ConcurrentDictionary<string, string>();
+//        private ConcurrentDictionary<string, string> ParseConfigurationTableRows(IEnumerable<(string name, Stream stream)> configNameAndStream)
+//        {
+//            var concurrentData = new ConcurrentDictionary<string, string>();
+//
+//            Parallel.ForEach(configNameAndStream, r => ParseConfigurationTableRow(concurrentData, r));
+//
+//            return concurrentData;
+//        }
 
-            Parallel.ForEach(configNameAndStream, r => ParseConfigurationTableRow(concurrentData, r));
-
-            return concurrentData;
-        }
-
-        //todo: how much can we parallelize?
-        private void ParseConfigurationTableRow(ConcurrentDictionary<string, string> data, (string name, Stream stream) configNameAndStream)
-        {
-            var configData = JsonConfigurationStreamParser.Parse(configNameAndStream.stream);
-
-            foreach (var configItem in configData)
-                data.AddOrUpdate($"{configNameAndStream.name}:{configItem.Key}", configItem.Value, (key, oldValue) => configItem.Value);
-        }
+        //todo: how much can we parallelize? streaming, fetching rows, pretty much everything
+//        private void ParseConfigurationTableRow(ConcurrentDictionary<string, string> data, (string name, Stream stream) configNameAndStream)
+//        {
+//            var configData = JsonConfigurationStreamParser.Parse(configNameAndStream.stream);
+//
+//            foreach (var configItem in configData)
+//                data.AddOrUpdate($"{configNameAndStream.name}:{configItem.Key}", configItem.Value, (key, oldValue) => configItem.Value);
+//        }
     }
 }
