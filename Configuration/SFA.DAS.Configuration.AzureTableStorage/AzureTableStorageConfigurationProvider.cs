@@ -47,16 +47,23 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         {
             var concurrentData = new ConcurrentDictionary<string, string>();
 
-            var parseRowsTasks = _configKeys.Select(configKey => ParseConfigurationTableRow(concurrentData, configKey));
-
+            var table = GetTable();
+            
+            var parseRowsTasks = _configKeys.Select(configKey => ParseConfigurationTableRow(concurrentData, table, configKey));
             await Task.WhenAll(parseRowsTasks).ConfigureAwait(false);
             
             return concurrentData;
         }
-        
-        private async Task ParseConfigurationTableRow(ConcurrentDictionary<string, string> data, string configKey)
+
+        private CloudTable GetTable()
         {
-            string config = await GetRowConfiguration(configKey).ConfigureAwait(false);
+            var tableClient = _storageAccount.CreateCloudTableClient();
+            return tableClient.GetTableReference(ConfigurationTableName);
+        }
+
+        private async Task ParseConfigurationTableRow(ConcurrentDictionary<string, string> data, CloudTable table, string configKey)
+        {
+            string config = await GetRowConfiguration(table, configKey).ConfigureAwait(false);
 
             using (var stream = config.ToStream())
             {
@@ -67,16 +74,10 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             }
         }
 
-        private async Task<string> GetRowConfiguration(string configKey)
+        private async Task<string> GetRowConfiguration(CloudTable table, string configKey)
         {
-            var tableResult = await GetTable().ExecuteAsync(GetOperation(configKey)).ConfigureAwait(false);
+            var tableResult = await table.ExecuteAsync(GetOperation(configKey)).ConfigureAwait(false);
             return ((ConfigurationRow) tableResult.Result).Data;
-        }
-
-        private CloudTable GetTable()
-        {
-            var tableClient = _storageAccount.CreateCloudTableClient();
-            return tableClient.GetTableReference(ConfigurationTableName);
         }
 
         /// <remarks>
