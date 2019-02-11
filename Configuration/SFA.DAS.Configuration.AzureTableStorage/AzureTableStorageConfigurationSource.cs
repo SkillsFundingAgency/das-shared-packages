@@ -6,20 +6,20 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 {
     public class AzureTableStorageConfigurationSource : IConfigurationSource
     {
-        private readonly string _connection;
-        private readonly string _environment;
-        private readonly IEnumerable<string> _configNames;
+        private readonly string _connectionString;
+        private readonly string _environmentName;
+        private readonly IEnumerable<string> _configurationKeys;
 
-        public AzureTableStorageConfigurationSource(string connection, string environment, IEnumerable<string> configNames)
+        public AzureTableStorageConfigurationSource(string connectionString, string environmentName, IEnumerable<string> configurationKeys)
         {
-            _connection = connection;
-            _environment = environment;
-            _configNames = configNames;
+            _connectionString = connectionString;
+            _environmentName = environmentName;
+            _configurationKeys = configurationKeys;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new AzureTableStorageConfigurationProvider(CloudStorageAccount.Parse(_connection), _environment, _configNames);
+            return new AzureTableStorageConfigurationProvider(CloudStorageAccount.Parse(_connectionString), _environmentName, _configurationKeys);
         }
     }
 }

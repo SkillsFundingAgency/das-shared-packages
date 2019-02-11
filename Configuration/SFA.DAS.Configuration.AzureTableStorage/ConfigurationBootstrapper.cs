@@ -1,26 +1,24 @@
 using System;
 using Microsoft.Extensions.Configuration;
-using SFA.DAS.Configuration.AzureTableStorage.Extensions;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
-    public static class ConfigurationBootstrapper
+    internal static class ConfigurationBootstrapper
     {
         private const string DeveloperEnvironment = "LOCAL";
-        private const string DeveloperEnvironmentDefaultStorageConnectionString = "UseDevelopmentStorage=true";
+        private const string DeveloperEnvironmentDefaultConnectionString = "UseDevelopmentStorage=true";
 
-        public static (string StorageConnectionString, string EnvironmentName) GetEnvironmentVariables()
+        public static (string ConnectionString, string EnvironmentName) GetEnvironmentVariables()
         {
-            var environmentVariablesConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-
-            var environmentName = environmentVariablesConfig[EnvironmentVariableNames.Environment] ?? DeveloperEnvironment;
+            var configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            var environmentName = configuration[EnvironmentVariableNames.Environment] ?? DeveloperEnvironment;
+            var connectionString = configuration[EnvironmentVariableNames.ConfigurationStorageConnectionString];
             
-            var storageConnectionString = environmentVariablesConfig[EnvironmentVariableNames.ConfigurationStorageConnectionString];
-            if (string.IsNullOrWhiteSpace(storageConnectionString))
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
                 if (string.Equals(environmentName, DeveloperEnvironment, StringComparison.OrdinalIgnoreCase))
                 {
-                    storageConnectionString = DeveloperEnvironmentDefaultStorageConnectionString;
+                    connectionString = DeveloperEnvironmentDefaultConnectionString;
                 }
                 else
                 {
@@ -28,13 +26,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                 }
             }
 
-            return (storageConnectionString, environmentName);
-        }
-
-        public static IConfigurationRoot GetConfiguration(string storageConnectionString, string environmentName, params string[] configurationKeys)
-        {
-            return new ConfigurationBuilder().AddSourcedAzureTableStorageConfiguration(
-                storageConnectionString, environmentName, configurationKeys).Build();
+            return (connectionString, environmentName);
         }
     }
 }

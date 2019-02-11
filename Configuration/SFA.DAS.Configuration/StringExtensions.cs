@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace SFA.DAS.Configuration.Extensions
+namespace SFA.DAS.Configuration
 {
     public static class StringExtensions
     {
@@ -9,9 +9,11 @@ namespace SFA.DAS.Configuration.Extensions
         {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);
+            
             writer.Write(source);
             writer.Flush();
             stream.Position = 0;
+            
             return stream;
         }
     }

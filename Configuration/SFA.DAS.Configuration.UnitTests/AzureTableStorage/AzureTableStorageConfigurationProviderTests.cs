@@ -52,15 +52,15 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     
     public class TestableAzureTableStorageConfigurationProvider : AzureTableStorageConfigurationProvider
     {
-        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configKeys)
-            : base(cloudStorageAccount, environmentName, configKeys)
+        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys)
+            : base(cloudStorageAccount, environmentName, configurationKeys)
         {
         }
         
-        protected override TableOperation GetOperation(string configKey)
+        protected override TableOperation GetTableRowOperation(string configurationKey)
         {
             var tableEntity = new Mock<IConfigurationRow>();
-            tableEntity.SetupGet(te => te.RowKey).Returns(configKey);
+            tableEntity.SetupGet(te => te.RowKey).Returns(configurationKey);
 
             var tableOperation = TableOperation.Retrieve<ConfigurationRow>("", "");
             typeof(TableOperation).GetProperty("Entity").SetValue(tableOperation, tableEntity.Object);
