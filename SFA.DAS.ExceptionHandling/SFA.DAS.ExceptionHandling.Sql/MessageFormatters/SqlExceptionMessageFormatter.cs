@@ -5,7 +5,7 @@ using SFA.DAS.ExceptionHandling.MessageFormatters;
 
 namespace SFA.DAS.ExceptionHandling.Sql.MessageFormatters
 {
-    internal class SqlExceptionMessageFormatter : BaseExceptionMessageFormatter
+    public class SqlExceptionMessageFormatter : BaseExceptionMessageFormatter
     {
         public override Type SupportedException => typeof(SqlException);
 

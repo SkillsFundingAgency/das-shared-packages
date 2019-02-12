@@ -42,7 +42,6 @@ namespace SFA.DAS.ExceptionHandling
         {
             while (true)
             {
-                // convert to dictionary
                 var formatter = _exceptionFormatters.FirstOrDefault(ef => ef.SupportedException == exceptionType);
 
                 // we found a formatter that can handle this specific exception type

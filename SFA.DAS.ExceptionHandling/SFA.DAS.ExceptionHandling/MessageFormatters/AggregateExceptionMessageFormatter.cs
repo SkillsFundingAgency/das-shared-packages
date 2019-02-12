@@ -9,9 +9,16 @@ namespace SFA.DAS.ExceptionHandling.MessageFormatters
 
         protected override void CreateFormattedMessage(Exception exception, StringBuilder messageBuilder)
         {
-            var exceptions = ((AggregateException)exception).Flatten();
+            var aggregateException = (AggregateException) exception;
+
+            var exceptions = aggregateException.Flatten();
 
             messageBuilder.AppendLine($"Aggregate exception has {exceptions.InnerExceptions.Count} inner exception.");
+
+            if (!string.IsNullOrEmpty(aggregateException.Message))
+            {
+                messageBuilder.AppendLine(aggregateException.Message);
+            }
 
             var exceptionCount = 1;
 
