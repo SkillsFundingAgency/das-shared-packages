@@ -2,9 +2,9 @@
 
 namespace SFA.DAS.ExceptionHandling.StructureMap.IoC
 {
-    public class Register : Registry
+    public class ExceptionHandlingRegister : Registry
     {
-        public Register()
+        public ExceptionHandlingRegister()
         {
             base.Scan(scan =>
             {

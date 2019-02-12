@@ -40,15 +40,18 @@ namespace SFA.DAS.ExceptionHandling
 
         private IExceptionMessageFormatter GetBestMatchFormatterForExceptionType(Type exceptionType)
         {
-            IExceptionMessageFormatter formatter = null;
-
-            while (formatter == null)
+            while (true)
             {
                 // convert to dictionary
-                formatter = _exceptionFormatters.FirstOrDefault(ef => ef.SupportedException == exceptionType);
+                var formatter = _exceptionFormatters.FirstOrDefault(ef => ef.SupportedException == exceptionType);
 
-                if (formatter != null) continue;
+                // we found a formatter that can handle this specific exception type
+                if (formatter != null)
+                {
+                    return formatter;
+                }
 
+                // No handler for this specific exception type - now try the parent class
                 if (exceptionType.BaseType == null)
                 {
                     return GeneralExceptionFormatter;
@@ -56,8 +59,6 @@ namespace SFA.DAS.ExceptionHandling
 
                 exceptionType = exceptionType.BaseType;
             }
-
-            return formatter;
         }
     }
 }

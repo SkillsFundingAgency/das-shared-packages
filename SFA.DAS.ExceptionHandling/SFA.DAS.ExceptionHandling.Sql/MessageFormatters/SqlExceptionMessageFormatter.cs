@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Text;
+using SFA.DAS.ExceptionHandling.MessageFormatters;
 
-namespace SFA.DAS.ExceptionHandling.MessageFormatters
+namespace SFA.DAS.ExceptionHandling.Sql.MessageFormatters
 {
     internal class SqlExceptionMessageFormatter : BaseExceptionMessageFormatter
     {

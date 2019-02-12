@@ -47,11 +47,6 @@ namespace SFA.DAS.ExceptionHandling.UnitTests
 
     public class ExceptionMessageFormatterFactoryTestFixtures
     {
-        public ExceptionMessageFormatterFactoryTestFixtures()
-        {
-            
-        }
-
         public List<IExceptionMessageFormatter> ExceptionMessageFormatters { get; } = new List<IExceptionMessageFormatter>();
 
         public ExceptionMessageFormatterFactoryTestFixtures WithExceptionFormatter(IExceptionMessageFormatter formatter)
