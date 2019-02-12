@@ -1,22 +1,20 @@
 using System;
-using Microsoft.Extensions.Configuration;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
     internal static class ConfigurationBootstrapper
     {
-        private const string DeveloperEnvironment = "LOCAL";
+        private const string DeveloperEnvironmentName = "LOCAL";
         private const string DeveloperEnvironmentDefaultConnectionString = "UseDevelopmentStorage=true";
 
         public static (string ConnectionString, string EnvironmentName) GetEnvironmentVariables()
         {
-            var configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            var environmentName = configuration[EnvironmentVariableNames.Environment] ?? DeveloperEnvironment;
-            var connectionString = configuration[EnvironmentVariableNames.ConfigurationStorageConnectionString];
+            var environmentName = Environment.GetEnvironmentVariable(EnvironmentVariableNames.EnvironmentName) ?? DeveloperEnvironmentName;
+            var connectionString = Environment.GetEnvironmentVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString);
             
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                if (string.Equals(environmentName, DeveloperEnvironment, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(environmentName, DeveloperEnvironmentName, StringComparison.OrdinalIgnoreCase))
                 {
                     connectionString = DeveloperEnvironmentDefaultConnectionString;
                 }
