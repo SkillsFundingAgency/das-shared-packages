@@ -10,7 +10,7 @@ Library containing Http related classes such as base classes for connecting to A
 ## Http
 
 ### Example Usage
-Create a custom Api Client class using the ApiClientBase class and HttpClientBuilder.
+Create a custom Api Client class using the RestHttpClient class and HttpClientBuilder.
 ```csharp
 public class Example
     {
@@ -21,27 +21,15 @@ public class Example
                 .WithBearerAuthorisationHeader(new JwtBearerTokenGenerator(new MyClientConfiguration()))
                 .Build();
 
-            var customApiClient = new MyCustomApiClient(httpClient);
+            var restApiClient = new RestHttpClient(httpClient);
 
-            var result = await customApiClient.MyCustomGet();
+            var result = await restApiClient.Get("http://some-host/some-resource/");
         }
 
         private class MyClientConfiguration : IJwtClientConfiguration
         { 
             public string ClientToken { get => "SomeTokenValue"; }
-        }
-
-        private class MyCustomApiClient : ApiClientBase
-        {
-            public MyCustomApiClient(HttpClient client) : base(client)
-            {
-            }
-
-            public async Task<string> MyCustomGet()
-            {
-                return await base.GetAsync("http://some-host/some-resource/");
-            }
-        }
+        }        
     }
 ```
 
