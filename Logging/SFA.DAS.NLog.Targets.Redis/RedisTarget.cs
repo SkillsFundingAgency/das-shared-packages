@@ -109,7 +109,7 @@ namespace SFA.DAS.NLog.Targets.Redis.DotNetCore
                         innerException = new { message = logEvent.Exception.InnerException.Message, source = logEvent.Exception.InnerException.Source, stackTrace = logEvent.Exception.InnerException.StackTrace, type = logEvent.Exception.InnerException.GetType().Name };
                     }
 
-                    properties.Add("Exception", new { message = logEvent.Exception.Message, source = logEvent.Exception.Source, innerException = innerException, stackTrace = logEvent.Exception.StackTrace, type = logEvent.Exception.GetType().Name });
+                    properties.Add("Exception", new { message = logEvent.Exception.GetMessage(), source = logEvent.Exception.Source, innerException = innerException, stackTrace = logEvent.Exception.StackTrace, type = logEvent.Exception.GetType().Name });
                 }
             }
 
