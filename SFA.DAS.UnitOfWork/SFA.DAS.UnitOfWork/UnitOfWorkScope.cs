@@ -28,6 +28,8 @@ namespace SFA.DAS.UnitOfWork
                 catch (Exception ex)
                 {
                     await unitOfWorkManager.EndAsync(ex).ConfigureAwait(false);
+
+                    throw;
                 }
                 
                 await unitOfWorkManager.EndAsync().ConfigureAwait(false);

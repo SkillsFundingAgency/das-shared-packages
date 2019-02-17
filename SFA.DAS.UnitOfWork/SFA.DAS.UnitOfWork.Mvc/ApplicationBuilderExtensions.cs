@@ -5,9 +5,9 @@ namespace SFA.DAS.UnitOfWork.Mvc
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseUnitOfWork(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseUnitOfWork(this IApplicationBuilder app)
         {
-            return builder.UseMiddleware<UnitOfWorkManagerMiddleware>();
+            return app.UseMiddleware<UnitOfWorkManagerMiddleware>();
         }
     }
 }

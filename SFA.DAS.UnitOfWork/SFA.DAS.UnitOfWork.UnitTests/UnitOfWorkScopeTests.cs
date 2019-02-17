@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing;
@@ -37,7 +38,13 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         [Test]
         public Task RunAsync_WhenScopingAnOperationAndOperationThrowsException_ThenShouldEndUnitOfWorkManager()
         {
-            return RunAsync(f => f.SetException(), f => f.RunAsync(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
+            return RunAsync(f => f.SetException(), f => f.RunAsyncAndSwallowException(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
+        }
+        
+        [Test]
+        public Task RunAsync_WhenScopingAnOperationAndOperationThrowsException_ThenShouldThrowException()
+        {
+            return RunAsync(f => f.SetException(), f => f.RunAsync(), (f, r) => r.Should().Throw<Exception>());
         }
         
         [Test]
@@ -84,6 +91,17 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         public Task RunAsync()
         {
             return UnitOfWorkScope.RunAsync(Operation.Object);
+        }
+        
+        public async Task RunAsyncAndSwallowException()
+        {
+            try
+            {
+                await UnitOfWorkScope.RunAsync(Operation.Object);
+            }
+            catch
+            {
+            }
         }
 
         public UnitOfWorkScopeTestsFixture SetException()
