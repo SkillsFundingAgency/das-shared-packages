@@ -20,11 +20,12 @@ namespace SFA.DAS.UnitOfWork.Mvc
 
             try
             {
-                await _next(context);
+                await _next(context).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 await unitOfWorkManager.EndAsync(ex).ConfigureAwait(false);
+                
                 throw;
             }
 
