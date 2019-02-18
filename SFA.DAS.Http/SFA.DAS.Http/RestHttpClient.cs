@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.Http
 {
@@ -36,6 +37,29 @@ namespace SFA.DAS.Http
         public Task<string> Get(string uri, object queryData = null, CancellationToken cancellationToken = default)
         {
             return Get(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
+        }
+
+        public async Task<string> PostAsJson<TRequest>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.PostAsJsonAsync(uri, requestData, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw CreateClientException(response, await response.Content.ReadAsStringAsync());
+            }
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return result;
+        }
+
+        public async Task<TResponse> PostAsJson<TRequest, TResponse>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
+        {
+            var resultAsString = await PostAsJson<TRequest>(uri, requestData, cancellationToken);
+
+            var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
+
+            return result;
         }
 
         protected virtual Exception CreateClientException(HttpResponseMessage httpResponseMessage, string content)
