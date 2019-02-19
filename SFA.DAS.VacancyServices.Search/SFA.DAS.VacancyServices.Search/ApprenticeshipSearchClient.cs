@@ -1,14 +1,12 @@
-﻿using SFA.DAS.VacancyServices.Search.Requests;
-
-namespace SFA.DAS.VacancyServices.Search
+﻿namespace SFA.DAS.VacancyServices.Search
 {
+    using Requests;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using Elasticsearch.Net;
     using Entities;
     using Nest;
-    using Newtonsoft.Json.Linq;
     using Responses;
 
     public class ApprenticeshipSearchClient : IApprenticeshipSearchClient
@@ -197,8 +195,9 @@ namespace SFA.DAS.VacancyServices.Search
 
             if (parameters.DisabilityConfidentOnly)
             {
-                var queryDisabilityConfidentOnly = q.Match(m => m.OnField(f => f.IsDisabilityConfident)
-                                                                 .Query(parameters.DisabilityConfidentOnly.ToString()));
+                var queryDisabilityConfidentOnly = q
+                    .Match(m => m.OnField(f => f.IsDisabilityConfident)
+                        .Query(parameters.DisabilityConfidentOnly.ToString()));
                 query &= queryDisabilityConfidentOnly;
             }
 

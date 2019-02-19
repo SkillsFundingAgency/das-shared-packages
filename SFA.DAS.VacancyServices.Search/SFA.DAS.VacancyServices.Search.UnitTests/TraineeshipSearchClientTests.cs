@@ -4,14 +4,12 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using Entities;
     using FluentAssertions;
     using FluentAssertions.Json;
     using Moq;
     using Nest;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
 
@@ -32,6 +30,25 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 
             const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\":40.5,\"unit\":\"mi\"}}}}}";
             
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldSearchByLatAndLongAndDisabilityConfident()
+        {
+            var parameters = new TraineeshipSearchRequestParameters
+            {
+                DisabilityConfidentOnly = true,
+                Latitude = 52.4173666904458,
+                Longitude = -1.88983017452229,
+                PageNumber = 1,
+                PageSize = 5,
+                SearchRadius = 40.5d,
+                SortType = VacancySearchSortType.Distance,
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\": \"mi\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\": 40.5,\"unit\":\"mi\"}}}}]}}}";
+
             AssertSearch(parameters, expectedJsonQuery);
         }
 

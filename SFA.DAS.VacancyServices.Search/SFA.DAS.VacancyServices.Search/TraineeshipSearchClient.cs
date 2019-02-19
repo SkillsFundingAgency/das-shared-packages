@@ -1,7 +1,6 @@
-﻿using SFA.DAS.VacancyServices.Search.Requests;
-
-namespace SFA.DAS.VacancyServices.Search
+﻿namespace SFA.DAS.VacancyServices.Search
 {
+    using Requests;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -108,7 +107,15 @@ namespace SFA.DAS.VacancyServices.Search
             }
 
             QueryContainer query = null;
-            
+
+            if (parameters.DisabilityConfidentOnly)
+            {
+                var queryDisabilityConfidentOnly = q
+                    .Match(m => m.OnField(f => f.IsDisabilityConfident)
+                        .Query(parameters.DisabilityConfidentOnly.ToString()));
+                query &= queryDisabilityConfidentOnly;
+            }
+
             if (parameters.IsLatLongSearch)
             {
                 var queryClause = q.Filtered(qf => qf.Filter(f => f

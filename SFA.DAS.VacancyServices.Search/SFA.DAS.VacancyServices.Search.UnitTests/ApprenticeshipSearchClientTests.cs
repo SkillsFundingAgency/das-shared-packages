@@ -217,6 +217,29 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
         }
 
         [Test]
+        public void Search_ShouldSearchByLatAndLongAndDisabilityConfident()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                ApprenticeshipLevel = "All",
+                DisabilityConfidentOnly = true,
+                Keywords = "baker",
+                Latitude = 52.4088862063274,
+                Longitude = 1.50554768088033,
+                PageNumber = 1,
+                PageSize = 5,
+                SearchField = ApprenticeshipSearchField.All,
+                SearchRadius = 40,
+                SortType = VacancySearchSortType.Distance,
+                VacancyLocationType = VacancyLocationType.NonNational
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}},{\"postedDate\":{\"order\":\"desc\"}},{\"vacancyReference\":{\"order\":\"desc\"}}],\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"match\":{\"title\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":1.5,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}},{\"match\":{\"description\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"slop\":2,\"boost\":1.0,\"minimum_should_match\":\"2<75%\"}}},{\"match\":{\"employerName\":{\"query\":\"baker\",\"fuzziness\":1.0,\"prefix_length\":1,\"boost\":5.0,\"minimum_should_match\":\"100%\",\"operator\":\"and\"}}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+            
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
         public void Search_ShouldSearchNationalApprenticeships()
         {
             var parameters = new ApprenticeshipSearchRequestParameters
