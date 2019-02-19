@@ -2,6 +2,7 @@
 {
     public class TraineeshipSearchRequestParameters
     {
+        public bool DisabilityConfidentOnly { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public int PageNumber { get; set; }
