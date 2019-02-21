@@ -201,7 +201,7 @@
                 query &= queryDisabilityConfidentOnly;
             }
 
-            if (parameters.IsLatLongSearch)
+            if (parameters.CanFilterByGeoDistance)
             {
                 var queryClause = q.Filtered(qf => qf.Filter(f => f
                     .GeoDistance(vs => vs
@@ -227,7 +227,7 @@
                     search.TrySortByGeoDistance(parameters);
                     search.SortDescending(r => r.VacancyReference);
 
-                    return parameters.IsLatLongSearch ? 1 : -1;
+                    return parameters.CanSortByGeoDistance ? 1 : -1;
 
                 case VacancySearchSortType.Distance:
 
@@ -235,14 +235,14 @@
                     search.SortDescending(r => r.PostedDate);
                     search.SortDescending(r => r.VacancyReference);
 
-                    return parameters.IsLatLongSearch ? 0 : -1;
+                    return parameters.CanSortByGeoDistance ? 0 : -1;
 
                 case VacancySearchSortType.ClosingDate:
 
                     search.SortAscending(r => r.ClosingDate);
                     search.TrySortByGeoDistance(parameters);
 
-                    return parameters.IsLatLongSearch ? 1 : -1;
+                    return parameters.CanSortByGeoDistance ? 1 : -1;
 
                 case VacancySearchSortType.ExpectedStartDate:
 
@@ -250,13 +250,13 @@
                     search.SortAscending(r => r.VacancyReference);
                     search.TrySortByGeoDistance(parameters);
 
-                    return parameters.IsLatLongSearch ? 2 : -1;
+                    return parameters.CanSortByGeoDistance ? 2 : -1;
                 default:
 
                     search.Sort(sort => sort.OnField("_score").Descending());
                     search.TrySortByGeoDistance(parameters);
 
-                    return parameters.IsLatLongSearch ? 1 : -1;
+                    return parameters.CanSortByGeoDistance ? 1 : -1;
             }
         }
 
@@ -342,7 +342,7 @@
             {
                 var hitMd = results.HitsMetaData.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
-                if(searchParameters.IsLatLongSearch)
+                if(searchParameters.CanSortByGeoDistance)
                     result.Distance = (double)hitMd.Sorts.ElementAt(geoDistanceSortPosition);
 
                 result.Score = hitMd.Score;

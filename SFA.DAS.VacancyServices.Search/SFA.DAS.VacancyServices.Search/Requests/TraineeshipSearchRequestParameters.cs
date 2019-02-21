@@ -11,6 +11,8 @@
         public VacancySearchSortType SortType { get; set; }
         public string VacancyReference { get; set; }
 
-        public bool IsLatLongSearch => Latitude.HasValue && Longitude.HasValue && SearchRadius.HasValue;
+        public bool CanFilterByGeoDistance => Latitude.HasValue && Longitude.HasValue && SearchRadius.HasValue;
+
+        public bool CanSortByGeoDistance => Latitude.HasValue && Longitude.HasValue;
     }
 }

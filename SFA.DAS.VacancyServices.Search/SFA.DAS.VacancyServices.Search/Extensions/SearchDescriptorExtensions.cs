@@ -9,7 +9,7 @@ namespace SFA.DAS.VacancyServices.Search
     {
         internal static SearchDescriptor<ApprenticeshipSearchResult> TrySortByGeoDistance(this SearchDescriptor<ApprenticeshipSearchResult> searchDescriptor, ApprenticeshipSearchRequestParameters searchParameters)
         {
-            if (searchParameters.IsLatLongSearch)
+            if (searchParameters.CanSortByGeoDistance)
             {
                 searchDescriptor.SortGeoDistance(g =>
                 {
@@ -24,7 +24,7 @@ namespace SFA.DAS.VacancyServices.Search
 
         internal static SearchDescriptor<TraineeshipSearchResult> TrySortByGeoDistance(this SearchDescriptor<TraineeshipSearchResult> searchDescriptor, TraineeshipSearchRequestParameters searchParameters)
         {
-            if (searchParameters.IsLatLongSearch)
+            if (searchParameters.CanSortByGeoDistance)
             {
                 searchDescriptor.SortGeoDistance(g =>
                 {

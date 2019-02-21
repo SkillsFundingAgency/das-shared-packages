@@ -26,6 +26,8 @@ namespace SFA.DAS.VacancyServices.Search.Requests
         public VacancyLocationType VacancyLocationType { get; set; }
         public string VacancyReference { get; set; }
 
-        public bool IsLatLongSearch => Latitude.HasValue && Longitude.HasValue && SearchRadius.HasValue;
+        public bool CanFilterByGeoDistance => Latitude.HasValue && Longitude.HasValue && SearchRadius.HasValue;
+
+        public bool CanSortByGeoDistance => Latitude.HasValue && Longitude.HasValue;
     }
 }
