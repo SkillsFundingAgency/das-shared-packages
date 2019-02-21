@@ -249,7 +249,6 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 PageNumber = 1,
                 PageSize = 5,
                 SearchField = ApprenticeshipSearchField.All,
-                SearchRadius = 40,
                 SortType = VacancySearchSortType.ClosingDate,
                 VacancyLocationType = VacancyLocationType.National
             };
@@ -273,6 +272,27 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             };
 
             const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"closingDate\":{\"order\":\"asc\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"National\"}}},{\"match\":{\"apprenticeshipLevel\":{\"query\":\"Advanced\"}}}]}}}";
+
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
+        public void Search_ShouldIncludeGeoDistanceInSort()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                ApprenticeshipLevel = "Higher",
+                Latitude = 52.4088862063274,
+                Longitude = 1.50554768088033,
+                SearchRadius = null,
+                PageNumber = 1,
+                PageSize = 5,
+                SearchField = ApprenticeshipSearchField.All,
+                SortType = VacancySearchSortType.ClosingDate,
+                VacancyLocationType = VacancyLocationType.NonNational
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"closingDate\":{\"order\":\"asc\"}},{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"match\":{\"apprenticeshipLevel\":{\"query\":\"Higher\"}}}]}}}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }

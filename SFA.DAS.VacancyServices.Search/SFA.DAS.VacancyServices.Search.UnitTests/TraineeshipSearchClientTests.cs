@@ -53,6 +53,25 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
         }
 
         [Test]
+        public void Search_ShouldIncludeGeoDistanceInSort()
+        {
+            var parameters = new TraineeshipSearchRequestParameters
+            {
+                DisabilityConfidentOnly = true,
+                Latitude = 52.4173666904458,
+                Longitude = -1.88983017452229,
+                PageNumber = 1,
+                PageSize = 5,
+                SearchRadius = null,
+                SortType = VacancySearchSortType.RecentlyAdded,
+            };
+
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}}}";
+
+            AssertSearch(parameters, expectedJsonQuery);
+        }
+
+        [Test]
         public void Search_ShouldSearchByVacancyReference()
         {
             var parameters = new TraineeshipSearchRequestParameters
