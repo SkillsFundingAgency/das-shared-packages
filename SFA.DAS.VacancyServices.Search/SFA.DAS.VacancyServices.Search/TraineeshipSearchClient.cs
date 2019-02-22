@@ -71,8 +71,6 @@
         
         private ISearchResponse<TraineeshipSearchResult> PerformSearch(TraineeshipSearchRequestParameters parameters)
         {
-            int geoDistanceSortPosition = -1;
-
             var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
 
             var results = client.Search<TraineeshipSearchResult>(s =>
@@ -86,12 +84,12 @@
 
                 s.Query(q => GetQuery(parameters, q));
 
-                geoDistanceSortPosition = SetSort(s, parameters);
+                SetSort(s, parameters);
 
                 return s;
             });
 
-            SetPostSearchValues(parameters, results, geoDistanceSortPosition);
+            SetHitValuesOnSearchResults(parameters, results);
 
             return results;
         }
@@ -129,51 +127,49 @@
             return query;
         }
 
-        private int SetSort(SearchDescriptor<TraineeshipSearchResult> search, TraineeshipSearchRequestParameters parameters)
+        private static void SetSort(SearchDescriptor<TraineeshipSearchResult> search, TraineeshipSearchRequestParameters parameters)
         {
-            //Rule: Always call TrySortByGeoDistance. This will populate the HitsMetaData.Hits.Sorts so we can display the distance in the results
-            //Return the position of the GeoDistance sort in the sorts.
             switch (parameters.SortType)
             {
                 case VacancySearchSortType.RecentlyAdded:
-
                     search.SortDescending(r => r.PostedDate);
                     search.TrySortByGeoDistance(parameters);
-
-                    return parameters.CanSortByGeoDistance ? 1 : -1;
-
+                    break;
                 case VacancySearchSortType.Distance:
-
                     search.TrySortByGeoDistance(parameters);
-
-                    return parameters.CanSortByGeoDistance ? 0 : -1;
-
+                    break;
                 case VacancySearchSortType.ClosingDate:
-
                     search.SortAscending(r => r.ClosingDate);
                     search.TrySortByGeoDistance(parameters);
-
-                    return parameters.CanSortByGeoDistance ? 1 : -1;
-
+                    break;
                 default:
-
                     search.Sort(sort => sort.OnField("_score").Descending());
                     search.TrySortByGeoDistance(parameters);
-
-                    return parameters.CanSortByGeoDistance ? 1 : -1;
+                    break;
             }
         }
 
-        private void SetPostSearchValues(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results, int geoDistanceSortPosition)
+        private static void SetHitValuesOnSearchResults(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results)
         {
             foreach (var result in results.Documents)
             {
                 var hitMd = results.HitsMetaData.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
                 if (searchParameters.CanSortByGeoDistance)
-                    result.Distance = (double)hitMd.Sorts.ElementAt(geoDistanceSortPosition);
+                    result.Distance = (double)hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
 
                 result.Score = hitMd.Score;
+            }
+        }
+
+        private static int GetGeoDistanceSortHitPosition(TraineeshipSearchRequestParameters parameters)
+        {
+            switch (parameters.SortType)
+            {
+                case VacancySearchSortType.Distance:
+                    return 0;
+                default:
+                    return 1;
             }
         }
     }
