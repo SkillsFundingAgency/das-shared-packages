@@ -95,8 +95,6 @@
 
         private ISearchResponse<ApprenticeshipSearchResult> PerformSearch(ApprenticeshipSearchRequestParameters parameters)
         {
-            int geoDistanceSortPosition = -1;
-
             var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
 
             var results = client.Search<ApprenticeshipSearchResult>(s =>
@@ -110,7 +108,7 @@
 
                 s.Query(q => GetQuery(parameters, q));
 
-                geoDistanceSortPosition = SetSort(s, parameters);
+                SetSort(s, parameters);
 
                 if(parameters.CalculateSubCategoryAggregations)
                     s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode).Size(0)));
@@ -124,7 +122,7 @@
                 return s;
             });
 
-            SetPostSearchValues(parameters, results, geoDistanceSortPosition);
+            SetHitValuesOnSearchResults(parameters, results);
 
             return results;
         }
@@ -215,51 +213,6 @@
             return query;
         }
 
-        private int SetSort(SearchDescriptor<ApprenticeshipSearchResult> search, ApprenticeshipSearchRequestParameters parameters)
-        {
-            //Rule: Always call TrySortByGeoDistance. This will populate the HitsMetaData.Hits.Sorts so we can display the distance in the results
-            //Return the position of the GeoDistance sort in the sorts.
-            switch (parameters.SortType)
-            {
-                case VacancySearchSortType.RecentlyAdded:
-
-                    search.SortDescending(r => r.PostedDate);
-                    search.TrySortByGeoDistance(parameters);
-                    search.SortDescending(r => r.VacancyReference);
-
-                    return parameters.CanSortByGeoDistance ? 1 : -1;
-
-                case VacancySearchSortType.Distance:
-
-                    search.TrySortByGeoDistance(parameters);
-                    search.SortDescending(r => r.PostedDate);
-                    search.SortDescending(r => r.VacancyReference);
-
-                    return parameters.CanSortByGeoDistance ? 0 : -1;
-
-                case VacancySearchSortType.ClosingDate:
-
-                    search.SortAscending(r => r.ClosingDate);
-                    search.TrySortByGeoDistance(parameters);
-
-                    return parameters.CanSortByGeoDistance ? 1 : -1;
-
-                case VacancySearchSortType.ExpectedStartDate:
-
-                    search.SortAscending(r => r.StartDate);
-                    search.SortAscending(r => r.VacancyReference);
-                    search.TrySortByGeoDistance(parameters);
-
-                    return parameters.CanSortByGeoDistance ? 2 : -1;
-                default:
-
-                    search.Sort(sort => sort.OnField("_score").Descending());
-                    search.TrySortByGeoDistance(parameters);
-
-                    return parameters.CanSortByGeoDistance ? 1 : -1;
-            }
-        }
-
         private QueryContainer GetKeywordQuery(ApprenticeshipSearchRequestParameters parameters, QueryDescriptor<ApprenticeshipSearchResult> q)
         {
             QueryContainer keywordQuery = null;
@@ -302,6 +255,36 @@
             return keywordQuery;
         }
 
+        private static void SetSort(SearchDescriptor<ApprenticeshipSearchResult> search, ApprenticeshipSearchRequestParameters parameters)
+        {
+            switch (parameters.SortType)
+            {
+                case VacancySearchSortType.RecentlyAdded:
+                    search.SortDescending(r => r.PostedDate);
+                    search.TrySortByGeoDistance(parameters);
+                    search.SortDescending(r => r.VacancyReference);
+                    break;
+                case VacancySearchSortType.Distance:
+                    search.TrySortByGeoDistance(parameters);
+                    search.SortDescending(r => r.PostedDate);
+                    search.SortDescending(r => r.VacancyReference);
+                    break;
+                case VacancySearchSortType.ClosingDate:
+                    search.SortAscending(r => r.ClosingDate);
+                    search.TrySortByGeoDistance(parameters);
+                    break;
+                case VacancySearchSortType.ExpectedStartDate:
+                    search.SortAscending(r => r.StartDate);
+                    search.SortAscending(r => r.VacancyReference);
+                    search.TrySortByGeoDistance(parameters);
+                    break;
+                default:
+                    search.Sort(sort => sort.OnField("_score").Descending());
+                    search.TrySortByGeoDistance(parameters);
+                    break;
+            }
+        }
+
         private static void BuildFieldQuery(MatchQueryDescriptor<ApprenticeshipSearchResult> queryDescriptor,
             SearchTermFactors searchFactors)
         {
@@ -336,16 +319,29 @@
             }
         }
 
-        private void SetPostSearchValues(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results, int geoDistanceSortPosition)
+        private static void SetHitValuesOnSearchResults(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results)
         {
             foreach (var result in results.Documents)
             {
                 var hitMd = results.HitsMetaData.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
                 if(searchParameters.CanSortByGeoDistance)
-                    result.Distance = (double)hitMd.Sorts.ElementAt(geoDistanceSortPosition);
+                    result.Distance = (double)hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
 
                 result.Score = hitMd.Score;
+            }
+        }
+
+        private static int GetGeoDistanceSortHitPosition(ApprenticeshipSearchRequestParameters searchParameters)
+        {
+            switch (searchParameters.SortType)
+            {
+                case VacancySearchSortType.ExpectedStartDate:
+                    return 2;
+                case VacancySearchSortType.Distance:
+                    return 0;
+                default:
+                    return 1;
             }
         }
 
