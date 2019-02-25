@@ -150,13 +150,14 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 FrameworkLarsCodes = new List<string> { "502", "501" },
                 Latitude = 52.4088862063274,
                 Longitude = 1.50554768088033,
+                ProviderUkprn = 12345678,
                 SearchRadius = 40,
                 FromDate = DateTime.Parse("2018-11-24"),
                 SortType = VacancySearchSortType.ExpectedStartDate
             };
 
-            const string expectedJsonQuery = "{\"from\":50,\"size\":50,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}},{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}}],\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-11-24T00:00:00\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
-            
+            const string expectedJsonQuery = "{\"from\":50,\"size\":50,\"track_scores\":true,\"sort\":[{\"startDate\":{\"order\":\"asc\"}},{\"vacancyReference\":{\"order\":\"asc\"}},{\"_geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"unit\":\"mi\"}}],\"query\":{\"bool\":{\"must\":[{\"bool\":{\"should\":[{\"terms\":{\"frameworkLarsCode\":[\"502\",\"501\"]}},{\"terms\":{\"standardLarsCode\":[\"123\",\"124\"]}}]}},{\"match\":{\"vacancyLocationType\":{\"query\":\"NonNational\"}}},{\"range\":{\"postedDate\":{\"gte\":\"2018-11-24T00:00:00\"}}},{\"match\":{\"providerUkprn\":{\"query\":\"12345678\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4088862063274, 1.50554768088033\",\"distance\":40.0,\"unit\":\"mi\"}}}}]}}}";
+
             AssertSearch(parameters, expectedJsonQuery);
         }
 

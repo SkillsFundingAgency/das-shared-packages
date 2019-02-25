@@ -183,6 +183,14 @@
                 query &= queryClause;
             }
 
+            if (parameters.ProviderUkprn.HasValue)
+            {
+                var queryClause = q
+                    .Match(m => m.OnField(f => f.ProviderUkprn)
+                        .Query(parameters.ProviderUkprn.ToString()));
+                query &= queryClause;
+            }
+
             if (!string.IsNullOrWhiteSpace(parameters.ApprenticeshipLevel) && parameters.ApprenticeshipLevel != "All")
             {
                 var queryClause = q
