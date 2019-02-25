@@ -1,0 +1,113 @@
+@model string
+@using Microsoft.Extensions.Options
+@using SFA.DAS.Employer.Shared.UI
+@using Microsoft.AspNetCore.Http
+@using System.Net
+@inject IOptionsMonitor<MaMenuConfiguration> OptionsAccessor
+
+@{
+    var accountId = Model;
+    var clientId = OptionsAccessor.CurrentValue.ClientId;
+    var externalLinks = OptionsAccessor.CurrentValue;
+}
+
+@functions {
+    private static string GetLink(SiteConfiguration config, string routeName = null)
+    {
+        return string.IsNullOrWhiteSpace(routeName) ? config.RootUrl : config.RootUrl + config.Routes[routeName];
+    }
+
+    private static string GetLink(SiteConfiguration config, string routeName, string accountId)
+    {
+        return string.Format(config.RootUrl + config.Routes[routeName], accountId);
+    }
+
+    private static string GetLink(SiteConfiguration config, string routeName, string clientId, string returnUrl)
+    {
+        return string.Format(config.RootUrl + config.Routes[routeName], clientId, returnUrl);
+    }
+
+    private bool IsErrorPage()
+    {
+        if (ViewBag.IsErrorPage is bool)
+        {
+            return ViewBag.IsErrorPage;
+        }
+
+        return false;
+    }
+
+    private bool ParseHideNavFromViewBag()
+    {
+        if (ViewBag.ShowNav is bool)
+        {
+            return ViewBag.ShowNav;
+        }
+
+        return true;
+    }
+
+    private static string GetEncodedReturnUrl(HttpRequest request)
+    {
+        var url = $"{request.Scheme}://{request.Host}";
+        var encodedReturnUrl = WebUtility.UrlEncode($"{url}{request.Path}");    
+
+        return encodedReturnUrl;
+    }
+}
+
+<div id="floating-menu-holder">
+    <div class="account-information floating-menu" role="navigation">
+        <div class="js-float">
+            <p class="floating-head-text">Your employer account</p>
+            <nav id="user-nav">
+                <ul role="menubar">
+                    <li><a href='@GetLink(externalLinks.Ma, "Help")' class="menu-main">Help</a></li>
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <li class="has-sub-menu">
+                            <a href="/" role="menuitem" class="menu-main">Settings</a>
+                            <ul role="menu" id="settings-menu" class="js-hidden">
+                                <li><a href='@GetLink(externalLinks.Ma, "Accounts", accountId)' role="menuitem" class="sub-menu-item">Your accounts</a></li>
+                                @if(!IsErrorPage()) 
+                                {
+                                    <li><a href='@GetLink(externalLinks.Ma, "RenameAccount", accountId)' class="sub-menu-item">Rename account</a></li>
+                                }
+                                <li><a href='@GetLink(externalLinks.Identity, "ChangePassword", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your password</a></li>
+                                <li><a href='@GetLink(externalLinks.Identity, "ChangeEmailAddress", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your email address</a></li>
+                                @if(!IsErrorPage()) 
+                                {
+                                    <li><a href='@GetLink(externalLinks.Ma, "Notifications")' class="sub-menu-item">Notifications settings</a></li>
+                                }
+                            </ul>
+                        </li>
+                        <li><a asp-route="@externalLinks.LocalLogoutRouteName" role="menuitem" class="menu-main">Sign out</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="@GetLink(externalLinks.Ma)" role="menuitem">Sign in / Register</a></li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div> <!--/floating-menu-holder-->
+@if (Context.User.Identity.IsAuthenticated)
+{
+    if(ParseHideNavFromViewBag())
+    {
+        <div class="header-organisation" role="navigation">
+            <nav class="header-inner">
+                <ul role="menubar" id="global-nav-links">
+                    <li><a href='@GetLink(externalLinks.Ma, "AccountsHome", accountId)' role="menuitem">Home</a></li>
+                    <li><a href='@GetLink(externalLinks.Ma, "AccountsFinance", accountId)' role="menuitem">Finance</a></li>
+                    <li><a href='@GetLink(externalLinks.Recruit, "RecruitHome", accountId)' class="selected" role="menuitem">Recruitment</a></li>
+                    <li><a href='@GetLink(externalLinks.Commitments, "ApprenticesHome", accountId)' role="menuitem">Apprentices</a></li>
+                    <li><a href='@GetLink(externalLinks.Ma, "AccountsTeamsView", accountId)' role="menuitem">Your team</a></li>
+                    <li><a href='@GetLink(externalLinks.Ma, "AccountsAgreements", accountId)' role="menuitem">Your organisations and agreements</a></li>
+                    <li><a href='@GetLink(externalLinks.Ma, "AccountsSchemes", accountId)' role="menuitem">PAYE schemes</a></li>
+                </ul>
+            </nav>
+        </div>
+    }
+}
