@@ -19,6 +19,7 @@ namespace SFA.DAS.VacancyServices.Search.Requests
         public double? Longitude { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public int? ProviderUkprn { get; set; }
         public ApprenticeshipSearchField SearchField { get; set; }
         public double? SearchRadius { get; set; }
         public VacancySearchSortType SortType { get; set; }

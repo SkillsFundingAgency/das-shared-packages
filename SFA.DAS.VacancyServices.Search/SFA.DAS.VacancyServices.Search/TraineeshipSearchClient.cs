@@ -114,6 +114,14 @@
                 query &= queryDisabilityConfidentOnly;
             }
 
+            if (parameters.ProviderUkprn.HasValue)
+            {
+                var queryClause = q
+                    .Match(m => m.OnField(f => f.ProviderUkprn)
+                        .Query(parameters.ProviderUkprn.ToString()));
+                query &= queryClause;
+            }
+
             if (parameters.CanFilterByGeoDistance)
             {
                 var queryClause = q.Filtered(qf => qf.Filter(f => f
