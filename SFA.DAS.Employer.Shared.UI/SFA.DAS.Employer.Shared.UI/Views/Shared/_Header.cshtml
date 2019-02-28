@@ -1,16 +1,10 @@
 @using Microsoft.Extensions.Options
 @using SFA.DAS.Employer.Shared.UI
+@using static SFA.DAS.Employer.Shared.UI.UrlBuilder;
 @inject IOptionsMonitor<MaMenuConfiguration> OptionsAccessor
 
 @{
     var externalLinks = OptionsAccessor.CurrentValue.Ma;
-}
-
-@functions {
-    public string GetLink(string routeName, SiteConfiguration config)
-    {
-        return string.IsNullOrWhiteSpace(routeName) ? config.RootUrl : config.RootUrl + config.Routes[routeName];
-    }
 }
 
 <header class="govuk-header " role="banner" data-module="header">
@@ -31,7 +25,7 @@
             </a>
         </div>
         <div class="govuk-header__content">
-            <a href="@GetLink("", externalLinks)" class="govuk-header__link govuk-header__link--service-name">
+            <a href="@GetLink(externalLinks, "")" class="govuk-header__link govuk-header__link--service-name">
             Manage apprenticeships
             </a>
         </div>
