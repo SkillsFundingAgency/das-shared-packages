@@ -56,58 +56,77 @@
     }
 }
 
-<div id="floating-menu-holder">
-    <div class="account-information floating-menu" role="navigation">
-        <div class="js-float">
-            <p class="floating-head-text">Your employer account</p>
-            <nav id="user-nav">
-                <ul role="menubar">
-                    <li><a href='@GetLink(externalLinks.Ma, "Help")' class="menu-main">Help</a></li>
-                    @if (Context.User.Identity.IsAuthenticated)
-                    {
-                        <li class="has-sub-menu">
-                            <a href="/" role="menuitem" class="menu-main">Settings</a>
-                            <ul role="menu" id="settings-menu" class="js-hidden">
-                                <li><a href='@GetLink(externalLinks.Ma, "Accounts", accountId)' role="menuitem" class="sub-menu-item">Your accounts</a></li>
-                                @if(!IsErrorPage()) 
-                                {
-                                    <li><a href='@GetLink(externalLinks.Ma, "RenameAccount", accountId)' class="sub-menu-item">Rename account</a></li>
-                                }
-                                <li><a href='@GetLink(externalLinks.Identity, "ChangePassword", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your password</a></li>
-                                <li><a href='@GetLink(externalLinks.Identity, "ChangeEmailAddress", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your email address</a></li>
-                                @if(!IsErrorPage()) 
-                                {
-                                    <li><a href='@GetLink(externalLinks.Ma, "Notifications")' class="sub-menu-item">Notifications settings</a></li>
-                                }
-                            </ul>
-                        </li>
-                        <li><a asp-route="@externalLinks.LocalLogoutRouteName" role="menuitem" class="menu-main">Sign out</a></li>
-                    }
-                    else
-                    {
-                        <li><a href="@GetLink(externalLinks.Ma)" role="menuitem">Sign in / Register</a></li>
-                    }
-                </ul>
-            </nav>
-        </div>
+<div class="das-account-header das-account-header--employer">
+    <div class="govuk-width-container">
+        <p class="das-account-header__title">Your employer account</p>
+        <nav class="das-user-navigation" id="user-nav">
+            <ul class="das-user-navigation__list" role="menu">
+                <li role="menuitem" class="das-user-navigation__list-item">
+                    <a href='@GetLink(externalLinks.Ma, "Help")' class="das-user-navigation__link">Help</a>
+                </li>
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                    <li class="has-sub-menu">
+                        <a href="/" role="menuitem" class="das-user-navigation__link">Settings</a>
+                        <ul role="menu" id="settings-menu" class="js-hidden">
+                            <li><a href='@GetLink(externalLinks.Ma, "Accounts", accountId)' role="menuitem" class="sub-menu-item">Your accounts</a></li>
+                            @if(!IsErrorPage())
+                            {
+                                <li><a href='@GetLink(externalLinks.Ma, "RenameAccount", accountId)' class="sub-menu-item">Rename account</a></li>
+                            }
+                            <li><a href='@GetLink(externalLinks.Identity, "ChangePassword", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your password</a></li>
+                            <li><a href='@GetLink(externalLinks.Identity, "ChangeEmailAddress", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your email address</a></li>
+                            @if(!IsErrorPage())
+                            {
+                                <li><a href='@GetLink(externalLinks.Ma, "Notifications")' class="sub-menu-item">Notifications settings</a></li>
+                            }
+                        </ul>
+                    </li>
+                    <li role="menuitem" class="das-user-navigation__list-item">
+                        <a asp-route="@externalLinks.LocalLogoutRouteName" role="menuitem" class="das-user-navigation__link">Sign out</a>
+                    </li>
+                }
+                else
+                {
+                    <li role="menuitem" class="das-user-navigation__list-item">
+                        <a href="@GetLink(externalLinks.Ma)" role="menuitem" class="das-user-navigation__link">Sign in / Register</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
-</div> <!--/floating-menu-holder-->
+</div>
+
 @if (Context.User.Identity.IsAuthenticated)
 {
     if(ParseHideNavFromViewBag())
     {
-        <div class="header-organisation" role="navigation">
-            <nav class="header-inner">
-                <ul role="menubar" id="global-nav-links">
-                    <li><a href='@GetLink(externalLinks.Ma, "AccountsHome", accountId)' role="menuitem">Home</a></li>
-                    <li><a href='@GetLink(externalLinks.Ma, "AccountsFinance", accountId)' role="menuitem">Finance</a></li>
-                    <li><a href='@GetLink(externalLinks.Recruit, "RecruitHome", accountId)' class="selected" role="menuitem">Recruitment</a></li>
-                    <li><a href='@GetLink(externalLinks.Commitments, "ApprenticesHome", accountId)' role="menuitem">Apprentices</a></li>
-                    <li><a href='@GetLink(externalLinks.Ma, "AccountsTeamsView", accountId)' role="menuitem">Your team</a></li>
-                    <li><a href='@GetLink(externalLinks.Ma, "AccountsAgreements", accountId)' role="menuitem">Your organisations and agreements</a></li>
-                    <li><a href='@GetLink(externalLinks.Ma, "AccountsSchemes", accountId)' role="menuitem">PAYE schemes</a></li>
-                </ul>
-            </nav>
-        </div>
+        <nav class="das-navigation">
+            <div class="govuk-width-container">
+                <ul class="das-navigation__list" id="navigation" role="menu">
+                    <li class="das-navigation__list-item">
+                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsHome", accountId)'>Home</a>
+                    </li>
+                    <li class="das-navigation__list-item">
+                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsFinance", accountId)'>Finance</a>
+                    </li>
+                    <li class="das-navigation__list-item">
+                        <a class="das-navigation__link" href='@GetLink(externalLinks.Recruit, "RecruitHome", accountId)'>Recruitment</a>
+                    </li>
+                    <li class="das-navigation__list-item">
+                        <a class="das-navigation__link" href='@GetLink(externalLinks.Commitments, "ApprenticesHome", accountId)'>Apprentices</a>
+                    </li>
+                    <li class="das-navigation__list-item">
+                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsTeamsView", accountId)'>Your team</a>
+                    </li>
+                    <li class="das-navigation__list-item">
+                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsAgreements", accountId)'>Your organisations and agreements</a>
+                    </li>
+                    <li class="das-navigation__list-item">
+                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsSchemes", accountId)'>PAYE schemes</a>
+                    </li>
+                 </ul>
+             </div>
+         </nav>
     }
 }
