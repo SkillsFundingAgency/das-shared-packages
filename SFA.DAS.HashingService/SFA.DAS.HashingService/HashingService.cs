@@ -36,6 +36,22 @@
             return _hashIds.EncodeHex(hexValue);
         }
 
+        public bool TryDecodeValue(string input, out long output)
+        {
+            try
+            {
+                output = DecodeValue(input);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                output = 0L;
+
+                return false;
+            }
+        }
+
         public long DecodeValue(string id)
         {
             ValidateInput(id);
