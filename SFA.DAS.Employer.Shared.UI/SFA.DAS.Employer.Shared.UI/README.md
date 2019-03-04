@@ -35,13 +35,14 @@ The components can be added into the web apps' Razor views by adding the partial
 **Note**: the *Menu* parital view requires an *accountId* (the hashed account id used in the url) to enable it to generate the menu links.
 
 ### Configuration
-The RCL library uses `IConfiguration` as it's source for items such as the urls of the other employer sites and paths within those site that links are generated for. 
+The RCL library uses `IConfiguration` as it's source for items such as the urls of the other employer sites and paths within those sites which are used to generate the menu links. 
 
-The idea is that there is a shared configuration location that all the Employer apps can share (Azure Table Storage) which they'd all consume. However this is not essential as long as the web app includes the matching configuration values expected.
+Azure Table Storage (`SFA.DAS.Employer.Menu`) will provide a shared configuration location that all apps should use. You can use the [SFA.DAS.Configuration.AzureTableStorage](https://www.nuget.org/packages/SFA.DAS.Configuration.AzureTableStorage/)  package for consuming the shared conifguration. 
 
-Here is the configuration structure that is expected by the component:
+Here is the configuration structure that is expected by the component when using Azure Table Storage:
 ```json
-"MaPageConfiguration": {
+{
+  "MaPageConfiguration": {
     "Ma": {
       "RootUrl": "https://das-test-accui-as.azurewebsites.net",
       "Routes": {
@@ -77,6 +78,7 @@ Here is the configuration structure that is expected by the component:
       }
     }
   }
+}
 ```
 ### Menu Behaviour
 There are scenarios where the menu needs to display differently. There are 2 additional *modes* that are supported. These modes are currenly controlled by *ViewBag* boolean values. 
