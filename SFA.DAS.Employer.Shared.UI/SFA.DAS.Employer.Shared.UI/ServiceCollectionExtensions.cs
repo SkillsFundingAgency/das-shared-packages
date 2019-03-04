@@ -12,7 +12,7 @@ namespace SFA.DAS.Employer.Shared.UI
             ValidateArguments(logoutRouteName, identityClientId);
             
             // TODO: Validate configuration values?
-            services.Configure<MaMenuConfiguration>(configuration.GetSection("MaPageConfiguration"));
+            services.Configure<MaMenuConfiguration>(configuration.GetSection("SFA.DAS.Employer.Menu:MaPageConfiguration"));
             services.PostConfigure<MaMenuConfiguration>(options =>
             {
                 options.ClientId = identityClientId;
