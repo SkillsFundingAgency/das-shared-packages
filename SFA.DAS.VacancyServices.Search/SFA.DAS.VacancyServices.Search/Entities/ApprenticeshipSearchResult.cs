@@ -23,12 +23,12 @@
         public int NumberOfPositions { get; set; }
         public DateTime PostedDate { get; set; }
         public string ProviderName { get; set; }
-        public int ProviderUkprn { get; set; }
         public int? StandardLarsCode { get; set; }
         public DateTime StartDate { get; set; }
         public string SubCategory { get; set; }
         public string SubCategoryCode { get; set; }
         public string Title { get; set; }
+        public long Ukprn { get; set; }
         public VacancyLocationType VacancyLocationType { get; set; }
         public string VacancyReference { get; set; }
         public decimal? WageAmount { get; set; }

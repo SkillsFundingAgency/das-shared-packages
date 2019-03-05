@@ -183,11 +183,11 @@
                 query &= queryClause;
             }
 
-            if (parameters.ProviderUkprn.HasValue)
+            if (parameters.Ukprn.HasValue)
             {
                 var queryClause = q
-                    .Match(m => m.OnField(f => f.ProviderUkprn)
-                        .Query(parameters.ProviderUkprn.ToString()));
+                    .Match(m => m.OnField(f => f.Ukprn)
+                        .Query(parameters.Ukprn.ToString()));
                 query &= queryClause;
             }
 

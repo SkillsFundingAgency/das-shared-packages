@@ -18,11 +18,11 @@
         public int NumberOfPositions { get; set; }
         public DateTime PostedDate { get; set; }
         public string ProviderName { get; set; }
-        public int ProviderUkprn { get; set; }
         public DateTime StartDate { get; set; }
         public string SubCategory { get; set; }
         public string SubCategoryCode { get; set; }
         public string Title { get; set; }
+        public long Ukprn { get; set; }
         public string VacancyReference { get; set; }
 
         //Calculated after search
