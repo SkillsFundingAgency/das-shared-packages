@@ -10,5 +10,6 @@ namespace SFA.DAS.HashingService
         long DecodeValue(string id);
         Guid DecodeValueToGuid(string id);
         string DecodeValueToString(string id);
+        bool TryDecodeValue(string input, out long output);
     }
 }
