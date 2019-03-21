@@ -80,6 +80,5 @@ namespace SFA.DAS.Learners.UnitTests.ValidatorTests
             Assert.AreEqual(expectedResult, actual);
         }
 
-
     }
 }
