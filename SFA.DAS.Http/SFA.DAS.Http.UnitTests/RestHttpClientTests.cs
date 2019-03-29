@@ -96,6 +96,47 @@ namespace SFA.DAS.Http.UnitTests.REST
                                  && Equals(ex.RequestUri, f.RequestUri)
                                  && ex.ErrorResponse.Contains(f.ResponseString)));
         }
+
+        [Test]
+        public Task WhenCallingPutAsJsonExpectingStringAndHttpClientReturnsSuccess_ThenShouldReturnResponseBodyAsString()
+        {
+            const string expectedResponse = "Hello World!";
+
+            return RunAsync(
+                f => f.SetupHttpClientToReturnSuccessWithStringResponseBody(expectedResponse),
+                f => f.CallPutAsJson(new { Property1 = "Hello who?" }),
+                (f, r) => r.Should().Be(expectedResponse));
+        }
+
+        [Test]
+        public Task WhenCallingPutAsJsonExpectingObjectAndHttpClientReturnsSuccess_ThenShouldReturnResponseBodyAsObject()
+        {
+            var expectedResponse = new TestObjectToUseAsAResponse
+            {
+                BoolField = true,
+                DateTimeField = DateTime.Now,
+                IntField = new Random().Next(),
+                StringField = Guid.NewGuid().ToString()
+            };
+
+            return RunAsync(
+                f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody(expectedResponse),
+                f => f.CallPutAsJson<TestObjectToUseAsARequest, TestObjectToUseAsAResponse>(new TestObjectToUseAsARequest { StringField = "Hello who?" }),
+                (f, r) => r.Should().BeEquivalentTo(expectedResponse));
+        }
+
+
+        [Test]
+        public Task WhenCallingPutAsJsonAndHttpClientReturnsNonSuccess_ThenShouldThrowRestClientException()
+        {
+            return RunAsync(f => f.SetupHttpClientPutToReturnInternalServerErrorWithStringResponseBody(), f => f.CallGet(null),
+                (f, r) => r.Should().Throw<RestHttpClientException>()
+                    .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError
+                                 && ex.ReasonPhrase == "Internal Server Error"
+                                 && Equals(ex.RequestUri, f.RequestUri)
+                                 && ex.ErrorResponse.Contains(f.ResponseString)));
+        }
+
     }
 
     public class TestObjectToUseAsARequest
@@ -160,6 +201,11 @@ namespace SFA.DAS.Http.UnitTests.REST
             SetupHttpClientToReturnInternalServerErrorWithStringResponseBody(HttpMethod.Post);
         }
 
+        public void SetupHttpClientPutToReturnInternalServerErrorWithStringResponseBody()
+        {
+            SetupHttpClientToReturnInternalServerErrorWithStringResponseBody(HttpMethod.Put);
+        }
+
         public void SetupHttpClientToReturnInternalServerErrorWithStringResponseBody(HttpMethod httpMethod)
         {
             ResponseString = "Some sort of error description";
@@ -189,6 +235,16 @@ namespace SFA.DAS.Http.UnitTests.REST
         public Task<TResponseData> CallPostAsJson<TRequestData, TResponseData>(TRequestData requestData)
         {
             return RestHttpClient.PostAsJson<TRequestData, TResponseData>("https://example.com", requestData);
+        }
+
+        public Task<string> CallPutAsJson<TRequestData>(TRequestData requestData)
+        {
+            return RestHttpClient.PutAsJson<TRequestData>("https://example.com", requestData);
+        }
+
+        public Task<TResponseData> CallPutAsJson<TRequestData, TResponseData>(TRequestData requestData)
+        {
+            return RestHttpClient.PutAsJson<TRequestData, TResponseData>("https://example.com", requestData);
         }
     }
 }

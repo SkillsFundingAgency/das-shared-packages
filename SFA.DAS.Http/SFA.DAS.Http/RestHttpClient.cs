@@ -55,7 +55,30 @@ namespace SFA.DAS.Http
 
         public async Task<TResponse> PostAsJson<TRequest, TResponse>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
         {
-            var resultAsString = await PostAsJson<TRequest>(uri, requestData, cancellationToken);
+            var resultAsString = await PostAsJson(uri, requestData, cancellationToken);
+
+            var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
+
+            return result;
+        }
+
+        public async Task<string> PutAsJson<TRequest>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.PutAsJsonAsync<TRequest>(uri, requestData, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw CreateClientException(response, await response.Content.ReadAsStringAsync());
+            }
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            return result;
+        }
+
+        public async Task<TResponse> PutAsJson<TRequest, TResponse>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
+        {
+            var resultAsString = await PutAsJson(uri, requestData, cancellationToken);
 
             var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
 
