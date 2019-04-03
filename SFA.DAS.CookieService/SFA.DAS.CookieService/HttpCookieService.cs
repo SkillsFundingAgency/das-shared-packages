@@ -28,15 +28,16 @@ namespace SFA.DAS.CookieService
         {
             var cookie = context.Request.Cookies[name];
 
-            if (cookie == null) return;
-            
-            var cookieContent = JsonConvert.SerializeObject(content);
+            if (cookie != null)
+            {
+                var cookieContent = JsonConvert.SerializeObject(content);
 
-            var encodedContent = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(cookieContent)));
+                var encodedContent = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(cookieContent)));
 
-            cookie.Value = encodedContent;
+                cookie.Value = encodedContent;
 
-            context.Response.SetCookie(cookie);
+                context.Response.SetCookie(cookie);
+            }
         }
 
         public void Delete(HttpContextBase context, string name)
