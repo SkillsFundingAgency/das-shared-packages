@@ -27,12 +27,13 @@ namespace SFA.DAS.CookieService
         public void Update(HttpContextBase context, string name, T content)
         {
             var cookie = context.Request.Cookies[name];
-            var cookieContent = JsonConvert.SerializeObject(content);
-
-            var encodedContent = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(cookieContent)));
 
             if (cookie != null)
             {
+                var cookieContent = JsonConvert.SerializeObject(content);
+
+                var encodedContent = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(cookieContent)));
+
                 cookie.Value = encodedContent;
 
                 context.Response.SetCookie(cookie);
