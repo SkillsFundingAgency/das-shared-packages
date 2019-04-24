@@ -22,6 +22,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
+        public bool IsAnonymous { get; set; }
         public DateTime LiveDate { get; set; }
         public int NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
