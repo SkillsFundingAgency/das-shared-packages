@@ -38,8 +38,8 @@ namespace SFA.DAS.NServiceBus
             var conventions = config.Conventions();
             
 #pragma warning disable 618
-            conventions.DefiningCommandsAs(t => t.Namespace != null && t.Namespace.Contains("Commands") || t == typeof(Command));
-            conventions.DefiningEventsAs(t => t.Namespace != null && t.Namespace.Contains("Events") || t == typeof(Event));
+            conventions.DefiningCommandsAs(t => t.Name.EndsWith("Command") || t == typeof(Command));
+            conventions.DefiningEventsAs(t => t.Name.EndsWith("Event") || t == typeof(Event));
 #pragma warning restore 618
 
             return config;
