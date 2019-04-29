@@ -9,8 +9,18 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
         public static (string ConnectionString, string EnvironmentName) GetEnvironmentVariables()
         {
-            var environmentName = Environment.GetEnvironmentVariable(EnvironmentVariableNames.EnvironmentName) ?? DeveloperEnvironmentName;
-            var connectionString = Environment.GetEnvironmentVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString);
+            return GetRequiredEnvironmentVariables(EnvironmentVariableNames.ConfigurationStorageConnectionString, EnvironmentVariableNames.EnvironmentName);
+        }
+
+        public static (string ConnectionString, string EnvironmentName) GetEnvironmentVariables(string connectionStringKey, string environmentNameKey)
+        {
+            return GetRequiredEnvironmentVariables(connectionStringKey, environmentNameKey);
+        }
+
+        private static (string ConnectionString, string EnvironmentName) GetRequiredEnvironmentVariables(string connectionStringKey, string environmentNameKey)
+        {
+            var environmentName = Environment.GetEnvironmentVariable(environmentNameKey) ?? DeveloperEnvironmentName;
+            var connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
             
             if (string.IsNullOrWhiteSpace(connectionString))
             {

@@ -18,5 +18,35 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             
             return builder.Add(configurationSource);
         }
+
+        public static IConfigurationBuilder AddAzureTableStorage(this IConfigurationBuilder builder, Action<StorageOptions> setupOptions)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (setupOptions == null)
+            {
+                throw new ArgumentNullException(nameof(setupOptions));
+            }
+
+            var options = new StorageOptions();
+            setupOptions.Invoke(options);
+            
+            if (options == null || !options.ConfigurationKeys.Any())
+            {
+                throw new ArgumentException("At least one configuration key is required", nameof(options.ConfigurationKeys));
+            }
+
+            var environmentNameKey = string.IsNullOrWhiteSpace(options.EnvironmentNameEnvironmentVariableName) ? EnvironmentVariableNames.EnvironmentName : options.EnvironmentNameEnvironmentVariableName;
+            var storageConnectionStringKey = string.IsNullOrWhiteSpace(options.StorageConnectionStringEnvironmentVariableName) ? EnvironmentVariableNames.ConfigurationStorageConnectionString : options.StorageConnectionStringEnvironmentVariableName;
+
+            var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables(storageConnectionStringKey, environmentNameKey);
+
+            var configurationSource = new AzureTableStorageConfigurationSource(environmentVariables.ConnectionString, environmentVariables.EnvironmentName, options.ConfigurationKeys);
+            
+            return builder.Add(configurationSource);
+        }
     }
 }
