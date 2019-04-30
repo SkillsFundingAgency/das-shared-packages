@@ -1,20 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing;
+using StructureMap;
 
-namespace SFA.DAS.UnitOfWork.UnitTests
+namespace SFA.DAS.UnitOfWork.UnitTests.StructureMap
 {
     [TestFixture]
     public class UnitOfWorkScopeTests : FluentTest<UnitOfWorkScopeTestsFixture>
     {
         [Test]
-        public Task RunAsync_WhenScopingAnOperation_ThenShouldCreateNestedServiceScope()
+        public Task RunAsync_WhenScopingAnOperation_ThenShouldCreateNestedContainer()
         {
-            return RunAsync(f => f.RunAsync(), f => f.ServiceScopeFactory.Verify(s => s.CreateScope(), Times.Once));
+            return RunAsync(f => f.RunAsync(), f => f.Container.Verify(c => c.GetNestedContainer(), Times.Once));
         }
         
         [Test]
@@ -26,7 +26,7 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         [Test]
         public Task RunAsync_WhenScopingAnOperation_ThenShouldInvokeOperation()
         {
-            return RunAsync(f => f.RunAsync(), f => f.Operation.Verify(o => o(f.NestedServiceProvider.Object), Times.Once));
+            return RunAsync(f => f.RunAsync(), f => f.Operation.Verify(o => o(f.NestedContainer.Object), Times.Once));
         }
         
         [Test]
@@ -48,49 +48,43 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         }
         
         [Test]
-        public Task RunAsync_WhenScopingAnOperation_ThenShouldDisposeNestedServiceScope()
+        public Task RunAsync_WhenScopingAnOperation_ThenShouldDisposeNestedContainer()
         {
-            return RunAsync(f => f.RunAsync(), f => f.NestedServiceScope.Verify(s => s.Dispose(), Times.Once));
+            return RunAsync(f => f.RunAsync(), f => f.NestedContainer.Verify(c => c.Dispose(), Times.Once));
         }
     }
 
     public class UnitOfWorkScopeTestsFixture
     {
-        public Mock<IServiceProvider> ServiceProvider { get; set; }
-        public Mock<IServiceScopeFactory> ServiceScopeFactory { get; set; }
-        public Mock<Func<IServiceProvider, Task>> Operation { get; set; }
-        public IUnitOfWorkScope UnitOfWorkScope { get; set; }
-        public Mock<IServiceScope> NestedServiceScope { get; set; }
-        public Mock<IServiceProvider> NestedServiceProvider { get; set; }
+        public Mock<IContainer> Container { get; set; }
+        public Mock<Func<IContainer,Task>> Operation { get; set; }
+        public UnitOfWork.StructureMap.IUnitOfWorkScope UnitOfWorkScope { get; set; }
+        public Mock<IContainer> NestedContainer { get; set; }
         public Mock<IUnitOfWorkManager> UnitOfWorkManager { get; set; }
         public Exception Exception { get; set; }
 
         public UnitOfWorkScopeTestsFixture()
         {
-            ServiceProvider = new Mock<IServiceProvider>();
-            ServiceScopeFactory = new Mock<IServiceScopeFactory>();
-            Operation = new Mock<Func<IServiceProvider, Task>>();
-            UnitOfWorkScope = new UnitOfWorkScope(ServiceProvider.Object);
-            NestedServiceScope = new Mock<IServiceScope>();
-            NestedServiceProvider = new Mock<IServiceProvider>();
+            Container = new Mock<IContainer>();
+            Operation = new Mock<Func<IContainer, Task>>();
+            UnitOfWorkScope = new UnitOfWork.StructureMap.UnitOfWorkScope(Container.Object);
+            NestedContainer = new Mock<IContainer>();
             UnitOfWorkManager = new Mock<IUnitOfWorkManager>();
             
-            ServiceProvider.Setup(p => p.GetService(typeof(IServiceScopeFactory))).Returns(ServiceScopeFactory.Object);
-            ServiceScopeFactory.Setup(f => f.CreateScope()).Returns(NestedServiceScope.Object);
-            NestedServiceScope.Setup(s => s.ServiceProvider).Returns(NestedServiceProvider.Object);
-            NestedServiceProvider.Setup(p => p.GetService(typeof(IUnitOfWorkManager))).Returns(UnitOfWorkManager.Object);
+            Container.Setup(c => c.GetNestedContainer()).Returns(NestedContainer.Object);
+            NestedContainer.Setup(c => c.GetInstance<IUnitOfWorkManager>()).Returns(UnitOfWorkManager.Object);
 
-            Operation.Setup(o => o(NestedServiceProvider.Object)).Returns(Task.CompletedTask).Callback(() =>
+            Operation.Setup(o => o(NestedContainer.Object)).Returns(Task.CompletedTask).Callback(() =>
             {
-                NestedServiceProvider.Verify(p => p.GetService(typeof(IUnitOfWorkManager)), Times.Once);
-                NestedServiceScope.Verify(s => s.Dispose(), Times.Never);
+                NestedContainer.Verify(c => c.GetInstance<IUnitOfWorkManager>(), Times.Once);
+                NestedContainer.Verify(c => c.Dispose(), Times.Never);
                 UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once);
                 UnitOfWorkManager.Verify(m => m.EndAsync(It.IsAny<Exception>()), Times.Never);
             });
 
             UnitOfWorkManager.Setup(m => m.EndAsync(It.IsAny<Exception>())).Returns(Task.CompletedTask).Callback(() =>
             {
-                NestedServiceScope.Verify(s => s.Dispose(), Times.Never);
+                NestedContainer.Verify(c => c.Dispose(), Times.Never);
             });
         }
 
@@ -114,7 +108,7 @@ namespace SFA.DAS.UnitOfWork.UnitTests
         {
             Exception = new Exception();
 
-            Operation.Setup(o => o(NestedServiceProvider.Object)).ThrowsAsync(Exception);
+            Operation.Setup(o => o(NestedContainer.Object)).ThrowsAsync(Exception);
             
             return this;
         }

@@ -29,13 +29,21 @@ filters.AddUnitOfWorkFilter();
 ### MVC Core
 
 ```c#
+services.AddSqlServerUnitOfWork();
+services.AddEntityFrameworkCoreUnitOfWork<FooDbContext>();
+app.UseUnitOfWork();
+```
+
+### WebApi
+
+```c#
 var container = new Container(c =>
 {
     c.AddRegistry<SqlServerUnitOfWorkRegistry>();
     c.AddRegistry<EntityFrameworkUnitOfWorkRegistry<FooDbContext>>();
 });
 
-app.UseUnitOfWork();
+filters.AddUnitOfWorkFilter();
 ```
 
 ## Extension

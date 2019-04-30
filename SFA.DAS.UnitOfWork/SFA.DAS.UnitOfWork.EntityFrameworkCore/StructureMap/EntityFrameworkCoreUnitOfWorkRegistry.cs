@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StructureMap;
 
-namespace SFA.DAS.UnitOfWork.EntityFrameworkCore
+namespace SFA.DAS.UnitOfWork.EntityFrameworkCore.StructureMap
 {
     public class EntityFrameworkCoreUnitOfWorkRegistry<T> : Registry where T : DbContext
     {

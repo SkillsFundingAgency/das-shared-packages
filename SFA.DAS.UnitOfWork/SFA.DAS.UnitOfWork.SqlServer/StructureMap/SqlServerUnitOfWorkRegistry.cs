@@ -1,6 +1,7 @@
-﻿using StructureMap;
+﻿using SFA.DAS.UnitOfWork.StructureMap;
+using StructureMap;
 
-namespace SFA.DAS.UnitOfWork.SqlServer
+namespace SFA.DAS.UnitOfWork.SqlServer.StructureMap
 {
     public class SqlServerUnitOfWorkRegistry : Registry
     {

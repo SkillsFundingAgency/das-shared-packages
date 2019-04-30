@@ -1,6 +1,6 @@
 ﻿using StructureMap;
 
-namespace SFA.DAS.UnitOfWork
+namespace SFA.DAS.UnitOfWork.StructureMap
 {
     public class UnitOfWorkRegistry : Registry
     {

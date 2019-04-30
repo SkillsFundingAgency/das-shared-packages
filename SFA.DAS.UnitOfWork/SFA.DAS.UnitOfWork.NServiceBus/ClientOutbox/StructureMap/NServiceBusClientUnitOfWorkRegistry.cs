@@ -1,6 +1,7 @@
-﻿using StructureMap;
+﻿using SFA.DAS.UnitOfWork.StructureMap;
+using StructureMap;
 
-namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
+namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox.StructureMap
 {
     public class NServiceBusClientUnitOfWorkRegistry : Registry
     {

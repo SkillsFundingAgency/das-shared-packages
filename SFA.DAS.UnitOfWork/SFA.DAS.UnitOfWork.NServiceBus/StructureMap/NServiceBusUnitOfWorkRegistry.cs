@@ -1,6 +1,7 @@
-﻿using StructureMap;
+﻿using SFA.DAS.UnitOfWork.StructureMap;
+using StructureMap;
 
-namespace SFA.DAS.UnitOfWork.NServiceBus
+namespace SFA.DAS.UnitOfWork.NServiceBus.StructureMap
 {
     public class NServiceBusUnitOfWorkRegistry : Registry
     {

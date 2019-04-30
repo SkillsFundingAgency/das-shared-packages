@@ -1,37 +1,36 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using StructureMap;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SFA.DAS.UnitOfWork
 {
     public class UnitOfWorkScope : IUnitOfWorkScope
     {
-        private readonly IContainer _container;
+        private readonly IServiceProvider _serviceProvider;
 
-        public UnitOfWorkScope(IContainer container)
+        public UnitOfWorkScope(IServiceProvider serviceProvider)
         {
-            _container = container;
+            _serviceProvider = serviceProvider;
         }
 
-        public async Task RunAsync(Func<IContainer, Task> operation)
+        public async Task RunAsync(Func<IServiceProvider, Task> operation)
         {
-            using (var nestedContainer = _container.GetNestedContainer())
+            using (var serviceScope = _serviceProvider.CreateScope())
             {
-                var unitOfWorkManager = nestedContainer.GetInstance<IUnitOfWorkManager>();
-                
+                var unitOfWorkManager = serviceScope.ServiceProvider.GetService<IUnitOfWorkManager>();
+
                 await unitOfWorkManager.BeginAsync().ConfigureAwait(false);
-                
+
                 try
                 {
-                    await operation(nestedContainer).ConfigureAwait(false);
+                    await operation(serviceScope.ServiceProvider).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     await unitOfWorkManager.EndAsync(ex).ConfigureAwait(false);
-
                     throw;
                 }
-                
+
                 await unitOfWorkManager.EndAsync().ConfigureAwait(false);
             }
         }
