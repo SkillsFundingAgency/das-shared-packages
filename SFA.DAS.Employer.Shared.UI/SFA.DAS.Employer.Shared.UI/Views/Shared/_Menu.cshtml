@@ -44,26 +44,32 @@
 <div class="das-account-header das-account-header--employer">
     <div class="govuk-width-container">
         <p class="das-account-header__title">Your employer account</p>
-        <nav class="das-user-navigation" id="user-nav">
+        <nav class="das-user-navigation" id="das-user-navigation">
             <ul class="das-user-navigation__list" role="menu">
                 <li role="menuitem" class="das-user-navigation__list-item">
                     <a href='@GetLink(externalLinks.Ma, "Help")' class="das-user-navigation__link">Help</a>
                 </li>
                 @if (Context.User.Identity.IsAuthenticated)
                 {
-                    <li class="has-sub-menu">
+                    <li role="menuitem" class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
                         <a href="/" role="menuitem" class="das-user-navigation__link">Settings</a>
-                        <ul role="menu" id="settings-menu" class="js-hidden">
-                            <li><a href='@GetLink(externalLinks.Ma, "Accounts", accountId)' role="menuitem" class="sub-menu-item">Your accounts</a></li>
+                        <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
+                            <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
+                                <a href='@GetLink(externalLinks.Ma, "Accounts", accountId)' role="menuitem" class="das-user-navigation__sub-menu-link">Your accounts</a>
+                            </li>
                             @if(!IsErrorPage())
                             {
-                                <li><a href='@GetLink(externalLinks.Ma, "RenameAccount", accountId)' class="sub-menu-item">Rename account</a></li>
+                                <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
+                                    <a href='@GetLink(externalLinks.Ma, "RenameAccount", accountId)' class="das-user-navigation__sub-menu-link">Rename account</a></li>
                             }
-                            <li><a href='@GetLink(externalLinks.Identity, "ChangePassword", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your password</a></li>
-                            <li><a href='@GetLink(externalLinks.Identity, "ChangeEmailAddress", clientId, GetEncodedReturnUrl(Context.Request))' class="sub-menu-item">Change your email address</a></li>
+                            <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
+                                <a href='@GetLink(externalLinks.Identity, "ChangePassword", clientId, GetEncodedReturnUrl(Context.Request))' class="das-user-navigation__sub-menu-link">Change your password</a></li>
+                            <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
+                                <a href='@GetLink(externalLinks.Identity, "ChangeEmailAddress", clientId, GetEncodedReturnUrl(Context.Request))' class="das-user-navigation__sub-menu-link">Change your email address</a></li>
                             @if(!IsErrorPage())
                             {
-                                <li><a href='@GetLink(externalLinks.Ma, "Notifications")' class="sub-menu-item">Notifications settings</a></li>
+                                <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
+                                    <a href='@GetLink(externalLinks.Ma, "Notifications")' class="das-user-navigation__sub-menu-link">Notifications settings</a></li>
                             }
                         </ul>
                     </li>

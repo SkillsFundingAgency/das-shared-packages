@@ -7,9 +7,20 @@
     var externalLinks = OptionsAccessor.CurrentValue.Ma;
 }
 
-<header class="govuk-header " role="banner" data-module="header">
-    <div class="govuk-header__container govuk-width-container">
+@functions {
 
+    private bool ParseHideHeaderBorder()
+    {
+        if (ViewBag.HideHeaderBorder is bool)
+        {
+            return ViewBag.HideHeaderBorder;
+        }
+        return false;
+    }
+}
+
+<header class="govuk-header @(ParseHideHeaderBorder() ? "das-header--no-border" : " ")" role="banner" data-module="header">
+    <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
             <a href="https://www.gov.uk/" title="Go to the GOV.UK homepage" class="govuk-header__link govuk-header__link--homepage">
                 <span class="govuk-header__logotype">
