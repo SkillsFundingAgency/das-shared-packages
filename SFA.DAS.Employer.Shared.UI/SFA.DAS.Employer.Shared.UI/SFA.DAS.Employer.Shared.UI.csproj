@@ -4,6 +4,7 @@
     <RootNamespace>SFA.DAS.Employer.Shared.UI</RootNamespace>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
+    <PackageVersion>1.0.1</PackageVersion>
     <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
     <Description>Shared library containing shared Employer UI components.</Description>
     <License>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</License>
