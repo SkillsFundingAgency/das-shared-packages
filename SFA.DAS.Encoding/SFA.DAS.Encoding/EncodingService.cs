@@ -22,7 +22,9 @@ namespace SFA.DAS.Encoding
 
         public long Decode(string value, EncodingType encodingType)
         {
-            throw new NotImplementedException();
+            var encoding = _config.Encodings.Single(enc => enc.EncodingType == encodingType);
+            var hashids = new Hashids(encoding.Salt, encoding.MinHashLength, encoding.Alphabet);
+            return hashids.DecodeLong(value)[0];
         }
     }
 }
