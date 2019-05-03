@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace SFA.DAS.UnitOfWork
 {
@@ -6,8 +7,10 @@ namespace SFA.DAS.UnitOfWork
     {
         public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
         {
-            return services.AddScoped<IUnitOfWorkContext, UnitOfWorkContext>()
-                .AddScoped<IUnitOfWorkScope, UnitOfWorkScope>();
+            services.TryAddScoped<IUnitOfWorkContext, UnitOfWorkContext>();
+            services.TryAddScoped<IUnitOfWorkScope, UnitOfWorkScope>();
+
+            return services;
         }
     }
 }

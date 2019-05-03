@@ -13,6 +13,14 @@ The following examples configure an application to:
 2. Save changes using an Entity Framework `DbContext` at the end of an HTTP request.
 3. Commit the SQL Server transaction at the end of the HTTP request.
 
+### MVC Core
+
+```c#
+services.AddSqlServerUnitOfWork();
+services.AddEntityFrameworkCoreUnitOfWork<FooDbContext>();
+app.UseUnitOfWork();
+```
+
 ### MVC
 
 ```c#
@@ -23,14 +31,6 @@ var container = new Container(c =>
 });
 
 filters.AddUnitOfWorkFilter();
-```
-
-### MVC Core
-
-```c#
-services.AddSqlServerUnitOfWork();
-services.AddEntityFrameworkCoreUnitOfWork<FooDbContext>();
-app.UseUnitOfWork();
 ```
 
 ### WebApi

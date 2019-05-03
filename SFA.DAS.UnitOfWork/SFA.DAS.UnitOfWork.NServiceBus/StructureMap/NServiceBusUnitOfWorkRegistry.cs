@@ -1,4 +1,5 @@
-﻿using SFA.DAS.UnitOfWork.StructureMap;
+﻿using SFA.DAS.NServiceBus;
+using SFA.DAS.UnitOfWork.StructureMap;
 using StructureMap;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.StructureMap
@@ -8,6 +9,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.StructureMap
         public NServiceBusUnitOfWorkRegistry()
         {
             IncludeRegistry<UnitOfWorkRegistry>();
+            For<IEventPublisher>().Use<EventPublisher>();
             For<IUnitOfWork>().Add<UnitOfWork>();
         }
     }
