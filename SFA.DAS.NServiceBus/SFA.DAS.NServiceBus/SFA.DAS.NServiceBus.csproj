@@ -20,6 +20,7 @@
         <PackageReference Include="NServiceBus" Version="7.0.1" />
         <PackageReference Include="NServiceBus.Heartbeat" Version="3.0.0" />
         <PackageReference Include="NServiceBus.Metrics.ServiceControl" Version="3.0.1" />
+        <PackageReference Include="NServiceBus.MSDependencyInjection" Version="0.1.4" />
         <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
         <PackageReference Include="NServiceBus.NLog" Version="3.0.0" />
         <PackageReference Include="NServiceBus.StructureMap" Version="7.0.0" />
