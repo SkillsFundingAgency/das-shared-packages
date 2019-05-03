@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using AutoFixture.NUnit3;
 using HashidsNet;
 using NUnit.Framework;
 
@@ -20,6 +21,16 @@ namespace SFA.DAS.Encoding.UnitTests.GivenAnEncodingService
             var decodedValue = encodingService.Decode(encoded, encodingType);
 
             Assert.AreEqual(expectedDecoded,decodedValue);
+        }
+
+        [Test, AutoData]
+        public void Then_Throws_Exception_If_Empty_String(
+            EncodingConfig config)
+        {
+            var encodingType = config.Encodings[1].EncodingType;
+            var encodingService = new EncodingService(config);
+
+            Assert.Throws<ArgumentException>(() => encodingService.Decode("", encodingType));
         }
     }
 }

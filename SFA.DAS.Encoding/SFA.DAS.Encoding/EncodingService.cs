@@ -22,9 +22,17 @@ namespace SFA.DAS.Encoding
 
         public long Decode(string value, EncodingType encodingType)
         {
+            ValidateInput(value);
+
             var encoding = _config.Encodings.Single(enc => enc.EncodingType == encodingType);
             var hashids = new Hashids(encoding.Salt, encoding.MinHashLength, encoding.Alphabet);
             return hashids.DecodeLong(value)[0];
+        }
+
+        private void ValidateInput(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Invalid encoded value", nameof(value));
         }
     }
 }
