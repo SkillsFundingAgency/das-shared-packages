@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.NServiceBus.AzureServiceBus;
-using SFA.DAS.NServiceBus.NetStandardMessages;
 using SFA.DAS.NServiceBus.NetStandardMessages.Events;
 using SFA.DAS.NServiceBus.NewtonsoftJsonSerializer;
 
@@ -10,10 +9,12 @@ namespace SFA.DAS.NServiceBus.NetFrameworkEndpoint
 {
     internal class Program
     {
+        private const string AzureServiceBusConnectionString = "";
+        
         public static async Task Main()
         {
             var endpointConfiguration = new EndpointConfiguration("SFA.DAS.NServiceBus.NetFrameworkEndpoint")
-                .UseAzureServiceBusTransport(false, () => Configuration.AzureServiceBusConnectionString, r => {})
+                .UseAzureServiceBusTransport(AzureServiceBusConnectionString, r => {})
                 .UseErrorQueue()
                 .UseInstallers()
                 .UseMessageConventions()

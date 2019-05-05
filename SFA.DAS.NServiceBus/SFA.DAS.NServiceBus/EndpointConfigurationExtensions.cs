@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.NServiceBus.ClientOutbox;
 
 namespace SFA.DAS.NServiceBus
@@ -9,14 +10,14 @@ namespace SFA.DAS.NServiceBus
     {
         public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config)
         {
-            config.SendFailedMessagesTo("errors");
+            config.SendFailedMessagesTo("error");
 
             return config;
         }
 
         public static EndpointConfiguration UseHeartbeat(this EndpointConfiguration config)
         {
-            config.SendHeartbeatTo("heartbeats");
+            config.SendHeartbeatTo("heartbeat");
 
             return config;
         }
@@ -28,6 +29,17 @@ namespace SFA.DAS.NServiceBus
             return config;
         }
 
+        public static EndpointConfiguration UseLearningTransport(this EndpointConfiguration config, Action<RoutingSettings> routing = null)
+        {
+            var transport = config.UseTransport<LearningTransport>();
+                
+            transport.Transactions(TransportTransactionMode.ReceiveOnly);
+
+            routing?.Invoke(transport.Routing());
+
+            return config;
+        }
+        
         public static EndpointConfiguration UseLicense(this EndpointConfiguration config, string licenseText)
         {
             config.License(licenseText);
@@ -77,10 +89,10 @@ namespace SFA.DAS.NServiceBus
             return config;
         }
 
-        public static EndpointConfiguration UseServicesBuilder(this EndpointConfiguration config, IServiceCollection services)
+        public static EndpointConfiguration UseServicesBuilder(this EndpointConfiguration config, UpdateableServiceProvider serviceProvider)
         {
-            services.AddTransient<IProcessClientOutboxMessagesJob, ProcessClientOutboxMessagesJob>();
-            config.UseContainer<ServicesBuilder>(c => c.ExistingServices(services));
+            serviceProvider.AddTransient<IProcessClientOutboxMessagesJob, ProcessClientOutboxMessagesJob>();
+            config.UseContainer<ServicesBuilder>(c => c.ServiceProviderFactory(s => serviceProvider));
 
             return config;
         }

@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NServiceBus.Persistence;
+using NServiceBus.Settings;
 using SFA.DAS.NServiceBus.ClientOutbox;
 
 namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
@@ -20,19 +21,21 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
         public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE CreatedAt <= @CreatedAt AND Dispatched = 0 ORDER BY CreatedAt";
         public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, @Operations)";
 
-        private readonly DbConnection _connection;
+        private readonly Lazy<DbConnection> _connection;
 
-        public ClientOutboxPersister(DbConnection connection)
+        public ClientOutboxPersister(ReadOnlySettings settings)
         {
-            _connection = connection;
+            var connectionBuilder = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
+            
+            _connection = new Lazy<DbConnection>(connectionBuilder);
         }
 
         public async Task<IClientOutboxTransaction> BeginTransactionAsync()
         {
-            await _connection.OpenAsync().ConfigureAwait(false);
+            await _connection.Value.OpenAsync().ConfigureAwait(false);
 
-            var transaction = _connection.BeginTransaction();
-            var sqlClientOutboxTransaction = new SqlClientOutboxTransaction(_connection, transaction);
+            var transaction = _connection.Value.BeginTransaction();
+            var sqlClientOutboxTransaction = new SqlClientOutboxTransaction(_connection.Value, transaction);
 
             return sqlClientOutboxTransaction;
         }
@@ -66,11 +69,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public async Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync()
         {
-            await _connection.OpenAsync().ConfigureAwait(false);
+            await _connection.Value.OpenAsync().ConfigureAwait(false);
 
             try
             {
-                using (var command = _connection.CreateCommand())
+                using (var command = _connection.Value.CreateCommand())
                 {
                     command.CommandText = GetAwaitingDispatchCommandText;
                     command.CommandType = CommandType.Text;
@@ -95,7 +98,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
             }
             finally
             {
-                _connection.Close();
+                _connection.Value.Close();
             }
         }
 
@@ -120,7 +123,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
             var sqlClientOutboxTransaction = (SqlClientOutboxTransaction)clientOutboxTransaction;
             var transaction = sqlClientOutboxTransaction.Transaction;
 
-            using (var command = _connection.CreateCommand())
+            using (var command = _connection.Value.CreateCommand())
             {
                 command.CommandText = StoreCommandText;
                 command.CommandType = CommandType.Text;

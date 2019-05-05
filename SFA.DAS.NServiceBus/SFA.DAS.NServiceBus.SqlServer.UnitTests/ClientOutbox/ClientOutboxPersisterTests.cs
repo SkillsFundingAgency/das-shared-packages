@@ -107,8 +107,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
     {
         public DateTime Now { get; set; }
         public IClientOutboxStorage ClientOutboxStorage { get; set; }
-        public Mock<DbConnection> Connection { get; set; }
         public Mock<ReadOnlySettings> Settings { get; set; }
+        public Mock<DbConnection> Connection { get; set; }
         public Mock<DbTransaction> Transaction { get; set; }
         public Mock<DbCommand> Command { get; set; }
         public Mock<DbParameterCollection> Parameters { get; set; }
@@ -125,8 +125,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         public ClientOutboxPersisterTestsFixture()
         {
             Now = DateTime.UtcNow;
-            Connection = new Mock<DbConnection>();
             Settings = new Mock<ReadOnlySettings>();
+            Connection = new Mock<DbConnection>();
             Transaction = new Mock<DbTransaction> { CallBase = true };
             Command = new Mock<DbCommand>();
             Parameters = new Mock<DbParameterCollection>();
@@ -162,10 +162,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             Command.Protected().Setup<DbParameterCollection>("DbParameterCollection").Returns(Parameters.Object);
             Connection.Protected().Setup<DbTransaction>("BeginDbTransaction", IsolationLevel.Unspecified).Returns(Transaction.Object);
             Connection.Protected().Setup<DbCommand>("CreateDbCommand").Returns(Command.Object);
+            Settings.Setup(s => s.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder")).Returns(() => Connection.Object);
             SqlSession.Setup(s => s.Connection).Returns(Connection.Object);
             SqlSession.Setup(s => s.Transaction).Returns(Transaction.Object);
 
-            ClientOutboxStorage = new ClientOutboxPersister(Connection.Object);
+            ClientOutboxStorage = new ClientOutboxPersister(Settings.Object);
         }
 
         public Task<IClientOutboxTransaction> BeginTransactionAsync()

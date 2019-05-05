@@ -1,37 +1,29 @@
 ﻿using System;
 using NServiceBus;
+#if NET462
 using NServiceBus.Transport.AzureServiceBus;
+#endif
 
 namespace SFA.DAS.NServiceBus.AzureServiceBus
 {
     public static class EndpointConfigurationExtensions
     {
-        public static EndpointConfiguration UseAzureServiceBusTransport(this EndpointConfiguration config, bool isDevelopment, Func<string> connectionStringBuilder, Action<RoutingSettings> routing)
+        public static EndpointConfiguration UseAzureServiceBusTransport(this EndpointConfiguration config, string connectionString, Action<RoutingSettings> routing = null)
         {
-            if (isDevelopment)
-            {
-                var transport = config.UseTransport<LearningTransport>();
-                
-                transport.Transactions(TransportTransactionMode.ReceiveOnly);
-                
-                routing(transport.Routing());
-            }
-            else
-            {
 #if NETSTANDARD2_0
                 var transport = config.UseTransport<AzureServiceBusTransport>();
                 var ruleNameShortener = new RuleNameShortener();
 
-                transport.ConnectionString(connectionStringBuilder);
+                transport.ConnectionString(connectionString);
                 transport.RuleNameShortener(ruleNameShortener.Shorten);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
 
-                routing(transport.Routing());
+                routing?.Invoke(transport.Routing());
 #elif NET462
                 var transport = config.UseTransport<AzureServiceBusTransport>();
 
                 transport.BrokeredMessageBodyType(SupportedBrokeredMessageBodyTypes.Stream);
-                transport.ConnectionString(connectionStringBuilder);
+                transport.ConnectionString(connectionString);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 transport.UseForwardingTopology();
 
@@ -41,7 +33,7 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
 
                 var queues = transport.Queues();
 
-                queues.ForwardDeadLetteredMessagesTo(q => q != "errors" && q != "audits" && q != "deadletters", "deadletters");
+                queues.ForwardDeadLetteredMessagesTo(q => q != "error" && q != "audit" && q != "deadletter", "deadletter");
                 queues.LockDuration(TimeSpan.FromMinutes(1));
 
                 var subscriptions = transport.Subscriptions();
@@ -52,9 +44,8 @@ namespace SFA.DAS.NServiceBus.AzureServiceBus
 
                 sanitization.UseStrategy<ValidateAndHashIfNeeded>();
 
-                routing(transport.Routing());
+                routing?.Invoke(transport.Routing());
 #endif
-            }
 
             return config;
         }
