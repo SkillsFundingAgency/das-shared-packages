@@ -6,7 +6,7 @@ namespace SFA.DAS.NServiceBus
     {
         public static IHostBuilder UseNServiceBusContainer(this IHostBuilder builder)
         {
-            return builder.UseServiceProviderFactory(new NServiceBusProviderFactory());
+            return builder.UseServiceProviderFactory(new NServiceBusServiceProviderFactory());
         }
     }
 }

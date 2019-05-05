@@ -4,7 +4,7 @@ using NServiceBus.ObjectBuilder.MSDependencyInjection;
 
 namespace SFA.DAS.NServiceBus
 {
-    public class NServiceBusProviderFactory : IServiceProviderFactory<UpdateableServiceProvider>
+    public class NServiceBusServiceProviderFactory : IServiceProviderFactory<UpdateableServiceProvider>
     {
         public UpdateableServiceProvider CreateBuilder(IServiceCollection services)
         {

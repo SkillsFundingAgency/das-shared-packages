@@ -8,7 +8,7 @@ namespace SFA.DAS.NServiceBus
     {
         public static IWebHostBuilder UseNServiceBusContainer(this IWebHostBuilder builder)
         {
-            return builder.ConfigureServices(s => s.AddSingleton<IServiceProviderFactory<UpdateableServiceProvider>>(new NServiceBusProviderFactory()));
+            return builder.ConfigureServices(s => s.AddSingleton<IServiceProviderFactory<UpdateableServiceProvider>>(new NServiceBusServiceProviderFactory()));
         }
     }
 }
