@@ -28,6 +28,7 @@ namespace SFA.DAS.UnitOfWork.Sample.MessageHandlers.Startup
             var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
             
             serviceProvider.AddSingleton(p => endpoint)
+                .AddSingleton<IMessageSession>(p => p.GetService<IEndpointInstance>())
                 .AddHostedService<NServiceBusHostedService>();
         }
     }

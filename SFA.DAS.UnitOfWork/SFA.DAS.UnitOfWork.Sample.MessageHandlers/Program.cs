@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.NServiceBus;
 using SFA.DAS.UnitOfWork.EntityFrameworkCore;
@@ -19,11 +21,14 @@ namespace SFA.DAS.UnitOfWork.Sample.MessageHandlers
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             new HostBuilder()
+                .UseEnvironment(Environment.GetEnvironmentVariable(HostDefaults.EnvironmentKey))
                 .ConfigureAppConfiguration((c, b) => b
                     .AddJsonFile("appsettings.json", true, true)
                     .AddJsonFile($"appsettings.{c.HostingEnvironment.EnvironmentName}.json", true, true)
                     .AddEnvironmentVariables()
                     .AddCommandLine(args))
+                .ConfigureLogging(b => b.AddConsole())
+                .ConfigureWebJobs(b => b.AddAzureStorageCoreServices().AddTimers())
                 .UseNServiceBusContainer()
                 .ConfigureServices((c, s) => s
                     .AddSqlServer(c.Configuration)

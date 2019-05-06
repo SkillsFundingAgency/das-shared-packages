@@ -1,7 +1,10 @@
 ﻿{
   "profiles": {
     "SFA.DAS.UnitOfWork.Sample.MessageHandlers": {
-      "commandName": "Project"
+      "commandName": "Project",
+        "environmentVariables": {
+            "ENVIRONMENT": "Development"
+        }
     }
   }
 }
