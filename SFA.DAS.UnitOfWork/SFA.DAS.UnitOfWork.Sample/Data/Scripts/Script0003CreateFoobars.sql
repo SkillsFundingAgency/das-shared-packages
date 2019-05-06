@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Foobars]
+(
+	[Id] INT NOT NULL IDENTITY PRIMARY KEY,
+	[Created] DATETIME NOT NULL,
+	[Updated] DATETIME NULL,
+)
+GO

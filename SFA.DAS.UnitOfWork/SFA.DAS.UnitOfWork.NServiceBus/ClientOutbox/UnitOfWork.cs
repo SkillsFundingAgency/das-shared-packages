@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Settings;
 using SFA.DAS.NServiceBus.ClientOutbox;
-using SFA.DAS.NServiceBus.ClientOutbox.Commands;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
 {

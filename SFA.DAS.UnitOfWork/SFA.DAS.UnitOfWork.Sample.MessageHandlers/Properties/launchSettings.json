@@ -1,0 +1,7 @@
+﻿{
+  "profiles": {
+    "SFA.DAS.UnitOfWork.Sample.MessageHandlers": {
+      "commandName": "Project"
+    }
+  }
+}

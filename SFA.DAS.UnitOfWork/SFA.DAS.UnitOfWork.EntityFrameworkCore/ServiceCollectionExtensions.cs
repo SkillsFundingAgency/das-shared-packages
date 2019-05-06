@@ -6,7 +6,7 @@ namespace SFA.DAS.UnitOfWork.EntityFrameworkCore
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddEntityFrameworkCoreUnitOfWork<T>(this IServiceCollection services) where T : DbContext
+        public static IServiceCollection AddEntityFrameworkUnitOfWork<T>(this IServiceCollection services) where T : DbContext
         {
             return services.AddScoped<IUnitOfWork, UnitOfWork<T>>()
                 .AddScoped(s => new Lazy<T>(s.GetService<T>));

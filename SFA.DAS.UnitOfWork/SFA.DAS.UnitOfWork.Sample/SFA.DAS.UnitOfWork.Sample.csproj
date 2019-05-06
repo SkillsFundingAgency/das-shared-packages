@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <EmbeddedResource Include="Data\Scripts\Script0001CreateOutboxData.sql" />
+        <EmbeddedResource Include="Data\Scripts\Script0002CreateClientOutboxData.sql" />
+        <EmbeddedResource Include="Data\Scripts\Script0003CreateFoobars.sql" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="dbup-sqlserver" Version="4.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.2.0" />
+        <PackageReference Include="SFA.DAS.NServiceBus.SqlServer" Version="11.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SFA.DAS.UnitOfWork.EntityFrameworkCore\SFA.DAS.UnitOfWork.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\SFA.DAS.UnitOfWork.NServiceBus\SFA.DAS.UnitOfWork.NServiceBus.csproj" />
+        <ProjectReference Include="..\SFA.DAS.UnitOfWork.Sample.Messages\SFA.DAS.UnitOfWork.Sample.Messages.csproj" />
+    </ItemGroup>
+
+</Project>
