@@ -13,7 +13,7 @@ namespace SFA.DAS.UnitOfWork.Sample.Startup
             return services.AddScoped(p =>
             {
                 var unitOfWorkContext = p.GetService<IUnitOfWorkContext>();
-                var synchronizedStorageSession = unitOfWorkContext.Find<SynchronizedStorageSession>();
+                var synchronizedStorageSession = unitOfWorkContext.Get<SynchronizedStorageSession>();
                 var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
                 var optionsBuilder = new DbContextOptionsBuilder<SampleDbContext>().UseSqlServer(sqlStorageSession.Connection);
                 var dbContext = new SampleDbContext(optionsBuilder.Options);
