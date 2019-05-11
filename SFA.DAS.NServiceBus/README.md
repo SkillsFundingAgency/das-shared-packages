@@ -13,36 +13,15 @@ The following example configures an NServiceBus endpoint to allow both sending a
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandlers")
-    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseAzureServiceBusTransport(configuration.GetConnectionString("Bus"), r => {})
     .UseErrorQueue()
     .UseInstallers()
     .UseMessageConventions()
-    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
     .UseNewtonsoftJsonSerializer()
     .UseNLogFactory()
     .UseOutbox()
-    .UseStructureMapBuilder(container)
-    .UseUnitOfWork();
-```
-
-### MVC Endpoint
-
-The following example configures an NServiceBus endpoint within an MVC application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalFilters.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
-
-```c#
-var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
-    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
-    .UseErrorQueue()
-    .UseInstallers()
-    .UseMessageConventions()
-    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .UseNewtonsoftJsonSerializer()
-    .UseNLogFactory()
-    .UseOutbox()
-    .UseStructureMapBuilder(container)
-    .UseUnitOfWork();
-
-filters.AddUnitOfWorkFilter();
+    .UseServicesBuilder(serviceProvider)
+    .UseSqlServerPersistence(() => new SqlConnection(configuration.GetConnectionString("Db")));
 ```
 
 ### MVC Core Endpoint
@@ -51,18 +30,36 @@ The following example configures an NServiceBus endpoint within an MVC Core appl
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
-    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseAzureServiceBusTransport(configuration.GetConnectionString("Bus"), r => {})
     .UseErrorQueue()
     .UseInstallers()
     .UseMessageConventions()
-    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
     .UseNewtonsoftJsonSerializer()
     .UseNLogFactory()
     .UseOutbox()
-    .UseStructureMapBuilder(container)
-    .UseUnitOfWork();
+    .UseServicesBuilder(serviceProvider)
+    .UseSqlServerPersistence(() => new SqlConnection(configuration.GetConnectionString("Db")));
 
 app.UseUnitOfWork();
+```
+
+### MVC Endpoint
+
+The following example configures an NServiceBus endpoint within an MVC application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalFilters.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
+
+```c#
+var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
+    .UseAzureServiceBusTransport(container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseErrorQueue()
+    .UseInstallers()
+    .UseMessageConventions()
+    .UseNewtonsoftJsonSerializer()
+    .UseNLogFactory()
+    .UseOutbox()
+    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .UseStructureMapBuilder(container);
+
+filters.AddUnitOfWorkFilter();
 ```
 
 ### WebApi Endpoint
@@ -71,16 +68,15 @@ The following example configures an NServiceBus endpoint within a WebApi applica
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
-    .UseAzureServiceBusTransport(false, () => container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
+    .UseAzureServiceBusTransport(container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
     .UseErrorQueue()
     .UseInstallers()
     .UseMessageConventions()
-    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
     .UseNewtonsoftJsonSerializer()
     .UseNLogFactory()
     .UseOutbox()
-    .UseStructureMapBuilder(container)
-    .UseUnitOfWork();
+    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
+    .UseStructureMapBuilder(container);
 
 filters.AddUnitOfWorkFilter();
 ```
