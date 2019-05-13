@@ -9,7 +9,7 @@ namespace SFA.DAS.Encoding.UnitTests.GivenAnEncodingService
     public class WhenCallingDecode
     {
         [Test, AutoData]
-        public void Then_Decodes_Based_On_EncodingTpe(
+        public void Then_Decodes_Based_On_EncodingType(
             long expectedDecoded,
             EncodingConfig config)
         {
@@ -24,7 +24,7 @@ namespace SFA.DAS.Encoding.UnitTests.GivenAnEncodingService
         }
 
         [Test, AutoData]
-        public void Then_Throws_Exception_If_Empty_String(
+        public void And_Encoded_Value_Is_Empty_String_Then_Throws_Exception(
             EncodingConfig config)
         {
             var encodingType = config.Encodings[1].EncodingType;

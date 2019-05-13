@@ -8,7 +8,7 @@ namespace SFA.DAS.Encoding.UnitTests.GivenAnEncodingService
     public class WhenCallingEncode
     {
         [Test, AutoData]
-        public void Then_Encodes_Based_On_EncodingTpe(
+        public void Then_Encodes_Based_On_EncodingType(
             long valueToEncode,
             EncodingConfig config)
         {

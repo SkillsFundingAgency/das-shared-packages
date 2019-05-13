@@ -38,7 +38,7 @@ namespace SFA.DAS.Encoding
             var decodedValues = hashids.DecodeLong(encodedValue);
             var isValid = decodedValues.Any();
 
-            decodedValue = isValid ? decodedValues[0] : default;
+            decodedValue = isValid ? decodedValues[0] : 0;
 
             return isValid;
         }
