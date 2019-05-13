@@ -29,6 +29,20 @@ namespace SFA.DAS.Encoding
             return hashids.DecodeLong(value)[0];
         }
 
+        public bool TryDecode(string encodedValue, EncodingType encodingType, out long decodedValue)
+        {
+            ValidateInput(encodedValue);
+            
+            var encoding = _config.Encodings.Single(enc => enc.EncodingType == encodingType);
+            var hashids = new Hashids(encoding.Salt, encoding.MinHashLength, encoding.Alphabet);
+            var decodedValues = hashids.DecodeLong(encodedValue);
+            var isValid = decodedValues.Any();
+
+            decodedValue = isValid ? decodedValues[0] : default;
+
+            return isValid;
+        }
+
         private void ValidateInput(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
