@@ -3,18 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing", "SFA.DAS.Testing\SFA.DAS.Testing.csproj", "{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing", "SFA.DAS.Testing\SFA.DAS.Testing.csproj", "{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing.EntityFramework", "SFA.DAS.Testing.EntityFramework\SFA.DAS.Testing.EntityFramework.csproj", "{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.EntityFramework", "SFA.DAS.Testing.EntityFramework\SFA.DAS.Testing.EntityFramework.csproj", "{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B437E0E-B62A-4493-8CF6-BF5FDD6F5CCC}"
-ProjectSection(SolutionItems) = preProject
-	.editorconfig = .editorconfig
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C4436433-698E-40E9-BE7F-673466D51C07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing.UnitTests", "SFA.DAS.Testing.UnitTests\SFA.DAS.Testing.UnitTests.csproj", "{F43DAA82-0071-4708-B6F7-A915B74DE73D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.UnitTests", "SFA.DAS.Testing.UnitTests\SFA.DAS.Testing.UnitTests.csproj", "{F43DAA82-0071-4708-B6F7-A915B74DE73D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing.AutoFixture", "SFA.DAS.Testing.AutoFixture\SFA.DAS.Testing.AutoFixture.csproj", "{095295AF-506A-403F-882E-69FDA1CE0345}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,14 +36,18 @@ Global
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{095295AF-506A-403F-882E-69FDA1CE0345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{095295AF-506A-403F-882E-69FDA1CE0345}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{095295AF-506A-403F-882E-69FDA1CE0345}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{095295AF-506A-403F-882E-69FDA1CE0345}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F10E9818-B99A-49C9-BC61-99489C205B54}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D} = {C4436433-698E-40E9-BE7F-673466D51C07}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F10E9818-B99A-49C9-BC61-99489C205B54}
 	EndGlobalSection
 EndGlobal
