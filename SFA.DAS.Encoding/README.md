@@ -4,7 +4,7 @@
 - Clone the repo `das-shared-packages`
 - Navigate to the `src/SFA.DAS.Encoding` folder
 - Open the .sln file in your editor of choice (e.g. Visual Studio 2017)
-- Build (F6), run all tests (Ctrl+U, Ctrl+L if using Resharper).
+- Build (<kbd>F6</kbd>), run all tests (Ctrl+U, Ctrl+L if using Resharper).
 
 ## IoC
 In your IoC it is recommended to register the `EncodingConfig` by reading and parsing the config json:
