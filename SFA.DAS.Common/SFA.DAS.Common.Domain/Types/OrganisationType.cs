@@ -11,6 +11,8 @@ namespace SFA.DAS.Common.Domain.Types
         [Description("Public Bodies")]
         PublicBodies = 3,
         [Description("Other")]
-        Other = 4
+        Other = 4,
+        [Description("Pensions Regulator")]
+        PensionsRegulator = 5
     }
 }
