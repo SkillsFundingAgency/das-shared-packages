@@ -9,17 +9,19 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private readonly string _connectionString;
         private readonly string _environmentName;
         private readonly IEnumerable<string> _configurationKeys;
+        private readonly bool _prefixConfigurationKeys;
 
-        public AzureTableStorageConfigurationSource(string connectionString, string environmentName, IEnumerable<string> configurationKeys)
+        public AzureTableStorageConfigurationSource(ConfigurationOptions configOptions)
         {
-            _connectionString = connectionString;
-            _environmentName = environmentName;
-            _configurationKeys = configurationKeys;
+            _connectionString = configOptions.EnvironmentVariableKeys.TableStorageConnectionString;
+            _environmentName = configOptions.EnvironmentVariableKeys.EnvironmentName;
+            _configurationKeys = configOptions.ConfigurationKeys;
+            _prefixConfigurationKeys = configOptions.PrefixConfigurationKeys;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new AzureTableStorageConfigurationProvider(CloudStorageAccount.Parse(_connectionString), _environmentName, _configurationKeys);
+            return new AzureTableStorageConfigurationProvider(CloudStorageAccount.Parse(_connectionString), _environmentName, _configurationKeys, _prefixConfigurationKeys);
         }
     }
 }

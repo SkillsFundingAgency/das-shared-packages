@@ -4,6 +4,26 @@ using Microsoft.Extensions.Configuration;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
+    public class ConfigurationOptions
+    {
+        public EnvironmentVariables EnvironmentVariableKeys { get; set; }
+        public string[] ConfigurationKeys { get; set; }
+        public bool PrefixConfigurationKeys { get; set; } = true;
+    }
+
+    public class EnvironmentVariables
+    {
+        public EnvironmentVariables(string tableStorageConnectionString, string environmentName)
+        {
+            TableStorageConnectionString = tableStorageConnectionString;
+            EnvironmentName = environmentName;
+        }
+
+        public string TableStorageConnectionString { get; set; }
+        public string EnvironmentName { get; set; }
+    }
+
+
     public static class ConfigurationBuilderExtensions
     {
         public static IConfigurationBuilder AddAzureTableStorage(this IConfigurationBuilder builder, params string[] configurationKeys)
@@ -13,9 +33,16 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                 throw new ArgumentException("At least one configuration key is required", nameof(configurationKeys));
             }
             
-            var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables();
-            var configurationSource = new AzureTableStorageConfigurationSource(environmentVariables.ConnectionString, environmentVariables.EnvironmentName, configurationKeys);
-            
+            var (ConnectionStringKey, EnvironmentNameKey) = ConfigurationBootstrapper.GetEnvironmentVariables();
+
+            var configOptions = new ConfigurationOptions
+            {
+                EnvironmentVariableKeys = new EnvironmentVariables(ConnectionStringKey, EnvironmentNameKey),
+                ConfigurationKeys = configurationKeys
+            };
+
+            var configurationSource = new AzureTableStorageConfigurationSource(configOptions);
+
             return builder.Add(configurationSource);
         }
 
@@ -42,9 +69,16 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             var environmentNameKey = string.IsNullOrWhiteSpace(options.EnvironmentNameEnvironmentVariableName) ? EnvironmentVariableNames.EnvironmentName : options.EnvironmentNameEnvironmentVariableName;
             var storageConnectionStringKey = string.IsNullOrWhiteSpace(options.StorageConnectionStringEnvironmentVariableName) ? EnvironmentVariableNames.ConfigurationStorageConnectionString : options.StorageConnectionStringEnvironmentVariableName;
 
-            var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables(storageConnectionStringKey, environmentNameKey);
+            var (ConnectionStringKey, EnvironmentNameKey) = ConfigurationBootstrapper.GetEnvironmentVariables(storageConnectionStringKey, environmentNameKey);
 
-            var configurationSource = new AzureTableStorageConfigurationSource(environmentVariables.ConnectionString, environmentVariables.EnvironmentName, options.ConfigurationKeys);
+            var configOptions = new ConfigurationOptions
+            {
+                EnvironmentVariableKeys = new EnvironmentVariables(ConnectionStringKey, EnvironmentNameKey),
+                ConfigurationKeys = options.ConfigurationKeys,
+                PrefixConfigurationKeys = options.PreFixConfigurationKeys
+            };
+
+            var configurationSource = new AzureTableStorageConfigurationSource(configOptions);
             
             return builder.Add(configurationSource);
         }
