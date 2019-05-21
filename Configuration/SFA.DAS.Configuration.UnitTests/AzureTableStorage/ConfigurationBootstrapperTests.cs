@@ -58,7 +58,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         [TestCase("DEMO")]
         public void WhenGettingEnvironmentVariablesByCustomNames_EnvironmentVariablesAreSet_ThenValuesFromEnvironmentVariablesAreProvided(string environmentName)
         {
-            Test(f => f.SetEnvironmentVariables(storageConnectionString: (Fix.CustomStorageKey, Fix.CustomStorageValue), environmentName: (Fix.CustomEnvironmentKey,Fix.CustomEnvironmentValue)), f => f.GetEnvironmentVariables(Fix.CustomStorageKey, Fix.CustomEnvironmentKey), (f, r) => f.AssertValues(r.StorageConnectionString, r.EnvironmentName));
+            Test(f => f.SetEnvironmentVariables(storageConnectionString: (Fix.CustomStorageKey, Fix.CustomStorageValue), environmentName: (Fix.CustomEnvironmentKey,Fix.CustomEnvironmentValue)), f => f.GetEnvironmentVariables(Fix.CustomStorageKey, Fix.CustomEnvironmentKey), (f, r) => f.AssertValues(r.TableStorageConnectionString, r.EnvironmentName));
         }
     }
 
@@ -92,17 +92,17 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
                 _expectedStorageConnectionValue = storageConnectionString;
         }
 
-        public (string StorageConnectionString, string EnvironmentName) GetEnvironmentVariables()
+        public EnvironmentVariables GetEnvironmentVariables()
         {
             return ConfigurationBootstrapper.GetEnvironmentVariables();
         }
 
-        public (string StorageConnectionString, string EnvironmentName) GetEnvironmentVariables(string connectionStringKey, string environmentKey)
+        public EnvironmentVariables GetEnvironmentVariables(string connectionStringKey, string environmentKey)
         {
             return ConfigurationBootstrapper.GetEnvironmentVariables(connectionStringKey, environmentKey);
         }
 
-        public void AssertAreDefaults((string StorageConnectionString, string EnvironmentName) retrievedValues)
+        public void AssertAreDefaults(EnvironmentVariables retrievedValues)
         {
             AssertValues("UseDevelopmentStorage=true", "LOCAL");
         }

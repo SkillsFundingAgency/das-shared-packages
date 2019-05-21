@@ -14,8 +14,15 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             }
             
             var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables();
-            var configurationSource = new AzureTableStorageConfigurationSource(environmentVariables.ConnectionString, environmentVariables.EnvironmentName, configurationKeys);
-            
+
+            var configOptions = new ConfigurationOptions
+            {
+                EnvironmentVariableKeys = environmentVariables,
+                ConfigurationKeys = configurationKeys
+            };
+
+            var configurationSource = new AzureTableStorageConfigurationSource(configOptions);
+
             return builder.Add(configurationSource);
         }
 
@@ -44,7 +51,14 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
             var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables(storageConnectionStringKey, environmentNameKey);
 
-            var configurationSource = new AzureTableStorageConfigurationSource(environmentVariables.ConnectionString, environmentVariables.EnvironmentName, options.ConfigurationKeys);
+            var configOptions = new ConfigurationOptions
+            {
+                EnvironmentVariableKeys = environmentVariables,
+                ConfigurationKeys = options.ConfigurationKeys,
+                PrefixConfigurationKeys = options.PreFixConfigurationKeys
+            };
+
+            var configurationSource = new AzureTableStorageConfigurationSource(configOptions);
             
             return builder.Add(configurationSource);
         }

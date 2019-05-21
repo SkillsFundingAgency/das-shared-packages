@@ -16,12 +16,14 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private readonly CloudStorageAccount _storageAccount;
         private readonly string _environmentName;
         private readonly IEnumerable<string> _configurationKeys;
+        private readonly bool _prefixConfigurationKeys;
 
-        public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys)
+        public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys)
         {
             _storageAccount = cloudStorageAccount;
             _environmentName = environmentName;
             _configurationKeys = configurationKeys;
+            _prefixConfigurationKeys = prefixConfigurationKeys;
         }
         
         public override void Load()
@@ -48,7 +50,14 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
                 foreach (var keyValuePair in parsedData)
                 {
-                    data.AddOrUpdate($"{configurationKey}:{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
+                    if (_prefixConfigurationKeys)
+                    {
+                        data.AddOrUpdate($"{configurationKey}:{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
+                    }
+                    else
+                    {
+                        data.AddOrUpdate($"{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
+                    }
                 }
             }
         }

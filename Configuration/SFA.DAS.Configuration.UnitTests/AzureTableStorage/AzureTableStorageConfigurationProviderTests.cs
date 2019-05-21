@@ -17,12 +17,20 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     [Parallelizable]
     public class AzureTableStorageConfigurationProviderTests : FluentTest<AzureTableStorageConfigurationProviderTestsFixture>
     {
-        [Test, TestCaseSource(typeof(AzureTableStorageConfigurationProviderTestsSource), nameof(AzureTableStorageConfigurationProviderTestsSource.TestCases))]
+        [Test, TestCaseSource(typeof(AzureTableStorageConfigurationProviderTestsSource), nameof(AzureTableStorageConfigurationProviderTestsSource.TestCasesWithPrefix))]
         public void WhenReadingTables_ThenConfigDataShouldBeCorrect(IEnumerable<(string configKey, string json)> sourceConfigs, IEnumerable<(string key, string value)> expected)
         {
             Test(f => f.SetConfigs(sourceConfigs), f => f.Load(), f => f.AssertData(expected));
         }
+
+        [Test, TestCaseSource(typeof(AzureTableStorageConfigurationProviderTestsSource), nameof(AzureTableStorageConfigurationProviderTestsSource.TestCasesWithoutPrefix))]
+        public void WhenReadingTables_AndConfigSetToNotPrefixKeys_ThenConfigKeyShouldNotBePrefixed(IEnumerable<(string configKey, string json)> sourceConfigs, IEnumerable<(string key, string value)> expected)
+        {
+            Test(f => f.SetConfigs(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
+        }
     }
+
+
 
     public class AzureTableStorageConfigurationProviderTestsSource
     {
@@ -31,31 +39,51 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             return Enumerable.Range(0, tableCount).Select(cnt => ($"t{cnt}", $@"{{""k{cnt}"": ""v{cnt}""}}"));
         }
 
-        public static IEnumerable TestCases
+        public static IEnumerable TestCasesWithPrefix
         {
             get
             {
-                yield return new TestCaseData(new[] {("t1", @"{}")}, new (string, string)[] {}).SetName("EmptyJsonFromSingleTable");
-                yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1""}")}, new[] {("t1:k1", "v1")}).SetName("SingleItemInFlatJsonFromSingleTable");
-                yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1"", ""k2"": ""v2""}")}, new[] {("t1:k1", "v1"), ("t1:k2", "v2")}).SetName("MultipleItemsInFlatJsonFromSingleTable");
-                yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1""}"), ("t2", @"{""k2"": ""v2""}")}, new[] {("t1:k1", "v1"), ("t2:k2", "v2")}).SetName("FlatJsonsFromMultipleTables");
-                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}}")}, new[] {("t1:ss1:k1", "v1")}).SetName("NestedJsonFromSingleTable");
-                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""sss1"": {""k1"": ""v1""}}}")}, new[] {("t1:ss1:sss1:k1", "v1")}).SetName("MultiLevelNestedJsonFromSingleTable");
-                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}, ""k2"": ""v2""}")}, new[] {("t1:ss1:k1", "v1"), ("t1:k2", "v2")}).SetName("OneSubSectionAndOneItemFromSingleTable");
-                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}, ""ss2"": {""k2"": ""v2""}}")}, new[] {("t1:ss1:k1", "v1"), ("t1:ss2:k2", "v2")}).SetName("MultipleSubSectionsFromSingleTable");
-                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}, ""ss2"": {""k2"": ""v2""}}"), ("t2", @"{""ss3"": {""k3"": ""v3""}, ""ss4"": {""k4"": ""v4""}}")}, new[] {("t1:ss1:k1", "v1"), ("t1:ss2:k2", "v2"), ("t2:ss3:k3", "v3"), ("t2:ss4:k4", "v4")}).SetName("MultipleSubSectionsFromMultipleTables");
-                yield return new TestCaseData(GenerateSource(10), new[] {("t0:k0", "v0"), ("t1:k1", "v1"), ("t2:k2", "v2"), ("t3:k3", "v3"), ("t4:k4", "v4"), ("t5:k5", "v5"), ("t6:k6", "v6"), ("t7:k7", "v7"), ("t8:k8", "v8"), ("t9:k9", "v9")}).SetName("ManyTables");
-                yield return new TestCaseData(new[] {("SFA.DAS.LongLongLongLongLong.ConfigurationKeyV3", @"{""KeyKeyKeyKey"": ""value!value$value^value*value8value<value""}")}, new[] {("SFA.DAS.LongLongLongLongLong.ConfigurationKeyV3:KeyKeyKeyKey", "value!value$value^value*value8value<value")}).SetName("SingleTableWithRealisticNames");
+                yield return new TestCaseData(new[] {("t1", @"{}")}, new (string, string)[] {}).SetName("EmptyJsonFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1""}")}, new[] {("t1:k1", "v1")}).SetName("SingleItemInFlatJsonFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1"", ""k2"": ""v2""}")}, new[] {("t1:k1", "v1"), ("t1:k2", "v2")}).SetName("MultipleItemsInFlatJsonFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1""}"), ("t2", @"{""k2"": ""v2""}")}, new[] {("t1:k1", "v1"), ("t2:k2", "v2")}).SetName("FlatJsonsFromMultipleTablesWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}}")}, new[] {("t1:ss1:k1", "v1")}).SetName("NestedJsonFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""sss1"": {""k1"": ""v1""}}}")}, new[] {("t1:ss1:sss1:k1", "v1")}).SetName("MultiLevelNestedJsonFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}, ""k2"": ""v2""}")}, new[] {("t1:ss1:k1", "v1"), ("t1:k2", "v2")}).SetName("OneSubSectionAndOneItemFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}, ""ss2"": {""k2"": ""v2""}}")}, new[] {("t1:ss1:k1", "v1"), ("t1:ss2:k2", "v2")}).SetName("MultipleSubSectionsFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""ss1"": {""k1"": ""v1""}, ""ss2"": {""k2"": ""v2""}}"), ("t2", @"{""ss3"": {""k3"": ""v3""}, ""ss4"": {""k4"": ""v4""}}")}, new[] {("t1:ss1:k1", "v1"), ("t1:ss2:k2", "v2"), ("t2:ss3:k3", "v3"), ("t2:ss4:k4", "v4")}).SetName("MultipleSubSectionsFromMultipleTablesWithPrefix");
+                yield return new TestCaseData(GenerateSource(10), new[] {("t0:k0", "v0"), ("t1:k1", "v1"), ("t2:k2", "v2"), ("t3:k3", "v3"), ("t4:k4", "v4"), ("t5:k5", "v5"), ("t6:k6", "v6"), ("t7:k7", "v7"), ("t8:k8", "v8"), ("t9:k9", "v9")}).SetName("ManyTablesWithPrefix");
+                yield return new TestCaseData(new[] { ("SFA.DAS.LongLongLongLongLong.ConfigurationKeyV3", @"{""KeyKeyKeyKey"": ""value!value$value^value*value8value<value""}") }, new[] { ("SFA.DAS.LongLongLongLongLong.ConfigurationKeyV3:KeyKeyKeyKey", "value!value$value^value*value8value<value") }).SetName("SingleTableWithRealisticNamesWithPrefix");
             }
-        }  
+        }
+
+        public static IEnumerable TestCasesWithoutPrefix
+        {
+            get
+            {
+                yield return new TestCaseData(new[] { ("t1", @"{}") }, new (string, string)[] { }).SetName("EmptyJsonFromSingleTableNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""k1"": ""v1""}") }, new[] { ("k1", "v1") }).SetName("SingleItemInFlatJsonFromSingleTableNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""k1"": ""v1"", ""k2"": ""v2""}") }, new[] { ("k1", "v1"), ("k2", "v2") }).SetName("MultipleItemsInFlatJsonFromSingleTableNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""k1"": ""v1""}"), ("t2", @"{""k2"": ""v2""}") }, new[] { ("k1", "v1"), ("k2", "v2") }).SetName("FlatJsonsFromMultipleTablesNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""ss1"": {""k1"": ""v1""}}") }, new[] { ("ss1:k1", "v1") }).SetName("NestedJsonFromSingleTableNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""ss1"": {""sss1"": {""k1"": ""v1""}}}") }, new[] { ("ss1:sss1:k1", "v1") }).SetName("MultiLevelNestedJsonFromSingleTableNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""ss1"": {""k1"": ""v1""}, ""k2"": ""v2""}") }, new[] { ("ss1:k1", "v1"), ("k2", "v2") }).SetName("OneSubSectionAndOneItemFromSingleTableNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""ss1"": {""k1"": ""v1""}, ""ss2"": {""k2"": ""v2""}}") }, new[] { ("ss1:k1", "v1"), ("ss2:k2", "v2") }).SetName("MultipleSubSectionsFromSingleTableNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""ss1"": {""k1"": ""v1""}, ""ss2"": {""k2"": ""v2""}}"), ("t2", @"{""ss3"": {""k3"": ""v3""}, ""ss4"": {""k4"": ""v4""}}") }, new[] { ("ss1:k1", "v1"), ("ss2:k2", "v2"), ("ss3:k3", "v3"), ("ss4:k4", "v4") }).SetName("MultipleSubSectionsFromMultipleTablesNoPrefix");
+                yield return new TestCaseData(GenerateSource(10), new[] { ("k0", "v0"), ("k1", "v1"), ("k2", "v2"), ("k3", "v3"), ("k4", "v4"), ("k5", "v5"), ("k6", "v6"), ("k7", "v7"), ("k8", "v8"), ("k9", "v9") }).SetName("ManyTablesNoPrefix");
+                yield return new TestCaseData(new[] { ("SFA.DAS.LongLongLongLongLong.ConfigurationKeyV3", @"{""KeyKeyKeyKey"": ""value!value$value^value*value8value<value""}") }, new[] { ("KeyKeyKeyKey", "value!value$value^value*value8value<value") }).SetName("SingleTableWithRealisticNamesNoPrefix");
+                yield return new TestCaseData(new[] { ("t1", @"{""ss1"": {""k1"": ""v1""}, ""ss2"": {""k2"": ""v2""}}"), ("t2", @"{""ss1"": {""k1"": ""v3""}, ""ss2"": {""k2"": ""v4""}}") }, new[] { ("ss1:k1", "v3"), ("ss2:k2", "v4") }).SetName("MultipleTableWithSameKeys");
+
+            }
+        }
     }
     
     public class TestableAzureTableStorageConfigurationProvider : AzureTableStorageConfigurationProvider
     {
-        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys)
-            : base(cloudStorageAccount, environmentName, configurationKeys)
+        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys = true)
+            : base(cloudStorageAccount, environmentName, configurationKeys, prefixConfigurationKeys)
         {
-        }
+        } 
         
         protected override TableOperation GetTableRowOperation(string configurationKey)
         {
@@ -90,9 +118,9 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             CloudStorageAccount.Setup(csa => csa.CreateCloudTableClient()).Returns(CloudTableClient.Object);
         }
         
-        public void SetConfigs(IEnumerable<(string configKey, string json)> configs)
+        public void SetConfigs(IEnumerable<(string configKey, string json)> configs, bool prefixConfigurationKeySetting = true)
         {
-            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, configs.Select(c => c.configKey));
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, configs.Select(c => c.configKey), prefixConfigurationKeySetting);
 
             foreach (var config in configs)
             {

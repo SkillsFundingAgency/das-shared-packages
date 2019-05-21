@@ -7,17 +7,17 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private const string DeveloperEnvironmentName = "LOCAL";
         private const string DeveloperEnvironmentDefaultConnectionString = "UseDevelopmentStorage=true";
 
-        public static (string ConnectionString, string EnvironmentName) GetEnvironmentVariables()
+        public static EnvironmentVariables GetEnvironmentVariables()
         {
             return GetRequiredEnvironmentVariables(EnvironmentVariableNames.ConfigurationStorageConnectionString, EnvironmentVariableNames.EnvironmentName);
         }
 
-        public static (string ConnectionString, string EnvironmentName) GetEnvironmentVariables(string connectionStringKey, string environmentNameKey)
+        public static EnvironmentVariables GetEnvironmentVariables(string connectionStringKey, string environmentNameKey)
         {
             return GetRequiredEnvironmentVariables(connectionStringKey, environmentNameKey);
         }
 
-        private static (string ConnectionString, string EnvironmentName) GetRequiredEnvironmentVariables(string connectionStringKey, string environmentNameKey)
+        private static EnvironmentVariables GetRequiredEnvironmentVariables(string connectionStringKey, string environmentNameKey)
         {
             var environmentName = Environment.GetEnvironmentVariable(environmentNameKey) ?? DeveloperEnvironmentName;
             var connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
@@ -34,7 +34,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                 }
             }
 
-            return (connectionString, environmentName);
+            return new EnvironmentVariables(connectionString, environmentName);
         }
     }
 }
