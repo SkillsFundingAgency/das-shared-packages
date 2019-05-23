@@ -66,7 +66,7 @@ namespace SFA.DAS.Testing.AzureStorageEmulator
             public static ProcessStartInfo Create(ProcessCommand command)
             {
                 return new ProcessStartInfo {
-                    FileName = @"C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\WAStorageEmulator.exe",
+                    FileName = @"C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe",
                     Arguments = command.ToString().ToLower(),
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
