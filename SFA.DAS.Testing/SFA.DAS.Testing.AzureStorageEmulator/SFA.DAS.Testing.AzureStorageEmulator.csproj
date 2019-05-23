@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>DAS</Authors>
+    <Description>Manager for starting the Azure Storage Emulator when running tests.</Description>
+    <Copyright></Copyright>
+    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Testing</PackageProjectUrl>
+  </PropertyGroup>
+
+</Project>
