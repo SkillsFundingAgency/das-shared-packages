@@ -16,7 +16,7 @@ namespace SFA.DAS.Testing.AzureStorageEmulator
                 {
                     if (process == null)
                     {
-                        throw new InvalidOperationException("Unable to start process.");
+                        return false;
                     }
 
                     status = GetStatus(process);
