@@ -8,27 +8,40 @@ namespace SFA.DAS.Testing.AzureStorageEmulator
     {
         public static bool IsProcessRunning()
         {
-            bool status;
-
-            using (Process process = Process.Start(StorageEmulatorProcessFactory.Create(ProcessCommand.Status)))
+            try
             {
-                if (process == null)
+                bool status;
+
+                using (Process process = Process.Start(StorageEmulatorProcessFactory.Create(ProcessCommand.Status)))
                 {
-                    throw new InvalidOperationException("Unable to start process.");
+                    if (process == null)
+                    {
+                        return false;
+                    }
+
+                    status = GetStatus(process);
+                    process.WaitForExit();
                 }
 
-                status = GetStatus(process);
-                process.WaitForExit();
+                return status;
             }
-
-            return status;
+            catch
+            {
+                return false;
+            }
         }
 
         public static void StartStorageEmulator()
         {
-            if (!IsProcessRunning())
+            try
             {
-                ExecuteProcess(ProcessCommand.Start);
+                if (!IsProcessRunning())
+                {
+                    ExecuteProcess(ProcessCommand.Start);
+                }
+            }
+            catch
+            {
             }
         }
 
@@ -48,16 +61,11 @@ namespace SFA.DAS.Testing.AzureStorageEmulator
             {
                 if (process == null)
                 {
-                    throw new InvalidOperationException("Unable to start process.");
+                    return;
                 }
 
                 error = GetError(process);
                 process.WaitForExit();
-            }
-
-            if (!String.IsNullOrEmpty(error))
-            {
-                throw new InvalidOperationException(error);
             }
         }
 
