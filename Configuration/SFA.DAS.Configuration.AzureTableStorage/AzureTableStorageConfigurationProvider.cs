@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         {
             var client = _storageAccount.CreateCloudTableClient();
             var table = client.GetTableReference(ConfigurationTableName);
-            var data = new ConcurrentDictionary<string, string>();
+            var data = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var tasks = _configurationKeys.Select(k => GetTableRowData(table, k, data));
             
             Task.WhenAll(tasks).ConfigureAwait(false).GetAwaiter().GetResult();
