@@ -1,17 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFrameworks>net452;net462</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
     <Authors>DAS</Authors>
     <Description>Client package to search for Apprenticeship &amp; Traineeship vacancies</Description>
   </PropertyGroup>
-
-  <ItemGroup>
+    <ItemGroup>
     <PackageReference Include="NEST" Version="1.9.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
-
 </Project>
