@@ -6,14 +6,6 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-        <DefineConstants>NETCOREAPP2_0</DefineConstants>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-        <DefineConstants>NET462</DefineConstants>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
         <PackageReference Include="Moq" Version="4.10.0" />
