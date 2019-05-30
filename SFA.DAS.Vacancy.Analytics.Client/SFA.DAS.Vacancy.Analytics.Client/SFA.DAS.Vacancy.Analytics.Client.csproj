@@ -11,6 +11,8 @@
     <Description>Vacancy events and event hub publishing client.</Description>
     <PackageTags>Esfa;Das;</PackageTags>
     <EmbedUntrackedSources>false</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PackageLicense>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Vacancy.Analytics.Client</PackageProjectUrl>
@@ -20,7 +22,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19270-01" PrivateAssets="All" />
+
     <PackageReference Include="Microsoft.Azure.EventHubs" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
