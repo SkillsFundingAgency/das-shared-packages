@@ -1,5 +1,5 @@
 pool:
-  name: DAS - Continuous Integration
+  name: Continuous Integration 02 - SSD - 160ACU
 variables:
   BuildConfiguration: 'Release'
 
