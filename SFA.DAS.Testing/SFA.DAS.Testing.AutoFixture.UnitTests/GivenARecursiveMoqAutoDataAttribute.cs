@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace SFA.DAS.Testing.AutoFixture.UnitTests
 {
-    public class GivenAnEFFriendlyMoqAutoDataAttribute
+    public class GivenARecursiveMoqAutoDataAttribute
     {
         [Test, RecursiveMoqAutoData]
         public void And_Circular_Reference_Then_Injects_Mocked_Interface(
