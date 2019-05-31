@@ -15,7 +15,7 @@ namespace SFA.DAS.Testing.AutoFixture
             return fixture;
         }
 
-        public static IFixture EFFriendlyMoqFixtureFactory()
+        public static IFixture RecursiveMoqFixtureFactory()
         {
             var fixture = MoqFixtureFactory();
 
