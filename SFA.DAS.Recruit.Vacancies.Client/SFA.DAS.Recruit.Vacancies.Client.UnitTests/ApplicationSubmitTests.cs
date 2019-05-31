@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Vacancies.Client.Entities;
 
@@ -12,7 +9,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
     public class ApplicationSubmitTests
     {
 
-        //[Ignore("A helper test to add a message to the queue when debugging")] 
+        [Ignore("A helper test to add a message to the queue when debugging")] 
         [Test]
         public void SubmitApplication()
         {
