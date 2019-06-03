@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28917.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Authentication", "SFA.DAS.Authentication\SFA.DAS.Authentication.csproj", "{E968DE9D-8E0A-4E61-BF81-976B52941755}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Authentication", "SFA.DAS.Authentication\SFA.DAS.Authentication.csproj", "{C1B9666D-816A-499C-9295-489A4923CDE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E968DE9D-8E0A-4E61-BF81-976B52941755}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E968DE9D-8E0A-4E61-BF81-976B52941755}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E968DE9D-8E0A-4E61-BF81-976B52941755}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E968DE9D-8E0A-4E61-BF81-976B52941755}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1B9666D-816A-499C-9295-489A4923CDE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1B9666D-816A-499C-9295-489A4923CDE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1B9666D-816A-499C-9295-489A4923CDE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1B9666D-816A-499C-9295-489A4923CDE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {AC3AA1EB-CD1C-4871-AB03-B11EC8A2D28F}
+		SolutionGuid = {C5483393-3D78-486B-8FDC-CACA535BD65F}
 	EndGlobalSection
 EndGlobal
