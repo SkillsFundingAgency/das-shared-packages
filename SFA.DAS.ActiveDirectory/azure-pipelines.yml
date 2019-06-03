@@ -1,7 +1,24 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.ActiveDirectory'
+
+pr: none
+
+workspace:
+    clean: all
+
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
 pool:
   name: Continuous Integration 02 - SSD - 160ACU
 variables:
   BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '0'
 
 steps:
 - task: DotNetCoreCLI@2
