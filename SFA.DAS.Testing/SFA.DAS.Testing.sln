@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.UnitTests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.AutoFixture", "SFA.DAS.Testing.AutoFixture\SFA.DAS.Testing.AutoFixture.csproj", "{095295AF-506A-403F-882E-69FDA1CE0345}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing.AzureStorageEmulator", "SFA.DAS.Testing.AzureStorageEmulator\SFA.DAS.Testing.AzureStorageEmulator.csproj", "{36BA05E7-940C-43FE-9448-C0189F826CDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.AzureStorageEmulator", "SFA.DAS.Testing.AzureStorageEmulator\SFA.DAS.Testing.AzureStorageEmulator.csproj", "{36BA05E7-940C-43FE-9448-C0189F826CDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing.AutoFixture.UnitTests", "SFA.DAS.Testing.AutoFixture.UnitTests\SFA.DAS.Testing.AutoFixture.UnitTests.csproj", "{370B48DA-EAB6-45D4-8848-5E61DFF396A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,12 +48,17 @@ Global
 		{36BA05E7-940C-43FE-9448-C0189F826CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36BA05E7-940C-43FE-9448-C0189F826CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36BA05E7-940C-43FE-9448-C0189F826CDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{370B48DA-EAB6-45D4-8848-5E61DFF396A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{370B48DA-EAB6-45D4-8848-5E61DFF396A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{370B48DA-EAB6-45D4-8848-5E61DFF396A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{370B48DA-EAB6-45D4-8848-5E61DFF396A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D} = {C4436433-698E-40E9-BE7F-673466D51C07}
+		{370B48DA-EAB6-45D4-8848-5E61DFF396A7} = {C4436433-698E-40E9-BE7F-673466D51C07}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F10E9818-B99A-49C9-BC61-99489C205B54}

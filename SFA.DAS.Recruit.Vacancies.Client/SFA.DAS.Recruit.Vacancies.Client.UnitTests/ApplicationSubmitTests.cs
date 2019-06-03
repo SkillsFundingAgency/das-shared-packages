@@ -12,13 +12,13 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
     public class ApplicationSubmitTests
     {
 
-        [Ignore("A helper test to add a message to the queue when debugging")] 
+        //[Ignore("A helper test to add a message to the queue when debugging")] 
         [Test]
         public void SubmitApplication()
         {
             var vacancyApplication = GetApplication();
 
-            var sut = new Client(null,null,null, "UseDevelopmentStorage=true");
+            var sut = new Client(null, null, null, "UseDevelopmentStorage=true");
 
             sut.SubmitApplication(vacancyApplication);
         }
