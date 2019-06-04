@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web;
 using SFA.DAS.Authentication;
-using SFA.DAS.Hashing;
 using SFA.DAS.HashingService;
 
 namespace SFA.DAS.Authorization.Mvc
