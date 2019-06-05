@@ -25,7 +25,7 @@ steps:
   displayName: 'dotnet restore'
   inputs:
     command: restore
-    projects: SFA.DAS.Binders/SFA.DAS.ActivBinderseDirectory.sln
+    projects: SFA.DAS.Binders/SFA.DAS.Binders.sln
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
