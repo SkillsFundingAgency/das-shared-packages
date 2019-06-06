@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace SFA.DAS.Provider.Shared.UI.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class SetNavigationSectionAttribute : ResultFilterAttribute
     {
-        public NavigationSection Section { get; set; }
+        public NavigationSection Section { get; }
 
         public SetNavigationSectionAttribute(NavigationSection section)
         {

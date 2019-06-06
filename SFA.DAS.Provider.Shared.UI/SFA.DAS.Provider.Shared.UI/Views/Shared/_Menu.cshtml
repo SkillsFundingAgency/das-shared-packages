@@ -2,9 +2,10 @@
 @using SFA.DAS.Provider.Shared.UI.Extensions
 @using SFA.DAS.ProviderUrlHelper.Core
 
+
 @if (Context.User.Identity.IsAuthenticated && !ViewData.HiddenNavigationBar())
 {
-    var providerId = int.Parse(User.Identity.GetClaim("http://schemas.portal.com/ukprn"));
+    var providerId = User.Identity.GetProviderId();
     var selected = ViewData.SelectedNavigationSection();
 
     <div class="das-account-header das-account-header--provider">

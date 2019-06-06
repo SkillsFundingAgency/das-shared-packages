@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace SFA.DAS.Provider.Shared.UI.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class HideNavigationBarAttribute : ResultFilterAttribute
     {
         public override void OnResultExecuting(ResultExecutingContext context)
