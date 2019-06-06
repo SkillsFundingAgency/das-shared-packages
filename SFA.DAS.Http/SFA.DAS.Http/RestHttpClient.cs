@@ -19,8 +19,8 @@ namespace SFA.DAS.Http
 
         public async Task<T> Get<T>(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
-            var response = await GetResponse(uri, queryData, cancellationToken);
-            return await response.Content.ReadAsAsync<T>(cancellationToken);
+            var response = await GetResponse(uri, queryData, cancellationToken).ConfigureAwait(false);
+            return await response.Content.ReadAsAsync<T>(cancellationToken).ConfigureAwait(false);
         }
         
         public Task<T> Get<T>(string uri, object queryData = null, CancellationToken cancellationToken = default)
@@ -30,8 +30,8 @@ namespace SFA.DAS.Http
 
         public async Task<string> Get(Uri uri, object queryData = null, CancellationToken cancellationToken = default)
         {
-            var response = await GetResponse(uri, queryData, cancellationToken);
-            return await response.Content.ReadAsStringAsync();
+            var response = await GetResponse(uri, queryData, cancellationToken).ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
         
         public Task<string> Get(string uri, object queryData = null, CancellationToken cancellationToken = default)
@@ -41,21 +41,21 @@ namespace SFA.DAS.Http
 
         public async Task<string> PostAsJson<TRequest>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PostAsJsonAsync(uri, requestData, cancellationToken);
+            var response = await _httpClient.PostAsJsonAsync(uri, requestData, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
-                throw CreateClientException(response, await response.Content.ReadAsStringAsync());
+                throw CreateClientException(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             }
 
-            var result = await response.Content.ReadAsStringAsync();
+            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return result;
         }
 
         public async Task<TResponse> PostAsJson<TRequest, TResponse>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
         {
-            var resultAsString = await PostAsJson(uri, requestData, cancellationToken);
+            var resultAsString = await PostAsJson(uri, requestData, cancellationToken).ConfigureAwait(false);
 
             var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
 
@@ -64,21 +64,21 @@ namespace SFA.DAS.Http
 
         public async Task<string> PutAsJson<TRequest>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PutAsJsonAsync<TRequest>(uri, requestData, cancellationToken);
+            var response = await _httpClient.PutAsJsonAsync<TRequest>(uri, requestData, cancellationToken).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
             {
-                throw CreateClientException(response, await response.Content.ReadAsStringAsync());
+                throw CreateClientException(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             }
 
-            var result = await response.Content.ReadAsStringAsync();
+            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return result;
         }
 
         public async Task<TResponse> PutAsJson<TRequest, TResponse>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
         {
-            var resultAsString = await PutAsJson(uri, requestData, cancellationToken);
+            var resultAsString = await PutAsJson(uri, requestData, cancellationToken).ConfigureAwait(false);
 
             var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
 
@@ -97,10 +97,10 @@ namespace SFA.DAS.Http
                 uri = new Uri(AddQueryString(uri.ToString(), queryData), UriKind.RelativeOrAbsolute);
             }
 
-            var response = await _httpClient.GetAsync(uri, cancellationToken);
+            var response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
-                throw CreateClientException(response, await response.Content.ReadAsStringAsync());
+                throw CreateClientException(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             }
 
             return response;
