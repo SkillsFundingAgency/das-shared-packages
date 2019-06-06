@@ -4,7 +4,7 @@
     {
         Home,
         YourCohorts,
-        Reservations,
+        //Reservations,
         ManageApprentices,
         Recruit,
         Agreements
