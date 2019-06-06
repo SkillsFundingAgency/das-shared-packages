@@ -1,0 +1,54 @@
+﻿@using SFA.DAS.Provider.Shared.UI
+@using SFA.DAS.Provider.Shared.UI.Extensions
+@using SFA.DAS.ProviderUrlHelper.Core
+
+
+@if (Context.User.Identity.IsAuthenticated && !ViewData.HiddenNavigationBar())
+{
+    var providerId = User.Identity.GetProviderId();
+    var selected = ViewData.SelectedNavigationSection();
+
+    <div class="das-account-header das-account-header--provider">
+        <div class="govuk-width-container">
+            <p class="das-account-header__title">Your provider account</p>
+            <nav class="das-user-navigation" id="das-user-navigation">
+                <ul class="das-user-navigation__list" role="menu">
+                    <li class="das-user-navigation__list-item">
+                        <a href="@Url.ProviderApprenticeshipServiceLink("/")" class="das-user-navigation__link">@Context.User.Identity.Name</a>
+                    </li>
+                    <li class="das-user-navigation__list-item">
+                        <a href="@Url.ProviderApprenticeshipServiceLink("/notification-settings")" class="das-user-navigation__link">Notification settings</a>
+                    </li>
+                    <li class="das-user-navigation__list-item">
+                        <a href="@Url.ProviderApprenticeshipServiceLink("/signout")" class="das-user-navigation__link">Sign out</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <nav class="das-navigation">
+        <div class="govuk-width-container">
+            <ul class="das-navigation__list" id="navigation">
+                <li class="das-navigation__list-item">
+                    <a href="@Url.ProviderApprenticeshipServiceLink("/account")" class="das-navigation__link @(selected == NavigationSection.Home ? "das-navigation__link--current" : "")">Home</a>
+                </li>
+                <li class="das-navigation__list-item">
+                    <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/cohorts")" class="das-navigation__link @(selected == NavigationSection.YourCohorts ? "das-navigation__link--current" : "")">Your cohorts</a>
+                </li>
+                <li class="das-navigation__list-item">
+                    <a href="@Url.ReservationsLink($"{providerId}/reservations/manage")" class="das-navigation__link @(selected == NavigationSection.Reservations ? "das-navigation__link--current" : "")">Manage funding</a>
+                </li>
+                <li class="das-navigation__list-item">
+                    <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/manage/all")" class="das-navigation__link @(selected == NavigationSection.ManageApprentices ? "das-navigation__link--current" : "")">Manage your apprentices</a>
+                </li>
+                <li class="das-navigation__list-item">
+                    <a href="@Url.RecruitLink($"{providerId}")" class="das-navigation__link @(selected == NavigationSection.Recruit ? "das-navigation__link--current" : "")">Recruit apprentices</a>
+                </li>
+                <li class="das-navigation__list-item">
+                    <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/agreements")" class="das-navigation__link @(selected == NavigationSection.Agreements ? "das-navigation__link--current" : "")">Organisations and agreements</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+}
+
