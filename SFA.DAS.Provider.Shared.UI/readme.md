@@ -13,7 +13,7 @@ This consists of _Layout and _Menu razor views.
 ## Usage
 
 * Add a reference to the [SFA.DAS.Provider.Shared.UI](https://www.nuget.org/packages/SFA.DAS.Provider.Shared.UI/) package
-* Remove any local shared views called Layout.cshtml or Menu.cshtml, otherwise these will take precedence over those in the package
+* Remove any local shared views called \_Layout.cshtml or \_Menu.cshtml, otherwise these will take precedence over those in the package
 * Your application must set the selected navigation section by:
    * Calling the SetDefaultNavigationSection in the application startup, passing your default navigation section as a parameter (if this is adequate, nothing further is required)
    * Decorating controllers and/or individual action methods with the SetNavigationSection attribute filter, passing the appropriate navigation section as a parameter
