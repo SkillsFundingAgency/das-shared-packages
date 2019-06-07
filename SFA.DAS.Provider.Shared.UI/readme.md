@@ -20,13 +20,13 @@ This consists of _Layout and _Menu razor views.
  
 Examples: 
 
- ```
+ ```csharp
  services
     .AddMvc(...)
     .SetDefaultNavigationSection(NavigationSection.YourCohorts)
   ```
   
-  ```
+  ```csharp
   [HttpGet]
   [Route("add-apprentice")]
   [SetNavigationSection(NavigationSection.YourCohorts)]
