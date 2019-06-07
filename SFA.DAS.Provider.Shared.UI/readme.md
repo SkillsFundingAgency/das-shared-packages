@@ -4,3 +4,33 @@ This package provides shared Provider UI components via a [Razor Class Library](
 
 This consists of _Layout and _Menu razor views.
 
+## Requirements, Limitations and Restrictions
+
+* Only Core web apps are supported.
+* This package references the ProviderUrlHelper package, which makes use of StructureMap and AutoConfiguration. The current implementation therefore will add StructureMap references to your project and make use of AutoConfiguration. This dependency will be removed in a future version.
+* Feature Toggling is not supported. It is necessary to build and release new versions of the package and consume them in order to obtain different navigation menu versions.
+
+## Usage
+
+* Add a reference to the [SFA.DAS.Provider.Shared.UI](https://www.nuget.org/packages/SFA.DAS.Provider.Shared.UI/) package
+* Remove any local shared views called Layout.cshtml or Menu.cshtml, otherwise these will take precedence over those in the package
+* Your application must set the selected navigation section by:
+   * Calling the SetDefaultNavigationSection in the application startup, passing your default navigation section as a parameter (if this is adequate, nothing further is required)
+   * Decorating controllers and/or individual action methods with the SetNavigationSection attribute filter, passing the appropriate navigation section as a parameter
+ 
+Examples: 
+
+ ```
+ services
+    .AddMvc(...)
+    .SetDefaultNavigationSection(NavigationSection.YourCohorts)
+  ```
+  
+  ```
+        [HttpGet]
+        [Route("add-apprentice")]
+        [SetNavigationSection(NavigationSection.YourCohorts)]
+        public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        {...
+  ```
+ 
