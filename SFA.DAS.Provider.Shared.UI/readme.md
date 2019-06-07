@@ -7,7 +7,7 @@ This consists of _Layout and _Menu razor views.
 ## Requirements, Limitations and Restrictions
 
 * Only Core web apps are supported.
-* This package references the ProviderUrlHelper package, which makes use of StructureMap and AutoConfiguration. The current implementation therefore will add StructureMap references to your project and make use of AutoConfiguration. This dependency will be removed in a future version.
+* This package references the ProviderUrlHelper package, which makes use of StructureMap and AutoConfiguration. The current implementation will add StructureMap references to your project and make use of AutoConfiguration. This dependency will be removed in a future version.
 * Feature Toggling is not supported. It is necessary to build and release new versions of the package and consume them in order to obtain different navigation menu versions.
 
 ## Usage
