@@ -35,9 +35,9 @@
                 <li class="das-navigation__list-item">
                     <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/cohorts")" class="das-navigation__link @(selected == NavigationSection.YourCohorts ? "das-navigation__link--current" : "")">Your cohorts</a>
                 </li>
-                <li class="das-navigation__list-item">
+                @*<li class="das-navigation__list-item">
                     <a href="@Url.ReservationsLink($"{providerId}/reservations/manage")" class="das-navigation__link @(selected == NavigationSection.Reservations ? "das-navigation__link--current" : "")">Manage funding</a>
-                </li>
+                </li>*@
                 <li class="das-navigation__list-item">
                     <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/manage/all")" class="das-navigation__link @(selected == NavigationSection.ManageApprentices ? "das-navigation__link--current" : "")">Manage your apprentices</a>
                 </li>
