@@ -1,0 +1,52 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.ActiveDirectory'
+
+pr: none
+
+workspace:
+    clean: all
+
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+pool:
+  name: Continuous Integration 02 - SSD - 160ACU
+variables:
+  BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '0'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: SFA.DAS.ActiveDirectory/SFA.DAS.ActiveDirectory.sln
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: SFA.DAS.ActiveDirectory/SFA.DAS.ActiveDirectory.sln
+    arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: SFA.DAS.ActiveDirectory/SFA.DAS.ActiveDirectory/SFA.DAS.ActiveDirectory.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: SFA.DAS.ActiveDirectory/SFA.DAS.ActiveDirectory
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
