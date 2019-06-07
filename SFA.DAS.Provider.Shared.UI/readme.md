@@ -37,6 +37,6 @@ Examples:
   ```
  
  ```csharp
-     [HideNavigationBar]
-    public class ErrorController : Controller
+[HideNavigationBar]
+public class ErrorController : Controller
  ```
