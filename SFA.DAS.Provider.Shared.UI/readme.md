@@ -27,10 +27,10 @@ Examples:
   ```
   
   ```
-        [HttpGet]
-        [Route("add-apprentice")]
-        [SetNavigationSection(NavigationSection.YourCohorts)]
-        public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
-        {...
+  [HttpGet]
+  [Route("add-apprentice")]
+  [SetNavigationSection(NavigationSection.YourCohorts)]
+  public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+  {...
   ```
  
