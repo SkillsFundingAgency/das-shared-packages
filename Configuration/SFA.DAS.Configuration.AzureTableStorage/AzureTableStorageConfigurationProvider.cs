@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
@@ -43,6 +44,11 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         {
             var operation = GetTableRowOperation(configurationKey);
             var row = await table.ExecuteAsync(operation).ConfigureAwait(false);
+            
+            // CloudStorageAccount.ToString() removes sensitive data
+            if (row.HttpStatusCode == (int)HttpStatusCode.NotFound)
+                throw new Exception($"Configuration row not found. StorageAccount:{_storageAccount}, PartitionKey:{_environmentName}, RowKey:{configurationKey}");
+                
             var configurationRow = (ConfigurationRow)row.Result;
 
             using (var stream = configurationRow.Data.ToStream())
