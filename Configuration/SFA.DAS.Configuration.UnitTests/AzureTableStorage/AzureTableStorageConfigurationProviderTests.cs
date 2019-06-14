@@ -13,8 +13,7 @@ using SFA.DAS.Testing;
 
 namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 {
-    [TestFixture]
-    [Parallelizable]
+    [TestFixture, Parallelizable]
     public class AzureTableStorageConfigurationProviderTests : FluentTest<AzureTableStorageConfigurationProviderTestsFixture>
     {
         [Test, TestCaseSource(typeof(AzureTableStorageConfigurationProviderTestsSource), nameof(AzureTableStorageConfigurationProviderTestsSource.TestCasesWithPrefix))]
@@ -29,8 +28,6 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             Test(f => f.SetConfigs(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
         }
     }
-
-
 
     public class AzureTableStorageConfigurationProviderTestsSource
     {

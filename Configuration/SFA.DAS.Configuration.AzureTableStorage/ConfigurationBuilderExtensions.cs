@@ -8,16 +8,18 @@ namespace SFA.DAS.Configuration.AzureTableStorage
     {
         public static IConfigurationBuilder AddAzureTableStorage(this IConfigurationBuilder builder, params string[] configurationKeys)
         {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+
             if (configurationKeys == null || !configurationKeys.Any())
-            {
                 throw new ArgumentException("At least one configuration key is required", nameof(configurationKeys));
-            }
             
             var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables();
 
             var configOptions = new ConfigurationOptions
             {
-                EnvironmentVariableKeys = environmentVariables,
+                EnvironmentName = environmentVariables.EnvironmentName,
+                TableStorageConnectionString = environmentVariables.TableStorageConnectionString,
                 ConfigurationKeys = configurationKeys
             };
 
@@ -29,35 +31,38 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         public static IConfigurationBuilder AddAzureTableStorage(this IConfigurationBuilder builder, Action<StorageOptions> setupOptions)
         {
             if (builder == null)
-            {
                 throw new ArgumentNullException(nameof(builder));
-            }
 
             if (setupOptions == null)
-            {
                 throw new ArgumentNullException(nameof(setupOptions));
-            }
 
-            var options = new StorageOptions();
-            setupOptions.Invoke(options);
-            
-            if (options == null || !options.ConfigurationKeys.Any())
+            var options = new StorageOptions
             {
+                EnvironmentNameEnvironmentVariableName = EnvironmentVariableNames.EnvironmentName,
+                StorageConnectionStringEnvironmentVariableName = EnvironmentVariableNames.ConfigurationStorageConnectionString
+            };
+            setupOptions(options);
+
+            if (!options.ConfigurationKeys.Any())
                 throw new ArgumentException("At least one configuration key is required", nameof(options.ConfigurationKeys));
-            }
-
-            var environmentNameKey = string.IsNullOrWhiteSpace(options.EnvironmentNameEnvironmentVariableName) ? EnvironmentVariableNames.EnvironmentName : options.EnvironmentNameEnvironmentVariableName;
-            var storageConnectionStringKey = string.IsNullOrWhiteSpace(options.StorageConnectionStringEnvironmentVariableName) ? EnvironmentVariableNames.ConfigurationStorageConnectionString : options.StorageConnectionStringEnvironmentVariableName;
-
-            var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables(storageConnectionStringKey, environmentNameKey);
 
             var configOptions = new ConfigurationOptions
             {
-                EnvironmentVariableKeys = environmentVariables,
                 ConfigurationKeys = options.ConfigurationKeys,
                 PrefixConfigurationKeys = options.PreFixConfigurationKeys
             };
 
+            if (options.EnvironmentName == null
+                || options.StorageConnectionString == null)
+            {
+                var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables(
+                    options.StorageConnectionStringEnvironmentVariableName,
+                    options.EnvironmentNameEnvironmentVariableName);
+
+                configOptions.EnvironmentName = options.EnvironmentName ?? environmentVariables.EnvironmentName;
+                configOptions.TableStorageConnectionString = options.StorageConnectionString ?? environmentVariables.TableStorageConnectionString;
+            }
+            
             var configurationSource = new AzureTableStorageConfigurationSource(configOptions);
             
             return builder.Add(configurationSource);

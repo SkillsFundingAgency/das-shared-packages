@@ -13,8 +13,8 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
         public AzureTableStorageConfigurationSource(ConfigurationOptions configOptions)
         {
-            _connectionString = configOptions.EnvironmentVariableKeys.TableStorageConnectionString;
-            _environmentName = configOptions.EnvironmentVariableKeys.EnvironmentName;
+            _connectionString = configOptions.TableStorageConnectionString;
+            _environmentName = configOptions.EnvironmentName;
             _configurationKeys = configOptions.ConfigurationKeys;
             _prefixConfigurationKeys = configOptions.PrefixConfigurationKeys;
         }
