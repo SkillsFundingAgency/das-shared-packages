@@ -54,7 +54,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Infrastructure
             try
             {
                 var messageText = Encoding.UTF8.GetString(triggerData.Data);
-                //TODO: work out why we are getting a rogue char at the start of the message 
                 //Remove all extra invalid starting characters that have come from decoding bytes
                 while (messageText.Length > 2 && messageText[0] != '{')
                 {
@@ -95,7 +94,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Infrastructure
 
         public ParameterDescriptor ToParameterDescriptor()
         {
-            //TODO: Change these valies once we know more about the messages we will be processing
             return new ParameterDescriptor
             {
                 Name = Parameter.Name,
