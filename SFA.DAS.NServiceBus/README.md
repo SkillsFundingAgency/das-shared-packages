@@ -81,6 +81,34 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
 filters.AddUnitOfWorkFilter();
 ```
 
+### Azure Function
+
+Add a nuget reference to `SFA.DAS.NServiceBus.AzureFunction`
+To use NServiceBus in an azure function you need to add the following to the Startup and also have two environment variables, NServiceBusConnectionString and NServiceBusLicense:
+
+```c#
+public class Startup :IWebJobsStartup
+    {
+        public void Configure(IWebJobsBuilder builder)
+        {
+            //Environment variables need creating for
+            //      NServiceBusConnectionString
+            //      NServiceBusLicense
+            builder.AddExecutionContextBinding();
+            builder.AddExtension<NServiceBusExtensionConfig>();
+        }
+    }
+```
+
+Each Function endpoint then subscribes to a particular event as shown below:
+
+```c#
+public static async Task Run([NServiceBusTrigger(EndPoint = "SFA.DAS.NServiceBus.AzureFunctionExample")] NetFrameworkEvent message, ILogger log)
+```
+
+NetFrameworkEvent is the event that you wish to subscribe to, the EndPoint is then what is configured as the Subscription name and queue name. Each function endpoint should subscribe to one event
+
+
 ### Job
 
 In the case of a crash or a service outage between an MVC or WebApi client and the server, some messages will fail to be published immediately. To accomodate these scenarios the `IProcessClientOutboxMessagesJob` should be run periodically. Here's an example of triggering the job to run every 24 hours using an Azure function:
