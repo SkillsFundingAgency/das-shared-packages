@@ -21,10 +21,4 @@
         <PackageReference Include="SFA.DAS.AutoConfiguration" Version="2.0.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="System.Configuration.ConfigurationManager">
-        <HintPath>..\..\..\..\..\Users\Tom\.nuget\packages\system.configuration.configurationmanager\4.4.0\ref\netstandard2.0\System.Configuration.ConfigurationManager.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
