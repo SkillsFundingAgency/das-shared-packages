@@ -16,20 +16,22 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         public void AddAzureTableStorage_WhenSetupOptionsIsInvoked_ThenOptionsContainDefaults()
         {
             Test(f => f.StoreCallbackOptions(), f => f.AddAzureTableStorageWithOptions(),
-                f=> f.AssertOptionsContainDefaults());
+                f => f.AssertOptionsContainDefaults());
         }
 
-//        [Test]
-//        public void AddAzureTableStorage_WhenDefaultEnvironmentNameOptionsAreUsedAndDefaultEnvironmentVariableIsPresent_ThenAddCalledWithConfigurationSourceWithEnvironmentNameFromDefaultEnvironmentVariable()
-//        {
-//            Test(f => f.AddAzureTableStorageWithOptions());
-//        }
-//
-//        [Test]
-//        public void AddAzureTableStorage_WhenDefaultEnvironmentNameOptionsAreUsedAndNoDefaultEnvironmentVariableIsPresent_ThenAddCalledWithConfigurationSourceWithEnvironmentNameAsDefault()
-//        {
-//            Test(f => f.AddAzureTableStorageWithOptions(), f=> f.AssertOptionsContainDefaults());
-//        }
+        [Test]
+        public void AddAzureTableStorage_WhenDefaultEnvironmentNameOptionsAreUsedAndDefaultEnvironmentVariableIsPresent_ThenAddCalledWithConfigurationSourceWithEnvironmentNameFromDefaultEnvironmentVariable()
+        {
+            Test(f => f.ArrangeDefaultEnvironmentNameVariable(), f => f.AddAzureTableStorageWithOptions(),
+                f => f.VerifyAddCalledWithConfigurationSourceWithCorrectEnvironmentName());
+        }
+
+        [Test]
+        public void AddAzureTableStorage_WhenDefaultEnvironmentNameOptionsAreUsedAndNoDefaultEnvironmentVariableIsPresent_ThenAddCalledWithConfigurationSourceWithEnvironmentNameAsDefault()
+        {
+            Test(f => f.ArrangeNoDefaultEnvironmentNameVariable(), f => f.AddAzureTableStorageWithOptions(),
+                    f => f.VerifyAddCalledWithConfigurationSourceWithCorrectEnvironmentName());
+        }
         
         [Test]
         public void AddAzureTableStorage_WhenOptionsAreSuppliedWithEnvironmentNameEnvironmentVariableNameAndNoEnvironmentName_ThenAddCalledWithConfigurationSourceWithEnvironmentNameFromGivenEnvironmentVariable()
@@ -90,7 +92,8 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         public const string DirectlySuppliedEnvironmentName = nameof(DirectlySuppliedEnvironmentName);
         public const string EnvironmentNameFromVariable = nameof(EnvironmentNameFromVariable);
         public const string OptionSuppliedEnvironmentNameEnvironmentVariableName = nameof(OptionSuppliedEnvironmentNameEnvironmentVariableName);
-
+        public const string EnvironmentNameFromDefaultEnvironmentVariable = nameof(EnvironmentNameFromDefaultEnvironmentVariable);
+        
         public string ExpectedConnectionString { get; set; }
         public const string DirectlySuppliedConnectionString = nameof(DirectlySuppliedConnectionString);
         public const string ConnectionStringFromVariable = nameof(ConnectionStringFromVariable);
@@ -114,6 +117,20 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
                 StoredCallbackOptions = so.Clone();
                 so.ConfigurationKeys = ConfigurationKeys;
             };
+            return this;
+        }
+
+        public ConfigurationBuilderExtensionsTestsFixture ArrangeDefaultEnvironmentNameVariable()
+        {
+            ExpectedEnvironmentName = EnvironmentNameFromDefaultEnvironmentVariable;
+            Environment.SetEnvironmentVariable("APPSETTING_EnvironmentName", ExpectedEnvironmentName);
+            return this;
+        }
+
+        public ConfigurationBuilderExtensionsTestsFixture ArrangeNoDefaultEnvironmentNameVariable()
+        {
+            ExpectedEnvironmentName = "LOCAL";
+            Environment.SetEnvironmentVariable("APPSETTING_EnvironmentName", null);
             return this;
         }
         
