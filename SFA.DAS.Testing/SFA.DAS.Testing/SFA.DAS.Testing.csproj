@@ -18,6 +18,14 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19270-01" PrivateAssets="All" />
+        <PackageReference Include="SFA.DAS.AutoConfiguration" Version="2.0.1" />
+        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.49" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Configuration.ConfigurationManager">
+        <HintPath>..\..\..\..\..\Users\Tom\.nuget\packages\system.configuration.configurationmanager\4.4.0\ref\netstandard2.0\System.Configuration.ConfigurationManager.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
