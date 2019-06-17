@@ -19,9 +19,21 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
         private static EnvironmentVariables GetRequiredEnvironmentVariables(string connectionStringKey, string environmentNameKey)
         {
-            var environmentName = Environment.GetEnvironmentVariable(environmentNameKey) ?? DeveloperEnvironmentName;
+            var environmentName = GetEnvironmentNameFromEnvironmentVariable(environmentNameKey);
+            var connectionString = GetConnectionStringFromEnvironmentVariable(connectionStringKey, environmentName);
+
+            return new EnvironmentVariables(connectionString, environmentName);
+        }
+
+        internal static string GetEnvironmentNameFromEnvironmentVariable(string environmentNameKey)
+        {
+            return Environment.GetEnvironmentVariable(environmentNameKey) ?? DeveloperEnvironmentName;
+        }
+        
+        internal static string GetConnectionStringFromEnvironmentVariable(string connectionStringKey, string environmentName)
+        {
             var connectionString = Environment.GetEnvironmentVariable(connectionStringKey);
-            
+
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 if (string.Equals(environmentName, DeveloperEnvironmentName, StringComparison.OrdinalIgnoreCase))
@@ -34,7 +46,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                 }
             }
 
-            return new EnvironmentVariables(connectionString, environmentName);
+            return connectionString;
         }
     }
 }

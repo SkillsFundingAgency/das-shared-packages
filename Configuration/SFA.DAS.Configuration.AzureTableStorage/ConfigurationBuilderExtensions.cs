@@ -52,19 +52,16 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                 PrefixConfigurationKeys = options.PreFixConfigurationKeys
             };
 
-            if (options.EnvironmentName == null
-                || options.StorageConnectionString == null)
-            {
-                var environmentVariables = ConfigurationBootstrapper.GetEnvironmentVariables(
-                    options.StorageConnectionStringEnvironmentVariableName,
+            configOptions.EnvironmentName = options.EnvironmentName ??
+                ConfigurationBootstrapper.GetEnvironmentNameFromEnvironmentVariable(
                     options.EnvironmentNameEnvironmentVariableName);
+            
+            configOptions.TableStorageConnectionString = options.StorageConnectionString ??
+                ConfigurationBootstrapper.GetConnectionStringFromEnvironmentVariable(
+                    options.StorageConnectionStringEnvironmentVariableName, configOptions.EnvironmentName);
 
-                configOptions.EnvironmentName = options.EnvironmentName ?? environmentVariables.EnvironmentName;
-                configOptions.TableStorageConnectionString = options.StorageConnectionString ?? environmentVariables.TableStorageConnectionString;
-            }
-            
             var configurationSource = new AzureTableStorageConfigurationSource(configOptions);
-            
+
             return builder.Add(configurationSource);
         }
     }
