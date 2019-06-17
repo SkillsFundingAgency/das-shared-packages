@@ -19,6 +19,18 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
                 f=> f.AssertOptionsContainDefaults());
         }
 
+//        [Test]
+//        public void AddAzureTableStorage_WhenDefaultEnvironmentNameOptionsAreUsedAndDefaultEnvironmentVariableIsPresent_ThenAddCalledWithConfigurationSourceWithEnvironmentNameFromDefaultEnvironmentVariable()
+//        {
+//            Test(f => f.AddAzureTableStorageWithOptions());
+//        }
+//
+//        [Test]
+//        public void AddAzureTableStorage_WhenDefaultEnvironmentNameOptionsAreUsedAndNoDefaultEnvironmentVariableIsPresent_ThenAddCalledWithConfigurationSourceWithEnvironmentNameAsDefault()
+//        {
+//            Test(f => f.AddAzureTableStorageWithOptions(), f=> f.AssertOptionsContainDefaults());
+//        }
+        
         [Test]
         public void AddAzureTableStorage_WhenOptionsAreSuppliedWithEnvironmentNameEnvironmentVariableNameAndNoEnvironmentName_ThenAddCalledWithConfigurationSourceWithEnvironmentNameFromGivenEnvironmentVariable()
         {
@@ -51,21 +63,21 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
                 f => f.VerifyAddCalledWithConfigurationSourceWithCorrectConnectionString());
         }
         
-//        [Test]
-//        public void AddAzureTableStorage_WhenOptionsAreSuppliedWithStorageConnectionStringAndNoStorageConnectionStringEnvironmentVariableName_ThenAddCalledWithConfigurationSourceWithSuppliedStorageConnectionString()
-//        {
-//            Test(f => f.ArrangeOptionsAreSuppliedWithStorageConnectionStringAndNoStorageConnectionStringEnvironmentVariableName(),
-//                f => f.AddAzureTableStorageWithOptions(),
-//                f => f.VerifyAddCalledWithConfigurationSourceWithCorrectConnectionString());
-//        }
-//
-//        [Test]
-//        public void AddAzureTableStorage_WhenOptionsAreSuppliedWithStorageConnectionStringAndStorageConnectionStringEnvironmentVariableName_ThenAddCalledWithConfigurationSourceWithSuppliedStorageConnectionString()
-//        {
-//            Test(f => f.ArrangeOptionsAreSuppliedWithStorageConnectionStringAndStorageConnectionStringEnvironmentVariableName(),
-//                f => f.AddAzureTableStorageWithOptions(),
-//                f => f.VerifyAddCalledWithConfigurationSourceWithCorrectConnectionString());
-//        }
+        [Test]
+        public void AddAzureTableStorage_WhenOptionsAreSuppliedWithStorageConnectionStringAndNoStorageConnectionStringEnvironmentVariableName_ThenAddCalledWithConfigurationSourceWithSuppliedStorageConnectionString()
+        {
+            Test(f => f.ArrangeOptionsAreSuppliedWithStorageConnectionStringAndNoStorageConnectionStringEnvironmentVariableName(),
+                f => f.AddAzureTableStorageWithOptions(),
+                f => f.VerifyAddCalledWithConfigurationSourceWithCorrectConnectionString());
+        }
+
+        [Test]
+        public void AddAzureTableStorage_WhenOptionsAreSuppliedWithStorageConnectionStringAndStorageConnectionStringEnvironmentVariableName_ThenAddCalledWithConfigurationSourceWithSuppliedStorageConnectionString()
+        {
+            Test(f => f.ArrangeOptionsAreSuppliedWithStorageConnectionStringAndStorageConnectionStringEnvironmentVariableName(),
+                f => f.AddAzureTableStorageWithOptions(),
+                f => f.VerifyAddCalledWithConfigurationSourceWithCorrectConnectionString());
+        }
     }
 
     public class ConfigurationBuilderExtensionsTestsFixture
@@ -77,11 +89,12 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         public string ExpectedEnvironmentName { get; set; }
         public const string DirectlySuppliedEnvironmentName = nameof(DirectlySuppliedEnvironmentName);
         public const string EnvironmentNameFromVariable = nameof(EnvironmentNameFromVariable);
-        public const string optionSuppliedEnvironmentNameEnvironmentVariableName = nameof(optionSuppliedEnvironmentNameEnvironmentVariableName);
+        public const string OptionSuppliedEnvironmentNameEnvironmentVariableName = nameof(OptionSuppliedEnvironmentNameEnvironmentVariableName);
 
         public string ExpectedConnectionString { get; set; }
         public const string DirectlySuppliedConnectionString = nameof(DirectlySuppliedConnectionString);
         public const string ConnectionStringFromVariable = nameof(ConnectionStringFromVariable);
+        public const string OptionSuppliedConnectionStringEnvironmentVariableName = nameof(OptionSuppliedConnectionStringEnvironmentVariableName);
         
         public ConfigurationBuilderExtensionsTestsFixture()
         {
@@ -106,24 +119,21 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         
         public ConfigurationBuilderExtensionsTestsFixture ArrangeOptionsAreSuppliedWithEnvironmentNameEnvironmentVariableNameAndNoEnvironmentName()
         {
-            // this arrangement is actually the default, but we explicitly set it in case the defaults change
             SetupOptions = so =>
             {
                 so.ConfigurationKeys = ConfigurationKeys;
-                so.EnvironmentNameEnvironmentVariableName = optionSuppliedEnvironmentNameEnvironmentVariableName;
+                so.EnvironmentNameEnvironmentVariableName = OptionSuppliedEnvironmentNameEnvironmentVariableName;
                 so.EnvironmentName = null;
             };
 
-            // not here, just test
             ExpectedEnvironmentName = "EnvironmentNameFromOptionSuppliedVariableName";
-            Environment.SetEnvironmentVariable(optionSuppliedEnvironmentNameEnvironmentVariableName, ExpectedEnvironmentName);
+            Environment.SetEnvironmentVariable(OptionSuppliedEnvironmentNameEnvironmentVariableName, ExpectedEnvironmentName);
             
             return this;
         }
 
         public ConfigurationBuilderExtensionsTestsFixture ArrangeOptionsAreSuppliedWithEnvironmentNameAndNoEnvironmentNameEnvironmentVariableName()
         {
-            // this arrangement is actually the default, but we explicitly set it in case the defaults change
             SetupOptions = so =>
             {
                 so.ConfigurationKeys = ConfigurationKeys;
@@ -136,17 +146,15 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 
         public ConfigurationBuilderExtensionsTestsFixture ArrangeOptionsAreSuppliedWithEnvironmentNameAndEnvironmentNameEnvironmentVariableName()
         {
-            // this arrangement is actually the default, but we explicitly set it in case the defaults change
             SetupOptions = so =>
             {
                 so.ConfigurationKeys = ConfigurationKeys;
-                so.EnvironmentNameEnvironmentVariableName = optionSuppliedEnvironmentNameEnvironmentVariableName;
+                so.EnvironmentNameEnvironmentVariableName = OptionSuppliedEnvironmentNameEnvironmentVariableName;
                 so.EnvironmentName = ExpectedEnvironmentName = DirectlySuppliedEnvironmentName;
             };
 
-            // not here, just test
             ExpectedEnvironmentName = "EnvironmentNameFromOptionSuppliedVariableName";
-            Environment.SetEnvironmentVariable(optionSuppliedEnvironmentNameEnvironmentVariableName, ExpectedEnvironmentName);
+            Environment.SetEnvironmentVariable(OptionSuppliedEnvironmentNameEnvironmentVariableName, ExpectedEnvironmentName);
             
             return this;
         }
@@ -156,7 +164,6 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             const string optionSuppliedStorageConnectionStringEnvironmentVariableName
                 = nameof(optionSuppliedStorageConnectionStringEnvironmentVariableName);
             
-            // this arrangement is actually the default, but we explicitly set it in case the defaults change
             SetupOptions = so =>
             {
                 so.ConfigurationKeys = ConfigurationKeys;
@@ -164,9 +171,35 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
                 so.StorageConnectionString = null;
             };
 
-            // not here, just test
             ExpectedConnectionString = "ConnectionStringFromOptionSuppliedVariableName";
             Environment.SetEnvironmentVariable(optionSuppliedStorageConnectionStringEnvironmentVariableName, ExpectedConnectionString);
+            
+            return this;
+        }
+        
+        public ConfigurationBuilderExtensionsTestsFixture ArrangeOptionsAreSuppliedWithStorageConnectionStringAndNoStorageConnectionStringEnvironmentVariableName()
+        {
+            SetupOptions = so =>
+            {
+                so.ConfigurationKeys = ConfigurationKeys;
+                so.StorageConnectionStringEnvironmentVariableName = null;
+                so.StorageConnectionString = ExpectedConnectionString = DirectlySuppliedConnectionString;
+            };
+
+            return this;
+        }
+
+        public ConfigurationBuilderExtensionsTestsFixture ArrangeOptionsAreSuppliedWithStorageConnectionStringAndStorageConnectionStringEnvironmentVariableName()
+        {
+            SetupOptions = so =>
+            {
+                so.ConfigurationKeys = ConfigurationKeys;
+                so.StorageConnectionStringEnvironmentVariableName = OptionSuppliedConnectionStringEnvironmentVariableName;
+                so.StorageConnectionString = ExpectedConnectionString = DirectlySuppliedConnectionString;
+            };
+
+            ExpectedEnvironmentName = "EnvironmentNameFromOptionSuppliedVariableName";
+            Environment.SetEnvironmentVariable(OptionSuppliedEnvironmentNameEnvironmentVariableName, ExpectedEnvironmentName);
             
             return this;
         }
