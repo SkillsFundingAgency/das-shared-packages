@@ -11,7 +11,6 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     [TestFixture]
     public class ConfigurationBuilderExtensionsTests : FluentTest<ConfigurationBuilderExtensionsTestsFixture>
     {
-        //todo: rename tests names to be shorter
         [Test]
         public void AddAzureTableStorage_WhenSetupOptionsIsInvoked_ThenOptionsContainDefaults()
         {
