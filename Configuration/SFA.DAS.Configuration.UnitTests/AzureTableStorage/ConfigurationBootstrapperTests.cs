@@ -7,8 +7,7 @@ using Fix = SFA.DAS.Configuration.UnitTests.AzureTableStorage.ConfigurationBoots
 
 namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 {
-    [TestFixture]
-    [Parallelizable]
+    [TestFixture, Parallelizable]
     public class ConfigurationBootstrapperTests : FluentTest<ConfigurationBootstrapperTestsFixture>
     {
         [Test]
