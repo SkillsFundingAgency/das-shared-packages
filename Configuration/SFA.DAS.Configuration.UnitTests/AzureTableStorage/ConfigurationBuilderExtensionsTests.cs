@@ -1,4 +1,5 @@
 using System;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
@@ -7,13 +8,14 @@ using SFA.DAS.Testing;
 
 namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 {
-    [TestFixture, Parallelizable]
+    [TestFixture]
     public class ConfigurationBuilderExtensionsTests : FluentTest<ConfigurationBuilderExtensionsTestsFixture>
     {
-        [Test, Ignore("WIP")]
+        [Test]
         public void AddAzureTableStorage_WhenSetupOptionsIsInvoked_ThenOptionsContainDefaults()
         {
-            Test(f => f.AddAzureTableStorageWithOptions());
+            Test(f => f.StoreCallbackOptions(), f => f.AddAzureTableStorageWithOptions(),
+                f=> f.AssertOptionsContainDefaults());
         }
 
         [Test]
@@ -37,6 +39,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     {
         public Mock<IConfigurationBuilder> ConfigurationBuilder { get; set; }
         public Action<StorageOptions> SetupOptions { get; set; }
+        public StorageOptions StoredCallbackOptions { get; set; }
         public string[] ConfigurationKeys { get; set; }
         public string ExpectedEnvironmentName { get; set; }
         public const string EnvironmentNameFromVariable = nameof(EnvironmentNameFromVariable);
@@ -54,6 +57,16 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             Environment.SetEnvironmentVariable("APPSETTING_ConfigurationStorageConnectionString", ConnectionStringFromVariable);
         }
 
+        public ConfigurationBuilderExtensionsTestsFixture StoreCallbackOptions()
+        {
+            SetupOptions = so =>
+            {
+                StoredCallbackOptions = so.Clone();
+                so.ConfigurationKeys = ConfigurationKeys;
+            };
+            return this;
+        }
+        
         public ConfigurationBuilderExtensionsTestsFixture ArrangeOptionsAreSuppliedWithEnvironmentNameEnvironmentVariableNameAndNoEnvironmentName()
         {
             const string optionSuppliedEnvironmentNameEnvironmentVariableName = nameof(optionSuppliedEnvironmentNameEnvironmentVariableName);
@@ -95,9 +108,19 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 
         public void AddAzureTableStorageWithOptions()
         {
-            ConfigurationBuilderExtensions.AddAzureTableStorage(ConfigurationBuilder.Object, SetupOptions);
+            ConfigurationBuilder.Object.AddAzureTableStorage(SetupOptions);
         }
 
+        public void AssertOptionsContainDefaults()
+        {
+            StoredCallbackOptions.Should().BeEquivalentTo(new StorageOptions
+            {
+                EnvironmentNameEnvironmentVariableName = "APPSETTING_EnvironmentName",
+                StorageConnectionStringEnvironmentVariableName = "APPSETTING_ConfigurationStorageConnectionString",
+                PreFixConfigurationKeys = true
+            });
+        }
+        
         public void VerifyAddCalledWithConfigurationSourceWithCorrectEnvironmentName()
         {
             ConfigurationBuilder.Verify(cb => cb.Add(It.Is<AzureTableStorageConfigurationSource>( 
