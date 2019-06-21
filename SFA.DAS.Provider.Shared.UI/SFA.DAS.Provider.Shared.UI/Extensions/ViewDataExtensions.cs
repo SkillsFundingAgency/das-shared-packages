@@ -15,5 +15,10 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         {
             return viewData.ContainsKey(ViewDataKeys.HideNavigationBar) && (bool)viewData[ViewDataKeys.HideNavigationBar];
         }
+
+        public static bool ShowBetaPhaseBanner(this ViewDataDictionary viewData)
+        {
+            return viewData.ContainsKey(ViewDataKeys.ShowBetaPhaseBanner) && (bool)viewData[ViewDataKeys.ShowBetaPhaseBanner];
+        }
     }
 }

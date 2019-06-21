@@ -14,5 +14,14 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
             });
             return builder;
         }
+
+        public static IMvcBuilder ShowBetaPhaseBanner(this IMvcBuilder builder)
+        {
+            builder.Services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new ShowBetaPhaseBannerAttribute());
+            });
+            return builder;
+        }
     }
 }
