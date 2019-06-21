@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.ProviderUrlHelper.Core
+﻿@using SFA.DAS.Provider.Shared.UI.Extensions
+@using SFA.DAS.ProviderUrlHelper.Core
 
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
@@ -54,8 +55,11 @@
     </header>
 
     <partial name="_Menu" view-data="ViewData" />
-
+    
     <div class="govuk-width-container">
+    
+    @if (ViewData.ShowBetaPhaseBanner())
+    {
         <div class="govuk-phase-banner">
             <p class="govuk-phase-banner__content">
                 <strong class="govuk-tag govuk-phase-banner__content__tag ">
@@ -66,13 +70,15 @@
                 </span>
             </p>
         </div>
-        <!--TO DO add Back link logic
-            <a href="#" class="govuk-back-link">Back</a>
-        -->
-        <main class="govuk-main-wrapper " id="main-content" role="main">
-            @RenderBody()
-        </main>
-    </div>
+    }
+
+    <!--TO DO add Back link logic
+    <a href="#" class="govuk-back-link">Back</a>
+    -->
+    <main class="govuk-main-wrapper " id="main-content" role="main">
+        @RenderBody()
+    </main>
+</div>
     <footer class="govuk-footer " role="contentinfo">
         <div class="govuk-width-container ">
             <div class="govuk-footer__meta">

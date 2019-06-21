@@ -19,6 +19,7 @@ This consists of _Layout and _Menu razor views.
    * Calling the `SetDefaultNavigationSection` in the application startup, passing your default navigation section as a parameter (if this is adequate, nothing further is required)
    * Decorating controllers and/or individual action methods with the `SetNavigationSection` attribute filter, passing the appropriate navigation section as a parameter
 * Prevent the menu from being displayed by decorating controllers or individual action methods with the `HideNavigationBar` attribute filter
+* Show a "Beta" phase banner in the layout for your service by calling the `ShowBetaPhaseBanner` startup extension method (or adding the `ShowBetaPhaseBanner` attribute filter as appropriate)
  
 Examples: 
 
