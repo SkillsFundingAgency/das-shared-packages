@@ -1,0 +1,35 @@
+@inject ILinkGenerator LinkGenerator
+
+@{
+    ViewBag.Title = "Home";
+}
+
+<h1>SFA.DAS.EmployerUrlHelper</h1>
+
+<h2>Accounts</h2>
+<ol>
+    <li><a href="@LinkGenerator.Account("AAA111")">@nameof(LinkGenerator.Account)</a></li>
+    <li><a href="@LinkGenerator.NotificationSettings()">@nameof(LinkGenerator.NotificationSettings)</a></li>
+    <li><a href="@LinkGenerator.PayeSchemes("AAA111")">@nameof(LinkGenerator.PayeSchemes)</a></li>
+    <li><a href="@LinkGenerator.RenameAccount("AAA111")">@nameof(LinkGenerator.RenameAccount)</a></li>
+    <li><a href="@LinkGenerator.YourAccounts()">@nameof(LinkGenerator.YourAccounts)</a></li>
+    <li><a href="@LinkGenerator.YourOrganisationsAndAgreements("AAA111")">@nameof(LinkGenerator.YourOrganisationsAndAgreements)</a></li>
+    <li><a href="@LinkGenerator.YourTeam("AAA111")">@nameof(LinkGenerator.YourTeam)</a></li>
+</ol>
+
+<h2>Commitments</h2>
+<ol>
+    <li><a href="@LinkGenerator.Apprentices("AAA111")">@nameof(LinkGenerator.Apprentices)</a></li> 
+</ol>
+
+<h2>Portal</h2>
+<ol>
+    <li><a href="@LinkGenerator.Help()">@nameof(LinkGenerator.Help)</a></li>
+    <li><a href="@LinkGenerator.Homepage()">@nameof(LinkGenerator.Homepage)</a></li>
+    <li><a href="@LinkGenerator.Privacy()">@nameof(LinkGenerator.Privacy)</a></li>
+</ol>
+
+<h2>Recruit</h2>
+<ol>
+    <li><a href="@LinkGenerator.Recruit("AAA111")">@nameof(LinkGenerator.Recruit)</a></li>
+</ol>
