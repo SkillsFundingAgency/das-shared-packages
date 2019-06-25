@@ -30,6 +30,7 @@ namespace SFA.DAS.EmployerUrlHelper
         #region Commitments
 
         public string Apprentices(string accountHashedId) => Commitments("apprentices/home", accountHashedId);
+        public string CohortDetails(string accountHashedId, string commitmentHashedId) => Commitments($"apprentices/{commitmentHashedId}/details", accountHashedId);
         
         private string Commitments(string path, string accountHashedId) => AccountAction(_options.CurrentValue.CommitmentsBaseUrl, path, accountHashedId);
 
