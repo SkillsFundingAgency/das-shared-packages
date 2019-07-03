@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>DAS</Authors>
+    <Description>Entity Framework helpers for DAS</Description>
+    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.EntityFramework</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
+    <PackageReference Include="Z.EntityFramework.Plus.QueryFuture.EF6" Version="1.7.19" />
+  </ItemGroup>
+
+</Project>
