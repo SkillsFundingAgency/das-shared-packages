@@ -14,10 +14,6 @@
         <PackageReference Include="SFA.DAS.Testing" Version="2.0.5" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
-    </ItemGroup>
-
     <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
         <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
     </ItemGroup>
