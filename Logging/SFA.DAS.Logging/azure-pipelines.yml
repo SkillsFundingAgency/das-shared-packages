@@ -25,25 +25,25 @@ steps:
   displayName: 'dotnet restore'
   inputs:
     command: restore
-    projects: SFA.DAS.Logging/SFA.DAS.Logging.sln
+    projects: Logging/SFA.DAS.Logging/SFA.DAS.Logging.sln
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
-    projects: SFA.DAS.Logging/SFA.DAS.Logging.sln
+    projects: Logging/SFA.DAS.Logging/SFA.DAS.Logging.sln
     arguments: '/p:Configuration=$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
   inputs:
     command: pack
-    packagesToPack: SFA.DAS.Logging/SFA.DAS.Logging/SFA.DAS.Logging.csproj
+    packagesToPack: Logging/SFA.DAS.Logging/SFA.DAS.Logging/SFA.DAS.Logging.csproj
     versioningScheme: byBuildNumber
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    SourceFolder: SFA.DAS.Logging/SFA.DAS.Logging
+    SourceFolder: Logging/SFA.DAS.Logging/SFA.DAS.Logging
     Contents: '**/*.nupkg'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
