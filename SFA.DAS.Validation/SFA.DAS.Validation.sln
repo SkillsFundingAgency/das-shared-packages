@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Validation.WebApi", "SFA.DAS.Validation.WebApi\SFA.DAS.Validation.WebApi.csproj", "{4416F7D4-4153-4D0A-9203-31607B4F40E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Validation.WebApi", "SFA.DAS.Validation.WebApi\SFA.DAS.Validation.WebApi.csproj", "{3EBE64AC-40E8-43B1-AF8A-D521803656B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +43,10 @@ Global
 		{9AA995C5-1839-4E54-B6B6-4E882BDEA58F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AA995C5-1839-4E54-B6B6-4E882BDEA58F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AA995C5-1839-4E54-B6B6-4E882BDEA58F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4416F7D4-4153-4D0A-9203-31607B4F40E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4416F7D4-4153-4D0A-9203-31607B4F40E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4416F7D4-4153-4D0A-9203-31607B4F40E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4416F7D4-4153-4D0A-9203-31607B4F40E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EBE64AC-40E8-43B1-AF8A-D521803656B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EBE64AC-40E8-43B1-AF8A-D521803656B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EBE64AC-40E8-43B1-AF8A-D521803656B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EBE64AC-40E8-43B1-AF8A-D521803656B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
