@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
@@ -19,17 +18,12 @@ namespace SFA.DAS.Http.MessageHandlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
-            
-            _logger.LogSendingRequest(request.Method, request.RequestUri);
+            _logger.LogSendingRequest(request);
             
             var stopwatch = Stopwatch.StartNew();
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             
-            _logger.LogReceivedResponse(stopwatch.ElapsedMilliseconds, response.StatusCode);
+            _logger.LogReceivedResponse(response, stopwatch.ElapsedMilliseconds);
 
             return response;
         }

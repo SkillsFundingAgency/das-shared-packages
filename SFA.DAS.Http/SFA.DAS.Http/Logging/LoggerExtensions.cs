@@ -12,19 +12,39 @@ namespace SFA.DAS.Http.Logging
             EventIds.SendingRequest,
             "Sending HTTP request {HttpMethod} {Uri}");
         
+        private static readonly Action<ILogger, string, Exception> SendingRequestHeaders = LoggerMessage.Define<string>(
+            LogLevel.Trace,
+            EventIds.SendingRequestHeaders,
+            "Sending Request Headers: {Headers}");
+        
         private static readonly Action<ILogger, double, HttpStatusCode, Exception> ReceivedResponse = LoggerMessage.Define<double, HttpStatusCode>(
             LogLevel.Information,
             EventIds.ReceivedResponse,
             "Received HTTP response after {ElapsedMilliseconds}ms - {HttpStatusCode}");
         
-        public static void LogSendingRequest(this ILogger logger, HttpMethod httpMethod, Uri uri)
+        private static readonly Action<ILogger, string, Exception> ReceivedResponseHeaders = LoggerMessage.Define<string>(
+            LogLevel.Trace,
+            EventIds.ReceivedResponseHeaders,
+            "Received Response Headers: {Headers}");
+        
+        public static void LogSendingRequest(this ILogger logger, HttpRequestMessage request)
         {
-            SendingRequest(logger, httpMethod, uri, null);
+            SendingRequest(logger, request.Method, request.RequestUri, null);
+
+            if (logger.IsEnabled(LogLevel.Trace))
+            {
+                SendingRequestHeaders(logger, request.Headers.ToLogMessage(request.Content?.Headers), null);
+            }
         }
 
-        public static void LogReceivedResponse(this ILogger logger, double elapsedMilliseconds, HttpStatusCode httpStatusCode)
+        public static void LogReceivedResponse(this ILogger logger, HttpResponseMessage response, long elapsedMilliseconds)
         {
-            ReceivedResponse(logger, elapsedMilliseconds, httpStatusCode, null);
+            ReceivedResponse(logger, elapsedMilliseconds, response.StatusCode, null);
+            
+            if (logger.IsEnabled(LogLevel.Trace))
+            {
+                ReceivedResponseHeaders(logger, response.Headers.ToLogMessage(response.Content?.Headers), null);
+            }
         }
     }
 }

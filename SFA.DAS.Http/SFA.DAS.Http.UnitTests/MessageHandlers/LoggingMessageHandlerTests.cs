@@ -17,9 +17,10 @@ namespace SFA.DAS.Http.UnitTests.MessageHandlers
     public class LoggingMessageHandlerTests : FluentTest<LoggingMessageHandlerTestsFixture>
     {
         [Test]
-        public Task SendAsync_WhenSendingARequest_ThenShouldLog()
+        public Task SendAsync_WhenSendingRequest_ThenShouldLogRequest()
         {
             return TestAsync(
+                f => f.SetLogLevel(LogLevel.Information),
                 f => f.SendAsync(),
                 f => f.Logger.Verify(l => 
                     l.Log(
@@ -30,11 +31,44 @@ namespace SFA.DAS.Http.UnitTests.MessageHandlers
                         It.IsAny<Func<object, Exception, string>>()),
                     Times.Once));
         }
-
+        
         [Test]
-        public Task SendAsync_WhenReceivingAResponse_ThenShouldLog()
+        public Task SendAsync_WhenSendingRequestAndLogLevelIsTrace_ThenShouldLogRequestHeaders()
         {
             return TestAsync(
+                f => f.SetLogLevel(LogLevel.Trace),
+                f => f.SendAsync(),
+                f => f.Logger.Verify(l => 
+                        l.Log(
+                            LogLevel.Trace,
+                            EventIds.SendingRequestHeaders,
+                            It.IsAny<object>(),
+                            null,
+                            It.IsAny<Func<object, Exception, string>>()),
+                    Times.Once));
+        }
+        
+        [Test]
+        public Task SendAsync_WhenSendingRequestAndLogLevelIsNotTrace_ThenShouldNotLogRequestHeaders()
+        {
+            return TestAsync(
+                f => f.SetLogLevel(LogLevel.Information),
+                f => f.SendAsync(),
+                f => f.Logger.Verify(l => 
+                        l.Log(
+                            LogLevel.Trace,
+                            EventIds.SendingRequestHeaders,
+                            It.IsAny<object>(),
+                            null,
+                            It.IsAny<Func<object, Exception, string>>()),
+                    Times.Never));
+        }
+
+        [Test]
+        public Task SendAsync_WhenReceivingResponse_ThenShouldLogResponse()
+        {
+            return TestAsync(
+                f => f.SetLogLevel(LogLevel.Information),
                 f => f.SendAsync(),
                 f => f.Logger.Verify(l => 
                         l.Log(
@@ -44,6 +78,38 @@ namespace SFA.DAS.Http.UnitTests.MessageHandlers
                             null,
                             It.IsAny<Func<object, Exception, string>>()),
                     Times.Once));
+        }
+        
+        [Test]
+        public Task SendAsync_WhenReceivingResponseAndLogLevelIsTrace_ThenShouldLogResponseHeaders()
+        {
+            return TestAsync(
+                f => f.SetLogLevel(LogLevel.Trace),
+                f => f.SendAsync(),
+                f => f.Logger.Verify(l => 
+                        l.Log(
+                            LogLevel.Trace,
+                            EventIds.ReceivedResponseHeaders,
+                            It.IsAny<object>(),
+                            null,
+                            It.IsAny<Func<object, Exception, string>>()),
+                    Times.Once));
+        }
+        
+        [Test]
+        public Task SendAsync_WhenReceivingResponseAndLogLevelIsNotTrace_ThenShouldNotLogResponseHeaders()
+        {
+            return TestAsync(
+                f => f.SetLogLevel(LogLevel.Information),
+                f => f.SendAsync(),
+                f => f.Logger.Verify(l => 
+                        l.Log(
+                            LogLevel.Trace,
+                            EventIds.ReceivedResponseHeaders,
+                            It.IsAny<object>(),
+                            null,
+                            It.IsAny<Func<object, Exception, string>>()),
+                    Times.Never));
         }
 
         [Test]
@@ -68,13 +134,18 @@ namespace SFA.DAS.Http.UnitTests.MessageHandlers
             InnerMessageHandler = new FakeHttpMessageHandler { HttpResponseMessage = HttpResponseMessage };
             LoggingMessageHandler = new LoggingMessageHandler(Logger.Object) { InnerHandler = InnerMessageHandler };
             HttpClient = new HttpClient(LoggingMessageHandler);
-
-            Logger.Setup(l => l.IsEnabled(LogLevel.Information)).Returns(true);
         }
 
         public Task<HttpResponseMessage> SendAsync()
         {
             return HttpClient.GetAsync("https://foo.bar");
+        }
+
+        public LoggingMessageHandlerTestsFixture SetLogLevel(LogLevel logLevel)
+        {
+            Logger.Setup(l => l.IsEnabled(logLevel)).Returns(true);
+
+            return this;
         }
     }
 }
