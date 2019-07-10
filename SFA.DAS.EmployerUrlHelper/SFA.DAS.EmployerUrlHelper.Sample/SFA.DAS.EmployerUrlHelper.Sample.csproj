@@ -15,4 +15,10 @@
       <ProjectReference Include="..\SFA.DAS.EmployerUrlHelper\SFA.DAS.EmployerUrlHelper.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="wwwroot\Site.css">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
