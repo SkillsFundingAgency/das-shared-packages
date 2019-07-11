@@ -1,0 +1,37 @@
+﻿@using SFA.DAS.EmployerUrlHelper
+@using SFA.DAS.EmployerUrlHelper.Framework
+
+@{
+    ViewBag.Title = "Home";
+}
+
+<h1>SFA.DAS.EmployerUrlHelper</h1>
+
+<h2>Accounts</h2>
+<ol>
+    <li><a href="@Url.Account("AAA111")">@nameof(LinkGenerator.Account)</a></li>
+    <li><a href="@Url.NotificationSettings()">@nameof(LinkGenerator.NotificationSettings)</a></li>
+    <li><a href="@Url.PayeSchemes("AAA111")">@nameof(LinkGenerator.PayeSchemes)</a></li>
+    <li><a href="@Url.RenameAccount("AAA111")">@nameof(LinkGenerator.RenameAccount)</a></li>
+    <li><a href="@Url.YourAccounts()">@nameof(LinkGenerator.YourAccounts)</a></li>
+    <li><a href="@Url.YourOrganisationsAndAgreements("AAA111")">@nameof(LinkGenerator.YourOrganisationsAndAgreements)</a></li>
+    <li><a href="@Url.YourTeam("AAA111")">@nameof(LinkGenerator.YourTeam)</a></li>
+</ol>
+
+<h2>Commitments</h2>
+<ol>
+    <li><a href="@Url.Apprentices("AAA111")">@nameof(LinkGenerator.Apprentices)</a></li>
+    <li><a href="@Url.CohortDetails("AAA111", "BBB222")">@nameof(LinkGenerator.CohortDetails)</a></li> 
+</ol>
+
+<h2>Portal</h2>
+<ol>
+    <li><a href="@Url.Help()">@nameof(LinkGenerator.Help)</a></li>
+    <li><a href="@Url.Homepage()">@nameof(LinkGenerator.Homepage)</a></li>
+    <li><a href="@Url.Privacy()">@nameof(LinkGenerator.Privacy)</a></li>
+</ol>
+
+<h2>Recruit</h2>
+<ol>
+    <li><a href="@Url.Recruit("AAA111")">@nameof(LinkGenerator.Recruit)</a></li>
+</ol>

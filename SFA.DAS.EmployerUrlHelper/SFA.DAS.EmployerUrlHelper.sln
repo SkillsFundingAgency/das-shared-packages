@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerUrlHelper.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerUrlHelper.Sample.Core", "SFA.DAS.EmployerUrlHelper.Sample.Core\SFA.DAS.EmployerUrlHelper.Sample.Core.csproj", "{2BBDA7B2-353D-4517-896D-ACEDFF359624}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUrlHelper.NetFrameworkSample", "SFA.DAS.EmployerUrlHelper.NetFrameworkSample\SFA.DAS.EmployerUrlHelper.NetFrameworkSample.csproj", "{66AFFA63-BD39-4B04-A8E6-214FBCEC11C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{2BBDA7B2-353D-4517-896D-ACEDFF359624}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BBDA7B2-353D-4517-896D-ACEDFF359624}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BBDA7B2-353D-4517-896D-ACEDFF359624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66AFFA63-BD39-4B04-A8E6-214FBCEC11C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66AFFA63-BD39-4B04-A8E6-214FBCEC11C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66AFFA63-BD39-4B04-A8E6-214FBCEC11C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66AFFA63-BD39-4B04-A8E6-214FBCEC11C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{4ADA2087-EEE9-4EE4-8C95-3445BC38B6B7} = {64BED97D-5525-4890-9F5A-81008EC85AD1}
 		{E81A7B87-EB79-448B-AB25-304C100BCE32} = {64BED97D-5525-4890-9F5A-81008EC85AD1}
 		{2BBDA7B2-353D-4517-896D-ACEDFF359624} = {64BED97D-5525-4890-9F5A-81008EC85AD1}
+		{66AFFA63-BD39-4B04-A8E6-214FBCEC11C3} = {64BED97D-5525-4890-9F5A-81008EC85AD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9D06E22-CD7C-480C-8AA7-D8B777A63D30}
