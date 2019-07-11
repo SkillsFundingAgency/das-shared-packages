@@ -5,7 +5,7 @@ trigger:
       - "*"
   paths:
     include:
-      - 'Logging/SFA.DAS.Logging'
+      - 'Logging'
 
 pr: none
 
@@ -37,7 +37,7 @@ steps:
   displayName: 'dotnet pack'
   inputs:
     command: pack
-    packagesToPack: Logging/SFA.DAS.Logging/SFA.DAS.Logging/SFA.DAS.Logging.csproj
+    packagesToPack: Logging/SFA.DAS.Logging/SFA.DAS.Logging.sln
     versioningScheme: byBuildNumber
 
 - task: CopyFiles@2
