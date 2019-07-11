@@ -1,35 +1,40 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Http.TestHarness
 {
     public static class Program
     {
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseStartup<Startup>()
-                .Build();
- 
-            host.Start();
-            
-            Console.WriteLine("Creating Http client");
-            var httpClient = new HttpClientBuilder().WithDefaultHeaders().Build();
-            httpClient.BaseAddress = new Uri("http://localhost:5000/api/");
-
-            Console.WriteLine("Creating REST client");
-            var restClient = new RestHttpClient(httpClient);
-
-            Console.WriteLine("Calling test server api to get test value...");
-            var result = restClient.Get("test").Result;
-            
-            Console.WriteLine($"Api Test Call Result: {result}");
-
-            Console.WriteLine("Press any key to quit...");
-            Console.Read();
-
-            host.StopAsync().Wait();
+            using (var host = CreateWebHostBuilder(args).Build())
+            {
+                host.Start();
+                
+                var httpClient = new HttpClientBuilder()
+                    .WithDefaultHeaders()
+                    .WithLogging(host.Services.GetService<ILoggerFactory>())
+                    .Build();
+                
+                httpClient.BaseAddress = new Uri("http://localhost:5000/api/");
+                
+                var restClient = new RestHttpClient(httpClient);
+                var result = restClient.Get("test").GetAwaiter().GetResult();
+                
+                Console.WriteLine($"API response content: '{result}'");
+                Console.WriteLine("Press any key to quit...");
+                Console.Read();
+                
+                host.StopAsync().Wait();
+            }
         }
+
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            new WebHostBuilder()
+                .ConfigureLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace))
+                .UseKestrel()
+                .UseStartup<Startup>();
     }
 }
