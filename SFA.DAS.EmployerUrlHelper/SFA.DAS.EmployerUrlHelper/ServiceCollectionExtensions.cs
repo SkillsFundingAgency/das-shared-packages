@@ -8,8 +8,7 @@ namespace SFA.DAS.EmployerUrlHelper
     {
         public static IServiceCollection AddEmployerUrlHelper(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.Configure<EmployerUrlConfiguration>(configuration.GetSection("SFA.DAS.EmployerUrlHelper"))
-                .AddSingleton<EmployerUrlConfiguration>(sp =>
+            return services.AddSingleton(sp =>
                 {
                     var config = sp.GetService<IConfiguration>();
                     var configSection = config.GetSection("SFA.DAS.EmployerUrlHelper");
