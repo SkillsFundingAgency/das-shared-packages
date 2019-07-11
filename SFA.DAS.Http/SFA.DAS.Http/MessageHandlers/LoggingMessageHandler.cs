@@ -18,12 +18,12 @@ namespace SFA.DAS.Http.MessageHandlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            _logger.LogSendingRequest(request);
+            _logger.LogRequest(request);
             
             var stopwatch = Stopwatch.StartNew();
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             
-            _logger.LogReceivedResponse(response, stopwatch.ElapsedMilliseconds);
+            _logger.LogResponse(response, stopwatch.ElapsedMilliseconds);
 
             return response;
         }

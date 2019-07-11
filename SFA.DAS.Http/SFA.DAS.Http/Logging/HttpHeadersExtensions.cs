@@ -6,7 +6,17 @@ namespace SFA.DAS.Http.Logging
 {
     internal static class HttpHeadersExtensions
     {
-        public static string ToLogMessage(this HttpHeaders httpHeaders, HttpContentHeaders httpContentHeaders)
+        public static string ToLogMessage(this HttpRequestHeaders httpRequestHeaders, HttpContentHeaders httpContentHeaders)
+        {
+            return GetLogMessage(httpRequestHeaders, httpContentHeaders);
+        }
+        
+        public static string ToLogMessage(this HttpResponseHeaders httpResponseHeaders, HttpContentHeaders httpContentHeaders)
+        {
+            return GetLogMessage(httpResponseHeaders, httpContentHeaders);
+        }
+        
+        private static string GetLogMessage(HttpHeaders httpHeaders, HttpContentHeaders httpContentHeaders)
         {
             var allHttpHeaders = httpContentHeaders == null ? httpHeaders : httpHeaders.Concat(httpContentHeaders);
 
