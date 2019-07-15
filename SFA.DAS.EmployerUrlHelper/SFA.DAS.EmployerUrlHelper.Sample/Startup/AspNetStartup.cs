@@ -23,6 +23,7 @@ namespace SFA.DAS.EmployerUrlHelper.Sample.Startup
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseDeveloperExceptionPage()
+                .UseStaticFiles()
                 .UseMvc();
         }
     }

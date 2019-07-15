@@ -1,13 +1,12 @@
 using System;
-using Microsoft.Extensions.Options;
 
 namespace SFA.DAS.EmployerUrlHelper
 {
     public class LinkGenerator : ILinkGenerator
     {
-        private readonly IOptionsMonitor<EmployerUrlConfiguration> _options;
+        private readonly EmployerUrlConfiguration _options;
 
-        public LinkGenerator(IOptionsMonitor<EmployerUrlConfiguration> options)
+        public LinkGenerator(EmployerUrlConfiguration options)
         {
             _options = options;
         }
@@ -22,8 +21,8 @@ namespace SFA.DAS.EmployerUrlHelper
         public string YourOrganisationsAndAgreements(string accountHashedId) => Accounts("agreements", accountHashedId);
         public string YourTeam(string accountHashedId) => Accounts("teams/view", accountHashedId);
 
-        private string Accounts(string path) => Action(_options.CurrentValue.AccountsBaseUrl, path);
-        private string Accounts(string path, string accountHashedId) => AccountAction(_options.CurrentValue.AccountsBaseUrl, path, accountHashedId);
+        private string Accounts(string path) => Action(_options.AccountsBaseUrl, path);
+        private string Accounts(string path, string accountHashedId) => AccountAction(_options.AccountsBaseUrl, path, accountHashedId);
         
         #endregion Accounts
         
@@ -32,7 +31,7 @@ namespace SFA.DAS.EmployerUrlHelper
         public string Apprentices(string accountHashedId) => Commitments("apprentices/home", accountHashedId);
         public string CohortDetails(string accountHashedId, string commitmentHashedId) => Commitments($"apprentices/{commitmentHashedId}/details", accountHashedId);
         
-        private string Commitments(string path, string accountHashedId) => AccountAction(_options.CurrentValue.CommitmentsBaseUrl, path, accountHashedId);
+        private string Commitments(string path, string accountHashedId) => AccountAction(_options.CommitmentsBaseUrl, path, accountHashedId);
 
         #endregion Commitments
 
@@ -42,7 +41,7 @@ namespace SFA.DAS.EmployerUrlHelper
         public string Homepage() => Portal(null);
         public string Privacy() => Portal("service/privacy");
 
-        private string Portal(string path) => Action(_options.CurrentValue.PortalBaseUrl, path);
+        private string Portal(string path) => Action(_options.PortalBaseUrl, path);
 
         #endregion Portal
         
@@ -50,7 +49,7 @@ namespace SFA.DAS.EmployerUrlHelper
         
         public string Recruit(string accountHashedId) => Recruit(null, accountHashedId);
         
-        private string Recruit(string path, string accountHashedId) => AccountAction(_options.CurrentValue.RecruitBaseUrl, path, accountHashedId);
+        private string Recruit(string path, string accountHashedId) => AccountAction(_options.RecruitBaseUrl, path, accountHashedId);
         
         #endregion Recruit
         
