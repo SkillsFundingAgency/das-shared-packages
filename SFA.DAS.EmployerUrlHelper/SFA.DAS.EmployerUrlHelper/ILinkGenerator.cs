@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerUrlHelper
 
         string Apprentices(string accountHashedId);
         string CohortDetails(string accountHashedId, string commitmentHashedId);
+        string ViewApprentice(string accountHashedId, string commitmentHashedId, string apprenticeshipHashedId);
 
         #endregion Commitments
 
