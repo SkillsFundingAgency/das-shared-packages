@@ -1,3 +1,4 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
 trigger:
   batch: true
   branches:
@@ -16,13 +17,10 @@ pool:
   name: Continuous Integration 02 - SSD - 160ACU
 variables:
   BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '0'
 
 steps:
-- task: gittools.gitversion.gitversion-task.GitVersion@4
-  displayName: GitVersion
-  inputs:
-    updateAssemblyInfo: true
-
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
