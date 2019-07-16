@@ -1,7 +1,5 @@
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using SFA.DAS.EmployerUrlHelper;
 
 namespace SFA.DAS.EmployerUrlHelper.UnitTests  
 {
@@ -23,6 +21,12 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
         public void CohortDetails_ShouldGenerateExpectedUrl()
         {
             VerifyLink(lg => lg.CohortDetails("AC0123", "CO0123"), "/Commitments/accounts/AC0123/apprentices/CO0123/details", HostSiteType.Commitments);
+        }
+
+        [Test]
+        public void ViewApprentice_ShouldGenerateExpectedUrl()
+        {
+            VerifyLink(lg => lg.ViewApprentice("AC0123", "CO0123", "AP0123"), "/Commitments/accounts/AC0123/apprentices/CO0123/apprenticeships/AP0123/view", HostSiteType.Commitments);
         }
 
         [Test]
