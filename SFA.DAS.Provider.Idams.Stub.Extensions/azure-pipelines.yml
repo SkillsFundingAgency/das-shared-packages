@@ -31,7 +31,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
-    projects: SFA.DAS.Provider.Idams.Stub.Extensions.sln
+    projects: SFA.DAS.Provider.Idams.Stub.Extensions/SFA.DAS.Provider.Idams.Stub.Extensions.sln
     arguments: '/p:Configuration=$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
