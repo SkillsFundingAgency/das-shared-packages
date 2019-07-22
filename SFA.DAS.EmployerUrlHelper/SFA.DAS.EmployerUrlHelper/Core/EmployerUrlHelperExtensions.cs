@@ -1,86 +1,48 @@
 ﻿#if NETCOREAPP
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace SFA.DAS.EmployerUrlHelper.Core
 {
     public static class EmployerUrlHelperExtensions
     {
-#region Accounts
-
-        public static string Account(this IUrlHelper helper, string accountHashedId)
+        public static string AccountsLink(this UrlHelper urlHelper, string path)
         {
-            return GetLink(helper.ActionContext.HttpContext).Account(accountHashedId);
+            return GetLinkGenerator(urlHelper.ActionContext.HttpContext).AccountsLink(path);
         }
-
-        public static string NotificationSettings(this IUrlHelper helper)
+        
+        public static string CommitmentsLink(this UrlHelper urlHelper, string path)
         {
-            return GetLink(helper.ActionContext.HttpContext).NotificationSettings();
+            return GetLinkGenerator(urlHelper.ActionContext.HttpContext).CommitmentsLink(path);
         }
-
-        public static string PayeSchemes(this IUrlHelper helper, string accountHashedId)
+        
+        public static string CommitmentsV2Link(this UrlHelper urlHelper, string path)
         {
-            return GetLink(helper.ActionContext.HttpContext).PayeSchemes(accountHashedId);
+            return GetLinkGenerator(urlHelper.ActionContext.HttpContext).CommitmentsV2Link(path);
         }
-
-        public static string RenameAccount(this IUrlHelper helper, string accountHashedId)
+        
+        public static string PortalLink(this UrlHelper urlHelper, string path)
         {
-            return GetLink(helper.ActionContext.HttpContext).RenameAccount(accountHashedId);
+            return GetLinkGenerator(urlHelper.ActionContext.HttpContext).PortalLink(path);
         }
-
-        public static string YourAccounts(this IUrlHelper helper)
+        
+        public static string ProjectionsLink(this UrlHelper urlHelper, string path)
         {
-            return GetLink(helper.ActionContext.HttpContext).YourAccounts();
+            return GetLinkGenerator(urlHelper.ActionContext.HttpContext).ProjectionsLink(path);
         }
-
-        public static string YourOrganisationsAndAgreements(this IUrlHelper helper, string accountHashedId)
+        
+        public static string RecruitLink(this UrlHelper urlHelper, string path)
         {
-            return GetLink(helper.ActionContext.HttpContext).YourOrganisationsAndAgreements(accountHashedId);
+            return GetLinkGenerator(urlHelper.ActionContext.HttpContext).RecruitLink(path);
         }
-
-        public static string YourTeam(this IUrlHelper helper, string accountHashedId)
+        
+        public static string UsersLink(this UrlHelper urlHelper, string path)
         {
-            return GetLink(helper.ActionContext.HttpContext).YourTeam(accountHashedId);
+            return GetLinkGenerator(urlHelper.ActionContext.HttpContext).UsersLink(path);
         }
-#endregion Accounts
-
-#region Commitments
-        public static string Apprentices(this IUrlHelper helper, string accountHashedId)
+        
+        private static ILinkGenerator GetLinkGenerator(HttpContext httpContext)
         {
-            return GetLink(helper.ActionContext.HttpContext).Apprentices(accountHashedId);
-        }
-        public static string CohortDetails(this IUrlHelper helper, string accountHashedId, string commitmentHashedId)
-        {
-            return GetLink(helper.ActionContext.HttpContext).CohortDetails(accountHashedId, commitmentHashedId);
-        }
-#endregion Commitments
-
-#region Portal
-        public static string Help(this IUrlHelper helper)
-        {
-            return GetLink(helper.ActionContext.HttpContext).Help();
-        }
-
-        public static string Homepage(this IUrlHelper helper)
-        {
-            return GetLink(helper.ActionContext.HttpContext).Homepage();
-        }
-
-        public static string Privacy(this IUrlHelper helper)
-        {
-            return GetLink(helper.ActionContext.HttpContext).Privacy();
-        }
-#endregion Portal
-
-#region Recruit
-        public static string Recruit(this IUrlHelper helper, string accountHashedId)
-        {
-            return GetLink(helper.ActionContext.HttpContext).Recruit(accountHashedId);
-        }
-#endregion
-
-        private static ILinkGenerator GetLink(HttpContext httpContext)
-        { 
             return ServiceLocator.Get<ILinkGenerator>(httpContext);
         }
     }

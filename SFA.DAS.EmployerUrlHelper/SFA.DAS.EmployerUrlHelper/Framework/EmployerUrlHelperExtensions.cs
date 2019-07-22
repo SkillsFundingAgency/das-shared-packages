@@ -6,80 +6,45 @@ namespace SFA.DAS.EmployerUrlHelper.Framework
 {
     public static class EmployerUrlHelperExtensions
     {
-#region Accounts
-
-        public static string Account(this UrlHelper helper, string accountHashedId)
+        public static string AccountsLink(this UrlHelper urlHelper, string path)
         {
-            return Link.Account(accountHashedId);
+            return GetLinkGenerator().AccountsLink(path);
         }
-
-        public static string NotificationSettings(this UrlHelper helper)
+        
+        public static string CommitmentsLink(this UrlHelper urlHelper, string path)
         {
-            return Link.NotificationSettings();
+            return GetLinkGenerator().CommitmentsLink(path);
         }
-
-        public static string PayeSchemes(this UrlHelper helper, string accountHashedId)
+        
+        public static string CommitmentsV2Link(this UrlHelper urlHelper, string path)
         {
-            return Link.PayeSchemes(accountHashedId);
+            return GetLinkGenerator().CommitmentsV2Link(path);
         }
-
-        public static string RenameAccount(this UrlHelper helper, string accountHashedId)
+        
+        public static string PortalLink(this UrlHelper urlHelper, string path)
         {
-            return Link.RenameAccount(accountHashedId);
+            return GetLinkGenerator().PortalLink(path);
         }
-
-        public static string YourAccounts(this UrlHelper helper)
+        
+        public static string ProjectionsLink(this UrlHelper urlHelper, string path)
         {
-            return Link.YourAccounts();
+            return GetLinkGenerator().ProjectionsLink(path);
         }
-
-        public static string YourOrganisationsAndAgreements(this UrlHelper helper, string accountHashedId)
+        
+        public static string RecruitLink(this UrlHelper urlHelper, string path)
         {
-            return Link.YourOrganisationsAndAgreements(accountHashedId);
+            return GetLinkGenerator().RecruitLink(path);
         }
-
-        public static string YourTeam(this UrlHelper helper, string accountHashedId)
+        
+        public static string UsersLink(this UrlHelper urlHelper, string path)
         {
-            return Link.YourTeam(accountHashedId);
+            return GetLinkGenerator().UsersLink(path);
         }
-#endregion Accounts
-
-#region Commitments
-        public static string Apprentices(this UrlHelper helper, string accountHashedId)
+        
+        private static ILinkGenerator GetLinkGenerator()
         {
-            return Link.Apprentices(accountHashedId);
+            return ServiceLocator.Get<ILinkGenerator>();
         }
-        public static string CohortDetails(this UrlHelper helper, string accountHashedId, string commitmentHashedId)
-        {
-            return Link.CohortDetails(accountHashedId, commitmentHashedId);
-        }
-#endregion Commitments
-
-#region Portal
-        public static string Help(this UrlHelper helper)
-        {
-            return Link.Help();
-        }
-
-        public static string Homepage(this UrlHelper helper)
-        {
-            return Link.Homepage();
-        }
-
-        public static string Privacy(this UrlHelper helper)
-        {
-            return Link.Privacy();
-        }
-#endregion Portal
-
-#region Recruit
-        public static string Recruit(this UrlHelper helper, string accountHashedId)
-        {
-            return Link.Recruit(accountHashedId);
-        }
-#endregion
-
-        private static ILinkGenerator Link => ServiceLocator.Get<ILinkGenerator>();
     }
 }
 #endif
