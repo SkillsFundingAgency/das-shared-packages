@@ -17,7 +17,7 @@ pool:
   name: Continuous Integration 02 - SSD - 160ACU
 variables:
   BuildConfiguration: 'Release'
-  Build.MajorNumber: '1'
+  Build.MajorNumber: '2'
   Build.MinorNumber: '0'
 
 steps:

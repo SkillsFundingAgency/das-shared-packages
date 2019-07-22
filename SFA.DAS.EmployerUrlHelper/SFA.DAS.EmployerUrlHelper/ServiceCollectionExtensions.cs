@@ -1,4 +1,3 @@
-#if NETCOREAPP
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,14 +7,14 @@ namespace SFA.DAS.EmployerUrlHelper
     {
         public static IServiceCollection AddEmployerUrlHelper(this IServiceCollection services, IConfiguration configuration)
         {
-            return services.AddSingleton(sp =>
+            return services.AddSingleton(p =>
                 {
-                    var configSection = configuration.GetSection("SFA.DAS.EmployerUrlHelper");
-                    var employerUrlConfig = configSection.Get<EmployerUrlConfiguration>();
-                    return employerUrlConfig;
+                    var configurationSection = configuration.GetSection("SFA.DAS.EmployerUrlHelper");
+                    var employerUrlConfiguration = configurationSection.Get<EmployerUrlConfiguration>();
+                    
+                    return employerUrlConfiguration;
                 })
                 .AddSingleton<ILinkGenerator, LinkGenerator>();
         }
     }
 }
-#endif
