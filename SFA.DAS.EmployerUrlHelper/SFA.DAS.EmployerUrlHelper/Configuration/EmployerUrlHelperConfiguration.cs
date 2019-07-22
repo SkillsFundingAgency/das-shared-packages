@@ -1,6 +1,6 @@
-namespace SFA.DAS.EmployerUrlHelper
+namespace SFA.DAS.EmployerUrlHelper.Configuration
 {
-    public class EmployerUrlConfiguration
+    public class EmployerUrlHelperConfiguration
     {
         public string AccountsBaseUrl { get; set; }
         public string CommitmentsBaseUrl { get; set; }
