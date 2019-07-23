@@ -1,49 +1,51 @@
 using System;
+using SFA.DAS.AutoConfiguration;
+using SFA.DAS.EmployerUrlHelper.Configuration;
 
 namespace SFA.DAS.EmployerUrlHelper
 {
     public class LinkGenerator : ILinkGenerator
     {
-        private readonly EmployerUrlConfiguration _configuration;
+        private readonly Lazy<EmployerUrlHelperConfiguration> _configuration;
 
-        public LinkGenerator(EmployerUrlConfiguration configuration)
+        public LinkGenerator(IAutoConfigurationService autoConfigurationService)
         {
-            _configuration = configuration;
+            _configuration = new Lazy<EmployerUrlHelperConfiguration>(autoConfigurationService.Get<EmployerUrlHelperConfiguration>);
         }
 
         public string AccountsLink(string path)
         {
-            return Action(_configuration.AccountsBaseUrl, path);
+            return Action(_configuration.Value.AccountsBaseUrl, path);
         }
 
         public string CommitmentsLink(string path)
         {
-            return Action(_configuration.CommitmentsBaseUrl, path);
+            return Action(_configuration.Value.CommitmentsBaseUrl, path);
         }
 
         public string CommitmentsV2Link(string path)
         {
-            return Action(_configuration.CommitmentsV2BaseUrl, path);
+            return Action(_configuration.Value.CommitmentsV2BaseUrl, path);
         }
 
         public string PortalLink(string path)
         {
-            return Action(_configuration.PortalBaseUrl, path);
+            return Action(_configuration.Value.PortalBaseUrl, path);
         }
 
         public string ProjectionsLink(string path)
         {
-            return Action(_configuration.ProjectionsBaseUrl, path);
+            return Action(_configuration.Value.ProjectionsBaseUrl, path);
         }
 
         public string RecruitLink(string path)
         {
-            return Action(_configuration.RecruitBaseUrl, path);
+            return Action(_configuration.Value.RecruitBaseUrl, path);
         }
 
         public string UsersLink(string path)
         {
-            return Action(_configuration.UsersBaseUrl, path);
+            return Action(_configuration.Value.UsersBaseUrl, path);
         }
 
         private string Action(string baseUrl, string path)

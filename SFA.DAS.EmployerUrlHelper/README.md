@@ -5,7 +5,7 @@ For building links to employer applications. Alternatively see [SFA.DAS.Provider
 ## Configuration
 
 ```c#
-services.AddEmployerUrlHelper(_configuration);
+services.AddEmployerUrlHelper();
 ```
 
 > Please note, a configuration section with key `SFA.DAS.EmployerUrlHelper` is required.

@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{64BED97D-5525-4890-9F5A-81008EC85AD1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{97C986EA-1002-4D3E-B93C-8704F1A4B0A9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUrlHelper.UnitTests", "SFA.DAS.EmployerUrlHelper.UnitTests\SFA.DAS.EmployerUrlHelper.UnitTests.csproj", "{5C5E47E1-7ED8-4D13-8027-E30957AE46DE}"
