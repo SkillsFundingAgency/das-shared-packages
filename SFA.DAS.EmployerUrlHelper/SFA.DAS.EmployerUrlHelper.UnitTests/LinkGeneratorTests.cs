@@ -1,6 +1,4 @@
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.AutoConfiguration;
 using SFA.DAS.EmployerUrlHelper.Configuration;
 
 namespace SFA.DAS.EmployerUrlHelper.UnitTests
@@ -11,8 +9,6 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
         [Test]
         public void Link_WhenBaseUrlAndPathAreNotTrimmed_ShouldReturnTrimmedUrl()
         {
-            var autoConfigurationService = new Mock<IAutoConfigurationService>();
-            
             var employerUrlHelperConfiguration = new EmployerUrlHelperConfiguration
             {
                 AccountsBaseUrl = "https://accounts/",
@@ -23,10 +19,8 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 RecruitBaseUrl = "https://recruit/",
                 UsersBaseUrl = "https://users/"
             };
-
-            autoConfigurationService.Setup(s => s.Get<EmployerUrlHelperConfiguration>()).Returns(employerUrlHelperConfiguration);
             
-            var linkGenerator = new LinkGenerator(autoConfigurationService.Object);
+            var linkGenerator = new LinkGenerator(employerUrlHelperConfiguration);
             
             Assert.AreEqual("https://accounts/path", linkGenerator.AccountsLink("/path/"));
             Assert.AreEqual("https://commitments/path", linkGenerator.CommitmentsLink("/path/"));
