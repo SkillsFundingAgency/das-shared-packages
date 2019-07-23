@@ -34,10 +34,9 @@
         return true;
     }
 
-    private static string GetEncodedReturnUrl(HttpRequest request)
+    private static string GetEncodedReturnUrl(string url)
     {
-        var url = $"{request.Scheme}://{request.Host}";
-        var encodedReturnUrl = WebUtility.UrlEncode($"{url}{request.Path}");
+        var encodedReturnUrl = WebUtility.UrlEncode(url);    
 
         return encodedReturnUrl;
     }
@@ -59,7 +58,7 @@
         <nav class="das-user-navigation" id="das-user-navigation">
             <ul class="das-user-navigation__list" role="menu">
                 <li role="menuitem" class="das-user-navigation__list-item">
-                    <a href='@GetLink(externalLinks.Ma, "Help")' class="das-user-navigation__link">Help</a>
+                    <a href='@GetLink(externalLinks.Ma, "Help")' class="das-user-navigation__link mu-help">Help</a>
                 </li>
                 @if (Context.User.Identity.IsAuthenticated)
                 {
@@ -67,21 +66,21 @@
                         <a href="/" role="menuitem" class="das-user-navigation__link">Settings</a>
                         <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                <a href='@GetLink(externalLinks.Ma, "Accounts", accountId)' role="menuitem" class="das-user-navigation__sub-menu-link">Your accounts</a>
+                                <a href='@GetLink(externalLinks.Ma, "Accounts", accountId)' role="menuitem" class="das-user-navigation__sub-menu-link mu-accounts">Your accounts</a>
                             </li>
                             @if(!IsErrorPage())
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href='@GetLink(externalLinks.Ma, "RenameAccount", accountId)' class="das-user-navigation__sub-menu-link">Rename account</a></li>
+                                    <a href='@GetLink(externalLinks.Ma, "RenameAccount", accountId)' class="das-user-navigation__sub-menu-link mu-rename-acc">Rename account</a></li>
                             }
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                <a href='@GetLink(externalLinks.Identity, "ChangePassword", clientId, GetEncodedReturnUrl(Context.Request))' class="das-user-navigation__sub-menu-link">Change your password</a></li>
+                                <a href='@GetLink(externalLinks.Identity, "ChangePassword", clientId, GetEncodedReturnUrl(GetLink(externalLinks.Ma, "ChangePasswordReturn")))' class="das-user-navigation__sub-menu-link mu-change-pass">Change your password</a></li>
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                <a href='@GetLink(externalLinks.Identity, "ChangeEmailAddress", clientId, GetEncodedReturnUrl(Context.Request))' class="das-user-navigation__sub-menu-link">Change your email address</a></li>
+                                <a href='@GetLink(externalLinks.Identity, "ChangeEmailAddress", clientId, GetEncodedReturnUrl(GetLink(externalLinks.Ma, "ChangeEmailReturn")))' class="das-user-navigation__sub-menu-link mu-change-email">Change your email address</a></li>
                             @if(!IsErrorPage())
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href='@GetLink(externalLinks.Ma, "Notifications")' class="das-user-navigation__sub-menu-link">Notifications settings</a></li>
+                                    <a href='@GetLink(externalLinks.Ma, "Notifications")' class="das-user-navigation__sub-menu-link mu-not-settings">Notifications settings</a></li>
                             }
                         </ul>
                     </li>
@@ -92,7 +91,7 @@
                 else
                 {
                     <li role="menuitem" class="das-user-navigation__list-item">
-                        <a href="@GetLink(externalLinks.Ma)" role="menuitem" class="das-user-navigation__link">Sign in / Register</a>
+                        <a href="@GetLink(externalLinks.Ma)" role="menuitem" class="das-user-navigation__link mu-signout mu-signin">Sign in / Register</a>
                     </li>
                 }
             </ul>
@@ -108,28 +107,28 @@
             <div class="govuk-width-container">
                 <ul class="das-navigation__list" id="navigation" role="menu">
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsHome", accountId)'>Home</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection) mu-home" href='@GetLink(externalLinks.Ma, "AccountsHome", accountId)'>Home</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsFinance, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsFinance", accountId)'>Finance</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsFinance, selectedSection) mu-finance" href='@GetLink(externalLinks.Ma, "AccountsFinance", accountId)'>Finance</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.RecruitHome, selectedSection)" href='@GetLink(externalLinks.Recruit, "RecruitHome", accountId)'>Recruitment</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.RecruitHome, selectedSection) mu-recruit" href='@GetLink(externalLinks.Recruit, "RecruitHome", accountId)'>Recruitment</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.ApprenticesHome, selectedSection)" href='@GetLink(externalLinks.Commitments, "ApprenticesHome", accountId)'>Apprentices</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.ApprenticesHome, selectedSection) mu-apprentices" href='@GetLink(externalLinks.Commitments, "ApprenticesHome", accountId)'>Apprentices</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsTeamsView, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsTeamsView", accountId)'>Your team</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsTeamsView, selectedSection) mu-team" href='@GetLink(externalLinks.Ma, "AccountsTeamsView", accountId)'>Your team</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsAgreements, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsAgreements", accountId)'>Your organisations and agreements</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsAgreements, selectedSection) mu-orgs" href='@GetLink(externalLinks.Ma, "AccountsAgreements", accountId)'>Your organisations and agreements</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsSchemes, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsSchemes", accountId)'>PAYE schemes</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsSchemes, selectedSection)mu-paye" href='@GetLink(externalLinks.Ma, "AccountsSchemes", accountId)'>PAYE schemes</a>
                     </li>
-                 </ul>
-             </div>
-         </nav>
+                </ul>
+            </div>
+        </nav>
     }
 }

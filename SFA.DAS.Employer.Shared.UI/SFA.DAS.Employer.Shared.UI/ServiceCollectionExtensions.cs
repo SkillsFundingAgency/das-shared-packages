@@ -2,6 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Employer.Shared.UI.Configuration;
+using SFA.DAS.EmployerUrlHelper;
 
 namespace SFA.DAS.Employer.Shared.UI
 {
@@ -10,6 +11,11 @@ namespace SFA.DAS.Employer.Shared.UI
         public static void AddMaMenuConfiguration(this IServiceCollection services, IConfiguration configuration, string logoutRouteName, string identityClientId)
         {
             ValidateArguments(logoutRouteName, identityClientId);
+
+            services.AddEmployerUrlHelper(configuration);
+
+            var linkGenerator = services.BuildServiceProvider().GetService<ILinkGenerator>();
+
             
             // TODO: Validate configuration values?
             services.Configure<MaMenuConfiguration>(configuration.GetSection("SFA.DAS.Employer.Shared.UI:MaPageConfiguration"));
