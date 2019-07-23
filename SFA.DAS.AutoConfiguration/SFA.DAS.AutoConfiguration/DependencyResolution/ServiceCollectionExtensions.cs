@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace SFA.DAS.AutoConfiguration.DependencyResolution
 {
@@ -6,9 +7,11 @@ namespace SFA.DAS.AutoConfiguration.DependencyResolution
     {
         public static IServiceCollection AddAutoConfiguration(this IServiceCollection services)
         {
-            return services.AddTransient<IAutoConfigurationService, TableStorageConfigurationService>()
-                .AddTransient<IEnvironmentService, EnvironmentService>()
-                .AddTransient<IAzureTableStorageConnectionAdapter, AzureTableStorageConnectionAdapter>();
+            services.TryAddTransient<IAutoConfigurationService, TableStorageConfigurationService>();
+            services.TryAddTransient<IEnvironmentService, EnvironmentService>();
+            services.TryAddTransient<IAzureTableStorageConnectionAdapter, AzureTableStorageConnectionAdapter>();
+            
+            return services;
         }
     }
 }
