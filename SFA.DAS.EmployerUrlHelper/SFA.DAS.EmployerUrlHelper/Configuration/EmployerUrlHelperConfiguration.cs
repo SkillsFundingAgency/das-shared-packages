@@ -9,5 +9,6 @@ namespace SFA.DAS.EmployerUrlHelper.Configuration
         public string ProjectionsBaseUrl { get; set; }
         public string RecruitBaseUrl { get; set; }
         public string UsersBaseUrl { get; set; }
+        public string FinanceBaseUrl { get; set; }
     }
 }

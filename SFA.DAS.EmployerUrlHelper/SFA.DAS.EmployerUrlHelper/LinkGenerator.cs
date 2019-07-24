@@ -48,6 +48,11 @@ namespace SFA.DAS.EmployerUrlHelper
             return Action(_configuration.UsersBaseUrl, path);
         }
 
+        public string FinanceLink(string path)
+        {
+            return Action(_configuration.FinanceBaseUrl, path);
+        }
+
         private string Action(string baseUrl, string path)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))
