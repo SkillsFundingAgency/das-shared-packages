@@ -1,42 +1,33 @@
 {
   "SFA.DAS.Employer.Shared.UI":  {
     "MaPageConfiguration": {
-      "Ma": {
-        "RootUrl": "https://accounts.at-eas.apprenticeships.education.gov.uk",
-        "Routes": {
-          "AccountsHome": "/accounts/{0}/teams",
-          "Help": "/service/help",
-          "Privacy": "/service/privacy",
-          "Accounts": "/service/accounts",
-          "RenameAccount": "/accounts/{0}/rename",
-          "Notifications": "/settings/notifications",
-          "AccountsFinance": "/accounts/{0}/finance",
-          "AccountsTeamsView": "/accounts/{0}/teams/view",
-          "AccountsAgreements": "/accounts/{0}/agreements",
-          "AccountsSchemes": "/accounts/{0}/schemes",
-          "ChangePasswordReturn": "/service/password/change",
-          "ChangeEmailReturn": "/service/email/change"
-        }
-      },
-      "Finance": {
-        "RootUrl": "https://finance.at-eas.apprenticeships.education.gov.uk",
-        "Routes": {
-          "AccountsFinance": "/accounts/{0}/finance"
-        }
-      },
-      "Commitments": {
-        "RootUrl": "https://at-empc.apprenticeships.education.gov.uk",
-        "Routes": { "ApprenticesHome": "/commitments/accounts/{0}/apprentices/home" }
-      },
-      "Recruit": {
-        "RootUrl": "https://recruit.at-eas.apprenticeships.education.gov.uk",
-        "Routes": { "RecruitHome": "/accounts/{0}" }
-      },
-      "Identity": {
-        "RootUrl": "https://at-login.apprenticeships.education.gov.uk",
-        "Routes": {
-          "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
-          "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
+      "Routes": {
+        "Accounts": {
+            "AccountsHome": "/accounts/{0}/teams",
+            "Help": "/service/help",
+            "Privacy": "/service/privacy",
+            "Accounts": "/service/accounts",
+            "RenameAccount": "/accounts/{0}/rename",
+            "Notifications": "/settings/notifications",
+            "AccountsFinance": "/accounts/{0}/finance",
+            "AccountsTeamsView": "/accounts/{0}/teams/view",
+            "AccountsAgreements": "/accounts/{0}/agreements",
+            "AccountsSchemes": "/accounts/{0}/schemes",
+            "ChangePasswordReturn": "/service/password/change",
+            "ChangeEmailReturn": "/service/email/change"
+        },
+        "Finance": {
+            "AccountsFinance": "/accounts/{0}/finance"
+        },
+        "Commitments": {
+            "ApprenticesHome": "/commitments/accounts/{0}/apprentices/home"
+        },
+        "Recruit": {
+          "RecruitHome": "/accounts/{0}"
+        },
+        "Identity": {
+            "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
+            "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
         }
       }
     }

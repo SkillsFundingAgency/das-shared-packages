@@ -1,11 +1,11 @@
 ﻿{
   "SFA.DAS.EmployerUrlHelper": {
-    "AccountsBaseUrl": "https://localhost:44344",
-    "CommitmentsBaseUrl": "https://localhost",
+    "AccountsBaseUrl": "https://accounts.at-eas.apprenticeships.education.gov.uk",
+    "CommitmentsBaseUrl": "https://at-empc.apprenticeships.education.gov.uk",
     "CommitmentsV2BaseUrl": "https://localhost:44376",
     "PortalBaseUrl": "https://localhost",
     "ProjectionsBaseUrl": "http://localhost:50770",
-    "RecruitBaseUrl": "http://localhost:5020",
-    "UsersBaseUrl": "https://localhost:44334"
+    "RecruitBaseUrl": "https://recruit.at-eas.apprenticeships.education.gov.uk",
+    "UsersBaseUrl": "https://at-login.apprenticeships.education.gov.uk"
   }
 }

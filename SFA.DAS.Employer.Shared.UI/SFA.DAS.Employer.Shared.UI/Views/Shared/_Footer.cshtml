@@ -1,11 +1,9 @@
-@using Microsoft.Extensions.Options
-@using static SFA.DAS.Employer.Shared.UI.UrlBuilder;
-@inject IOptionsMonitor<MaMenuConfiguration> OptionsAccessor
-
-@inject SFA.DAS.EmployerUrlHelper.ILinkGenerator employerSiteLinkGenerator
+﻿@using Microsoft.Extensions.Options
+@inject SFA.DAS.EmployerUrlHelper.ILinkGenerator linkGenerator
+@inject IOptionsMonitor<MaPageConfiguration> OptionsAccessor
 
 @{
-    var externalLinks = OptionsAccessor.CurrentValue.Ma;
+    var externalLinks = OptionsAccessor.CurrentValue.Routes.Accounts;
 }
 
 <footer class="govuk-footer " role="contentinfo">
@@ -15,13 +13,13 @@
                 <h2 class="govuk-visually-hidden">Support links</h2>
                 <ul class="govuk-footer__inline-list">
                     <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link mu-foot-help" href="@GetLink(externalLinks, "Help")">Help</a>
+                        <a class="govuk-footer__link mu-foot-help" href="@linkGenerator.AccountsLink(externalLinks["Help"])">Help</a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
                         <a class="govuk-footer__link" href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">Feedback</a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link mu-foot-privacy" href="@GetLink(externalLinks, "Privacy")">Privacy and cookies</a>
+                        <a class="govuk-footer__link mu-foot-privacy" href="@linkGenerator.AccountsLink(externalLinks["Privacy"])">Privacy and cookies</a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
                         Built by the <a href="http://gov.uk/sfa" target="_blank" class="govuk-footer__link">Education and Skills Funding Agency</a>
