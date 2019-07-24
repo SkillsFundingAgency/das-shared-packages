@@ -1,4 +1,4 @@
-#if NETCOREAPP
+#if (NETCOREAPP || NETSTANDARD2_0)
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.AutoConfiguration;
 using SFA.DAS.AutoConfiguration.DependencyResolution;
