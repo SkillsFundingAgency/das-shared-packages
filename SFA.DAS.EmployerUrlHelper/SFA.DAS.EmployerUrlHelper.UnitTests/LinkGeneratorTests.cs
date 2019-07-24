@@ -17,7 +17,8 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 PortalBaseUrl = "https://portal/",
                 ProjectionsBaseUrl = "https://projections/",
                 RecruitBaseUrl = "https://recruit/",
-                UsersBaseUrl = "https://users/"
+                UsersBaseUrl = "https://users/",
+                FinanceBaseUrl = "https://finance/"
             };
             
             var linkGenerator = new LinkGenerator(employerUrlHelperConfiguration);
@@ -29,6 +30,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
             Assert.AreEqual("https://projections/path", linkGenerator.ProjectionsLink("/path/"));
             Assert.AreEqual("https://recruit/path", linkGenerator.RecruitLink("/path/"));
             Assert.AreEqual("https://users/path", linkGenerator.UsersLink("/path/"));
+            Assert.AreEqual("https://finance/path", linkGenerator.FinanceLink("/path/"));
         }
     }
 }
