@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP
+﻿#if NETSTANDARD2_0
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 

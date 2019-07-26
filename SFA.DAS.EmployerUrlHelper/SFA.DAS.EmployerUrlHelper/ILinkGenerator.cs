@@ -9,5 +9,6 @@ namespace SFA.DAS.EmployerUrlHelper
         string ProjectionsLink(string path);
         string RecruitLink(string path);
         string UsersLink(string path);
+        string FinanceLink(string path);
     }
 }

@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 FinanceBaseUrl = "https://finance/"
             };
             
-            var linkGenerator = new LinkGenerator(employerUrlHelperConfiguration);
+            ILinkGenerator linkGenerator = new LinkGenerator(employerUrlHelperConfiguration);
             
             Assert.AreEqual("https://accounts/path", linkGenerator.AccountsLink("/path/"));
             Assert.AreEqual("https://commitments/path", linkGenerator.CommitmentsLink("/path/"));
