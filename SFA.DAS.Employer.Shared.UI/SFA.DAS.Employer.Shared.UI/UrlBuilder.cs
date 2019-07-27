@@ -35,6 +35,17 @@ namespace SFA.DAS.Employer.Shared.UI
 
             return _generator.AccountsLink(route);
         }
+
+        public string FinanceLink(string routeName, params string[] args)
+        {
+            var route = _routes.Finance[routeName];
+            
+            if (args != null && args.Length > 0)
+                route = string.Format(route, args);
+
+            return _generator.FinanceLink(route);
+        }
+
         public string UsersLink(string routeName, params string[] args)
         {
             var route = _routes.Identity[routeName];
@@ -63,26 +74,6 @@ namespace SFA.DAS.Employer.Shared.UI
                 route = string.Format(route, args);
 
             return _generator.RecruitLink(route);
-        }
-
-        public string GetLink(MaRoutes config, string routeName = null)
-        {
-            // RouteName -> lookup routename and get action
-           // _generator.AccountsLink(null);
-            //return string.IsNullOrWhiteSpace(routeName) ? config.RootUrl : config.RootUrl + config.Routes[routeName];
-            return string.Empty;
-        }
-
-        public static string GetLink(MaRoutes config, string routeName, string accountId)
-        {
-            //return string.Format(config.RootUrl + config.Routes[routeName], accountId);
-            return string.Empty;
-        }
-
-        public static string GetLink(MaRoutes config, string routeName, string clientId, string returnUrl)
-        {
-            //return string.Format(config.RootUrl + config.Routes[routeName], clientId, returnUrl);
-            return string.Empty;
         }
     }
 }
