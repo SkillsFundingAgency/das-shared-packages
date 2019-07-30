@@ -14,11 +14,12 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 AccountsBaseUrl = "https://accounts/",
                 CommitmentsBaseUrl = "https://commitments/",
                 CommitmentsV2BaseUrl = "https://commitmentsv2/",
+                FinanceBaseUrl = "https://finance/",
                 PortalBaseUrl = "https://portal/",
                 ProjectionsBaseUrl = "https://projections/",
                 RecruitBaseUrl = "https://recruit/",
-                UsersBaseUrl = "https://users/",
-                FinanceBaseUrl = "https://finance/"
+                ReservationsBaseUrl = "https://reservations/",
+                UsersBaseUrl = "https://users/"
             };
             
             ILinkGenerator linkGenerator = new LinkGenerator(employerUrlHelperConfiguration);
@@ -26,11 +27,12 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
             Assert.AreEqual("https://accounts/path", linkGenerator.AccountsLink("/path/"));
             Assert.AreEqual("https://commitments/path", linkGenerator.CommitmentsLink("/path/"));
             Assert.AreEqual("https://commitmentsv2/path", linkGenerator.CommitmentsV2Link("/path/"));
+            Assert.AreEqual("https://finance/path", linkGenerator.FinanceLink("/path/"));
             Assert.AreEqual("https://portal/path", linkGenerator.PortalLink("/path/"));
             Assert.AreEqual("https://projections/path", linkGenerator.ProjectionsLink("/path/"));
             Assert.AreEqual("https://recruit/path", linkGenerator.RecruitLink("/path/"));
+            Assert.AreEqual("https://reservations/path", linkGenerator.ReservationsLink("/path/"));
             Assert.AreEqual("https://users/path", linkGenerator.UsersLink("/path/"));
-            Assert.AreEqual("https://finance/path", linkGenerator.FinanceLink("/path/"));
         }
     }
 }

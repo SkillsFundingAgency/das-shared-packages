@@ -28,6 +28,11 @@ namespace SFA.DAS.EmployerUrlHelper
             return Action(_configuration.CommitmentsV2BaseUrl, path);
         }
 
+        public string FinanceLink(string path)
+        {
+            return Action(_configuration.FinanceBaseUrl, path);
+        }
+
         public string PortalLink(string path)
         {
             return Action(_configuration.PortalBaseUrl, path);
@@ -43,14 +48,14 @@ namespace SFA.DAS.EmployerUrlHelper
             return Action(_configuration.RecruitBaseUrl, path);
         }
 
+        public string ReservationsLink(string path)
+        {
+            return Action(_configuration.ReservationsBaseUrl, path);
+        }
+
         public string UsersLink(string path)
         {
             return Action(_configuration.UsersBaseUrl, path);
-        }
-
-        public string FinanceLink(string path)
-        {
-            return Action(_configuration.FinanceBaseUrl, path);
         }
 
         private string Action(string baseUrl, string path)
