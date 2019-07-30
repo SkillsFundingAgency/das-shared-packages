@@ -5,10 +5,11 @@ namespace SFA.DAS.EmployerUrlHelper
         string AccountsLink(string path);
         string CommitmentsLink(string path);
         string CommitmentsV2Link(string path);
+        string FinanceLink(string path);
         string PortalLink(string path);
         string ProjectionsLink(string path);
         string RecruitLink(string path);
+        string ReservationsLink(string path);
         string UsersLink(string path);
-        string FinanceLink(string path);
     }
 }

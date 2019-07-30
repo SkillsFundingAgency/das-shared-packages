@@ -21,6 +21,11 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
             return GetLinkGenerator(urlHelper).CommitmentsV2Link(path);
         }
         
+        public static string FinanceLink(this UrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator(urlHelper).FinanceLink(path);
+        }
+        
         public static string PortalLink(this UrlHelper urlHelper, string path)
         {
             return GetLinkGenerator(urlHelper).PortalLink(path);
@@ -34,6 +39,11 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
         public static string RecruitLink(this UrlHelper urlHelper, string path)
         {
             return GetLinkGenerator(urlHelper).RecruitLink(path);
+        }
+        
+        public static string ReservationsLink(this UrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator(urlHelper).ReservationsLink(path);
         }
         
         public static string UsersLink(this UrlHelper urlHelper, string path)
@@ -69,6 +79,11 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
             return GetLinkGenerator().CommitmentsV2Link(path);
         }
         
+        public static string FinanceLink(this UrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator().FinanceLink(path);
+        }
+        
         public static string PortalLink(this UrlHelper urlHelper, string path)
         {
             return GetLinkGenerator().PortalLink(path);
@@ -87,6 +102,11 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
         public static string UsersLink(this UrlHelper urlHelper, string path)
         {
             return GetLinkGenerator().UsersLink(path);
+        }
+        
+        public static string ReservationsLink(this UrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator().ReservationsLink(path);
         }
         
         private static ILinkGenerator GetLinkGenerator()
