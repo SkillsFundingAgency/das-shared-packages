@@ -19,6 +19,11 @@ namespace SFA.DAS.NServiceBus.ClientOutbox
             var clientOutboxMessageId = Guid.Parse(context.MessageId);
             var clientOutboxMessage = await _clientOutboxStorage.GetAsync(clientOutboxMessageId, context.SynchronizedStorageSession);
 
+            if(clientOutboxMessage == null)
+            {
+                return;
+            }
+
             await Task.WhenAll(clientOutboxMessage.Operations.Select(context.Publish));
             await _clientOutboxStorage.SetAsDispatchedAsync(clientOutboxMessage.MessageId, context.SynchronizedStorageSession);
         }

@@ -25,6 +25,12 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         {
             return RunAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, null)));
         }
+
+        [Test]
+        public Task Handle_WhenHandlingAProcessClientOutboxMessageCommand_ThenShoulReturnWhenClientOutboxMessageDoesNotExist()
+        {
+            return RunAsync(f => f.ClientOutboxMessageDoesNotExist(), f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, null), Times.Never));
+        }
     }
 
     public class ProcessClientOutboxMessageCommandHandlerTestsFixture
@@ -68,6 +74,13 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         public Task Handle()
         {
             return Handler.Handle(Command, Context);
+        }
+
+        public Task ClientOutboxMessageDoesNotExist()
+        {            
+            ClientOutboxStorage.Setup(o => o.GetAsync(ClientOutboxMessage.MessageId, null)).Returns(Task.FromResult<ClientOutboxMessage>(null));
+
+            return Task.CompletedTask;
         }
     }
 }
