@@ -69,10 +69,9 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
 
         [Test]
-        public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldThrowAnException()
+        public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldReturnNull()
         {
-            return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().Throw<KeyNotFoundException>()
-                .WithMessage($"Client outbox data not found where MessageId = '{f.ClientOutboxMessage.MessageId}'"));
+            return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().BeNull());
         }
 
         [Test]

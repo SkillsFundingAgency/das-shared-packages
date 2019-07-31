@@ -61,10 +61,10 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
                         return clientOutboxMessage;
                     }
-
-                    throw new KeyNotFoundException($"Client outbox data not found where MessageId = '{messageId}'");
                 }
             }
+
+            return null;
         }
 
         public async Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync()
