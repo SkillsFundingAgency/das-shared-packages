@@ -41,43 +41,38 @@ Azure Table Storage (`SFA.DAS.Employer.Menu`) will provide a shared configuratio
 Here is the configuration structure that is expected by the component when using Azure Table Storage:
 ```json
 {
-  "MaPageConfiguration": {
-    "Ma": {
-      "RootUrl": "https://das-test-accui-as.azurewebsites.net",
+    "MaPageConfiguration": {
       "Routes": {
-        "AccountsHome": "/accounts/{0}/teams",
-        "Help": "/service/help",
-        "Privacy": "/service/privacy",
-        "Accounts": "/service/accounts",
-        "RenameAccount": "/accounts/{0}/rename",
-        "Notifications": "/settings/notifications",
-        "AccountsFinance": "/accounts/{0}/finance",
-        "AccountsTeamsView": "/accounts/{0}/teams/view",
-        "AccountsAgreements": "/accounts/{0}/agreements",
-        "AccountsSchemes": "/accounts/{0}/schemes"
-      }
-    },
-    "Commitments": {
-      "RootUrl": "https://test-empc.apprenticeships.sfa.bis.gov.uk",
-      "Routes": {
-        "ApprenticesHome": "/commitments/accounts/{0}/apprentices/home"
-      }
-    },
-    "Recruit": {
-      "RootUrl": "https://recruit.test-eas.apprenticeships.sfa.bis.gov.uk",
-      "Routes": {
-        "RecruitHome": "/accounts/{0}"
-      }
-    },
-    "Identity": {
-      "RootUrl": "https://test-login.apprenticeships.sfa.bis.gov.uk",
-      "Routes": {
-        "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
-        "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
+        "Accounts": {
+            "AccountsHome": "/accounts/{0}/teams",
+            "Help": "/service/help",
+            "Privacy": "/service/privacy",
+            "Accounts": "/service/accounts",
+            "RenameAccount": "/accounts/{0}/rename",
+            "Notifications": "/settings/notifications",
+            "AccountsFinance": "/accounts/{0}/finance",
+            "AccountsTeamsView": "/accounts/{0}/teams/view",
+            "AccountsAgreements": "/accounts/{0}/agreements",
+            "AccountsSchemes": "/accounts/{0}/schemes",
+            "ChangePasswordReturn": "/service/password/change",
+            "ChangeEmailReturn": "/service/email/change"
+        },
+        "Finance": {
+            "AccountsFinance": "/accounts/{0}/finance"
+        },
+        "Commitments": {
+            "ApprenticesHome": "/commitments/accounts/{0}/apprentices/home"
+        },
+        "Recruit": {
+          "RecruitHome": "/accounts/{0}"
+        },
+        "Identity": {
+            "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
+            "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
+        }
       }
     }
   }
-}
 ```
 ### Menu Behaviour
 There are scenarios where the menu needs to display differently. There are 2 additional *modes* that are supported. These modes are currenly controlled by *ViewBag* boolean values. 
