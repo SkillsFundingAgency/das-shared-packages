@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Employer.Shared.UI", "SFA.DAS.Employer.Shared.UI\SFA.DAS.Employer.Shared.UI.csproj", "{CA3EBDF9-DF03-473C-9F07-F4C6E4918C32}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "example-website", "example-website\example-website.csproj", "{E60424BF-5CF6-46A4-8030-5904BDBDEF27}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB7C0764-D82B-40D1-9B46-25D6FE281162}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA3EBDF9-DF03-473C-9F07-F4C6E4918C32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA3EBDF9-DF03-473C-9F07-F4C6E4918C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA3EBDF9-DF03-473C-9F07-F4C6E4918C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA3EBDF9-DF03-473C-9F07-F4C6E4918C32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E60424BF-5CF6-46A4-8030-5904BDBDEF27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E60424BF-5CF6-46A4-8030-5904BDBDEF27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E60424BF-5CF6-46A4-8030-5904BDBDEF27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E60424BF-5CF6-46A4-8030-5904BDBDEF27}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00BFAEFE-16E2-43C4-9F3F-A63D76EE606B}
+	EndGlobalSection
+EndGlobal
