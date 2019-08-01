@@ -90,3 +90,16 @@ There are scenarios where the menu needs to display differently. There are 2 add
 
 ### Override Partial Views
 Any of the parital views that are defined in the RCL can be overriden in the consuming application simply by defining a partial view with the same name ane location e.g. */Views/Shared/_Header.cshtl*
+
+
+### Active Navigation Section
+
+If you need to select which navigation section is currently active, you can add this global filter to the *ConfigureServices* method
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc().SetDefaultNavigationSection(NavigationSection.ApprenticesHome);
+}
+```
+

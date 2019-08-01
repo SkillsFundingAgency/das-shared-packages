@@ -2,6 +2,7 @@
 @using Microsoft.Extensions.Options
 @using Microsoft.AspNetCore.Http
 @using System.Net
+@using SFA.DAS.Employer.Shared.UI
 @using static SFA.DAS.Employer.Shared.UI.UrlBuilder;
 @inject IOptionsMonitor<MaMenuConfiguration> OptionsAccessor
 
@@ -9,6 +10,7 @@
     var accountId = Model;
     var clientId = OptionsAccessor.CurrentValue.ClientId;
     var externalLinks = OptionsAccessor.CurrentValue;
+    var selectedSection = ViewData.SelectedNavigationSection();
 }
 
 @functions {
@@ -35,9 +37,19 @@
     private static string GetEncodedReturnUrl(HttpRequest request)
     {
         var url = $"{request.Scheme}://{request.Host}";
-        var encodedReturnUrl = WebUtility.UrlEncode($"{url}{request.Path}");    
+        var encodedReturnUrl = WebUtility.UrlEncode($"{url}{request.Path}");
 
         return encodedReturnUrl;
+    }
+
+    private string BuildNavigationLinkClass(NavigationSection section, NavigationSection selectedSection)
+    {
+        var @class = "das-navigation__link";
+        if (selectedSection == section)
+        {
+            @class += " das-navigation__link--current";
+        }
+        return @class;
     }
 }
 
@@ -96,25 +108,25 @@
             <div class="govuk-width-container">
                 <ul class="das-navigation__list" id="navigation" role="menu">
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsHome", accountId)'>Home</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsHome", accountId)'>Home</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsFinance", accountId)'>Finance</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsFinance, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsFinance", accountId)'>Finance</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href='@GetLink(externalLinks.Recruit, "RecruitHome", accountId)'>Recruitment</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.RecruitHome, selectedSection)" href='@GetLink(externalLinks.Recruit, "RecruitHome", accountId)'>Recruitment</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href='@GetLink(externalLinks.Commitments, "ApprenticesHome", accountId)'>Apprentices</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.ApprenticesHome, selectedSection)" href='@GetLink(externalLinks.Commitments, "ApprenticesHome", accountId)'>Apprentices</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsTeamsView", accountId)'>Your team</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsTeamsView, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsTeamsView", accountId)'>Your team</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsAgreements", accountId)'>Your organisations and agreements</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsAgreements, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsAgreements", accountId)'>Your organisations and agreements</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="das-navigation__link" href='@GetLink(externalLinks.Ma, "AccountsSchemes", accountId)'>PAYE schemes</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsSchemes, selectedSection)" href='@GetLink(externalLinks.Ma, "AccountsSchemes", accountId)'>PAYE schemes</a>
                     </li>
                  </ul>
              </div>
