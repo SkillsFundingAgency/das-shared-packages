@@ -99,7 +99,7 @@ If you need to select which navigation section is currently active, you can add 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.SetDefaultNavigationSection(NavigationSection.ApprenticesHome);
+    services.AddMvc().SetDefaultNavigationSection(NavigationSection.ApprenticesHome);
 }
 ```
 

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Employer.Shared.UI.Attributes;
 
-namespace SFA.DAS.Employer.Shared.UI.Startuo
+namespace SFA.DAS.Employer.Shared.UI.Startup
 {
     public static class IMvcBuilderExtensions
     {
