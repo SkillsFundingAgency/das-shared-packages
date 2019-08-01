@@ -62,7 +62,7 @@
                         <a href="@linkGenerator.AccountsLink("Help")" class="das-user-navigation__link mu-help">Help</a>
                     </li>
                     @if (Context.User.Identity.IsAuthenticated)
-                {
+                    {
                     <li role="menuitem" class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
                         <a href="/" role="menuitem" class="das-user-navigation__link">Settings</a>
                         <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
@@ -112,7 +112,7 @@
             <div class="govuk-width-container">
                 <ul class="das-navigation__list" id="navigation" role="menu">
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection) mu-home" href=href="@linkGenerator.AccountsLink("AccountsHome", accountId)">Home</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection) mu-home" href="@linkGenerator.AccountsLink("AccountsHome", accountId)">Home</a>
                     </li>
                     <li class="das-navigation__list-item">
                         <a class="@BuildNavigationLinkClass(NavigationSection.AccountsFinance, selectedSection) mu-finance" href="@linkGenerator.FinanceLink("AccountsFinance", accountId)">Finance</a>
@@ -130,7 +130,7 @@
                         <a class="@BuildNavigationLinkClass(NavigationSection.AccountsAgreements, selectedSection) mu-orgs" href="@linkGenerator.AccountsLink("AccountsAgreements", accountId)">Your organisations and agreements</a>
                     </li>
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsSchemes, selectedSection)mu-paye" href="@linkGenerator.AccountsLink("AccountsSchemes", accountId)">PAYE schemes</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsSchemes, selectedSection) mu-paye" href="@linkGenerator.AccountsLink("AccountsSchemes", accountId)">PAYE schemes</a>
                     </li>
                 </ul>
             </div>

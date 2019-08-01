@@ -67,7 +67,7 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             var apprenticesLink = content.QuerySelector("a.mu-apprentices");
             var yourTeamLink = content.QuerySelector("a.mu-team");
             var orgsLink = content.QuerySelector("a.mu-orgs");
-            var payeLink = content.QuerySelector(".mu-paye");
+            var payeLink = content.QuerySelector("a.mu-paye");
 
             // Assert
             Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/teams", homeLink.Attributes["href"].Value, ignoreCase: true); 
