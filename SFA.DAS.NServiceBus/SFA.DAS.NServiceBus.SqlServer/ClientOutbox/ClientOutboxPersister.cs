@@ -22,12 +22,13 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
         public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, @Operations)";
 
         private readonly Lazy<DbConnection> _connection;
+        private readonly Func<DbConnection> _connectionBuilder;
 
         public ClientOutboxPersister(ReadOnlySettings settings)
         {
-            var connectionBuilder = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
+            _connectionBuilder  = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
             
-            _connection = new Lazy<DbConnection>(connectionBuilder);
+            _connection = new Lazy<DbConnection>(_connectionBuilder);
         }
 
         public async Task<IClientOutboxTransaction> BeginTransactionAsync()
@@ -40,32 +41,20 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
             return sqlClientOutboxTransaction;
         }
 
-        public async Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
+        public Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
             var sqlSession = synchronizedStorageSession.GetSqlStorageSession();
 
-            using (var command = sqlSession.Connection.CreateCommand())
-            {
-                command.CommandText = GetCommandText;
-                command.CommandType = CommandType.Text;
-                command.Transaction = sqlSession.Transaction;
-                command.AddParameter("MessageId", messageId);
-
-                using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow).ConfigureAwait(false))
-                {
-                    if (await reader.ReadAsync().ConfigureAwait(false))
-                    {
-                        var endpointName = reader.GetString(0);
-                        var operations = JsonConvert.DeserializeObject<List<object>>(reader.GetString(1), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-                        var clientOutboxMessage = new ClientOutboxMessage(messageId, endpointName, operations);
-
-                        return clientOutboxMessage;
-                    }
-                }
-            }
-
-            return null;
+            return GetAsync(sqlSession.Connection, messageId, sqlSession.Transaction);
         }
+
+        public Task<ClientOutboxMessage> GetAsync(Guid messageId)
+        {
+            using (var connection = new Lazy<DbConnection>(_connectionBuilder).Value)
+            {
+                return GetAsync(connection, messageId);
+            }
+        }        
 
         public async Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync()
         {
@@ -135,6 +124,34 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
                 return command.ExecuteNonQueryAsync();
             }
+        }
+
+        private async Task<ClientOutboxMessage> GetAsync(DbConnection connection, Guid messageId, DbTransaction transaction = null)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = GetCommandText;
+                command.CommandType = CommandType.Text;
+                if (transaction != null)
+                {
+                    command.Transaction =  transaction;
+                }
+                command.AddParameter("MessageId", messageId);
+
+                using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow).ConfigureAwait(false))
+                {
+                    if (await reader.ReadAsync().ConfigureAwait(false))
+                    {
+                        var endpointName = reader.GetString(0);
+                        var operations = JsonConvert.DeserializeObject<List<object>>(reader.GetString(1), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                        var clientOutboxMessage = new ClientOutboxMessage(messageId, endpointName, operations);
+
+                        return clientOutboxMessage;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

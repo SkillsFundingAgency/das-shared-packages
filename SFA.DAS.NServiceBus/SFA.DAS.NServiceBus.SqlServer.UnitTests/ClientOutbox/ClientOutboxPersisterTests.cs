@@ -69,9 +69,27 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         }
 
         [Test]
+        public Task GetAsyncNoSession_WhenGettingAClientOutboxMessage_TheShouldReturnTheClientOutboxMessage()
+        {
+            return RunAsync(f => f.SetupGetReaderWithRows(), f => f.GetAsync(true), (f, r) =>
+            {
+                f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
+                f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetCommandText);
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "MessageId" && p.Value as Guid? == f.ClientOutboxMessage.MessageId)));
+                r.Should().BeEquivalentTo(f.ClientOutboxMessage);
+            });
+        }
+
+        [Test]
         public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldReturnNull()
         {
             return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().BeNull());
+        }
+
+        [Test]
+        public Task GetAsyncNoSession_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldReturnNull()
+        {
+            return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(true), (f, a) => a.Should().BeNull());
         }
 
         [Test]
@@ -178,8 +196,13 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             return ClientOutboxStorage.StoreAsync(ClientOutboxMessage, ClientOutboxTransaction);
         }
 
-        public Task<ClientOutboxMessage> GetAsync()
+        public Task<ClientOutboxMessage> GetAsync(bool noSession = false)
         {
+            if (noSession)
+            {
+                return ClientOutboxStorage.GetAsync(ClientOutboxMessage.MessageId);
+            }
+
             return ClientOutboxStorage.GetAsync(ClientOutboxMessage.MessageId, SynchronizedStorageSession.Object);
         }
 
