@@ -13,47 +13,47 @@ namespace SFA.DAS.EmployerUrlHelper
             _configuration = configuration;
         }
 
-        public string AccountsLink(string path)
+        public string AccountsLink(string path = null)
         {
             return Action(_configuration.AccountsBaseUrl, path);
         }
 
-        public string CommitmentsLink(string path)
+        public string CommitmentsLink(string path = null)
         {
             return Action(_configuration.CommitmentsBaseUrl, path);
         }
 
-        public string CommitmentsV2Link(string path)
+        public string CommitmentsV2Link(string path = null)
         {
             return Action(_configuration.CommitmentsV2BaseUrl, path);
         }
 
-        public string FinanceLink(string path)
+        public string FinanceLink(string path = null)
         {
             return Action(_configuration.FinanceBaseUrl, path);
         }
 
-        public string PortalLink(string path)
+        public string PortalLink(string path = null)
         {
             return Action(_configuration.PortalBaseUrl, path);
         }
 
-        public string ProjectionsLink(string path)
+        public string ProjectionsLink(string path = null)
         {
             return Action(_configuration.ProjectionsBaseUrl, path);
         }
 
-        public string RecruitLink(string path)
+        public string RecruitLink(string path = null)
         {
             return Action(_configuration.RecruitBaseUrl, path);
         }
 
-        public string ReservationsLink(string path)
+        public string ReservationsLink(string path = null)
         {
             return Action(_configuration.ReservationsBaseUrl, path);
         }
 
-        public string UsersLink(string path)
+        public string UsersLink(string path = null)
         {
             return Action(_configuration.UsersBaseUrl, path);
         }
