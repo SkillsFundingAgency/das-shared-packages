@@ -23,5 +23,14 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
             });
             return builder;
         }
+
+        public static IMvcBuilder SuppressNavigationSection(this IMvcBuilder builder, NavigationSection section)
+        {
+            builder.Services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new SuppressNavigationSectionAttribute(section));
+            });
+            return builder;
+        }
     }
 }

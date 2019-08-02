@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace SFA.DAS.Provider.Shared.UI.Extensions
 {
@@ -19,6 +20,13 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         public static bool ShowBetaPhaseBanner(this ViewDataDictionary viewData)
         {
             return viewData.ContainsKey(ViewDataKeys.ShowBetaPhaseBanner) && (bool)viewData[ViewDataKeys.ShowBetaPhaseBanner];
+        }
+
+        public static List<NavigationSection> SuppressedNavigationSections(this ViewDataDictionary viewData)
+        {
+            return viewData.ContainsKey(ViewDataKeys.SuppressNavigationSection)
+                ? (List<NavigationSection>) viewData[ViewDataKeys.SuppressNavigationSection]
+                : new List<NavigationSection>();
         }
     }
 }

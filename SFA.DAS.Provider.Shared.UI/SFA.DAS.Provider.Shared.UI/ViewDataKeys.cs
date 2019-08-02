@@ -5,5 +5,6 @@
         public const string SelectedNavigationSection = "SharedUI.SelectedNavigationSection";
         public const string HideNavigationBar = "SharedUI.HiddenNavigationBar";
         public const string ShowBetaPhaseBanner = "SharedUI.ShowBetaPhaseBanner";
+        public const string SuppressNavigationSection = "SharedUI.SuppressedNavigationSections";
     }
 }
