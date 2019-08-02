@@ -29,7 +29,8 @@
             "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
             "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
         }
-      }
+      },
+      "AccountsOidcClientId": "easaccdev"
     }
   }
 }
