@@ -10,6 +10,8 @@ This project provides shared Employer site UI components via a [Razor Class Libr
 
 ## Usage
 
+(See [example-website](https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Employer.Shared.UI/example-website) for an example of how to use the component.)
+
 Add the package to the web project and add the following into the *ConfigureServices* method:
 
 ```csharp
@@ -34,11 +36,19 @@ The components can be added into the web apps' Razor views by adding the partial
 **Note**: the *Menu* parital view requires an *accountId* (the hashed account id used in the url) to enable it to generate the menu links.
 
 ### Configuration
-The RCL library uses `IConfiguration` as it's source for items such as the urls of the other employer sites and paths within those sites which are used to generate the menu links. 
+The RCL library uses `IConfiguration` as it's source of for details of path and  urls  used to generate the menu links. The [SFA.DAS.EmployerUrlHelper](https://www.nuget.org/packages/SFA.DAS.EmployerUrlHelper/) NuGet package is also used for generating the sub-site urls. The Configuration for this package also needs to be added.
 
-Azure Table Storage (`SFA.DAS.Employer.Menu`) will provide a shared configuration location that all apps should use. You can use the [SFA.DAS.Configuration.AzureTableStorage](https://www.nuget.org/packages/SFA.DAS.Configuration.AzureTableStorage/)  package for consuming the shared conifguration. 
+The following Azure RowKey Values provide the configuration for the 2 Nuget packages mentioned above:
 
-Here is the configuration structure that is expected by the component when using Azure Table Storage:
+| NuGet Package              | Configuration RowKey         |
+|:--------------------------:|:----------------------------:|
+| SFA.DAS.Employer.Shared.UI | `SFA.DAS.Employer.Shared.UI` |
+| SFA.DAS.EmployerUrlHelper  | `SFA.DAS.EmployerUrlHelper`  |
+
+
+You can use the [SFA.DAS.Configuration.AzureTableStorage](https://www.nuget.org/packages/SFA.DAS.Configuration.AzureTableStorage/)  package for consuming the shared conifguration. 
+
+Example `SFA.DAS.Employer.Shared.UI` Configuration:
 ```json
 {
     "MaPageConfiguration": {
