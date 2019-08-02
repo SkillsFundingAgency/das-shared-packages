@@ -22,7 +22,6 @@ namespace SFA.DAS.Employer.Shared.UI
             services.Configure<MaPageConfiguration>(configuration.GetSection("SFA.DAS.Employer.Shared.UI:MaPageConfiguration"));
             services.PostConfigure<MaPageConfiguration>(options =>
             {
-                options.ClientId = identityClientId;
                 options.LocalLogoutRouteName = logoutRouteName;
             });
         }

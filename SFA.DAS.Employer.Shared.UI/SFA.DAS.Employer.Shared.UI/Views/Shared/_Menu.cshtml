@@ -2,13 +2,12 @@
 @using Microsoft.Extensions.Options
 @using System.Net
 @using SFA.DAS.Employer.Shared.UI
-@using static SFA.DAS.Employer.Shared.UI.UrlBuilder;
 @inject SFA.DAS.Employer.Shared.UI.UrlBuilder linkGenerator
 @inject IOptionsMonitor<MaPageConfiguration> OptionsAccessor
 
 @{
     var accountId = Model;
-    var clientId = OptionsAccessor.CurrentValue.ClientId;
+    var clientId = OptionsAccessor.CurrentValue.AccountsOidcClientId;
     var selectedSection = ViewData.SelectedNavigationSection();
     var logoutRoute = OptionsAccessor.CurrentValue.LocalLogoutRouteName;
     var externalLinks = OptionsAccessor.CurrentValue.Routes;
