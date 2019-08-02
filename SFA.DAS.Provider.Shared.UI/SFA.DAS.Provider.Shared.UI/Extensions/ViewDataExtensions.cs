@@ -20,5 +20,12 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         {
             return viewData.ContainsKey(ViewDataKeys.ShowBetaPhaseBanner) && (bool)viewData[ViewDataKeys.ShowBetaPhaseBanner];
         }
+
+        public static NavigationSection[] SuppressedNavigationSections(this ViewDataDictionary viewData)
+        {
+            return viewData.ContainsKey(ViewDataKeys.SuppressNavigationSection)
+                ? (NavigationSection[]) viewData[ViewDataKeys.SuppressNavigationSection]
+                : new NavigationSection[0];
+        }
     }
 }
