@@ -18,7 +18,7 @@ pool:
 variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '1'
-  Build.MinorNumber: '0'
+  Build.MinorNumber: '1'
 
 steps:
 - task: DotNetCoreCLI@2
