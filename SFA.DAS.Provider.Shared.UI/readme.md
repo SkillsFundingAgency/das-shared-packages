@@ -9,7 +9,6 @@ This consists of _Layout and _Menu razor views.
 * Only Core web apps are supported.
 * In order for the menu to render, the user must be authenticated and the Provider Id (UKPRN) must be in the claims
 * This package references the ProviderUrlHelper package, which makes use of StructureMap and AutoConfiguration. The current implementation will add StructureMap references to your project and make use of AutoConfiguration. This dependency will be removed in a future version.
-* Feature Toggling is not supported. It is necessary to build and release new versions of the package and consume them in order to obtain different navigation menu versions.
 
 ## Usage
 
@@ -20,6 +19,7 @@ This consists of _Layout and _Menu razor views.
    * Decorating controllers and/or individual action methods with the `SetNavigationSection` attribute filter, passing the appropriate navigation section as a parameter
 * Prevent the menu from being displayed by decorating controllers or individual action methods with the `HideNavigationBar` attribute filter
 * Show a "Beta" phase banner in the layout for your service by calling the `ShowBetaPhaseBanner` startup extension method (or adding the `ShowBetaPhaseBanner` attribute filter as appropriate)
+* Suppress navigation sections (for example, if an up-coming service is toggled off) by using the `SuppressNavigationSection` extension method
  
 Examples: 
 
@@ -40,4 +40,9 @@ Examples:
  ```csharp
 [HideNavigationBar]
 public class ErrorController : Controller
+ ```
+
+
+ ```csharp
+builder.SuppressNavigationSection(NavigationSection.Reservations);
  ```
