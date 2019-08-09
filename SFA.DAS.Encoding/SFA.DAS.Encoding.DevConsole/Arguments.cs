@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Encoding.DevConsole
 {
-    internal class Arguments
+    public class Arguments
     {
         public bool ShowHelp { get; set; }
         public ActionType ActionType { get; set; } = ActionType.Decode;

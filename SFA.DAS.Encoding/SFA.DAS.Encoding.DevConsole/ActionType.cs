@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Encoding.DevConsole
 {
-    internal enum ActionType
+    public enum ActionType
     {
         Encode,
         Decode

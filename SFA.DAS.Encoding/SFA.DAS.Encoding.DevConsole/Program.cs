@@ -1,18 +1,44 @@
 ﻿using System;
 using Mono.Options;
-using SFA.DAS.AutoConfiguration;
+using SFA.DAS.Encoding.DevConsole.Interfaces;
+using StructureMap;
 
 namespace SFA.DAS.Encoding.DevConsole
 {
     class Program
     {
+        private static IContainer _container;
+
+        private static void InitialiseContainer()
+        {
+            try
+            {
+                _container = new Container(expression =>
+                {
+                    expression.Scan(scanner =>
+                    {
+                        scanner.TheCallingAssembly();
+                        scanner.WithDefaultConventions();
+                        scanner.LookForRegistries();
+                    });
+                });
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error initialising structure map container");
+                throw;
+            }
+        }
+
         static void Main(string[] args)
         {
+            InitialiseContainer();
+
             var arguments = new Arguments();
-            var p = BuildOptionSet(arguments);
+            var optionSet = BuildOptionSet(arguments);
 
             try {
-                p.Parse(args);
+                optionSet.Parse(args);
             }
             catch (OptionException e) {
                 Console.WriteLine("error: ");
@@ -22,37 +48,11 @@ namespace SFA.DAS.Encoding.DevConsole
             }
 
             if (arguments.ShowHelp) {
-                ShowHelp(p);
+                ShowHelp(optionSet);
                 return;
             }
-            
-            RunEncodingService(arguments);
-        }
 
-        private static void RunEncodingService(Arguments arguments)
-        {
-            var tableStorageConfigurationService = new TableStorageConfigurationService(
-                new EnvironmentService(),
-                new AzureTableStorageConnectionAdapter());
-            var encodingConfig = tableStorageConfigurationService.Get<EncodingConfig>("SFA.DAS.Encoding");
-
-            var encodingService = new EncodingService(encodingConfig);
-
-            switch (arguments.ActionType)
-            {
-                case ActionType.Encode:
-                    long.TryParse(arguments.Value, out var rawValue);
-                    var encodedValue = encodingService.Encode(rawValue, arguments.EncodingType);
-                    Console.WriteLine($"encoded value: {encodedValue}");
-                    break;
-                case ActionType.Decode:
-                    var decodedValue = encodingService.Decode(arguments.Value, arguments.EncodingType);
-                    Console.WriteLine($"decoded value: {decodedValue}");
-                    break;
-                default:
-                    Console.WriteLine("Error: invalid action");
-                    return;
-            }
+            _container.GetInstance<IEncodingServiceFacade>().RunEncodingService(arguments);
         }
 
         private static OptionSet BuildOptionSet(Arguments arguments)
