@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SFA.DAS.Encoding.DevConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "-v JKXR9B"
+    }
+  }
+}
