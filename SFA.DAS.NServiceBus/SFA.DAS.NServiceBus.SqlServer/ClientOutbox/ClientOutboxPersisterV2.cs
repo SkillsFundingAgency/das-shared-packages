@@ -14,16 +14,16 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
     /// Based on the OutboxPersister implementation in NServiceBus
     /// https://github.com/Particular/NServiceBus.Persistence.Sql/blob/4.1.1/src/SqlPersistence/Outbox/OutboxPersister.cs
     /// </summary>
-    public class ClientOutboxPersister : IClientOutboxStorage
+    public class ClientOutboxPersisterV2 : IClientOutboxStorageV2
     {
         public const string GetCommandText = "SELECT EndpointName, Operations FROM dbo.ClientOutboxData WHERE MessageId = @MessageId";
         public const string SetAsDispatchedCommandText = "UPDATE dbo.ClientOutboxData SET Dispatched = 1, DispatchedAt = @DispatchedAt, Operations = '[]' WHERE MessageId = @MessageId";
-        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE CreatedAt <= @CreatedAt AND Dispatched = 0 AND PersistenceVersion = '1.0.0' ORDER BY CreatedAt";
-        public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, PersistenceVersion, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, '1.0.0', @Operations)";
-        
+        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE CreatedAt <= @CreatedAt AND Dispatched = 0 AND PersistenceVersion = '2.0.0' ORDER BY CreatedAt";
+        public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, PersistenceVersion, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, '2.0.0', @Operations)";
+
         private readonly Func<DbConnection> _connectionBuilder;
 
-        public ClientOutboxPersister(ReadOnlySettings settings)
+        public ClientOutboxPersisterV2(ReadOnlySettings settings)
         {
             _connectionBuilder = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
         }
@@ -31,13 +31,14 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
         public async Task<IClientOutboxTransaction> BeginTransactionAsync()
         {
             var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false);
+
             var transaction = connection.BeginTransaction();
             var sqlClientOutboxTransaction = new SqlClientOutboxTransaction(connection, transaction);
 
             return sqlClientOutboxTransaction;
         }
 
-        public async Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
+        public async Task<ClientOutboxMessageV2> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
             var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
 
@@ -53,8 +54,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
                     if (await reader.ReadAsync().ConfigureAwait(false))
                     {
                         var endpointName = reader.GetString(0);
-                        var operations = JsonConvert.DeserializeObject<List<object>>(reader.GetString(1), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-                        var clientOutboxMessage = new ClientOutboxMessage(messageId, endpointName, operations);
+                        var transportOperations = JsonConvert.DeserializeObject<List<TransportOperation>>(reader.GetString(1), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                        var clientOutboxMessage = new ClientOutboxMessageV2(messageId, endpointName, transportOperations);
 
                         return clientOutboxMessage;
                     }
@@ -74,7 +75,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
                 {
                     command.CommandText = GetAwaitingDispatchCommandText;
                     command.CommandType = CommandType.Text;
-                    command.AddParameter("CreatedAt", DateTime.UtcNow.AddMinutes(-10));
+                    command.AddParameter("CreatedAt", DateTime.UtcNow.AddSeconds(-10));
 
                     using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                     {
@@ -84,7 +85,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
                         {
                             var messageId = reader.GetGuid(0);
                             var endpointName = reader.GetString(1);
-                            var clientOutboxMessage = new ClientOutboxMessage(messageId, endpointName);
+                            var clientOutboxMessage = new ClientOutboxMessageV2(messageId, endpointName);
 
                             clientOutboxMessages.Add(clientOutboxMessage);
                         }
@@ -96,6 +97,21 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
             finally
             {
                 connection.Close();
+            }
+        }
+
+        public async Task SetAsDispatchedAsync(Guid messageId)
+        {
+            var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false);
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = SetAsDispatchedCommandText;
+                command.CommandType = CommandType.Text;
+                command.AddParameter("MessageId", messageId);
+                command.AddParameter("DispatchedAt", DateTime.UtcNow);
+
+                await command.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
         }
 
@@ -115,7 +131,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
             }
         }
 
-        public Task StoreAsync(ClientOutboxMessage clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction)
+        public Task StoreAsync(ClientOutboxMessageV2 clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction)
         {
             var sqlClientOutboxTransaction = (SqlClientOutboxTransaction)clientOutboxTransaction;
 
@@ -127,7 +143,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
                 command.AddParameter("MessageId", clientOutboxMessage.MessageId);
                 command.AddParameter("EndpointName", clientOutboxMessage.EndpointName);
                 command.AddParameter("CreatedAt", DateTime.UtcNow);
-                command.AddParameter("Operations", JsonConvert.SerializeObject(clientOutboxMessage.Operations, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }));
+                command.AddParameter("Operations", JsonConvert.SerializeObject(clientOutboxMessage.TransportOperations, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }));
 
                 return command.ExecuteNonQueryAsync();
             }
