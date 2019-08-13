@@ -1,4 +1,5 @@
 ﻿#if NET462
+using System.Net;
 using System.Web.Mvc;
 
 namespace SFA.DAS.Validation.Mvc
@@ -13,7 +14,7 @@ namespace SFA.DAS.Validation.Mvc
             {
                 if (!filterContext.Controller.ViewData.ModelState.IsValid)
                 {
-                    filterContext.Result = new HttpNotFoundResult();
+                    filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
                 else
                 {
@@ -25,9 +26,7 @@ namespace SFA.DAS.Validation.Mvc
             }
             else if (!filterContext.Controller.ViewData.ModelState.IsValid)
             {
-                var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                
-                filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
+                filterContext.Controller.TempData[ModelStateKey] = filterContext.Controller.ViewData.ModelState.ToSerializable();
                 filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
                 filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
             }
@@ -40,19 +39,14 @@ namespace SFA.DAS.Validation.Mvc
                 if (filterContext.Exception is ValidationException validationException)
                 {
                     filterContext.Controller.ViewData.ModelState.AddModelError(validationException);
-                    
-                    var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                    
-                    filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
+                    filterContext.Controller.TempData[ModelStateKey] = filterContext.Controller.ViewData.ModelState.ToSerializable();
                     filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
                     filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
                     filterContext.ExceptionHandled = true;
                 }
                 else if (!filterContext.Controller.ViewData.ModelState.IsValid)
                 {
-                    var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-
-                    filterContext.Controller.TempData[ModelStateKey] = serializableModelState;
+                    filterContext.Controller.TempData[ModelStateKey] = filterContext.Controller.ViewData.ModelState.ToSerializable();
                 }
             }
         }
