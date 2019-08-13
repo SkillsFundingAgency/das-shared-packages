@@ -26,6 +26,11 @@ namespace SFA.DAS.Validation.Mvc
 
             return true;
         }
+        
+        public static string ValidationClassFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string @class)
+        {
+            return htmlHelper.IsValid(expression) ? "" : @class;
+        }
     }
 }
 #endif
