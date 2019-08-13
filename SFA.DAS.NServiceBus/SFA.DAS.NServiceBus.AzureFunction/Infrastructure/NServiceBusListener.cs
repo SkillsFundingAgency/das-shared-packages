@@ -13,7 +13,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Infrastructure
 {
     public class NServiceBusListener : IListener
     {
-        private const string PoisonMessageQueue = "error";
+        private string _poisonMessageQueue;
         private const int ImmediateRetryCount = 3;
 
         private readonly ITriggeredFunctionExecutor _executor;
@@ -27,12 +27,13 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Infrastructure
             _executor = executor;
             _attribute = attribute;
             _parameter = parameter;
+            _poisonMessageQueue = $"{attribute.EndPoint}_error";
         }
       
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var nameShortener = new RuleNameShortener();
-            var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.EndPoint, OnMessage, PoisonMessageQueue);
+            var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.EndPoint, OnMessage, _poisonMessageQueue);
 
             endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>().RuleNameShortener(nameShortener.Shorten)
                 
@@ -43,7 +44,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Infrastructure
             {
                 endpointConfigurationRaw.License(EnvironmentVariables.NServiceBusLicense);
             }
-            endpointConfigurationRaw.DefaultErrorHandlingPolicy(PoisonMessageQueue, ImmediateRetryCount);
+            endpointConfigurationRaw.DefaultErrorHandlingPolicy(_poisonMessageQueue, ImmediateRetryCount);
             endpointConfigurationRaw.AutoCreateQueue();
 
             _endpoint = await RawEndpoint.Start(endpointConfigurationRaw).ConfigureAwait(false);
