@@ -6,7 +6,9 @@ Automatic model validation for MVC applications that are using the OMIOMO (one m
 
 ### MVC Core
 
-Coming soon...
+```c#
+services.AddMvc(o => o.AddValidation());
+```
 
 ### MVC
 
