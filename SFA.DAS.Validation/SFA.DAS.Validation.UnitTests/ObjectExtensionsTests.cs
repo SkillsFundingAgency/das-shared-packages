@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SFA.DAS.Testing;
 using System.Collections.Generic;
+using SFA.DAS.Validation.Extensions;
 
 namespace SFA.DAS.Validation.UnitTests
 {

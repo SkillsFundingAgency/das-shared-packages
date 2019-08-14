@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Validation.Mvc;
+using SFA.DAS.Validation.Mvc.Extensions;
 
 namespace SFA.DAS.Validation.NetCoreSample.Startup
 {
