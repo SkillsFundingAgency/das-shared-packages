@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Validation.NetCoreSample.RouteValues.Accounts;
 using SFA.DAS.Validation.NetCoreSample.ViewModels.Accounts;
 
 namespace SFA.DAS.Validation.NetCoreSample.Controllers
@@ -7,9 +8,12 @@ namespace SFA.DAS.Validation.NetCoreSample.Controllers
     public class AccountsController : Controller
     {
         [Route("create")]
-        public ActionResult Create()
+        public ActionResult Create(CreateAccountRouteValues routeValues)
         {
-            return View(new CreateAccountViewModel());
+            return View(new CreateAccountViewModel
+            {
+                Username = routeValues.Username
+            });
         }
         
         [HttpPost]
