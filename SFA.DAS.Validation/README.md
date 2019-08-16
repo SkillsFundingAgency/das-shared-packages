@@ -1,6 +1,6 @@
 # SFA.DAS.Validation
 
-Automatic model validation for MVC applications that are using the OMIOMO (one model in, one model out) & PRG (Post/Redirect/Get) patterns.
+Automatic model validation for MVC applications that are using the OMIOMO (One Model In, One Model Out) & PRG (Post/Redirect/Get) patterns. 
 
 ## Configuration
 
@@ -15,3 +15,15 @@ services.AddMvc(o => o.AddValidation());
 ```c#
 filters.AddValidationFilter();
 ```
+
+### WebApi
+
+Coming soon...
+
+## Usage
+
+Please see the samples:
+
+* [SFA.DAS.Validation.NetCoreSample]
+
+[SFA.DAS.Validation.NetCoreSample]: https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Validation/SFA.DAS.Validation.NetCoreSample
