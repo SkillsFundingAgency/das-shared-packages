@@ -98,7 +98,7 @@ namespace SFA.DAS.Http.UnitTests.REST
 
             return TestAsync(
                 f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody<TestObjectToUseAsAResponse>(expectedResponse),
-                f => f.CallPostAsJsonWithNoContent< TestObjectToUseAsAResponse>(),
+                f => f.CallPostAsJsonWithNoContent<TestObjectToUseAsAResponse>(),
                 (f, r) => r.Should().BeEquivalentTo(expectedResponse));
         }
 
