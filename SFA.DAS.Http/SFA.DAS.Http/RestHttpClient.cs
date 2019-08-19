@@ -39,6 +39,15 @@ namespace SFA.DAS.Http
             return Get(new Uri(uri, UriKind.RelativeOrAbsolute), queryData, cancellationToken);
         }
 
+        public async Task<TResponse> PostAsJson<TResponse>(string uri, CancellationToken cancellationToken = default)
+        {
+            var resultAsString = await PostAsJson<object>(uri, null, cancellationToken).ConfigureAwait(false);
+
+            var result = JsonConvert.DeserializeObject<TResponse>(resultAsString);
+
+            return result;
+        }
+
         public async Task<string> PostAsJson<TRequest>(string uri, TRequest requestData, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.PostAsJsonAsync(uri, requestData, cancellationToken).ConfigureAwait(false);
