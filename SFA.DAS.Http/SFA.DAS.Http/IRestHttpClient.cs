@@ -12,6 +12,14 @@ namespace SFA.DAS.Http
         Task<T> Get<T>(string uri, object queryData = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        ///     Post to an endpoint without a request body
+        /// </summary>
+        /// <returns>
+        ///     The content of the response de-serialized into an instance of TResponse (as a json response).
+        /// </returns>
+        Task<TResponse> PostAsJson<TResponse>(string uri, CancellationToken cancellationToken = default);
+
+        /// <summary>
         ///     Serialize the supplied requestData into json and post to the specified URI.
         /// </summary>
         /// <returns>
