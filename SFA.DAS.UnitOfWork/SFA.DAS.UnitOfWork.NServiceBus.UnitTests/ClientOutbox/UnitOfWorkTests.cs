@@ -21,37 +21,45 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         {
             return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f =>
             {
-                f.ClientOutboxStorage.Verify(o => o.StoreAsync(It.Is<ClientOutboxMessage>(m => m.MessageId != Guid.Empty), f.ClientOutboxTransaction.Object), Times.Once);
-                f.ClientOutboxMessage.Operations.Should().BeEquivalentTo(f.Events);
+                f.ClientOutboxStorage.Verify(o => o.StoreAsync(It.IsAny<ClientOutboxMessageV2>(), f.ClientOutboxTransaction.Object), Times.Once);
+                f.ClientOutboxMessage.MessageId.Should().NotBe(Guid.Empty);
+                f.ClientOutboxMessage.TransportOperations.Select(o => o.MessageId).Should().NotContain(Guid.Empty);
+                f.ClientOutboxMessage.TransportOperations.Select(o => o.Message).Should().BeEquivalentTo(f.Events);
             });
         }
 
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWorkWithNoEvents_ThenShouldNotStoreClientOutboxMessage()
         {
-            return RunAsync(f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.StoreAsync(It.IsAny<ClientOutboxMessage>(), It.IsAny<IClientOutboxTransaction>()), Times.Never));
+            return RunAsync(f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.StoreAsync(It.IsAny<ClientOutboxMessageV2>(), It.IsAny<IClientOutboxTransaction>()), Times.Never));
         }
 
         [Test]
-        public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldSendProcessClientOutboxMessageCommand()
+        public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldPublishEvents()
         {
-            return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f => f.MessageSession.SentMessages.Should().ContainSingle(m =>
-                m.Options.GetMessageId() == f.ClientOutboxMessage.MessageId.ToString() &&
-                m.Options.IsRoutingToThisEndpoint() &&
-                m.Message.GetType() == typeof(ProcessClientOutboxMessageCommand)));
+            return RunAsync(
+                f => f.SetEvents(), 
+                f => f.CommitAsync(), 
+                f => f.MessageSession.PublishedMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), m.Message }).Should().BeEquivalentTo(f.ClientOutboxMessage.TransportOperations));
         }
 
         [Test]
-        public Task CommitAsync_WhenCommittingAUnitOfWorkWithNoEvents_ThenShouldNotSendProcessClientOutboxMessageCommand()
+        public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
-            return RunAsync(f => f.CommitAsync(), f => f.MessageSession.SentMessages.Should().BeEmpty());
+            return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId)));
+        }
+
+        [Test]
+        public Task CommitAsync_WhenCommittingAUnitOfWorkWithNoEvents_ThenShouldNotPublishEvents()
+        {
+            return RunAsync(f => f.CommitAsync(), f => f.MessageSession.PublishedMessages.Should().BeEmpty());
         }
     }
 
     public class UnitOfWorkTestsFixture
     {
         public IUnitOfWork UnitOfWork { get; set; }
-        public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }
+        public Mock<IClientOutboxStorageV2> ClientOutboxStorage { get; set; }
         public TestableMessageSession MessageSession { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public Mock<ReadOnlySettings> Settings { get; set; }
@@ -60,11 +68,11 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
         public bool NextTaskInvoked { get; set; }
         public string EndpointName { get; set; }
         public List<object> Events { get; set; }
-        public ClientOutboxMessage ClientOutboxMessage { get; set; }
+        public ClientOutboxMessageV2 ClientOutboxMessage { get; set; }
 
         public UnitOfWorkTestsFixture()
         {
-            ClientOutboxStorage = new Mock<IClientOutboxStorage>();
+            ClientOutboxStorage = new Mock<IClientOutboxStorageV2>();
             MessageSession = new TestableMessageSession();
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
             Settings = new Mock<ReadOnlySettings>();
@@ -81,8 +89,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
             UnitOfWorkContext.Setup(c => c.Get<IClientOutboxTransaction>()).Returns(ClientOutboxTransaction.Object);
             Settings.Setup(s => s.Get<string>("NServiceBus.Routing.EndpointName")).Returns(EndpointName);
 
-            ClientOutboxStorage.Setup(o => o.StoreAsync(It.IsAny<ClientOutboxMessage>(), It.IsAny<IClientOutboxTransaction>()))
-                .Returns(Task.CompletedTask).Callback<ClientOutboxMessage, IClientOutboxTransaction>((m, t) =>
+            ClientOutboxStorage.Setup(o => o.StoreAsync(It.IsAny<ClientOutboxMessageV2>(), It.IsAny<IClientOutboxTransaction>()))
+                .Returns(Task.CompletedTask).Callback<ClientOutboxMessageV2, IClientOutboxTransaction>((m, t) =>
                 {
                     if (NextTaskInvoked)
                         throw new Exception("StoreAsync called too late");
@@ -92,8 +100,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
 
             NextTask.Setup(n => n()).Returns(Task.CompletedTask).Callback(() =>
             {
-                if (MessageSession.SentMessages.Any())
-                    throw new Exception("Send called too early");
+                if (MessageSession.PublishedMessages.Any())
+                    throw new Exception("Publish called too early");
 
                 NextTaskInvoked = true;
             });
