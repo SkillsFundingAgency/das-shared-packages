@@ -16,6 +16,7 @@ namespace SFA.DAS.NServiceBus.SqlServer
             config.RegisterComponents(c =>
             {
                 c.ConfigureComponent<ClientOutboxPersister>(DependencyLifecycle.InstancePerUnitOfWork);
+                c.ConfigureComponent<ClientOutboxPersisterV2>(DependencyLifecycle.InstancePerUnitOfWork);
             });
 
             var persistence = config.UsePersistence<SqlPersistence>();
