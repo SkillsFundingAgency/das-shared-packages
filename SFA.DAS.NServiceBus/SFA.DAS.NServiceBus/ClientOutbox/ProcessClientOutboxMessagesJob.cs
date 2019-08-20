@@ -8,26 +8,41 @@ namespace SFA.DAS.NServiceBus.ClientOutbox
     {
         private readonly IMessageSession _messageSession;
         private readonly IClientOutboxStorage _clientOutboxStorage;
+        private readonly IClientOutboxStorageV2 _clientOutboxStorageV2;
 
-        public ProcessClientOutboxMessagesJob(IMessageSession messageSession, IClientOutboxStorage clientOutboxStorage)
+        public ProcessClientOutboxMessagesJob(IMessageSession messageSession, IClientOutboxStorage clientOutboxStorage, IClientOutboxStorageV2 clientOutboxStorageV2)
         {
             _messageSession = messageSession;
             _clientOutboxStorage = clientOutboxStorage;
+            _clientOutboxStorageV2 = clientOutboxStorageV2;
         }
 
         public async Task RunAsync()
         {
-            var clientOutboxMessages = await _clientOutboxStorage.GetAwaitingDispatchAsync();
-
-            var tasks = clientOutboxMessages.Select(m =>
-            {
-                var options = new SendOptions();
-                
-                options.SetDestination(m.EndpointName);
-                options.SetMessageId(m.MessageId.ToString());
-
-                return _messageSession.Send(new ProcessClientOutboxMessageCommand(), options);
-            });
+            var clientOutboxMessagesTask = _clientOutboxStorage.GetAwaitingDispatchAsync();
+            var clientOutboxMessageV2sTask = _clientOutboxStorageV2.GetAwaitingDispatchAsync();
+            var clientOutboxMessages = await clientOutboxMessagesTask.ConfigureAwait(false);
+            var clientOutboxMessageV2s = await clientOutboxMessageV2sTask.ConfigureAwait(false);
+            
+            var tasks = clientOutboxMessages
+                .Select(m =>
+                {
+                    var sendOptions = new SendOptions();
+                    
+                    sendOptions.SetDestination(m.EndpointName);
+                    sendOptions.SetMessageId(m.MessageId.ToString());
+    
+                    return _messageSession.Send(new ProcessClientOutboxMessageCommand(), sendOptions);
+                })
+                .Concat(clientOutboxMessageV2s.Select(m =>
+                {
+                    var sendOptions = new SendOptions();
+                    
+                    sendOptions.SetDestination(m.EndpointName);
+                    sendOptions.SetMessageId(m.MessageId.ToString());
+    
+                    return _messageSession.Send(new ProcessClientOutboxMessageCommandV2(), sendOptions);
+                }));
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }

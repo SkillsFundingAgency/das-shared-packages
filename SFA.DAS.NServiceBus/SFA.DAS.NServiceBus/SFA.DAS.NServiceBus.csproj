@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         
         <Authors>DAS</Authors>
@@ -28,15 +28,8 @@
         <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
         <PackageReference Include="NServiceBus.NLog" Version="3.0.0" />
         <PackageReference Include="NServiceBus.StructureMap" Version="7.0.0" />
-        <PackageReference Include="StructureMap" Version="4.6.1" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-        <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0" />
+        <PackageReference Include="StructureMap" Version="4.6.1" />
     </ItemGroup>
 
 </Project>

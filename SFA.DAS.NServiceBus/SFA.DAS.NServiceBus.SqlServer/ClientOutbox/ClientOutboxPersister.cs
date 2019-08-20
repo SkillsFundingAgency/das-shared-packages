@@ -18,37 +18,34 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
     {
         public const string GetCommandText = "SELECT EndpointName, Operations FROM dbo.ClientOutboxData WHERE MessageId = @MessageId";
         public const string SetAsDispatchedCommandText = "UPDATE dbo.ClientOutboxData SET Dispatched = 1, DispatchedAt = @DispatchedAt, Operations = '[]' WHERE MessageId = @MessageId";
-        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE CreatedAt <= @CreatedAt AND Dispatched = 0 ORDER BY CreatedAt";
-        public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, @Operations)";
-
-        private readonly Lazy<DbConnection> _connection;
+        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE CreatedAt <= @CreatedAt AND Dispatched = 0 AND PersistenceVersion = '1.0.0' ORDER BY CreatedAt";
+        public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, PersistenceVersion, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, '1.0.0', @Operations)";
+        
+        private readonly Func<DbConnection> _connectionBuilder;
 
         public ClientOutboxPersister(ReadOnlySettings settings)
         {
-            var connectionBuilder = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
-            
-            _connection = new Lazy<DbConnection>(connectionBuilder);
+            _connectionBuilder = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
         }
 
         public async Task<IClientOutboxTransaction> BeginTransactionAsync()
         {
-            await _connection.Value.OpenAsync().ConfigureAwait(false);
-
-            var transaction = _connection.Value.BeginTransaction();
-            var sqlClientOutboxTransaction = new SqlClientOutboxTransaction(_connection.Value, transaction);
+            var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false);
+            var transaction = connection.BeginTransaction();
+            var sqlClientOutboxTransaction = new SqlClientOutboxTransaction(connection, transaction);
 
             return sqlClientOutboxTransaction;
         }
 
         public async Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
-            var sqlSession = synchronizedStorageSession.GetSqlStorageSession();
+            var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
 
-            using (var command = sqlSession.Connection.CreateCommand())
+            using (var command = sqlStorageSession.Connection.CreateCommand())
             {
                 command.CommandText = GetCommandText;
                 command.CommandType = CommandType.Text;
-                command.Transaction = sqlSession.Transaction;
+                command.Transaction = sqlStorageSession.Transaction;
                 command.AddParameter("MessageId", messageId);
 
                 using (var reader = await command.ExecuteReaderAsync(CommandBehavior.SingleRow).ConfigureAwait(false))
@@ -69,11 +66,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public async Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync()
         {
-            await _connection.Value.OpenAsync().ConfigureAwait(false);
+            var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false);
 
             try
             {
-                using (var command = _connection.Value.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
                     command.CommandText = GetAwaitingDispatchCommandText;
                     command.CommandType = CommandType.Text;
@@ -98,19 +95,19 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
             }
             finally
             {
-                _connection.Value.Close();
+                connection.Close();
             }
         }
 
         public Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
-            var sqlSession = synchronizedStorageSession.GetSqlStorageSession();
+            var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
 
-            using (var command = sqlSession.Connection.CreateCommand())
+            using (var command = sqlStorageSession.Connection.CreateCommand())
             {
                 command.CommandText = SetAsDispatchedCommandText;
                 command.CommandType = CommandType.Text;
-                command.Transaction = sqlSession.Transaction;
+                command.Transaction = sqlStorageSession.Transaction;
                 command.AddParameter("MessageId", messageId);
                 command.AddParameter("DispatchedAt", DateTime.UtcNow);
 
@@ -121,13 +118,12 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
         public Task StoreAsync(ClientOutboxMessage clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction)
         {
             var sqlClientOutboxTransaction = (SqlClientOutboxTransaction)clientOutboxTransaction;
-            var transaction = sqlClientOutboxTransaction.Transaction;
 
-            using (var command = _connection.Value.CreateCommand())
+            using (var command = sqlClientOutboxTransaction.Connection.CreateCommand())
             {
                 command.CommandText = StoreCommandText;
                 command.CommandType = CommandType.Text;
-                command.Transaction = transaction;
+                command.Transaction = sqlClientOutboxTransaction.Transaction;
                 command.AddParameter("MessageId", clientOutboxMessage.MessageId);
                 command.AddParameter("EndpointName", clientOutboxMessage.EndpointName);
                 command.AddParameter("CreatedAt", DateTime.UtcNow);

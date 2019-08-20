@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
@@ -8,9 +9,9 @@ namespace SFA.DAS.NServiceBus
 {
     public static class EndpointConfigurationExtensions
     {
-        public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config)
+        public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config, string errorQueue = "error")
         {
-            config.SendFailedMessagesTo("error");
+            config.SendFailedMessagesTo(errorQueue);
 
             return config;
         }
@@ -52,8 +53,8 @@ namespace SFA.DAS.NServiceBus
             var conventions = config.Conventions();
             
 #pragma warning disable 618
-            conventions.DefiningCommandsAs(t => t.Name.EndsWith("Command") || t == typeof(Command));
-            conventions.DefiningEventsAs(t => t.Name.EndsWith("Event") || t == typeof(Event));
+            conventions.DefiningCommandsAs(t => Regex.IsMatch(t.Name, @"Command(V\d+)?$") || typeof(Command).IsAssignableFrom(t));
+            conventions.DefiningEventsAs(t => Regex.IsMatch(t.Name, @"Event(V\d+)?$") || typeof(Event).IsAssignableFrom(t));
 #pragma warning restore 618
 
             return config;

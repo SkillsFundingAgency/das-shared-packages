@@ -85,6 +85,23 @@ namespace SFA.DAS.Http.UnitTests.REST
                 (f, r) => r.Should().BeEquivalentTo(expectedResponse));
         }
 
+        [Test]
+        public Task WhenCallingPostAsJsonWithNoContentAndHttpClientReturnsSuccess_ThenShouldReturnResponseBodyAsObject()
+        {
+            var expectedResponse = new TestObjectToUseAsAResponse
+            {
+                BoolField = true,
+                DateTimeField = DateTime.Now,
+                IntField = new Random().Next(),
+                StringField = Guid.NewGuid().ToString()
+            };
+
+            return TestAsync(
+                f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody<TestObjectToUseAsAResponse>(expectedResponse),
+                f => f.CallPostAsJsonWithNoContent<TestObjectToUseAsAResponse>(),
+                (f, r) => r.Should().BeEquivalentTo(expectedResponse));
+        }
+
 
         [Test]
         public Task WhenCallingPostAsJsonAndHttpClientReturnsNonSuccess_ThenShouldThrowRestClientException()
@@ -230,6 +247,11 @@ namespace SFA.DAS.Http.UnitTests.REST
         public Task<string> CallPostAsJson<TRequestData>(TRequestData requestData)
         {
             return RestHttpClient.PostAsJson<TRequestData>("https://example.com", requestData);
+        }
+
+        public Task<TResponse> CallPostAsJsonWithNoContent<TResponse>()
+        {
+            return RestHttpClient.PostAsJson<TResponse >("https://example.com");
         }
 
         public Task<TResponseData> CallPostAsJson<TRequestData, TResponseData>(TRequestData requestData)
