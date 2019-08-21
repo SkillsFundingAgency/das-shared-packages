@@ -10,6 +10,8 @@ This project provides shared Employer site UI components via a [Razor Class Libr
 
 ## Usage
 
+(See [example-website](https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Employer.Shared.UI/example-website) for an example of how to use the component.)
+
 Add the package to the web project and add the following into the *ConfigureServices* method:
 
 ```csharp
@@ -34,50 +36,53 @@ The components can be added into the web apps' Razor views by adding the partial
 **Note**: the *Menu* parital view requires an *accountId* (the hashed account id used in the url) to enable it to generate the menu links.
 
 ### Configuration
-The RCL library uses `IConfiguration` as it's source for items such as the urls of the other employer sites and paths within those sites which are used to generate the menu links. 
+The RCL library uses `IConfiguration` as it's source of for details of path and  urls  used to generate the menu links. The [SFA.DAS.EmployerUrlHelper](https://www.nuget.org/packages/SFA.DAS.EmployerUrlHelper/) NuGet package is also used for generating the sub-site urls. The Configuration for this package also needs to be added.
 
-Azure Table Storage (`SFA.DAS.Employer.Menu`) will provide a shared configuration location that all apps should use. You can use the [SFA.DAS.Configuration.AzureTableStorage](https://www.nuget.org/packages/SFA.DAS.Configuration.AzureTableStorage/)  package for consuming the shared conifguration. 
+The following Azure RowKey Values provide the configuration for the 2 Nuget packages mentioned above:
 
-Here is the configuration structure that is expected by the component when using Azure Table Storage:
+| NuGet Package              | Configuration RowKey         |
+|:--------------------------:|:----------------------------:|
+| SFA.DAS.Employer.Shared.UI | `SFA.DAS.Employer.Shared.UI` |
+| SFA.DAS.EmployerUrlHelper  | `SFA.DAS.EmployerUrlHelper`  |
+
+
+You can use the [SFA.DAS.Configuration.AzureTableStorage](https://www.nuget.org/packages/SFA.DAS.Configuration.AzureTableStorage/)  package for consuming the shared conifguration. 
+
+Example `SFA.DAS.Employer.Shared.UI` Configuration:
 ```json
 {
-  "MaPageConfiguration": {
-    "Ma": {
-      "RootUrl": "https://das-test-accui-as.azurewebsites.net",
+    "MaPageConfiguration": {
       "Routes": {
-        "AccountsHome": "/accounts/{0}/teams",
-        "Help": "/service/help",
-        "Privacy": "/service/privacy",
-        "Accounts": "/service/accounts",
-        "RenameAccount": "/accounts/{0}/rename",
-        "Notifications": "/settings/notifications",
-        "AccountsFinance": "/accounts/{0}/finance",
-        "AccountsTeamsView": "/accounts/{0}/teams/view",
-        "AccountsAgreements": "/accounts/{0}/agreements",
-        "AccountsSchemes": "/accounts/{0}/schemes"
-      }
-    },
-    "Commitments": {
-      "RootUrl": "https://test-empc.apprenticeships.sfa.bis.gov.uk",
-      "Routes": {
-        "ApprenticesHome": "/commitments/accounts/{0}/apprentices/home"
-      }
-    },
-    "Recruit": {
-      "RootUrl": "https://recruit.test-eas.apprenticeships.sfa.bis.gov.uk",
-      "Routes": {
-        "RecruitHome": "/accounts/{0}"
-      }
-    },
-    "Identity": {
-      "RootUrl": "https://test-login.apprenticeships.sfa.bis.gov.uk",
-      "Routes": {
-        "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
-        "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
+        "Accounts": {
+            "AccountsHome": "/accounts/{0}/teams",
+            "Help": "/service/help",
+            "Privacy": "/service/privacy",
+            "Accounts": "/service/accounts",
+            "RenameAccount": "/accounts/{0}/rename",
+            "Notifications": "/settings/notifications",
+            "AccountsFinance": "/accounts/{0}/finance",
+            "AccountsTeamsView": "/accounts/{0}/teams/view",
+            "AccountsAgreements": "/accounts/{0}/agreements",
+            "AccountsSchemes": "/accounts/{0}/schemes",
+            "ChangePasswordReturn": "/service/password/change",
+            "ChangeEmailReturn": "/service/email/change"
+        },
+        "Finance": {
+            "AccountsFinance": "/accounts/{0}/finance"
+        },
+        "Commitments": {
+            "ApprenticesHome": "/commitments/accounts/{0}/apprentices/home"
+        },
+        "Recruit": {
+          "RecruitHome": "/accounts/{0}"
+        },
+        "Identity": {
+            "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
+            "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
+        }
       }
     }
   }
-}
 ```
 ### Menu Behaviour
 There are scenarios where the menu needs to display differently. There are 2 additional *modes* that are supported. These modes are currenly controlled by *ViewBag* boolean values. 
@@ -90,3 +95,16 @@ There are scenarios where the menu needs to display differently. There are 2 add
 
 ### Override Partial Views
 Any of the parital views that are defined in the RCL can be overriden in the consuming application simply by defining a partial view with the same name ane location e.g. */Views/Shared/_Header.cshtl*
+
+
+### Active Navigation Section
+
+If you need to select which navigation section is currently active, you can add this global filter to the *ConfigureServices* method
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc().SetDefaultNavigationSection(NavigationSection.ApprenticesHome);
+}
+```
+

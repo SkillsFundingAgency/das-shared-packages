@@ -1,11 +1,6 @@
 @using Microsoft.Extensions.Options
-@using SFA.DAS.Employer.Shared.UI
-@using static SFA.DAS.Employer.Shared.UI.UrlBuilder;
-@inject IOptionsMonitor<MaMenuConfiguration> OptionsAccessor
-
-@{
-    var externalLinks = OptionsAccessor.CurrentValue.Ma;
-}
+@inject SFA.DAS.EmployerUrlHelper.ILinkGenerator linkGenerator
+@inject IOptionsMonitor<MaPageConfiguration> OptionsAccessor
 
 @functions {
 
@@ -36,7 +31,7 @@
             </a>
         </div>
         <div class="govuk-header__content">
-            <a href="@GetLink(externalLinks, "")" class="govuk-header__link govuk-header__link--service-name">
+            <a href="@linkGenerator.AccountsLink()" class="govuk-header__link govuk-header__link--service-name mu-header">
             Manage apprenticeships
             </a>
         </div>

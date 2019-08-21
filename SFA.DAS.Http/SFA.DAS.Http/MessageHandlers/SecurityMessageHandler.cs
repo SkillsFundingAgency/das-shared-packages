@@ -17,11 +17,11 @@ namespace SFA.DAS.Http.MessageHandlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)
         {
-            var bearerToken = await _generator.Generate();
+            var bearerToken = await _generator.Generate().ConfigureAwait(false);
 
             message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
 
-            return await base.SendAsync(message, cancellationToken);
+            return await base.SendAsync(message, cancellationToken).ConfigureAwait(false);
         }
     }
 }

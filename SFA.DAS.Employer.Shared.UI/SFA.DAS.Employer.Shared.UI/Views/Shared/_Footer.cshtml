@@ -1,10 +1,9 @@
-@using Microsoft.Extensions.Options
-@using SFA.DAS.Employer.Shared.UI
-@using static SFA.DAS.Employer.Shared.UI.UrlBuilder;
-@inject IOptionsMonitor<MaMenuConfiguration> OptionsAccessor
+﻿@using Microsoft.Extensions.Options
+@inject SFA.DAS.EmployerUrlHelper.ILinkGenerator linkGenerator
+@inject IOptionsMonitor<MaPageConfiguration> OptionsAccessor
 
 @{
-    var externalLinks = OptionsAccessor.CurrentValue.Ma;
+    var externalLinks = OptionsAccessor.CurrentValue.Routes.Accounts;
 }
 
 <footer class="govuk-footer " role="contentinfo">
@@ -14,16 +13,16 @@
                 <h2 class="govuk-visually-hidden">Support links</h2>
                 <ul class="govuk-footer__inline-list">
                     <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link" href="@GetLink(externalLinks, "Help")">Help</a>
+                        <a class="govuk-footer__link mu-foot-help" href="@linkGenerator.AccountsLink(externalLinks["Help"])">Help</a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link" href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">Feedback</a>
+                        <a class="govuk-footer__link" href="https://www.smartsurvey.co.uk/s/apprenticeshipservicefeedback/" target="_blank">Feedback</a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link" href="@GetLink(externalLinks, "Privacy")">Privacy and cookies</a>
+                        <a class="govuk-footer__link mu-foot-privacy" href="@linkGenerator.AccountsLink(externalLinks["Privacy"])">Privacy and cookies</a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
-                        Built by the <a href="http://gov.uk/sfa" target="_blank" class="govuk-footer__link">Education and Skills Funding Agency</a>
+                        Built by the <a href="https://www.gov.uk/government/organisations/education-and-skills-funding-agency" target="_blank" class="govuk-footer__link">Education and Skills Funding Agency</a>
                     </li>
                 </ul>
                 <svg role="presentation" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 483.2 195.7" height="17" width="41">

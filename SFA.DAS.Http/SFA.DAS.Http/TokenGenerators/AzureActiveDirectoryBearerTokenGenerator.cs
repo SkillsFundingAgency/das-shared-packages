@@ -18,7 +18,7 @@ namespace SFA.DAS.Http.TokenGenerators
             var authority = $"https://login.microsoftonline.com/{_config.Tenant}";
             var clientCredential = new ClientCredential(_config.ClientId, _config.ClientSecret);
             var context = new AuthenticationContext(authority, true);
-            var result = await context.AcquireTokenAsync(_config.IdentifierUri, clientCredential);
+            var result = await context.AcquireTokenAsync(_config.IdentifierUri, clientCredential).ConfigureAwait(false);
 
             return result.AccessToken;
         }

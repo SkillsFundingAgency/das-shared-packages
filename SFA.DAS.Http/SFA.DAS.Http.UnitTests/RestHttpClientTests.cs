@@ -19,7 +19,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         [Test]
         public Task WhenCallingGetAndHttpClientReturnsSuccess_ThenShouldReturnResponseBodyAsString()
         {
-            return RunAsync(f => f.SetupHttpClientToReturnSuccessWithStringResponseBody(), f => f.CallGet(null), 
+            return TestAsync(f => f.SetupHttpClientToReturnSuccessWithStringResponseBody(), f => f.CallGet(null), 
                 (f, r) =>
                 {
                     r.Should().NotBeNull();
@@ -30,7 +30,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         [Test]
         public Task WhenCallingGenericGetAndHttpClientReturnsSuccess_ThenShouldReturnResponseBodyAsObject()
         {
-            return RunAsync(f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody(), f => f.CallGetObject(null), 
+            return TestAsync(f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody(), f => f.CallGetObject(null), 
                 (f, r) =>
                 {
                     r.Should().NotBeNull();
@@ -41,7 +41,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         [Test]
         public Task WhenCallingGetAndHttpClientReturnsNonSuccess_ThenShouldThrowRestClientException()
         {
-            return RunAsync(f => f.SetupHttpClientGetToReturnInternalServerErrorWithStringResponseBody(), f => f.CallGet(null),
+            return TestExceptionAsync(f => f.SetupHttpClientGetToReturnInternalServerErrorWithStringResponseBody(), f => f.CallGet(null),
                 (f, r) => r.Should().Throw<RestHttpClientException>()
                     .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError
                                  && ex.ReasonPhrase == "Internal Server Error"
@@ -52,7 +52,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         [Test]
         public Task WhenCallingGetAndQueryDataIsSupplied_ThenUriCalledShouldContainTheQueryData()
         {
-            return RunAsync(f => f.SetupHttpClientToReturnSuccessWithStringResponseBody(),
+            return TestAsync(f => f.SetupHttpClientToReturnSuccessWithStringResponseBody(),
                 f => f.CallGet(new {QueryParam1 = "qp1", QueryParam2 = "qp2"}),
                 (f, r) => f.HttpMessageHandler.HttpRequestMessage.RequestUri.Should().Be($"{f.HttpClient.BaseAddress}?QueryParam1=qp1&QueryParam2=qp2"));
         }
@@ -62,7 +62,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         {
             const string expectedResponse = "Hello World!";
 
-            return RunAsync(
+            return TestAsync(
                 f => f.SetupHttpClientToReturnSuccessWithStringResponseBody(expectedResponse), 
                 f => f.CallPostAsJson(new {Property1 = "Hello who?"}),
                 (f, r) => r.Should().Be(expectedResponse));
@@ -79,9 +79,26 @@ namespace SFA.DAS.Http.UnitTests.REST
                 StringField = Guid.NewGuid().ToString()
             };
 
-            return RunAsync(
+            return TestAsync(
                 f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody(expectedResponse),
                 f => f.CallPostAsJson<TestObjectToUseAsARequest, TestObjectToUseAsAResponse>(new TestObjectToUseAsARequest {StringField = "Hello who?"}),
+                (f, r) => r.Should().BeEquivalentTo(expectedResponse));
+        }
+
+        [Test]
+        public Task WhenCallingPostAsJsonWithNoContentAndHttpClientReturnsSuccess_ThenShouldReturnResponseBodyAsObject()
+        {
+            var expectedResponse = new TestObjectToUseAsAResponse
+            {
+                BoolField = true,
+                DateTimeField = DateTime.Now,
+                IntField = new Random().Next(),
+                StringField = Guid.NewGuid().ToString()
+            };
+
+            return TestAsync(
+                f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody<TestObjectToUseAsAResponse>(expectedResponse),
+                f => f.CallPostAsJsonWithNoContent<TestObjectToUseAsAResponse>(),
                 (f, r) => r.Should().BeEquivalentTo(expectedResponse));
         }
 
@@ -89,7 +106,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         [Test]
         public Task WhenCallingPostAsJsonAndHttpClientReturnsNonSuccess_ThenShouldThrowRestClientException()
         {
-            return RunAsync(f => f.SetupHttpClientPostToReturnInternalServerErrorWithStringResponseBody(), f => f.CallGet(null),
+            return TestExceptionAsync(f => f.SetupHttpClientPostToReturnInternalServerErrorWithStringResponseBody(), f => f.CallGet(null),
                 (f, r) => r.Should().Throw<RestHttpClientException>()
                     .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError
                                  && ex.ReasonPhrase == "Internal Server Error"
@@ -102,7 +119,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         {
             const string expectedResponse = "Hello World!";
 
-            return RunAsync(
+            return TestAsync(
                 f => f.SetupHttpClientToReturnSuccessWithStringResponseBody(expectedResponse),
                 f => f.CallPutAsJson(new { Property1 = "Hello who?" }),
                 (f, r) => r.Should().Be(expectedResponse));
@@ -119,7 +136,7 @@ namespace SFA.DAS.Http.UnitTests.REST
                 StringField = Guid.NewGuid().ToString()
             };
 
-            return RunAsync(
+            return TestAsync(
                 f => f.SetupHttpClientToReturnSuccessWithJsonObjectInResponseBody(expectedResponse),
                 f => f.CallPutAsJson<TestObjectToUseAsARequest, TestObjectToUseAsAResponse>(new TestObjectToUseAsARequest { StringField = "Hello who?" }),
                 (f, r) => r.Should().BeEquivalentTo(expectedResponse));
@@ -129,7 +146,7 @@ namespace SFA.DAS.Http.UnitTests.REST
         [Test]
         public Task WhenCallingPutAsJsonAndHttpClientReturnsNonSuccess_ThenShouldThrowRestClientException()
         {
-            return RunAsync(f => f.SetupHttpClientPutToReturnInternalServerErrorWithStringResponseBody(), f => f.CallGet(null),
+            return TestExceptionAsync(f => f.SetupHttpClientPutToReturnInternalServerErrorWithStringResponseBody(), f => f.CallGet(null),
                 (f, r) => r.Should().Throw<RestHttpClientException>()
                     .Where(ex => ex.StatusCode == HttpStatusCode.InternalServerError
                                  && ex.ReasonPhrase == "Internal Server Error"
@@ -230,6 +247,11 @@ namespace SFA.DAS.Http.UnitTests.REST
         public Task<string> CallPostAsJson<TRequestData>(TRequestData requestData)
         {
             return RestHttpClient.PostAsJson<TRequestData>("https://example.com", requestData);
+        }
+
+        public Task<TResponse> CallPostAsJsonWithNoContent<TResponse>()
+        {
+            return RestHttpClient.PostAsJson<TResponse >("https://example.com");
         }
 
         public Task<TResponseData> CallPostAsJson<TRequestData, TResponseData>(TRequestData requestData)

@@ -1,0 +1,52 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.EmployerUrlHelper'
+
+pr: none
+
+workspace:
+    clean: all
+
+pool:
+  name: Continuous Integration 02 - SSD - 160ACU
+variables:
+  BuildConfiguration: 'Release'
+  Build.MajorNumber: '3'
+  Build.MinorNumber: '0'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.sln
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.sln
+    arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+

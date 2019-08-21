@@ -9,12 +9,12 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IClientOutboxStorage _clientOutboxStorage;
+        private readonly IClientOutboxStorageV2 _clientOutboxStorage;
         private readonly IMessageSession _messageSession;
         private readonly IUnitOfWorkContext _unitOfWorkContext;
         private readonly ReadOnlySettings _settings;
 
-        public UnitOfWork(IClientOutboxStorage clientOutboxStorage, IMessageSession messageSession, IUnitOfWorkContext unitOfWorkContext, ReadOnlySettings settings)
+        public UnitOfWork(IClientOutboxStorageV2 clientOutboxStorage, IMessageSession messageSession, IUnitOfWorkContext unitOfWorkContext, ReadOnlySettings settings)
         {
             _clientOutboxStorage = clientOutboxStorage;
             _messageSession = messageSession;
@@ -25,8 +25,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
         public async Task CommitAsync(Func<Task> next)
         {
             var clientOutboxTransaction = _unitOfWorkContext.Get<IClientOutboxTransaction>();
-            var events = _unitOfWorkContext.GetEvents().ToList();
-            var clientOutboxMessage = events.Any() ? new ClientOutboxMessage(GuidComb.NewGuidComb(), _settings.EndpointName(), events) : null;
+            var transportOperations = _unitOfWorkContext.GetEvents().Select(e => new TransportOperation(GuidComb.NewGuidComb(), e)).ToList();
+            var clientOutboxMessage = transportOperations.Any() ? new ClientOutboxMessageV2(GuidComb.NewGuidComb(), _settings.EndpointName(), transportOperations) : null;
 
             if (clientOutboxMessage != null)
             {
@@ -37,12 +37,17 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
 
             if (clientOutboxMessage != null)
             {
-                var options = new SendOptions();
+                var tasks = clientOutboxMessage.TransportOperations.Select(o => 
+                {
+                    var publishOptions = new PublishOptions();
+                
+                    publishOptions.SetMessageId(o.MessageId.ToString());
 
-                options.RouteToThisEndpoint();
-                options.SetMessageId(clientOutboxMessage.MessageId.ToString());
-
-                await _messageSession.Send(new ProcessClientOutboxMessageCommand(), options).ConfigureAwait(false);
+                    return _messageSession.Publish(o.Message, publishOptions);
+                });
+            
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+                await _clientOutboxStorage.SetAsDispatchedAsync(clientOutboxMessage.MessageId).ConfigureAwait(false);
             }
         }
     }

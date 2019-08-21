@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Http.MessageHandlers;
 using SFA.DAS.Http.TokenGenerators;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Http
 {
@@ -42,6 +43,15 @@ namespace SFA.DAS.Http
 
             AddHandlerToChain(newHandler);
 
+            return this;
+        }
+
+        public HttpClientBuilder WithLogging(ILoggerFactory loggerFactory)
+        {
+            var loggingMessageHandler = new LoggingMessageHandler(loggerFactory.CreateLogger<LoggingMessageHandler>());
+
+            AddHandlerToChain(loggingMessageHandler);
+            
             return this;
         }
 

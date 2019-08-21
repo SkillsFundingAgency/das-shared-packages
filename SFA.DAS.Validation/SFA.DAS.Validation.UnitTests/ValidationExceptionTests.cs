@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Testing;
+using SFA.DAS.Validation.Exceptions;
 
 namespace SFA.DAS.Validation.UnitTests
 {

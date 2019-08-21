@@ -1,0 +1,16 @@
+@model SFA.DAS.Validation.NetCoreSample.ViewModels.Accounts.CreateAccountViewModel
+
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<h1 class="govuk-heading-xl">Create account</h1>
+<p class="govuk-body">Enter a username and submit the following form to create an account.</p>
+<form method="post">
+    <div class="govuk-form-group" asp-for="Username" validation-class="govuk-form-group--error">
+        <label asp-for="Username" class="govuk-label">Username</label>
+        <span asp-validation-for="Username" class="govuk-error-message"></span>
+        <input asp-for="Username" class="govuk-input" validation-class="govuk-input--error"/>
+    </div>
+    <button class="govuk-button" data-module="govuk-button" type="submit">Submit</button>
+</form>

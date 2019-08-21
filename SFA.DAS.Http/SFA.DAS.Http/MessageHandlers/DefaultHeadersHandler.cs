@@ -10,7 +10,7 @@ namespace SFA.DAS.Http.MessageHandlers
         {
             message.Headers.Add("accept", "application/json");
 
-            return await base.SendAsync(message, cancellationToken);
+            return await base.SendAsync(message, cancellationToken).ConfigureAwait(false);
         }
     }
 }

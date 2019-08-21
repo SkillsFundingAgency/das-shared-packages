@@ -15,7 +15,8 @@ namespace DfE.Example.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        [Route("{employerAccountId}")]
+        public IActionResult Index(string employerAccountId)
         {
             return View();
         }

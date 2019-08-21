@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+        <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.16" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.Validation.Mvc\SFA.DAS.Validation.Mvc.csproj" />
+    </ItemGroup>
+
+</Project>

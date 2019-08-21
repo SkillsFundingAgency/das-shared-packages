@@ -245,3 +245,6 @@ Messaging/SFA.DAS.Messaging.v3.ncrunchsolution
 .idea/
 *.DotSettings
 *.ncrunchsolution
+
+# macOS
+*.DS_Store

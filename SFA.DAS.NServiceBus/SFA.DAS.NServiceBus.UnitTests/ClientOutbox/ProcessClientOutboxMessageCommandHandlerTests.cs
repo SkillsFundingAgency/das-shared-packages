@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using NServiceBus.Persistence;
 using NServiceBus.Testing;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.ClientOutbox;
@@ -23,7 +24,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         [Test]
         public Task Handle_WhenHandlingAProcessClientOutboxMessageCommand_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
-            return RunAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, null)));
+            return RunAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, f.SynchronizedStorageSession.Object)));
         }
     }
 
@@ -32,6 +33,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
         public DateTime Now { get; set; }
         public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }
         public ProcessClientOutboxMessageCommand Command { get; set; }
+        public Mock<SynchronizedStorageSession> SynchronizedStorageSession { get; set; }
         public TestableMessageHandlerContext Context { get; set; }
         public ProcessClientOutboxMessageCommandHandler Handler { get; set; }
         public ClientOutboxMessage ClientOutboxMessage { get; set; }
@@ -51,16 +53,18 @@ namespace SFA.DAS.NServiceBus.UnitTests.ClientOutbox
             };
 
             ClientOutboxMessage = new ClientOutboxMessage(GuidComb.NewGuidComb(), EndpointName, Events);
+            SynchronizedStorageSession = new Mock<SynchronizedStorageSession>();
 
             Context = new TestableMessageHandlerContext
             {
-                MessageId = ClientOutboxMessage.MessageId.ToString()
+                MessageId = ClientOutboxMessage.MessageId.ToString(),
+                SynchronizedStorageSession = SynchronizedStorageSession.Object
             };
 
             Command = new ProcessClientOutboxMessageCommand();
             ClientOutboxStorage = new Mock<IClientOutboxStorage>();
 
-            ClientOutboxStorage.Setup(o => o.GetAsync(ClientOutboxMessage.MessageId, null)).ReturnsAsync(ClientOutboxMessage);
+            ClientOutboxStorage.Setup(o => o.GetAsync(ClientOutboxMessage.MessageId, SynchronizedStorageSession.Object)).ReturnsAsync(ClientOutboxMessage);
 
             Handler = new ProcessClientOutboxMessageCommandHandler(ClientOutboxStorage.Object);
         }

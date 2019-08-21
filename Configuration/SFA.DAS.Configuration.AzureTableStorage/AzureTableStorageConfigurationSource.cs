@@ -6,22 +6,22 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 {
     public class AzureTableStorageConfigurationSource : IConfigurationSource
     {
-        private readonly string _connectionString;
-        private readonly string _environmentName;
-        private readonly IEnumerable<string> _configurationKeys;
-        private readonly bool _prefixConfigurationKeys;
+        internal readonly string ConnectionString;
+        internal readonly string EnvironmentName;
+        internal readonly IEnumerable<string> ConfigurationKeys;
+        internal readonly bool PrefixConfigurationKeys;
 
         public AzureTableStorageConfigurationSource(ConfigurationOptions configOptions)
         {
-            _connectionString = configOptions.EnvironmentVariableKeys.TableStorageConnectionString;
-            _environmentName = configOptions.EnvironmentVariableKeys.EnvironmentName;
-            _configurationKeys = configOptions.ConfigurationKeys;
-            _prefixConfigurationKeys = configOptions.PrefixConfigurationKeys;
+            ConnectionString = configOptions.TableStorageConnectionString;
+            EnvironmentName = configOptions.EnvironmentName;
+            ConfigurationKeys = configOptions.ConfigurationKeys;
+            PrefixConfigurationKeys = configOptions.PrefixConfigurationKeys;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new AzureTableStorageConfigurationProvider(CloudStorageAccount.Parse(_connectionString), _environmentName, _configurationKeys, _prefixConfigurationKeys);
+            return new AzureTableStorageConfigurationProvider(CloudStorageAccount.Parse(ConnectionString), EnvironmentName, ConfigurationKeys, PrefixConfigurationKeys);
         }
     }
 }

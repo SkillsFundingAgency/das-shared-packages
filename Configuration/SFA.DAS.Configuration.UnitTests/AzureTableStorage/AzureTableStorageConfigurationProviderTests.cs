@@ -13,8 +13,7 @@ using SFA.DAS.Testing;
 
 namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 {
-    [TestFixture]
-    [Parallelizable]
+    [TestFixture, Parallelizable]
     public class AzureTableStorageConfigurationProviderTests : FluentTest<AzureTableStorageConfigurationProviderTestsFixture>
     {
         [Test, TestCaseSource(typeof(AzureTableStorageConfigurationProviderTestsSource), nameof(AzureTableStorageConfigurationProviderTestsSource.TestCasesWithPrefix))]
@@ -28,9 +27,13 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         {
             Test(f => f.SetConfigs(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
         }
+
+        [Test]
+        public void WhenReadingTablesAndConfigRowIsNotFound_ThenExceptionIsThrown()
+        {
+            TestException(f => f.ArrangeConfigNotFound(), f => f.Load(), (f, r) => r.Should().Throw<Exception>().WithMessage("Configuration row not found*"));
+        }
     }
-
-
 
     public class AzureTableStorageConfigurationProviderTestsSource
     {
@@ -131,6 +134,15 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             }
         }
 
+        public void ArrangeConfigNotFound()
+        {
+            const string configKey = "ConfigRowNotInTable";
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, new[] {configKey});
+
+            CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == configKey)))
+                .ReturnsAsync(new TableResult { HttpStatusCode = 404 });
+        }
+        
         public void Load()
         {
             ConfigProvider.Load();
