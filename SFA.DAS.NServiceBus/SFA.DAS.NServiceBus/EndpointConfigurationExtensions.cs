@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
-using SFA.DAS.NServiceBus.ClientOutbox;
 
 namespace SFA.DAS.NServiceBus
 {
@@ -52,10 +50,8 @@ namespace SFA.DAS.NServiceBus
         {
             var conventions = config.Conventions();
             
-#pragma warning disable 618
-            conventions.DefiningCommandsAs(t => Regex.IsMatch(t.Name, @"Command(V\d+)?$") || typeof(Command).IsAssignableFrom(t));
-            conventions.DefiningEventsAs(t => Regex.IsMatch(t.Name, @"Event(V\d+)?$") || typeof(Event).IsAssignableFrom(t));
-#pragma warning restore 618
+            conventions.DefiningCommandsAs(t => Regex.IsMatch(t.Name, @"Command(V\d+)?$"));
+            conventions.DefiningEventsAs(t => Regex.IsMatch(t.Name, @"Event(V\d+)?$"));
 
             return config;
         }
@@ -65,13 +61,6 @@ namespace SFA.DAS.NServiceBus
             var metrics = config.EnableMetrics();
 
             metrics.SendMetricDataToServiceControl("particular.monitoring", TimeSpan.FromSeconds(10));
-
-            return config;
-        }
-
-        public static EndpointConfiguration UseOutbox(this EndpointConfiguration config)
-        {
-            config.EnableOutbox();
 
             return config;
         }
@@ -92,7 +81,6 @@ namespace SFA.DAS.NServiceBus
 
         public static EndpointConfiguration UseServicesBuilder(this EndpointConfiguration config, UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.AddTransient<IProcessClientOutboxMessagesJob, ProcessClientOutboxMessagesJob>();
             config.UseContainer<ServicesBuilder>(c => c.ServiceProviderFactory(s => serviceProvider));
 
             return config;

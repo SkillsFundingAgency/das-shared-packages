@@ -2,18 +2,17 @@
 
 This package includes:
 
-* Infrastructure to support transactional data persistence and event publishing on the client.
 * Extension methods for `NServiceBus.EndpointConfiguration` to wire up common behaviour.
+* Infrastructure to support NServiceBus' outbox feature on the client (e.g. an ASP.NET web application).
+* Infrastructure to support integration between an NServiceBus endpoint and an Azure function.
 
-## Configuration
+## Extension Methods
 
-### NServiceBus Endpoint
-
-The following example configures an NServiceBus endpoint to allow both sending and receiving of messages. By enabling NServiceBus' outbox feature the endpoint will simulate the reliability of a distributed transaction, guaranteeing consistency between data persistence and messaging operations:
+The following example configures an NServiceBus endpoint to allow both sending and receiving of messages:
 
 ```c#
 var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandlers")
-    .UseAzureServiceBusTransport(configuration.GetConnectionString("Bus"), r => {})
+    .UseAzureServiceBusTransport(configuration.GetConnectionString("Bus"))
     .UseErrorQueue()
     .UseInstallers()
     .UseMessageConventions()
@@ -24,106 +23,13 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandle
     .UseSqlServerPersistence(() => new SqlConnection(configuration.GetConnectionString("Db")));
 ```
 
-### MVC Core Endpoint
+## Outbox
 
-The following example configures an NServiceBus endpoint within an MVC Core application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `UseUnitOfWork()` extension method on `IApplicationBuilder` then NServiceBus' outbox feature will be replicated when publishing messages on the client:
-
-```c#
-var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
-    .UseAzureServiceBusTransport(configuration.GetConnectionString("Bus"), r => {})
-    .UseErrorQueue()
-    .UseInstallers()
-    .UseMessageConventions()
-    .UseNewtonsoftJsonSerializer()
-    .UseNLogFactory()
-    .UseOutbox()
-    .UseServicesBuilder(serviceProvider)
-    .UseSqlServerPersistence(() => new SqlConnection(configuration.GetConnectionString("Db")));
-
-app.UseUnitOfWork();
-```
-
-### MVC Endpoint
-
-The following example configures an NServiceBus endpoint within an MVC application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalFilters.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
-
-```c#
-var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Web")
-    .UseAzureServiceBusTransport(container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
-    .UseErrorQueue()
-    .UseInstallers()
-    .UseMessageConventions()
-    .UseNewtonsoftJsonSerializer()
-    .UseNLogFactory()
-    .UseOutbox()
-    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .UseStructureMapBuilder(container);
-
-filters.AddUnitOfWorkFilter();
-```
-
-### WebApi Endpoint
-
-The following example configures an NServiceBus endpoint within a WebApi application to allow sending and receiving of messages. Unfortunately NServiceBus' outbox feature only runs in the context of processing an incoming message and not an HTTP request. However, by registering a `IUnitOfWorkManager` in the container from the `SFA.DAS.UnitOfWork.NServiceBus` package and calling the `AddUnitOfWorkFilter()` extension method on the `GlobalConfiguration.Configuration.Filters` collection then NServiceBus' outbox feature will be replicated when publishing messages on the client:
-
-```c#
-var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.Api")
-    .UseAzureServiceBusTransport(container.GetInstance<EmployerApprenticeshipsServiceConfiguration>().MessageServiceBusConnectionString, r => {})
-    .UseErrorQueue()
-    .UseInstallers()
-    .UseMessageConventions()
-    .UseNewtonsoftJsonSerializer()
-    .UseNLogFactory()
-    .UseOutbox()
-    .UseSqlServerPersistence(() => container.GetInstance<DbConnection>())
-    .UseStructureMapBuilder(container);
-
-filters.AddUnitOfWorkFilter();
-```
-
-### Azure Function
-
-Add a nuget reference to `SFA.DAS.NServiceBus.AzureFunction`
-To use NServiceBus in an azure function you need to add the following to the Startup and also have two environment variables, NServiceBusConnectionString and NServiceBusLicense:
-
-```c#
-public class Startup :IWebJobsStartup
-    {
-        public void Configure(IWebJobsBuilder builder)
-        {
-            //Environment variables need creating for
-            //      NServiceBusConnectionString
-            //      NServiceBusLicense
-            builder.AddExecutionContextBinding();
-            builder.AddExtension<NServiceBusExtensionConfig>();
-        }
-    }
-```
-
-Each Function endpoint then subscribes to a particular event as shown below:
-
-```c#
-public static async Task Run([NServiceBusTrigger(EndPoint = "SFA.DAS.NServiceBus.AzureFunctionExample")] NetFrameworkEvent message, ILogger log)
-```
-
-NetFrameworkEvent is the event that you wish to subscribe to, the EndPoint is then what is configured as the Subscription name and queue name. Each function endpoint should subscribe to one event
-
-
-### Job
-
-In the case of a crash or a service outage between an MVC or WebApi client and the server, some messages will fail to be published immediately. To accomodate these scenarios the `IProcessClientOutboxMessagesJob` should be run periodically. Here's an example of triggering the job to run every 24 hours using an Azure function:
-
-```c#
-public static Task ProcessClientOutboxMessages([TimerTrigger("0 0 0 * * *")] TimerInfo timer, TraceWriter logger)
-{
-    var job = ServiceLocator.GetInstance<IProcessClientOutboxMessagesJob>();
-    return job.RunAsync();
-}
-```
+By enabling NServiceBus' outbox feature the endpoint will simulate the reliability of a distributed transaction, guaranteeing consistency between data persistence and messaging operations.
 
 ### SQL Server
 
-When configuring an MVC or WebApi client as above the following tables will need to be created as part of a deployment:
+The following tables will need to be created before the endpoint is started:
 
 ```sql
 CREATE TABLE [dbo].[OutboxData]
@@ -132,7 +38,7 @@ CREATE TABLE [dbo].[OutboxData]
     [Dispatched] BIT NOT NULL DEFAULT(0),
     [DispatchedAt] DATETIME NULL,
     [PersistenceVersion] VARCHAR(23) NOT NULL,
-    [Operations] NVARCHAR(MAX) NOT NULL,
+    [Operations] NVARCHAR(MAX) NOT NULL
 )
 GO
 
@@ -148,7 +54,7 @@ CREATE TABLE [dbo].[ClientOutboxData]
     [CreatedAt] DATETIME NOT NULL,
     [Dispatched] BIT NOT NULL DEFAULT(0),
     [DispatchedAt] DATETIME NULL,
-    [PersistenceVersion] VARCHAR(23) NOT NULL DEFAULT '1.0.0',
+    [PersistenceVersion] VARCHAR(23) NOT NULL,
     [Operations] NVARCHAR(MAX) NOT NULL
 )
 GO
@@ -156,52 +62,42 @@ GO
 CREATE INDEX [IX_CreatedAt_PersistenceVersion] ON [dbo].[ClientOutboxData] ([CreatedAt] ASC, [PersistenceVersion] ASC) WHERE [Dispatched] = 0
 GO
 
-CREATE INDEX [IX_DispatchedAt] ON [dbo].[ClientOutboxData] ([DispatchedAt] ASC) WHERE [Dispatched] = 1
+CREATE INDEX [IX_DispatchedAt_PersistenceVersion] ON [dbo].[ClientOutboxData] ([DispatchedAt] ASC, [PersistenceVersion] ASC) WHERE [Dispatched] = 1
 GO
 ``` 
 
-## Transactions
+### Cleanup
 
-### Saving Data
-
-To ensure data is saved and messages are published as part of the same transaction then any database operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.UnitOfWork.IUnitOfWorkContext` this will give you access to the current request's persistence session, for example if you're using an SQL database:
+The number of outbox records will increase over time. Also, in the case of a service outage, some messages will not be dispatched immediately. To accomodate these scenarios outbox cleanup should be enabled, this will ensure that any stale records are deleted and that any messages awaiting dispatch are dispatched:
 
 ```c#
-var synchronizedStorageSession = _unitOfWorkContext.Get<SynchronizedStorageSession>();
-var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
-var connection = sqlStorageSession.Connection;
-var transaction = sqlStorageSession.Transaction;
+    .UseOutbox(enableCleanup: true)
 ```
 
-### Publishing Messages
+It is advised to enable outbox cleanup on only one NServiceBus endpoint instance per database for the most efficient cleanup execution.
 
-To ensure data is saved and messages are published as part of the same transaction then any messaging operations will need to be included in the same unit of work. By taking a dependency on `SFA.DAS.UnitOfWork.IUnitOfWorkContext` this will give you access to the current request's events collection, for example:
+## Azure Function
 
-```c#
-_unitOfWorkContext.AddEvent(new SomethingHappenedEvent());
-```
-
-There's also a static version of the above method available that can be used when you're not running in the context of an IoC container, for example in your domain models:
+To use NServiceBus in an Azure function you need to add the following to `Startup` and also have two environment variables, `NServiceBusConnectionString` and `NServiceBusLicense`:
 
 ```c#
-UnitOfWorkContext.AddEvent(new SomethingHappenedEvent());
-```
-
-### Legacy SFA.DAS.Messaging
-
-If you're currently using the `SFA.DAS.Messaging.IMessagePublisher` interface to publish messages on the client but would like to use this package instead then the equivalent interface is `SFA.DAS.NServiceBus.IEventPublisher` which exposes a `Task Publish(object message)` method.
-
-## Extension
-
-If you're not using SQL Server then the infrastructure can be extended easily to accomodate your stack. For example, if you're using RavenDB then you'll just need to add a custom implementation of `IClientOutboxStorage`. `IClientOutboxStorage`'s signature currently looks like this:
-
-```c#
-public interface IClientOutboxStorage
+public class Startup : IWebJobsStartup
 {
-    Task<IClientOutboxTransaction> BeginTransactionAsync();
-    Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession);
-    Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync();
-    Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession);
-    Task StoreAsync(ClientOutboxMessage clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction);
+    public void Configure(IWebJobsBuilder builder)
+    {
+        //Environment variables need creating for
+        //      NServiceBusConnectionString
+        //      NServiceBusLicense
+        builder.AddExecutionContextBinding();
+        builder.AddExtension<NServiceBusExtensionConfig>();
+    }
 }
 ```
+
+Each Function endpoint then subscribes to a particular event as shown below:
+
+```c#
+public static async Task Run([NServiceBusTrigger(EndPoint = "SFA.DAS.NServiceBus.AzureFunctionExample")] NetFrameworkEvent message, ILogger log)
+```
+
+NetFrameworkEvent is the event that you wish to subscribe to, the EndPoint is then what is configured as the Subscription name and queue name. Each function endpoint should subscribe to one event.

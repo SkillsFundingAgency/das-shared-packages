@@ -81,7 +81,6 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             return RunAsync(f => f.SetupGetAwaitingDispatchReader(), f => f.GetAwaitingDispatchAsync(), (f, r) =>
             {
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
-                f.Connection.Verify(c => c.Close(), Times.Once);
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetAwaitingDispatchCommandText);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? <= f.Now)));
                 r.Should().BeEquivalentTo(f.OutboxMessages);
@@ -99,6 +98,21 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "MessageId" && p.Value as Guid? == f.ClientOutboxMessage.MessageId)));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "DispatchedAt" && p.Value as DateTime? >= f.Now)));
                 f.Command.Verify(c => c.ExecuteNonQueryAsync(CancellationToken.None), Times.Once);
+            });
+        }
+        
+        [TestCase(0, false, 1)]
+        [TestCase(10000, false, 2)]
+        [TestCase(20000, false, 3)]
+        [TestCase(20000, true, 0)]
+        public Task RemoveEntriesOlderThanAsync_WhenRemovingOldClientOutboxMessages_ThenShouldRemoveOldClientOutboxMessagesInBatches(int oldMessageCount, bool isCancellationRequested, int expectedBatchCount)
+        {
+            return RunAsync(f => f.SetOldClientOutboxMessageCount(oldMessageCount).SetCancellationRequested(isCancellationRequested), f => f.RemoveEntriesOlderThanAsync(), f =>
+            {
+                f.Connection.Protected().Verify("CreateDbCommand", Times.Exactly(expectedBatchCount));
+                f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.RemoveEntriesOlderThanCommandText, Times.Exactly(expectedBatchCount));
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "BatchSize" && p.Value as int? == ClientOutboxPersister.CleanupBatchSize)), Times.Exactly(expectedBatchCount));
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "DispatchedBefore" && p.Value as DateTime? == f.Now)), Times.Exactly(expectedBatchCount));
             });
         }
     }
@@ -121,6 +135,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
         public Mock<ISqlStorageSession> SqlSession { get; set; }
         public List<IClientOutboxMessageAwaitingDispatch> OutboxMessages { get; set; }
         public Mock<DbDataReader> DataReader { get; set; }
+        public CancellationTokenSource CancellationTokenSource { get; set; }
+        public CancellationToken CancellationToken { get; set; }
 
         public ClientOutboxPersisterTestsFixture()
         {
@@ -144,6 +160,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             SynchronizedStorageSession = new Mock<SynchronizedStorageSession>();
             SqlSession = SynchronizedStorageSession.As<ISqlStorageSession>();
             OutboxMessages = new List<IClientOutboxMessageAwaitingDispatch>();
+            CancellationTokenSource = new CancellationTokenSource();
+            CancellationToken = CancellationTokenSource.Token;
             
             Parameters.Setup(p => p.Add(It.IsAny<DbParameter>()));
             Command.SetupSet(c => c.CommandText = It.IsAny<string>());
@@ -194,6 +212,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             return ClientOutboxStorage.SetAsDispatchedAsync(ClientOutboxMessage.MessageId, SynchronizedStorageSession.Object);
         }
 
+        public Task RemoveEntriesOlderThanAsync()
+        {
+            return ClientOutboxStorage.RemoveEntriesOlderThanAsync(Now, CancellationToken);
+        }
+
         public ClientOutboxPersisterTestsFixture SetupGetReaderWithRows()
         {
             DataReader = new Mock<DbDataReader>();
@@ -231,6 +254,30 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.ClientOutbox
             DataReader.SetupSequence(r => r.GetString(1)).Returns(OutboxMessages[0].EndpointName).Returns(OutboxMessages[1].EndpointName);
             Command.Protected().Setup<Task<DbDataReader>>("ExecuteDbDataReaderAsync", CommandBehavior.Default, CancellationToken.None).ReturnsAsync(DataReader.Object);
 
+            return this;
+        }
+
+        public ClientOutboxPersisterTestsFixture SetOldClientOutboxMessageCount(int count)
+        {
+            Command.Setup(c => c.ExecuteNonQueryAsync(CancellationToken)).ReturnsAsync(() =>
+            {
+                var rowsAffected = ClientOutboxPersister.CleanupBatchSize > count ? count : ClientOutboxPersister.CleanupBatchSize;
+                
+                count = count - ClientOutboxPersister.CleanupBatchSize;
+
+                return rowsAffected;
+            });
+            
+            return this;
+        }
+
+        public ClientOutboxPersisterTestsFixture SetCancellationRequested(bool isCancellationRequested)
+        {
+            if (isCancellationRequested)
+            {
+                CancellationTokenSource.Cancel();
+            }
+            
             return this;
         }
     }

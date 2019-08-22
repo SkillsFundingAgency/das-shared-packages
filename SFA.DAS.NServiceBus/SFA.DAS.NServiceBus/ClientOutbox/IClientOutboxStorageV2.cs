@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus.Persistence;
 
@@ -13,5 +14,6 @@ namespace SFA.DAS.NServiceBus.ClientOutbox
         Task SetAsDispatchedAsync(Guid messageId);
         Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession);
         Task StoreAsync(ClientOutboxMessageV2 clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction);
+        Task RemoveEntriesOlderThanAsync(DateTime oldest, CancellationToken cancellationToken);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NServiceBus.Persistence;
@@ -18,8 +19,10 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
     {
         public const string GetCommandText = "SELECT EndpointName, Operations FROM dbo.ClientOutboxData WHERE MessageId = @MessageId";
         public const string SetAsDispatchedCommandText = "UPDATE dbo.ClientOutboxData SET Dispatched = 1, DispatchedAt = @DispatchedAt, Operations = '[]' WHERE MessageId = @MessageId";
-        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE CreatedAt <= @CreatedAt AND Dispatched = 0 AND PersistenceVersion = '2.0.0' ORDER BY CreatedAt";
+        public const string GetAwaitingDispatchCommandText = "SELECT MessageId, EndpointName FROM dbo.ClientOutboxData WHERE Dispatched = 0 AND CreatedAt <= @CreatedAt AND PersistenceVersion = '2.0.0' ORDER BY CreatedAt";
         public const string StoreCommandText = "INSERT INTO dbo.ClientOutboxData (MessageId, EndpointName, CreatedAt, PersistenceVersion, Operations) VALUES (@MessageId, @EndpointName, @CreatedAt, '2.0.0', @Operations)";
+        public const string RemoveEntriesOlderThanCommandText = "DELETE TOP(@BatchSize) FROM dbo.ClientOutboxData WHERE Dispatched = 1 AND DispatchedAt < @DispatchedBefore AND PersistenceVersion = '2.0.0' ORDER BY DispatchedAt";
+        public const int CleanupBatchSize = 10000;
 
         private readonly Func<DbConnection> _connectionBuilder;
 
@@ -67,36 +70,28 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
 
         public async Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync()
         {
-            var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false);
-
-            try
+            using (var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false))
+            using (var command = connection.CreateCommand())
             {
-                using (var command = connection.CreateCommand())
+                command.CommandText = GetAwaitingDispatchCommandText;
+                command.CommandType = CommandType.Text;
+                command.AddParameter("CreatedAt", DateTime.UtcNow.AddSeconds(-10));
+
+                using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                 {
-                    command.CommandText = GetAwaitingDispatchCommandText;
-                    command.CommandType = CommandType.Text;
-                    command.AddParameter("CreatedAt", DateTime.UtcNow.AddSeconds(-10));
+                    var clientOutboxMessages = new List<IClientOutboxMessageAwaitingDispatch>();
 
-                    using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
+                    while (await reader.ReadAsync().ConfigureAwait(false))
                     {
-                        var clientOutboxMessages = new List<IClientOutboxMessageAwaitingDispatch>();
+                        var messageId = reader.GetGuid(0);
+                        var endpointName = reader.GetString(1);
+                        var clientOutboxMessage = new ClientOutboxMessageV2(messageId, endpointName);
 
-                        while (await reader.ReadAsync().ConfigureAwait(false))
-                        {
-                            var messageId = reader.GetGuid(0);
-                            var endpointName = reader.GetString(1);
-                            var clientOutboxMessage = new ClientOutboxMessageV2(messageId, endpointName);
-
-                            clientOutboxMessages.Add(clientOutboxMessage);
-                        }
-
-                        return clientOutboxMessages;
+                        clientOutboxMessages.Add(clientOutboxMessage);
                     }
+
+                    return clientOutboxMessages;
                 }
-            }
-            finally
-            {
-                connection.Close();
             }
         }
 
@@ -144,8 +139,30 @@ namespace SFA.DAS.NServiceBus.SqlServer.ClientOutbox
                 command.AddParameter("EndpointName", clientOutboxMessage.EndpointName);
                 command.AddParameter("CreatedAt", DateTime.UtcNow);
                 command.AddParameter("Operations", JsonConvert.SerializeObject(clientOutboxMessage.TransportOperations, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }));
-
+                
                 return command.ExecuteNonQueryAsync();
+            }
+        }
+
+        public async Task RemoveEntriesOlderThanAsync(DateTime oldest, CancellationToken cancellationToken)
+        {
+            using (var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false))
+            {
+                var isComplete = false;
+                
+                while (!cancellationToken.IsCancellationRequested && !isComplete)
+                {
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = RemoveEntriesOlderThanCommandText;
+                        command.AddParameter("DispatchedBefore", oldest);
+                        command.AddParameter("BatchSize", CleanupBatchSize);
+                        
+                        var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+                        
+                        isComplete = rowsAffected < CleanupBatchSize;
+                    }
+                }
             }
         }
     }
