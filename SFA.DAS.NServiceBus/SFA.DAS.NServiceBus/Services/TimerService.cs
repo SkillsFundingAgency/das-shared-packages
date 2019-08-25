@@ -2,16 +2,18 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.NServiceBus.Utilities
+namespace SFA.DAS.NServiceBus.Services
 {
-    public class AsyncTimer : IAsyncTimer
+    public class TimerService : ITimerService
     {
+        private readonly IDateTimeService _dateTimeService;
         private readonly Func<TimeSpan, CancellationToken, Task> _delay;
         private CancellationTokenSource _cancellationTokenSource;
         private Task _task;
 
-        public AsyncTimer(Func<TimeSpan, CancellationToken, Task> delay)
+        public TimerService(IDateTimeService dateTimeService, Func<TimeSpan, CancellationToken, Task> delay)
         {
+            _dateTimeService = dateTimeService;
             _delay = delay;
         }
         
@@ -28,7 +30,7 @@ namespace SFA.DAS.NServiceBus.Utilities
                     try
                     {
                         await _delay(interval, cancellationToken).ConfigureAwait(false);
-                        await successCallback(DateTime.UtcNow, cancellationToken).ConfigureAwait(false);
+                        await successCallback(_dateTimeService.UtcNow, cancellationToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

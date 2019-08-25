@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.NServiceBus.Utilities
+namespace SFA.DAS.NServiceBus.Features.ClientOutbox.Data
 {
     /// <summary>
     /// Based on the GuidCombGenerator implementation in NHibernate

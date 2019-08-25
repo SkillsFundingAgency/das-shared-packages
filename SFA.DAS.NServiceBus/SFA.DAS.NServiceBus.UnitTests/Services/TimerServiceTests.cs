@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.Utilities;
+using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.Testing;
 
-namespace SFA.DAS.NServiceBus.UnitTests.Utilities
+namespace SFA.DAS.NServiceBus.UnitTests.Services
 {
     [TestFixture]
-    public class AsyncTimerTests : FluentTest<AsyncTimerTestsFixture>
+    public class TimerServiceTests : FluentTest<TimerServiceTestsFixture>
     {
         [Test]
         public Task Start_WhenStarting_ThenShouldInvokeCallbackAfterDelay()
@@ -21,7 +21,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
                 f =>
                 {
                     f.Delay.Verify(d => d(f.Interval, It.IsAny<CancellationToken>()), Times.AtLeastOnce);
-                    f.SuccessCallback.Verify(c => c(It.Is<DateTime>(d => d >= f.Now), It.IsAny<CancellationToken>()), Times.AtLeastOnce);
+                    f.SuccessCallback.Verify(c => c(f.Now, It.IsAny<CancellationToken>()), Times.AtLeastOnce);
                 });
         }
         
@@ -47,7 +47,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
                 f =>
                 {
                     f.Delay.Verify(d => d(f.Interval, It.IsAny<CancellationToken>()), Times.AtLeast(2));
-                    f.SuccessCallback.Verify(c => c(It.Is<DateTime>(d => d >= f.Now), It.IsAny<CancellationToken>()), Times.AtLeast(2));
+                    f.SuccessCallback.Verify(c => c(f.Now, It.IsAny<CancellationToken>()), Times.AtLeast(2));
                 });
         }
         
@@ -57,7 +57,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
             return RunAsync(
                 f => f.SetMaxInterval(),
                 f => f.StopWhenDelayed(),
-                f => f.TimerCancellationToken.IsCancellationRequested.Should().BeTrue());
+                f => f.TimerServiceCancellationToken.IsCancellationRequested.Should().BeTrue());
         }
         
         [Test]
@@ -66,14 +66,15 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
             return RunAsync(
                 f => f.SetCallbackSuccess(),
                 f => f.StopWhenCallingBack(),
-                f => f.TimerCancellationToken.IsCancellationRequested.Should().BeTrue());
+                f => f.TimerServiceCancellationToken.IsCancellationRequested.Should().BeTrue());
         }
     }
 
-    public class AsyncTimerTestsFixture
+    public class TimerServiceTestsFixture
     {
         public TimeSpan TestTimeout { get; set; }
         public DateTime Now { get; set; }
+        public Mock<IDateTimeService> DateTimeService { get; set; }
         public TaskCompletionSource<object> DelayTaskCompletionSource { get; set; }
         public CancellationTokenSource DelayCancellationTokenSource { get; set; }
         public Mock<Func<TimeSpan,CancellationToken,Task>> Delay { get; set; }
@@ -83,13 +84,14 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
         public Mock<Action<Exception>> ErrorCallback { get; set; }
         public TimeSpan Interval { get; set; }
         public Exception Exception { get; set; }
-        public CancellationToken TimerCancellationToken { get; set; }
-        public IAsyncTimer Timer { get; set; }
+        public CancellationToken TimerServiceCancellationToken { get; set; }
+        public ITimerService TimerService { get; set; }
 
-        public AsyncTimerTestsFixture()
+        public TimerServiceTestsFixture()
         {
             TestTimeout = TimeSpan.FromSeconds(10);
             Now = DateTime.UtcNow;
+            DateTimeService = new Mock<IDateTimeService>();
             DelayTaskCompletionSource = new TaskCompletionSource<object>();
             DelayCancellationTokenSource = new CancellationTokenSource(TestTimeout);
             Delay = new Mock<Func<TimeSpan, CancellationToken, Task>>();
@@ -100,41 +102,42 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
             Interval = TimeSpan.Zero;
             Exception = new Exception();
             
+            DateTimeService.Setup(d => d.UtcNow).Returns(Now);
             DelayCancellationTokenSource.Token.Register(() => DelayTaskCompletionSource.TrySetCanceled());
             CallbackCancellationTokenSource.Token.Register(() => CallbackTaskCompletionSource.TrySetCanceled());
 
             Delay.Setup(d => d(It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>())).Returns<TimeSpan, CancellationToken>((d, c) =>
             {
-                TimerCancellationToken = c;
+                TimerServiceCancellationToken = c;
                 DelayTaskCompletionSource.TrySetResult(null);
                 
                 return Task.Delay(d, c);
             });
             
-            Timer = new AsyncTimer(Delay.Object);
+            TimerService = new TimerService(DateTimeService.Object, Delay.Object);
         }
 
         public async Task Start()
         {
-            Timer.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
+            TimerService.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
             await CallbackTaskCompletionSource.Task;
         }
 
         public async Task StopWhenDelayed()
         {
-            Timer.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
+            TimerService.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
             await DelayTaskCompletionSource.Task;
-            await Timer.Stop();
+            await TimerService.Stop();
         }
 
         public async Task StopWhenCallingBack()
         {
-            Timer.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
+            TimerService.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
             await CallbackTaskCompletionSource.Task;
-            await Timer.Stop();
+            await TimerService.Stop();
         }
 
-        public AsyncTimerTestsFixture SetCallbackSuccess()
+        public TimerServiceTestsFixture SetCallbackSuccess()
         {
             SuccessCallback.Setup(c => c(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
                 .Returns<DateTime, CancellationToken>((d, c) =>
@@ -147,14 +150,14 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
             return this;
         }
 
-        public AsyncTimerTestsFixture SetCallbackError()
+        public TimerServiceTestsFixture SetCallbackError()
         {
             var isSuccess = false;
             
             SuccessCallback.Setup(c => c(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
                 .Returns<DateTime, CancellationToken>((d, c) =>
                 {
-                    TimerCancellationToken = c;
+                    TimerServiceCancellationToken = c;
                     
                     if (!isSuccess)
                     {
@@ -171,7 +174,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Utilities
             return this;
         }
 
-        public AsyncTimerTestsFixture SetMaxInterval()
+        public TimerServiceTestsFixture SetMaxInterval()
         {
             Interval = TimeSpan.FromMilliseconds(int.MaxValue);
             

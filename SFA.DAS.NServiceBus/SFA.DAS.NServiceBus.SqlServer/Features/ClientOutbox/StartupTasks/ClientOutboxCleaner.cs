@@ -8,7 +8,7 @@ using NServiceBus.Logging;
 using NServiceBus.Settings;
 using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
-using SFA.DAS.NServiceBus.Utilities;
+using SFA.DAS.NServiceBus.Services;
 
 namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks
 {
@@ -20,7 +20,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks
     {
         private static readonly ILog Logger = LogManager.GetLogger<ClientOutboxCleaner>();
         
-        private readonly IAsyncTimer _timer;
+        private readonly ITimerService _timerService;
         private readonly IClientOutboxStorage _clientOutboxStorage;
         private readonly IClientOutboxStorageV2 _clientOutboxStorageV2;
         private readonly CriticalError _criticalError;
@@ -28,9 +28,9 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks
         private readonly TimeSpan _maxAge;
         private int _failures;
 
-        public ClientOutboxCleaner(IAsyncTimer timer, IClientOutboxStorage clientOutboxStorage, IClientOutboxStorageV2 clientOutboxStorageV2, ReadOnlySettings settings, CriticalError criticalError)
+        public ClientOutboxCleaner(ITimerService timerService, IClientOutboxStorage clientOutboxStorage, IClientOutboxStorageV2 clientOutboxStorageV2, ReadOnlySettings settings, CriticalError criticalError)
         {
-            _timer = timer;
+            _timerService = timerService;
             _clientOutboxStorage = clientOutboxStorage;
             _clientOutboxStorageV2 = clientOutboxStorageV2;
             _criticalError = criticalError;
@@ -40,14 +40,14 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks
 
         protected override Task OnStart(IMessageSession messageSession)
         {            
-            _timer.Start((d, c) => Cleanup(messageSession, d, c), OnError, _frequency);
+            _timerService.Start((d, c) => Cleanup(messageSession, d, c), OnError, _frequency);
             
             return Task.CompletedTask;
         }
 
         protected override Task OnStop(IMessageSession messageSession)
         {
-            return _timer.Stop();
+            return _timerService.Stop();
         }
 
         private async Task Cleanup(IMessageSession messageSession, DateTime now, CancellationToken cancellationToken)

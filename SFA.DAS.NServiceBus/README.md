@@ -68,7 +68,7 @@ GO
 
 ### Unit of Work
 
-To ensure data is saved and messages are published as part of the same unit of work requires all operations to enlist in the same outbox transaction. The `SFA.DAS.UnitOfWork.NServiceBus` package can provide a reliable way to access this transaction:
+To ensure data is saved and messages are published as part of the same unit of work, all operations should enlist in the same outbox transaction. The `SFA.DAS.UnitOfWork.NServiceBus` package can provide a reliable way to access this transaction:
 
 ```c#
 var synchronizedStorageSession = _unitOfWorkContext.Get<SynchronizedStorageSession>();
@@ -78,7 +78,7 @@ var transaction = sqlStorageSession.Transaction;
 
 using (var command = connection.CreateCommand())
 {
-    command.CommandText = "INSERT INTO Foobar (Id) VALUES (1)";
+    command.CommandText = "INSERT INTO Foobars (Id) VALUES (1)";
     command.CommandType = CommandType.Text;
     command.Transaction = transaction;
 

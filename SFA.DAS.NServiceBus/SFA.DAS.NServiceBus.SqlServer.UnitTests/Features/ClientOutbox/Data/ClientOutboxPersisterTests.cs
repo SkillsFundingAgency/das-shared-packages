@@ -14,8 +14,8 @@ using NServiceBus.Settings;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Models;
+using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data;
-using SFA.DAS.NServiceBus.Utilities;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
@@ -51,7 +51,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
                 f.Command.VerifySet(c => c.Transaction = f.Transaction.Object);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "MessageId" && p.Value as Guid? == f.ClientOutboxMessage.MessageId)));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "EndpointName" && p.Value as string == f.EndpointName)));
-                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? >= f.Now)));
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? == f.Now)));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "Operations" && p.Value as string == f.EventsData)));
                 f.Command.Verify(c => c.ExecuteNonQueryAsync(CancellationToken.None), Times.Once);
             });
@@ -84,7 +84,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
             {
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetAwaitingDispatchCommandText);
-                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? <= f.Now)));
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? == f.Now.AddMinutes(-10))));
                 r.Should().BeEquivalentTo(f.OutboxMessages);
             });
         }
@@ -98,7 +98,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.SetAsDispatchedCommandText);
                 f.Command.VerifySet(c => c.Transaction = f.Transaction.Object);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "MessageId" && p.Value as Guid? == f.ClientOutboxMessage.MessageId)));
-                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "DispatchedAt" && p.Value as DateTime? >= f.Now)));
+                f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "DispatchedAt" && p.Value as DateTime? == f.Now)));
                 f.Command.Verify(c => c.ExecuteNonQueryAsync(CancellationToken.None), Times.Once);
             });
         }
@@ -123,6 +123,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
     {
         public DateTime Now { get; set; }
         public IClientOutboxStorage ClientOutboxStorage { get; set; }
+        public Mock<IDateTimeService> DateTimeService { get; set; }
         public Mock<ReadOnlySettings> Settings { get; set; }
         public Mock<DbConnection> Connection { get; set; }
         public Mock<DbTransaction> Transaction { get; set; }
@@ -143,6 +144,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         public ClientOutboxPersisterTestsFixture()
         {
             Now = DateTime.UtcNow;
+            DateTimeService = new Mock<IDateTimeService>();
             Settings = new Mock<ReadOnlySettings>();
             Connection = new Mock<DbConnection>();
             Transaction = new Mock<DbTransaction> { CallBase = true };
@@ -165,6 +167,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
             CancellationTokenSource = new CancellationTokenSource();
             CancellationToken = CancellationTokenSource.Token;
             
+            DateTimeService.Setup(d => d.UtcNow).Returns(Now);
             Parameters.Setup(p => p.Add(It.IsAny<DbParameter>()));
             Command.SetupSet(c => c.CommandText = It.IsAny<string>());
             Command.SetupSet(c => c.Transaction = It.IsAny<DbTransaction>());
@@ -186,7 +189,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
             SqlSession.Setup(s => s.Connection).Returns(Connection.Object);
             SqlSession.Setup(s => s.Transaction).Returns(Transaction.Object);
 
-            ClientOutboxStorage = new ClientOutboxPersister(Settings.Object);
+            ClientOutboxStorage = new ClientOutboxPersister(DateTimeService.Object, Settings.Object);
         }
 
         public Task<IClientOutboxTransaction> BeginTransactionAsync()

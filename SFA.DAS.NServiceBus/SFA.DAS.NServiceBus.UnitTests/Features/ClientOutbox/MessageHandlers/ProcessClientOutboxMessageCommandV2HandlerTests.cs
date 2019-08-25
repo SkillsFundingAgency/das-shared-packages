@@ -12,7 +12,6 @@ using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.MessageHandlers;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Models;
-using SFA.DAS.NServiceBus.Utilities;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.UnitTests.Features.ClientOutbox.MessageHandlers

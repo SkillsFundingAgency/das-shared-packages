@@ -12,8 +12,8 @@ using NUnit.Framework;
 using SFA.DAS.NServiceBus.ClientOutbox;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Models;
+using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks;
-using SFA.DAS.NServiceBus.Utilities;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupTasks
@@ -71,7 +71,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
         [Test]
         public Task OnStop_WhenStopping_ThenShouldStopTimer()
         {
-            return RunAsync(f => f.OnStop(), f => f.Timer.Verify(t => t.Stop(), Times.Once));
+            return RunAsync(f => f.OnStop(), f => f.TimerService.Verify(t => t.Stop(), Times.Once));
         }
     }
 
@@ -80,7 +80,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
         public DateTime Now { get; set; }
         public TestableMessageSession MessageSession { get; set; }
         public CancellationToken CancellationToken { get; set; }
-        public Mock<IAsyncTimer> Timer { get; set; }
+        public Mock<ITimerService> TimerService { get; set; }
         public List<IClientOutboxMessageAwaitingDispatch> ClientOutboxMessages { get; set; }
         public List<IClientOutboxMessageAwaitingDispatch> ClientOutboxMessageV2s { get; set; }
         public TestableClientOutboxCleaner Cleaner { get; set; }
@@ -88,8 +88,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
         public Mock<IClientOutboxStorageV2> ClientOutboxStorageV2 { get; set; }
         public Mock<ReadOnlySettings> Settings { get; set; }
         public Mock<CriticalError> CriticalError { get; set; }
-        public Func<DateTime, CancellationToken, Task> TimerSuccessCallback { get; set; }
-        public Action<Exception> TimerErrorCallback { get; set; }
+        public Func<DateTime, CancellationToken, Task> TimerServiceSuccessCallback { get; set; }
+        public Action<Exception> TimerServiceErrorCallback { get; set; }
         public TimeSpan Frequency { get; set; }
         public TimeSpan MaxAge { get; set; }
         public Exception Exception { get; set; }
@@ -99,7 +99,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
             Now = DateTime.UtcNow;
             MessageSession = new TestableMessageSession();
             CancellationToken = CancellationToken.None;
-            Timer = new Mock<IAsyncTimer>();
+            TimerService = new Mock<ITimerService>();
             ClientOutboxMessages = new List<IClientOutboxMessageAwaitingDispatch>();
             ClientOutboxMessageV2s = new List<IClientOutboxMessageAwaitingDispatch>();
             ClientOutboxStorage = new Mock<IClientOutboxStorage>();
@@ -110,11 +110,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
             MaxAge = TimeSpan.FromDays(14);
             Exception = new Exception();
             
-            Timer.Setup(t => t.Start(It.IsAny<Func<DateTime, CancellationToken, Task>>(), It.IsAny<Action<Exception>>(), Frequency))
+            TimerService.Setup(t => t.Start(It.IsAny<Func<DateTime, CancellationToken, Task>>(), It.IsAny<Action<Exception>>(), Frequency))
                 .Callback<Func<DateTime, CancellationToken, Task>, Action<Exception>, TimeSpan>((s, e, f) =>
                 {
-                    TimerSuccessCallback = s;
-                    TimerErrorCallback = e;
+                    TimerServiceSuccessCallback = s;
+                    TimerServiceErrorCallback = e;
                 });
             
             ClientOutboxStorage.Setup(o => o.GetAwaitingDispatchAsync()).ReturnsAsync(ClientOutboxMessages);
@@ -122,13 +122,13 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
             Settings.Setup(s => s.GetOrDefault<TimeSpan?>("Persistence.Sql.Outbox.FrequencyToRunDeduplicationDataCleanup")).Returns(Frequency);
             Settings.Setup(s => s.GetOrDefault<TimeSpan?>("Persistence.Sql.Outbox.TimeToKeepDeduplicationData")).Returns(MaxAge);
             
-            Cleaner = new TestableClientOutboxCleaner(Timer.Object, ClientOutboxStorage.Object, ClientOutboxStorageV2.Object, Settings.Object, CriticalError.Object);
+            Cleaner = new TestableClientOutboxCleaner(TimerService.Object, ClientOutboxStorage.Object, ClientOutboxStorageV2.Object, Settings.Object, CriticalError.Object);
         }
 
         public async Task OnStart()
         {
             await Cleaner.Start(MessageSession);
-            await TimerSuccessCallback(Now, CancellationToken);
+            await TimerServiceSuccessCallback(Now, CancellationToken);
         }
 
         public async Task OnStartWithConsecutiveExceptions()
@@ -137,7 +137,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
 
             for (var i = 0; i < 10; i++)
             {
-                TimerErrorCallback(Exception);
+                TimerServiceErrorCallback(Exception);
             }
         }
 
@@ -149,11 +149,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
             {
                 if (i % 9 == 0)
                 {
-                    await TimerSuccessCallback(Now, CancellationToken);
+                    await TimerServiceSuccessCallback(Now, CancellationToken);
                 }
                 else
                 {
-                    TimerErrorCallback(Exception);
+                    TimerServiceErrorCallback(Exception);
                 }
             }
         }
@@ -175,8 +175,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
 
         public class TestableClientOutboxCleaner : ClientOutboxCleaner
         {
-            public TestableClientOutboxCleaner(IAsyncTimer timer, IClientOutboxStorage clientOutboxStorage, IClientOutboxStorageV2 clientOutboxStorageV2, ReadOnlySettings settings, CriticalError criticalError)
-                : base(timer, clientOutboxStorage, clientOutboxStorageV2, settings, criticalError)
+            public TestableClientOutboxCleaner(ITimerService timerService, IClientOutboxStorage clientOutboxStorage, IClientOutboxStorageV2 clientOutboxStorageV2, ReadOnlySettings settings, CriticalError criticalError)
+                : base(timerService, clientOutboxStorage, clientOutboxStorageV2, settings, criticalError)
             {
             }
 

@@ -9,6 +9,7 @@ using NServiceBus.Persistence;
 using NServiceBus.Settings;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Models;
+using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.NServiceBus.SqlServer.Data;
 
 namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
@@ -26,10 +27,12 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
         public const string RemoveEntriesOlderThanCommandText = "DELETE TOP(@BatchSize) FROM dbo.ClientOutboxData WHERE Dispatched = 1 AND DispatchedAt < @DispatchedBefore AND PersistenceVersion = '1.0.0' ORDER BY DispatchedAt";
         public const int CleanupBatchSize = 10000;
         
+        private readonly IDateTimeService _dateTimeService;
         private readonly Func<DbConnection> _connectionBuilder;
 
-        public ClientOutboxPersister(ReadOnlySettings settings)
+        public ClientOutboxPersister(IDateTimeService dateTimeService, ReadOnlySettings settings)
         {
+            _dateTimeService = dateTimeService;
             _connectionBuilder = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
         }
 
@@ -76,7 +79,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
             {
                 command.CommandText = GetAwaitingDispatchCommandText;
                 command.CommandType = CommandType.Text;
-                command.AddParameter("CreatedAt", DateTime.UtcNow.AddMinutes(-10));
+                command.AddParameter("CreatedAt", _dateTimeService.UtcNow.AddMinutes(-10));
 
                 using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                 {
@@ -106,7 +109,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
                 command.CommandType = CommandType.Text;
                 command.Transaction = sqlStorageSession.Transaction;
                 command.AddParameter("MessageId", messageId);
-                command.AddParameter("DispatchedAt", DateTime.UtcNow);
+                command.AddParameter("DispatchedAt", _dateTimeService.UtcNow);
 
                 return command.ExecuteNonQueryAsync();
             }
@@ -123,7 +126,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
                 command.Transaction = sqlClientOutboxTransaction.Transaction;
                 command.AddParameter("MessageId", clientOutboxMessage.MessageId);
                 command.AddParameter("EndpointName", clientOutboxMessage.EndpointName);
-                command.AddParameter("CreatedAt", DateTime.UtcNow);
+                command.AddParameter("CreatedAt", _dateTimeService.UtcNow);
                 command.AddParameter("Operations", JsonConvert.SerializeObject(clientOutboxMessage.Operations, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }));
 
                 return command.ExecuteNonQueryAsync();
