@@ -25,11 +25,11 @@ var endpointConfiguration = new EndpointConfiguration("SFA.DAS.EAS.MessageHandle
 
 ## Outbox
 
-By enabling NServiceBus' outbox feature the endpoint will simulate the reliability of a distributed transaction, guaranteeing consistency between data persistence and messaging operations.
+By enabling NServiceBus' outbox feature the endpoint can simulate the reliability of a distributed transaction, guaranteeing consistency between data persistence and messaging operations.
 
 ### SQL Server
 
-The following tables will need to be created before the endpoint is started:
+To keep track of any incoming and outgoing messages the SQL Server persistence implementation of the outbox requires the creation of dedicated tables. These will need to be created before the endpoint is started:
 
 ```sql
 CREATE TABLE [dbo].[OutboxData]
@@ -66,6 +66,28 @@ CREATE INDEX [IX_DispatchedAt_PersistenceVersion] ON [dbo].[ClientOutboxData] ([
 GO
 ``` 
 
+### Unit of Work
+
+To ensure data is saved and messages are published as part of the same unit of work requires all operations to enlist in the same outbox transaction. The `SFA.DAS.UnitOfWork.NServiceBus` package can provide a reliable way to access this transaction:
+
+```c#
+var synchronizedStorageSession = _unitOfWorkContext.Get<SynchronizedStorageSession>();
+var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
+var connection = sqlStorageSession.Connection;
+var transaction = sqlStorageSession.Transaction;
+
+using (var command = connection.CreateCommand())
+{
+    command.CommandText = "INSERT INTO Foobar (Id) VALUES (1)";
+    command.CommandType = CommandType.Text;
+    command.Transaction = transaction;
+
+    await command.ExecuteNonQueryAsync();
+}
+
+_eventPublisher.Publish(new FoobarCreatedEvent());
+```
+
 ### Cleanup
 
 The number of outbox records will increase over time. Also, in the case of a service outage, some messages will not be dispatched immediately. To accomodate these scenarios outbox cleanup should be enabled, this will ensure that any stale records are deleted and that any messages awaiting dispatch are dispatched:
@@ -78,26 +100,23 @@ It is advised to enable outbox cleanup on only one NServiceBus endpoint instance
 
 ## Azure Function
 
-To use NServiceBus in an Azure function you need to add the following to `Startup` and also have two environment variables, `NServiceBusConnectionString` and `NServiceBusLicense`:
+To use NServiceBus in an Azure function you need to add the following to `Startup` and also have two environment variables configured, `NServiceBusConnectionString` and `NServiceBusLicense`:
 
 ```c#
 public class Startup : IWebJobsStartup
 {
     public void Configure(IWebJobsBuilder builder)
     {
-        //Environment variables need creating for
-        //      NServiceBusConnectionString
-        //      NServiceBusLicense
         builder.AddExecutionContextBinding();
-        builder.AddExtension<NServiceBusExtensionConfig>();
+        builder.AddExtension<NServiceBusExtensionConfigProvider>();
     }
 }
 ```
 
-Each Function endpoint then subscribes to a particular event as shown below:
+Each function endpoint can then subscribe to a particular event:
 
 ```c#
-public static async Task Run([NServiceBusTrigger(EndPoint = "SFA.DAS.NServiceBus.AzureFunctionExample")] NetFrameworkEvent message, ILogger log)
+public static async Task Run([NServiceBusTrigger(Endpoint = "SFA.DAS.NServiceBus.AzureFunctionExample")] NetFrameworkEvent message, ILogger log)
 ```
 
-NetFrameworkEvent is the event that you wish to subscribe to, the EndPoint is then what is configured as the Subscription name and queue name. Each function endpoint should subscribe to one event.
+`Endpoint` is the name of the subscription/queue and `NetFrameworkEvent` is the event that you wish to subscribe to. Each function endpoint should only subscribe to a single event.

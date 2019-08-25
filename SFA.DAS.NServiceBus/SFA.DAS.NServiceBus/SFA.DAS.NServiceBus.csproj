@@ -39,4 +39,8 @@
         <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features" />
+    </ItemGroup>
+
 </Project>

@@ -26,4 +26,8 @@
         <ProjectReference Include="..\SFA.DAS.NServiceBus\SFA.DAS.NServiceBus.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features" />
+    </ItemGroup>
+
 </Project>
