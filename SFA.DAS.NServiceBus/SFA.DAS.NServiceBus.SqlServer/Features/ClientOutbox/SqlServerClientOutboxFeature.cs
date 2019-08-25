@@ -11,7 +11,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox
     {
         public SqlServerClientOutboxFeature()
         {
-            DependsOn("NServiceBus.Persistence.Sql.SqlOutboxFeature");
+            DependsOn<Outbox>();
         }
 
         protected override void Setup(FeatureConfigurationContext context)

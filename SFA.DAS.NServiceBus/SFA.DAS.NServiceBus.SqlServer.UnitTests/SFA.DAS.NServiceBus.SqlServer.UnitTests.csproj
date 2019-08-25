@@ -14,7 +14,7 @@
         <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
         <PackageReference Include="SFA.DAS.Testing" Version="2.0.5" />
     </ItemGroup>
-
+    
     <ItemGroup>
         <ProjectReference Include="..\SFA.DAS.NServiceBus\SFA.DAS.NServiceBus.csproj" />
         <ProjectReference Include="..\SFA.DAS.NServiceBus.SqlServer\SFA.DAS.NServiceBus.SqlServer.csproj" />
@@ -22,10 +22,6 @@
 
     <ItemGroup>
         <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Features" />
     </ItemGroup>
 
 </Project>

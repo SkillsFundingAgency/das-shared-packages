@@ -19,14 +19,13 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         private NServiceBusTriggerAttribute _attribute;
         private TestListener _listener;
         private MessageContext _messageContext;
-        private ParameterInfo _parameter;
 
         [SetUp]
         public void Arrange()
         {
             _executor = new Mock<ITriggeredFunctionExecutor>();
             _attribute = new NServiceBusTriggerAttribute();
-            _listener = new TestListener(_executor.Object, _attribute, _parameter);
+            _listener = new TestListener(_executor.Object, _attribute, null);
             _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), new CancellationTokenSource(), new ContextBag());
 
             _executor.Setup(e => e.TryExecuteAsync(It.IsAny<TriggeredFunctionData>(), It.IsAny<CancellationToken>()))
