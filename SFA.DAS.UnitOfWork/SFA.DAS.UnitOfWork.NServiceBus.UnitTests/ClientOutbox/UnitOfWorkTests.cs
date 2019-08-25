@@ -9,6 +9,8 @@ using NServiceBus.Settings;
 using NServiceBus.Testing;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.ClientOutbox;
+using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
+using SFA.DAS.NServiceBus.Features.ClientOutbox.Models;
 using SFA.DAS.Testing;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox

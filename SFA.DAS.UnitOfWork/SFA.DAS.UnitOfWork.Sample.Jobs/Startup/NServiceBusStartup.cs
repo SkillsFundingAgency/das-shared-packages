@@ -10,19 +10,19 @@ using SFA.DAS.NServiceBus.Hosting;
 using SFA.DAS.NServiceBus.SqlServer.Configuration;
 using SFA.DAS.UnitOfWork.NServiceBus;
 
-namespace SFA.DAS.UnitOfWork.Sample.MessageHandlers.Startup
+namespace SFA.DAS.UnitOfWork.Sample.Jobs.Startup
 {
     public static class NServiceBusStartup
     {
         public static void StartNServiceBus(this UpdateableServiceProvider serviceProvider, IConfiguration configuration)
         {
-            var endpointConfiguration = new EndpointConfiguration("SFA.DAS.UnitOfWork.Sample.MessageHandlers")
+            var endpointConfiguration = new EndpointConfiguration("SFA.DAS.UnitOfWork.Sample.Jobs")
                 .UseLearningTransport()
                 .UseErrorQueue()
                 .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer()
-                .UseOutbox()
+                .UseOutbox(true)
                 .UseServicesBuilder(serviceProvider)
                 .UseSqlServerPersistence(() => new SqlConnection(configuration.GetConnectionString("SampleDb")))
                 .UseUnitOfWork();

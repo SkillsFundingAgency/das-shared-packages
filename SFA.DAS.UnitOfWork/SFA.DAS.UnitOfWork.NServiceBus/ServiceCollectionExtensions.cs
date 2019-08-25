@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using SFA.DAS.NServiceBus;
+using SFA.DAS.NServiceBus.Services;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus
 {

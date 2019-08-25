@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk;Microsoft.NET.Sdk.Publish">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
@@ -7,7 +7,7 @@
 
         <IsWebJobProject>true</IsWebJobProject>
         <OutputType>Exe</OutputType>
-        <WebJobName>UnitOfWork-MessageHandlers</WebJobName>
+        <WebJobName>UnitOfWork-Jobs</WebJobName>
         <WebJobType>Continuous</WebJobType>
     </PropertyGroup>
 
@@ -18,8 +18,11 @@
         <Content Include="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <Content Include="settings.job">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.8" />
         <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
@@ -28,9 +31,9 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
         <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\SFA.DAS.UnitOfWork.Sample\SFA.DAS.UnitOfWork.Sample.csproj" />
+        <ProjectReference Include="..\SFA.DAS.UnitOfWork.Sample\SFA.DAS.UnitOfWork.Sample.csproj" />
     </ItemGroup>
 
 </Project>

@@ -7,10 +7,11 @@ This package includes:
 
 ## Configuration
 
-### NServicBus
+### NServiceBus
 
 For examples of how to configure NServiceBus client and server endpoints to support transactional units of work please see the samples:
 
+* [SFA.DAS.UnitOfWork.Sample.Jobs]
 * [SFA.DAS.UnitOfWork.Sample.MessageHandlers]
 * [SFA.DAS.UnitOfWork.Sample.Web]
 
@@ -73,17 +74,6 @@ var connection = unitOfWorkContext.Get<DbConnection>();
 var transaction = unitOfWorkContext.Get<DbTransaction>();
 ```
 
-## Extension
-
-If you're not using SQL Server then the infrastructure can be extended easily to accomodate your stack. For example, if you're using RavenDB then you'll just need to add a custom implementation of `IUnitOfWorkManager`. `IUnitOfWorkManagers`'s signature currently looks like this:
-
-```c#
-public interface IUnitOfWorkManager
-{
-    Task BeginAsync();
-    Task EndAsync(Exception ex = null);
-}
-```
-
+[SFA.DAS.UnitOfWork.Sample.Jobs]: https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork/SFA.DAS.UnitOfWork.Sample.Jobs
 [SFA.DAS.UnitOfWork.Sample.MessageHandlers]: https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork/SFA.DAS.UnitOfWork.Sample.MessageHandlers
 [SFA.DAS.UnitOfWork.Sample.Web]: https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork/SFA.DAS.UnitOfWork.Sample.Web

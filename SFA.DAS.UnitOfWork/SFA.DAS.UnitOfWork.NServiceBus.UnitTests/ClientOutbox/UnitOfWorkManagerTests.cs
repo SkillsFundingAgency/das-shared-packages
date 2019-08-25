@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using NServiceBus.Persistence;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.ClientOutbox;
+using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
 using SFA.DAS.Testing;
 using SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox;
 
@@ -66,7 +66,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
     public class UnitOfWorkManagerTestsFixture
     {
         public IUnitOfWorkManager UnitOfWorkManager { get; set; }
-        public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }
+        public Mock<IClientOutboxStorageV2> ClientOutboxStorage { get; set; }
         public List<Mock<IUnitOfWork>> UnitsOfWork { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public Mock<IClientOutboxTransaction> ClientOutboxTransaction { get; set; }
@@ -75,7 +75,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.ClientOutbox
 
         public UnitOfWorkManagerTestsFixture()
         {
-            ClientOutboxStorage = new Mock<IClientOutboxStorage>();
+            ClientOutboxStorage = new Mock<IClientOutboxStorageV2>();
 
             UnitsOfWork = new List<Mock<IUnitOfWork>>
             {

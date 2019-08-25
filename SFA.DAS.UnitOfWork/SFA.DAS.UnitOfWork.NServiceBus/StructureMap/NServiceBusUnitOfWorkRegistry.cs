@@ -1,4 +1,4 @@
-﻿using SFA.DAS.NServiceBus;
+﻿using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.UnitOfWork.StructureMap;
 using StructureMap;
 

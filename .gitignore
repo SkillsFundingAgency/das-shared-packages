@@ -248,3 +248,6 @@ Messaging/SFA.DAS.Messaging.v3.ncrunchsolution
 
 # macOS
 *.DS_Store
+
+# NServiceBus
+.learningtransport/

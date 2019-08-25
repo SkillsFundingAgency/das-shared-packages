@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "SFA.DAS.UnitOfWork.Sample.Jobs": {
+      "commandName": "Project",
+        "environmentVariables": {
+            "ENVIRONMENT": "Development"
+        }
+    }
+  }
+}

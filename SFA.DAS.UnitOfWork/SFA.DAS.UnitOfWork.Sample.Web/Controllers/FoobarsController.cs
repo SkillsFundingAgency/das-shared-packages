@@ -6,20 +6,20 @@ using SFA.DAS.UnitOfWork.Sample.Models;
 namespace SFA.DAS.UnitOfWork.Sample.Web.Controllers
 {
     [Route("")]
-    public class HomeController : Controller
+    public class FoobarsController : Controller
     {
         private readonly Lazy<SampleDbContext> _db;
 
-        public HomeController(Lazy<SampleDbContext> db)
+        public FoobarsController(Lazy<SampleDbContext> db)
         {
             _db = db;
         }
 
-        public IActionResult Index()
+        public IActionResult Create()
         {
             _db.Value.Foobars.Add(new Foobar(DateTime.UtcNow));
             
-            return Ok();
+            return Ok($"{nameof(Foobar)} created");
         }
     }
 }

@@ -3,7 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Settings;
-using SFA.DAS.NServiceBus.ClientOutbox;
+using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
+using SFA.DAS.NServiceBus.Features.ClientOutbox.Models;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox
 {

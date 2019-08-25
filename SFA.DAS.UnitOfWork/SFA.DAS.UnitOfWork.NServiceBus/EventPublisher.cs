@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SFA.DAS.NServiceBus;
+using SFA.DAS.NServiceBus.Services;
 
 namespace SFA.DAS.UnitOfWork.NServiceBus
 {

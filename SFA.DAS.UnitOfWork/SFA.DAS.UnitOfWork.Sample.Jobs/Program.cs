@@ -7,10 +7,10 @@ using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using SFA.DAS.UnitOfWork.EntityFrameworkCore;
 using SFA.DAS.UnitOfWork.NServiceBus;
 using SFA.DAS.UnitOfWork.Sample.Data;
-using SFA.DAS.UnitOfWork.Sample.MessageHandlers.Startup;
+using SFA.DAS.UnitOfWork.Sample.Jobs.Startup;
 using SFA.DAS.UnitOfWork.Sample.Startup;
 
-namespace SFA.DAS.UnitOfWork.Sample.MessageHandlers
+namespace SFA.DAS.UnitOfWork.Sample.Jobs
 {
     public static class Program
     {
