@@ -1,7 +1,7 @@
 ﻿using NServiceBus;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 
-namespace SFA.DAS.NServiceBus.DependencyResolution.Microsoft
+namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
 {
     public static class EndpointConfigurationExtensions
     {

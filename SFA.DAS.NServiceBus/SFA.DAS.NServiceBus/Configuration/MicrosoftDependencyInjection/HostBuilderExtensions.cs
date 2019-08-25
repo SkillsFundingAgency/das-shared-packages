@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Hosting;
 
-namespace SFA.DAS.NServiceBus.DependencyResolution.Microsoft
+namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
 {
     public static class HostBuilderExtensions
     {

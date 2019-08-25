@@ -1,7 +1,7 @@
 ﻿using NServiceBus;
 using StructureMap;
 
-namespace SFA.DAS.NServiceBus.DependencyResolution.StructureMap
+namespace SFA.DAS.NServiceBus.Configuration.StructureMap
 {
     public static class EndpointConfigurationExtensions
     {

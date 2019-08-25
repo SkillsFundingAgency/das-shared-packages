@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 
-namespace SFA.DAS.NServiceBus.DependencyResolution.Microsoft
+namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
 {
     public class NServiceBusServiceProviderFactory : IServiceProviderFactory<UpdateableServiceProvider>
     {
