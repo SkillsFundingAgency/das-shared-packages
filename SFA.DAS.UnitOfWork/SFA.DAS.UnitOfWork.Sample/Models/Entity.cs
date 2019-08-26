@@ -1,4 +1,5 @@
 using System;
+using SFA.DAS.UnitOfWork.Context;
 
 namespace SFA.DAS.UnitOfWork.Sample.Models
 {

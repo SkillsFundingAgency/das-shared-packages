@@ -26,4 +26,8 @@
         <ProjectReference Include="..\SFA.DAS.UnitOfWork\SFA.DAS.UnitOfWork.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DependencyResolution" />
+    </ItemGroup>
+
 </Project>

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus.Persistence;
 using SFA.DAS.NServiceBus.SqlServer.Data;
+using SFA.DAS.UnitOfWork.Context;
 using SFA.DAS.UnitOfWork.Sample.Data;
 
 namespace SFA.DAS.UnitOfWork.Sample.Startup
