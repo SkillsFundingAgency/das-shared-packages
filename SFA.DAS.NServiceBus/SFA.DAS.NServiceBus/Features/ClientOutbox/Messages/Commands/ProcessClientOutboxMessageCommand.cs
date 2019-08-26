@@ -1,6 +1,6 @@
 ﻿using NServiceBus;
 
-// ReSharper disable once CheckNamespace - Required for backwards compatibility with SFA.DAS.NServiceBus < 14.0.0
+// ReSharper disable once CheckNamespace - Required for backwards compatibility
 namespace SFA.DAS.NServiceBus.ClientOutbox
 {
     public class ProcessClientOutboxMessageCommand : ICommand

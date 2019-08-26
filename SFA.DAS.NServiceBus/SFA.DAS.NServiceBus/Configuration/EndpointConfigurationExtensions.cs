@@ -49,8 +49,10 @@ namespace SFA.DAS.NServiceBus.Configuration
         {
             var conventions = config.Conventions();
             
-            conventions.DefiningCommandsAs(t => Regex.IsMatch(t.Name, @"Command(V\d+)?$"));
-            conventions.DefiningEventsAs(t => Regex.IsMatch(t.Name, @"Event(V\d+)?$"));
+#pragma warning disable 618
+            conventions.DefiningCommandsAs(t => Regex.IsMatch(t.Name, @"Command(V\d+)?$") || typeof(Command).IsAssignableFrom(t));
+            conventions.DefiningEventsAs(t => Regex.IsMatch(t.Name, @"Event(V\d+)?$") || typeof(Event).IsAssignableFrom(t));
+#pragma warning restore 618
 
             return config;
         }
