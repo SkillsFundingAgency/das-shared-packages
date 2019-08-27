@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NServiceBus;
-using SFA.DAS.NServiceBus.AzureServiceBus;
+using SFA.DAS.NServiceBus.Configuration;
+using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
+using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.NetStandardMessages.Events;
-using SFA.DAS.NServiceBus.NewtonsoftJsonSerializer;
 
 namespace SFA.DAS.NServiceBus.NetFrameworkEndpoint
 {
