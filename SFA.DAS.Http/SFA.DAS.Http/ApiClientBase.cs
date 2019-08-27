@@ -15,83 +15,73 @@ namespace SFA.DAS.Http
             _queryStringHelper = new QueryStringHelper();
         }
 
-        protected async virtual Task<string> GetAsync(string url)
+        protected virtual async Task<string> GetAsync(string url)
         {
-            string content;
-
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
-            var response = await _client.SendAsync(requestMessage);
-            content = await response.Content.ReadAsStringAsync();
+            var response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
 
             return content;
         }
 
-        protected async virtual Task<string> GetAsync(string url, object data)
+        protected virtual async Task<string> GetAsync(string url, object data)
         {
-            string content;
-
             var queryString = _queryStringHelper.GetQueryString(data);
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{url}{queryString}");
 
-            var response = await _client.SendAsync(requestMessage);
-            content = await response.Content.ReadAsStringAsync();
+            var response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             return content;
         }
 
-        protected async virtual Task<string> PostAsync(string url, string data)
+        protected virtual async Task<string> PostAsync(string url, string data)
         {
-            string content;
-
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
             {
                 Content = new StringContent(data, Encoding.UTF8, "application/json")
             };
 
-            var response = await _client.SendAsync(requestMessage);
-            content = await response.Content.ReadAsStringAsync();
+            var response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             return content;
         }
 
-        protected async virtual Task<string> PutAsync(string url, string data)
+        protected virtual async Task<string> PutAsync(string url, string data)
         {
-            string content;
-
             var requestMessage = new HttpRequestMessage(HttpMethod.Put, url)
             {
                 Content = new StringContent(data, Encoding.UTF8, "application/json")
             };
 
-            var response = await _client.SendAsync(requestMessage);
-            content = await response.Content.ReadAsStringAsync();
+            var response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             return content;
         }
 
-        protected async virtual Task<string> PatchAsync(string url, string data)
+        protected virtual async Task<string> PatchAsync(string url, string data)
         {
-            string content;
-
             var requestMessage = new HttpRequestMessage(new HttpMethod("PATCH"), url)
             {
                 Content = new StringContent(data, Encoding.UTF8, "application/json")
             };
 
-            var response = await _client.SendAsync(requestMessage);
-            content = await response.Content.ReadAsStringAsync();
+            var response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             return content;
         }
 
-        protected async virtual Task DeleteAsync(string url, string data)
+        protected virtual async Task DeleteAsync(string url, string data)
         {
             HttpRequestMessage requestMessage;
 
@@ -107,7 +97,7 @@ namespace SFA.DAS.Http
                 };
             }
 
-            var response = await _client.SendAsync(requestMessage);
+            var response = await _client.SendAsync(requestMessage).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
         }
     }
