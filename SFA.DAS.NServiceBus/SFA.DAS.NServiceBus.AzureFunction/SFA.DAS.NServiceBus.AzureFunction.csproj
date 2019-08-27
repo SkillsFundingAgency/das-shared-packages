@@ -1,19 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netstandard2.0</TargetFrameworks>
-      <Authors>DAS</Authors>
-      <Description>Azure function infrastructure for using NServiceBus</Description>
-      <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
-      <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.NServiceBus</PackageProjectUrl>
-
-      <EmbedUntrackedSources>false</EmbedUntrackedSources>
-      <IncludeSymbols>true</IncludeSymbols>
-      <PublishRepositoryUrl>true</PublishRepositoryUrl>
-      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <TargetFrameworks>netcoreapp2.2;netstandard2.0</TargetFrameworks>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        
+        <Authors>DAS</Authors>
+        <Description>Azure function integration for SFA.DAS.NServiceBus</Description>
+        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.NServiceBus</PackageProjectUrl>
+        
+        <EmbedUntrackedSources>false</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+    
     <ItemGroup>
-
         <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.6" />
         <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.1" />
         <PackageReference Include="NServiceBus" Version="7.1.7" />
@@ -21,4 +24,5 @@
         <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.1.1" />
         <PackageReference Include="SFA.DAS.NServiceBus" Version="11.0.2" />
     </ItemGroup>
+    
 </Project>
