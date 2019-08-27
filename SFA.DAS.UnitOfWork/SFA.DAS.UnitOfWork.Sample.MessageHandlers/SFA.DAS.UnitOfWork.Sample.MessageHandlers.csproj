@@ -2,13 +2,12 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <IsWebJobProject>true</IsWebJobProject>
         <OutputType>Exe</OutputType>
-        <WebJobName>EmployerFinance-MessageHandlers</WebJobName>
+        <WebJobName>UnitOfWork-MessageHandlers</WebJobName>
         <WebJobType>Continuous</WebJobType>
     </PropertyGroup>
 

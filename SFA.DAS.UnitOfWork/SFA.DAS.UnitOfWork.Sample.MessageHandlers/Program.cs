@@ -3,9 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
-using SFA.DAS.NServiceBus;
+using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using SFA.DAS.UnitOfWork.EntityFrameworkCore;
+using SFA.DAS.UnitOfWork.EntityFrameworkCore.DependencyResolution.Microsoft;
 using SFA.DAS.UnitOfWork.NServiceBus;
+using SFA.DAS.UnitOfWork.NServiceBus.DependencyResolution;
+using SFA.DAS.UnitOfWork.NServiceBus.DependencyResolution.Microsoft;
 using SFA.DAS.UnitOfWork.Sample.Data;
 using SFA.DAS.UnitOfWork.Sample.MessageHandlers.Startup;
 using SFA.DAS.UnitOfWork.Sample.Startup;
@@ -28,7 +31,6 @@ namespace SFA.DAS.UnitOfWork.Sample.MessageHandlers
                     .AddEnvironmentVariables()
                     .AddCommandLine(args))
                 .ConfigureLogging(b => b.AddConsole())
-                .ConfigureWebJobs(b => b.AddAzureStorageCoreServices().AddTimers())
                 .UseNServiceBusContainer()
                 .ConfigureServices((c, s) => s
                     .AddSqlServer(c.Configuration)

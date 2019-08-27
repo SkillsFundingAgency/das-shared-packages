@@ -11,6 +11,7 @@ This package includes:
 
 For examples of how to configure NServiceBus client and server endpoints to support transactional units of work please see the samples:
 
+* [SFA.DAS.UnitOfWork.Sample.Jobs]
 * [SFA.DAS.UnitOfWork.Sample.MessageHandlers]
 * [SFA.DAS.UnitOfWork.Sample.Web]
 
@@ -73,5 +74,6 @@ var connection = unitOfWorkContext.Get<DbConnection>();
 var transaction = unitOfWorkContext.Get<DbTransaction>();
 ```
 
+[SFA.DAS.UnitOfWork.Sample.Jobs]: https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork/SFA.DAS.UnitOfWork.Sample.Jobs
 [SFA.DAS.UnitOfWork.Sample.MessageHandlers]: https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork/SFA.DAS.UnitOfWork.Sample.MessageHandlers
 [SFA.DAS.UnitOfWork.Sample.Web]: https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork/SFA.DAS.UnitOfWork.Sample.Web

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using SFA.DAS.NServiceBus;
+using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using SFA.DAS.UnitOfWork.Sample.Web.Startup;
 
 namespace SFA.DAS.UnitOfWork.Sample.Web

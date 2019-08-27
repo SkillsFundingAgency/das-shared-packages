@@ -3,10 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.UnitOfWork.EntityFrameworkCore;
+using SFA.DAS.UnitOfWork.EntityFrameworkCore.DependencyResolution.Microsoft;
 using SFA.DAS.UnitOfWork.Mvc;
+using SFA.DAS.UnitOfWork.Mvc.Extensions;
+using SFA.DAS.UnitOfWork.NServiceBus.Features.ClientOutbox;
+using SFA.DAS.UnitOfWork.NServiceBus.Features.ClientOutbox.DependencyResolution;
+using SFA.DAS.UnitOfWork.NServiceBus.Features.ClientOutbox.DependencyResolution.Microsoft;
 using SFA.DAS.UnitOfWork.Sample.Data;
 using SFA.DAS.UnitOfWork.Sample.Startup;
-using SFA.DAS.UnitOfWork.NServiceBus.ClientOutbox;
 
 namespace SFA.DAS.UnitOfWork.Sample.Web.Startup
 {

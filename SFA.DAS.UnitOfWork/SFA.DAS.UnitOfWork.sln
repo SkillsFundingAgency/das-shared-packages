@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0C20
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.Sample.MessageHandlers", "SFA.DAS.UnitOfWork.Sample.MessageHandlers\SFA.DAS.UnitOfWork.Sample.MessageHandlers.csproj", "{52A45B92-57D7-40DE-A2EC-B96EA2999013}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.UnitOfWork.Sample.Jobs", "SFA.DAS.UnitOfWork.Sample.Jobs\SFA.DAS.UnitOfWork.Sample.Jobs.csproj", "{574556EF-E79B-48EB-9345-9724C0303B49}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{52A45B92-57D7-40DE-A2EC-B96EA2999013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52A45B92-57D7-40DE-A2EC-B96EA2999013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52A45B92-57D7-40DE-A2EC-B96EA2999013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574556EF-E79B-48EB-9345-9724C0303B49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574556EF-E79B-48EB-9345-9724C0303B49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574556EF-E79B-48EB-9345-9724C0303B49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574556EF-E79B-48EB-9345-9724C0303B49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +149,7 @@ Global
 		{4FC68A3B-9896-4631-990D-7C217EAEFE13} = {0C20FBC5-485A-4509-AD67-B0357581387C}
 		{9FA55157-AECC-440C-BA50-5B0A48282EE1} = {0C20FBC5-485A-4509-AD67-B0357581387C}
 		{52A45B92-57D7-40DE-A2EC-B96EA2999013} = {0C20FBC5-485A-4509-AD67-B0357581387C}
+		{574556EF-E79B-48EB-9345-9724C0303B49} = {0C20FBC5-485A-4509-AD67-B0357581387C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDFEC84D-CF8D-41A2-AF6C-79F23CDF9F6F}
