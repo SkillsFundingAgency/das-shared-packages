@@ -12,7 +12,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Configuration.AzureServiceBus
         [Test]
         public void Shorten_WhenRuleNameIsGreaterThan50Characters_ThenShouldReturnShortenedRuleName()
         {
-            Run(f => f.SetRuleName(51), f => f.Shorten(), (f, r) => r.Should().NotBeNull().And.BeOfType<string>().Which.Length.Should().BeLessOrEqualTo(50));
+            Test(f => f.SetRuleName(51), f => f.Shorten(), (f, r) => r.Should().NotBeNull().And.BeOfType<string>().Which.Length.Should().BeLessOrEqualTo(50));
         }
 
         [TestCase(25)]
@@ -20,19 +20,19 @@ namespace SFA.DAS.NServiceBus.UnitTests.Configuration.AzureServiceBus
         [TestCase(50)]
         public void Shorten_WhenRuleNameIsLessThanOrEqualTo50Characters_ThenShouldReturnUnshortenedRuleName(int ruleNameLength)
         {
-            Run(f => f.SetRuleName(ruleNameLength), f => f.Shorten(), (f, r) => r.Should().Be(f.RuleName));
+            Test(f => f.SetRuleName(ruleNameLength), f => f.Shorten(), (f, r) => r.Should().Be(f.RuleName));
         }
 
         [Test]
         public void Shorten_WhenRuleNameIsGreaterThan50Characters_ThenShouldReturnDifferentShortenedRuleNamesForDifferentRuleNames()
         {
-            Run(f => f.SetMultipleRuleNames(51, true), f => f.ShortenMultiple(), (f, r) => r[0].Should().NotBe(r[1]));
+            Test(f => f.SetMultipleRuleNames(51, true), f => f.ShortenMultiple(), (f, r) => r[0].Should().NotBe(r[1]));
         }
 
         [Test]
         public void Shorten_WhenRuleNameIsGreaterThan50Characters_ThenShouldReturnSameShortenedRuleNamesForSameRuleNames()
         {
-            Run(f => f.SetMultipleRuleNames(51, false), f => f.ShortenMultiple(), (f, r) => r[0].Should().Be(r[1]));
+            Test(f => f.SetMultipleRuleNames(51, false), f => f.ShortenMultiple(), (f, r) => r[0].Should().Be(r[1]));
         }
     }
 

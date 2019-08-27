@@ -15,7 +15,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
         [Test]
         public Task Start_WhenStarting_ThenShouldInvokeCallbackAfterDelay()
         {
-            return RunAsync(
+            return TestAsync(
                 f => f.SetCallbackSuccess(),
                 f => f.Start(),
                 f =>
@@ -28,7 +28,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
         [Test]
         public Task Start_WhenExceptionIsThrown_ThenShouldInvokeErrorCallbackAfterDelay()
         {
-            return RunAsync(
+            return TestAsync(
                 f => f.SetCallbackError(),
                 f => f.Start(), 
                 f =>
@@ -41,7 +41,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
         [Test]
         public Task Start_WhenExceptionIsThrown_ThenShouldInvokeCallbackAfterDelays()
         {
-            return RunAsync(
+            return TestAsync(
                 f => f.SetCallbackError(),
                 f => f.Start(),
                 f =>
@@ -54,19 +54,25 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
         [Test]
         public Task Stop_WhenDelayed_ThenShouldStop()
         {
-            return RunAsync(
+            return TestAsync(
                 f => f.SetMaxInterval(),
-                f => f.StopWhenDelayed(),
+                f => f.StartThenStopWhenDelayed(),
                 f => f.TimerServiceCancellationToken.IsCancellationRequested.Should().BeTrue());
         }
         
         [Test]
         public Task Stop_WhenCallingBack_ThenShouldStop()
         {
-            return RunAsync(
+            return TestAsync(
                 f => f.SetCallbackSuccess(),
-                f => f.StopWhenCallingBack(),
+                f => f.StartThenStopWhenCallingBack(), 
                 f => f.TimerServiceCancellationToken.IsCancellationRequested.Should().BeTrue());
+        }
+
+        [Test]
+        public Task Stop_WhenNotStarted_ThenShouldNotThrowException()
+        {
+            return TestExceptionAsync(f => f.Stop(), (f, r) => r.Should().NotThrow());
         }
     }
 
@@ -117,24 +123,29 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
             TimerService = new TimerService(DateTimeService.Object, Delay.Object);
         }
 
-        public async Task Start()
+        public Task Start()
         {
             TimerService.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
-            await CallbackTaskCompletionSource.Task;
+            return CallbackTaskCompletionSource.Task;
         }
 
-        public async Task StopWhenDelayed()
+        public async Task StartThenStopWhenDelayed()
         {
             TimerService.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
             await DelayTaskCompletionSource.Task;
             await TimerService.Stop();
         }
 
-        public async Task StopWhenCallingBack()
+        public async Task StartThenStopWhenCallingBack()
         {
             TimerService.Start(SuccessCallback.Object, ErrorCallback.Object, Interval);
             await CallbackTaskCompletionSource.Task;
             await TimerService.Stop();
+        }
+
+        public Task Stop()
+        {
+            return TimerService.Stop();
         }
 
         public TimerServiceTestsFixture SetCallbackSuccess()

@@ -26,25 +26,25 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task BeginTransactionAsync_WhenBeginningATransaction_ThenShouldOpenTheConnection()
         {
-            return RunAsync(f => f.BeginTransactionAsync(), f => f.Connection.Verify(c => c.OpenAsync(CancellationToken.None), Times.Once()));
+            return TestAsync(f => f.BeginTransactionAsync(), f => f.Connection.Verify(c => c.OpenAsync(CancellationToken.None), Times.Once()));
         }
 
         [Test]
         public Task BeginTransactionAsync_WhenBeginningATransaction_ThenShouldBeginATransaction()
         {
-            return RunAsync(f => f.BeginTransactionAsync(), f => f.Connection.Protected().Verify<DbTransaction>("BeginDbTransaction", Times.Once(), IsolationLevel.Unspecified));
+            return TestAsync(f => f.BeginTransactionAsync(), f => f.Connection.Protected().Verify<DbTransaction>("BeginDbTransaction", Times.Once(), IsolationLevel.Unspecified));
         }
 
         [Test]
         public Task BeginTransactionAsync_WhenBeginningATransaction_ThenShouldReturnAClientOutboxTransaction()
         {
-            return RunAsync(f => f.BeginTransactionAsync(), (f, r) => r.Should().NotBeNull().And.BeOfType<SqlClientOutboxTransaction>());
+            return TestAsync(f => f.BeginTransactionAsync(), (f, r) => r.Should().NotBeNull().And.BeOfType<SqlClientOutboxTransaction>());
         }
 
         [Test]
         public Task StoreAsync_WhenStoringAClientOutboxMessage_ThenShouldStoreTheClientOutboxMessage()
         {
-            return RunAsync(f => f.StoreAsync(), f =>
+            return TestAsync(f => f.StoreAsync(), f =>
             {
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.StoreCommandText);
@@ -60,7 +60,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task GetAsync_WhenGettingAClientOutboxMessage_TheShouldReturnTheClientOutboxMessage()
         {
-            return RunAsync(f => f.SetupGetReaderWithRows(), f => f.GetAsync(), (f, r) =>
+            return TestAsync(f => f.SetupGetReaderWithRows(), f => f.GetAsync(), (f, r) =>
             {
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetCommandText);
@@ -73,14 +73,14 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldThrowAnException()
         {
-            return RunAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().Throw<KeyNotFoundException>()
+            return TestExceptionAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().Throw<KeyNotFoundException>()
                 .WithMessage($"Client outbox data not found where MessageId = '{f.ClientOutboxMessage.MessageId}'"));
         }
 
         [Test]
         public Task GetAwaitingDispatchAsync_WhenGettingClientOutboxMessagesAwaitingDispatch_TheShouldReturnClientOutboxMessagesAwaitingDispatch()
         {
-            return RunAsync(f => f.SetupGetAwaitingDispatchReader(), f => f.GetAwaitingDispatchAsync(), (f, r) =>
+            return TestAsync(f => f.SetupGetAwaitingDispatchReader(), f => f.GetAwaitingDispatchAsync(), (f, r) =>
             {
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetAwaitingDispatchCommandText);
@@ -92,7 +92,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task SetAsDispatchedAsync_WhenSettingAClientOutboxMessageAsDispatched_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
-            return RunAsync(f => f.SetAsDispatchedAsync(), f =>
+            return TestAsync(f => f.SetAsDispatchedAsync(), f =>
             {
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Once());
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.SetAsDispatchedCommandText);
@@ -109,7 +109,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [TestCase(20000, true, 0)]
         public Task RemoveEntriesOlderThanAsync_WhenRemovingOldClientOutboxMessages_ThenShouldRemoveOldClientOutboxMessagesInBatches(int oldMessageCount, bool isCancellationRequested, int expectedBatchCount)
         {
-            return RunAsync(f => f.SetOldClientOutboxMessageCount(oldMessageCount).SetCancellationRequested(isCancellationRequested), f => f.RemoveEntriesOlderThanAsync(), f =>
+            return TestAsync(f => f.SetOldClientOutboxMessageCount(oldMessageCount).SetCancellationRequested(isCancellationRequested), f => f.RemoveEntriesOlderThanAsync(), f =>
             {
                 f.Connection.Protected().Verify("CreateDbCommand", Times.Exactly(expectedBatchCount));
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.RemoveEntriesOlderThanCommandText, Times.Exactly(expectedBatchCount));

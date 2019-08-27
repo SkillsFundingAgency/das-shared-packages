@@ -24,7 +24,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
         [Test]
         public Task OnStart_WhenClientOutboxMessagesAreAwaitingDispatch_ThenShouldSendProcessClientOutboxMessageCommands()
         {
-            return RunAsync(f => f.SetClientOutboxMessagesAwaitingDispatch(), f => f.OnStart(), f =>
+            return TestAsync(f => f.SetClientOutboxMessagesAwaitingDispatch(), f => f.OnStart(), f =>
             {
                 f.MessageSession.SentMessages.Should().HaveCount(f.ClientOutboxMessages.Count + f.ClientOutboxMessageV2s.Count);
                 
@@ -43,7 +43,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
         [Test]
         public Task OnStart_WhenClientOutboxMessagesAreAwaitingDispatch_ThenShouldRemoveOldEntries()
         {
-            return RunAsync(f => f.OnStart(), f =>
+            return TestAsync(f => f.OnStart(), f =>
             {
                 f.ClientOutboxStorage.Verify(s => s.RemoveEntriesOlderThanAsync(f.Now.Subtract(f.MaxAge), f.CancellationToken), Times.Once);
                 f.ClientOutboxStorageV2.Verify(s => s.RemoveEntriesOlderThanAsync(f.Now.Subtract(f.MaxAge), f.CancellationToken), Times.Once);
@@ -53,25 +53,25 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.StartupT
         [Test]
         public Task OnStart_WhenNoClientOutboxMessagesAreAwaitingDispatch_ThenShouldNotSendProcessClientOutboxMessageCommands()
         {
-            return RunAsync(f => f.OnStart(), f => f.MessageSession.SentMessages.Should().BeEmpty());
+            return TestAsync(f => f.OnStart(), f => f.MessageSession.SentMessages.Should().BeEmpty());
         }
         
         [Test]
         public Task OnStart_WhenConsecutiveExceptionsAreThrown_ThenShouldRaiseCriticalError()
         {
-            return RunAsync(f => f.OnStartWithConsecutiveExceptions(), f => f.CriticalError.Verify(e => e.Raise(It.IsAny<string>(), f.Exception), Times.Once));
+            return TestAsync(f => f.OnStartWithConsecutiveExceptions(), f => f.CriticalError.Verify(e => e.Raise(It.IsAny<string>(), f.Exception), Times.Once));
         }
         
         [Test]
         public Task OnStart_WhenNonConsecutiveExceptionsAreThrown_ThenShouldRaiseCriticalError()
         {
-            return RunAsync(f => f.OnStartWithNonConsecutiveExceptions(), f => f.CriticalError.Verify(e => e.Raise(It.IsAny<string>(), It.IsAny<Exception>()), Times.Never));
+            return TestAsync(f => f.OnStartWithNonConsecutiveExceptions(), f => f.CriticalError.Verify(e => e.Raise(It.IsAny<string>(), It.IsAny<Exception>()), Times.Never));
         }
         
         [Test]
         public Task OnStop_WhenStopping_ThenShouldStopTimer()
         {
-            return RunAsync(f => f.OnStop(), f => f.TimerService.Verify(t => t.Stop(), Times.Once));
+            return TestAsync(f => f.OnStop(), f => f.TimerService.Verify(t => t.Stop(), Times.Once));
         }
     }
 

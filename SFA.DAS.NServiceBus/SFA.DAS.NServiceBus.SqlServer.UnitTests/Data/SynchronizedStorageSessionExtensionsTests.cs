@@ -15,13 +15,13 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Data
         [Test]
         public void GetSqlStorageSession_WhenGettingTheSqlSession_TheShouldReturnTheSqlSession()
         {
-            Run(f => f.SetSqlSession(), f => f.GetSqlStorageSession(), (f, r) => r.Should().Be(f.Session.Object));
+            Test(f => f.SetSqlSession(), f => f.GetSqlStorageSession(), (f, r) => r.Should().Be(f.Session.Object));
         }
 
         [Test]
         public void GetSqlStorageSession_WhenGettingTheSqlSessionAndItIsNotASqlStorageSession_ThenShouldThrowAnException()
         {
-            Run(f => f.SetNonSqlSession(), f => f.GetSqlStorageSession(), (f, a) => a.Should().Throw<Exception>()
+            TestException(f => f.SetNonSqlSession(), f => f.GetSqlStorageSession(), (f, a) => a.Should().Throw<Exception>()
                 .WithMessage("Cannot access the SQL storage session"));
         }
     }

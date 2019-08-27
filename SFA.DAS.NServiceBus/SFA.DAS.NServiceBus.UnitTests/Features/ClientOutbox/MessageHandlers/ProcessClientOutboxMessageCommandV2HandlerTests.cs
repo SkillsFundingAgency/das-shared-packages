@@ -22,13 +22,13 @@ namespace SFA.DAS.NServiceBus.UnitTests.Features.ClientOutbox.MessageHandlers
         [Test]
         public Task Handle_WhenHandlingAProcessClientOutboxMessageCommand_ThenShouldPublishTheClientOutboxMessageEvents()
         {
-            return RunAsync(f => f.Handle(), f => f.Context.PublishedMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), m.Message }).Should().BeEquivalentTo(f.TransportOperations));
+            return TestAsync(f => f.Handle(), f => f.Context.PublishedMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), m.Message }).Should().BeEquivalentTo(f.TransportOperations));
         }
 
         [Test]
         public Task Handle_WhenHandlingAProcessClientOutboxMessageCommand_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
-            return RunAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, f.SynchronizedStorageSession.Object)));
+            return TestAsync(f => f.Handle(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, f.SynchronizedStorageSession.Object)));
         }
     }
 
