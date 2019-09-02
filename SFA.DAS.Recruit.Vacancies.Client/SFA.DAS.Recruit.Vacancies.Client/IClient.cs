@@ -6,10 +6,11 @@ namespace SFA.DAS.Recruit.Vacancies.Client
 {
     public interface IClient
     {
-        Vacancy GetVacancy(long vacancyReference);
+        Vacancy GetPublishedVacancy(long vacancyReference);
         IList<Vacancy> GetLiveVacancies();
         void SubmitApplication(Application application);
         void WithdrawApplication(long vacancyReference, Guid candidateId);
         void DeleteCandidate(Guid candidateId);
+        Vacancy GetLiveVacancy(long vacancyReference);
     }
 }

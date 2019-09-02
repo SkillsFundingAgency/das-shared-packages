@@ -50,7 +50,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             _storageConnection = storageConnection;
         }
 
-        public Vacancy GetVacancy(long vacancyReference)
+        public Vacancy GetPublishedVacancy(long vacancyReference)
         {
             var collection = GetCollection();
             var result = collection.Find(lv =>
@@ -114,6 +114,15 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var queue = GetQueue(CandidateDeleteQueueName);
 
             queue.AddMessage(cloudQueueMessage);
+        }
+
+        public Vacancy GetLiveVacancy(long vacancyReference)
+        {
+            var collection = GetCollection();
+            var result = collection.Find(lv =>
+                    lv.VacancyReference.Equals(vacancyReference) && lv.ViewType.Equals(LiveVacancyDocumentType))
+                .SingleOrDefault();
+            return result;
         }
 
         private IMongoCollection<Vacancy> GetCollection()
