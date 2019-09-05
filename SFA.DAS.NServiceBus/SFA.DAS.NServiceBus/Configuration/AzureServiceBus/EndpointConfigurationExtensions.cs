@@ -34,7 +34,7 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
 
                 var queues = transport.Queues();
 
-                queues.ForwardDeadLetteredMessagesTo(q => q != "error" && q != "audit" && q != "deadletter", "deadletter");
+                queues.ForwardDeadLetteredMessagesTo(q => q != "error" && q != "audit" && q != "deadletters", "deadletters");
                 queues.LockDuration(TimeSpan.FromMinutes(1));
 
                 var subscriptions = transport.Subscriptions();
