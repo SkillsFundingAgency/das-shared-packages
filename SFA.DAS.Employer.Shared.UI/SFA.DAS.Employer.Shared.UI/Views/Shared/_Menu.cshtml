@@ -11,7 +11,6 @@
     var selectedSection = ViewData.SelectedNavigationSection();
     var logoutRoute = OptionsAccessor.CurrentValue.LocalLogoutRouteName;
     var externalLinks = OptionsAccessor.CurrentValue.Routes;
-    var showHomeOnly = OptionsAccessor.CurrentValue.ShowHomeOnly;
 }
 
 @functions {
@@ -114,7 +113,7 @@
                     <li class="das-navigation__list-item">
                         <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection) mu-home" href="@linkGenerator.AccountsLink("AccountsHome", accountId)">Home</a>
                     </li>
-                    @if (showHomeOnly == false)
+                    @if (selectedSection != NavigationSection.None)
                     {
                         <li class="das-navigation__list-item">
                             <a class="@BuildNavigationLinkClass(NavigationSection.AccountsFinance, selectedSection) mu-finance" href="@linkGenerator.FinanceLink("AccountsFinance", accountId)">Finance</a>
