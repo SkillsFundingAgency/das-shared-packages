@@ -87,6 +87,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersisterV2.GetAwaitingDispatchCommandText);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? == f.Now.AddSeconds(-10))));
                 r.Should().BeEquivalentTo(f.OutboxMessages);
+                f.Connection.Protected().Verify("Dispose", Times.Once(), true);
             });
         }
 
@@ -100,6 +101,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "MessageId" && p.Value as Guid? == f.ClientOutboxMessage.MessageId)));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "DispatchedAt" && p.Value as DateTime? == f.Now)));
                 f.Command.Verify(c => c.ExecuteNonQueryAsync(CancellationToken.None), Times.Once);
+                f.Connection.Protected().Verify("Dispose", Times.Once(), true);
             });
         }
 
@@ -129,6 +131,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersisterV2.RemoveEntriesOlderThanCommandText, Times.Exactly(expectedBatchCount));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "BatchSize" && p.Value as int? == ClientOutboxPersisterV2.CleanupBatchSize)), Times.Exactly(expectedBatchCount));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "DispatchedBefore" && p.Value as DateTime? == f.Now)), Times.Exactly(expectedBatchCount));
+                f.Connection.Protected().Verify("Dispose", Times.Once(), true);
             });
         }
     }
