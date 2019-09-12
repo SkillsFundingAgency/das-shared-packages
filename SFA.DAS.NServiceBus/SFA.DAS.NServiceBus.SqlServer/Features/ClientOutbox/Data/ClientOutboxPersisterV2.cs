@@ -102,8 +102,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
 
         public async Task SetAsDispatchedAsync(Guid messageId)
         {
-            var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false);
-
+            using (var connection = await _connectionBuilder.OpenConnectionAsync().ConfigureAwait(false))
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = SetAsDispatchedCommandText;
