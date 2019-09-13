@@ -1,7 +1,7 @@
-﻿using System;
+﻿using StructureMap;
+using System;
 using System.Linq;
 using System.Reflection;
-using StructureMap;
 using StructureMap.Pipeline;
 
 namespace SFA.DAS.Hmrc.ExecutionPolicy
