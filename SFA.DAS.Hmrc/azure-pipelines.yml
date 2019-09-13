@@ -1,0 +1,53 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.Hmrc'
+
+pr: none
+
+workspace:
+    clean: all
+
+pool:
+  name: 'DAS - Continuous Integration'
+
+variables:
+  BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '0'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: SFA.DAS.Hmrc\SFA.DAS.Hmrc.sln
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: SFA.DAS.Hmrc\SFA.DAS.Hmrc.sln
+    arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: SFA.DAS.Hmrc\SFA.DAS.Hmrc\SFA.DAS.Hmrc.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: SFA.DAS.Hmrc\SFA.DAS.Hmrc
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
