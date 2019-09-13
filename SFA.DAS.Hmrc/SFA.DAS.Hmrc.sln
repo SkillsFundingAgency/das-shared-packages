@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Hmrc.UnitTests", "SFA.DAS.Hmrc.UnitTests\SFA.DAS.Hmrc.UnitTests.csproj", "{893E690B-E94F-4EDF-AE20-B569B2DE4E83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Hmrc", "SFA.DAS.Hmrc\SFA.DAS.Hmrc.csproj", "{FEE82654-9036-4282-952A-E111EF0E2871}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{893E690B-E94F-4EDF-AE20-B569B2DE4E83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{893E690B-E94F-4EDF-AE20-B569B2DE4E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{893E690B-E94F-4EDF-AE20-B569B2DE4E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{893E690B-E94F-4EDF-AE20-B569B2DE4E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEE82654-9036-4282-952A-E111EF0E2871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE82654-9036-4282-952A-E111EF0E2871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE82654-9036-4282-952A-E111EF0E2871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE82654-9036-4282-952A-E111EF0E2871}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68BC1CCD-C8C8-4E0D-9237-F3FAAD435898}
+	EndGlobalSection
+EndGlobal
