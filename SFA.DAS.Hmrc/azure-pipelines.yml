@@ -26,25 +26,25 @@ steps:
   displayName: 'dotnet restore'
   inputs:
     command: restore
-    projects: SFA.DAS.Hmrc\SFA.DAS.Hmrc.sln
+    projects: SFA.DAS.Hmrc/SFA.DAS.Hmrc.sln
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
-    projects: SFA.DAS.Hmrc\SFA.DAS.Hmrc.sln
+    projects: SFA.DAS.Hmrc/SFA.DAS.Hmrc.sln
     arguments: '/p:Configuration=$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
   inputs:
     command: pack
-    packagesToPack: SFA.DAS.Hmrc\SFA.DAS.Hmrc\SFA.DAS.Hmrc.csproj
+    packagesToPack: SFA.DAS.Hmrc/SFA.DAS.Hmrc/SFA.DAS.Hmrc.csproj
     versioningScheme: byBuildNumber
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    SourceFolder: SFA.DAS.Hmrc\SFA.DAS.Hmrc
+    SourceFolder: SFA.DAS.Hmrc/SFA.DAS.Hmrc
     Contents: '**/*.nupkg'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
