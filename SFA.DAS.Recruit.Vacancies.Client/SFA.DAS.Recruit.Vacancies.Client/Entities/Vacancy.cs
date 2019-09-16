@@ -42,5 +42,6 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public TrainingProvider TrainingProvider { get; set; }
         public long VacancyReference { get; set; }
         public Wage Wage { get; set; }
+        public int? EducationLevelNumber { get; set; }
     }
 }
