@@ -48,7 +48,7 @@ namespace SFA.DAS.Hmrc.UnitTests
 
             _cacheProvider = new Mock<IInProcessCache>();
             _cacheProvider.SetupSequence(c => c.Get<DateTime?>("HmrcFractionLastCalculatedDate"))
-                .Returns(null)
+                .Returns((DateTime?) null)
                 .Returns(new DateTime());
 
             _hmrcService = new HmrcService(_configuration, _httpClientWrapper.Object,
