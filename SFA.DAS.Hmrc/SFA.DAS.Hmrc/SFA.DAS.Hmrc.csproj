@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HMRC.ESFA.Levy.Api.Client" Version="1.0.43" />
+    <PackageReference Include="HMRC.ESFA.Levy.Api.Types" Version="1.0.43" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Polly" Version="5.7.0" />
+    <PackageReference Include="SFA.DAS.ActiveDirectory" Version="1.0.3" />
+    <PackageReference Include="SFA.DAS.Caches" Version="1.1.2" />
+    <PackageReference Include="SFA.DAS.NLog.Logger" Version="1.0.0.56651" />
+    <PackageReference Include="SFA.DAS.TokenService.Api.Client" Version="1.1.16" />
+    <PackageReference Include="structuremap" Version="4.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Web" />
+  </ItemGroup>
+
+</Project>
