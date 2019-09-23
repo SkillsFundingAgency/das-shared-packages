@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.BadLanguage
+﻿namespace SFA.DAS.BadLanguage.Service
 {
     public interface IBadLanguageService
     {
