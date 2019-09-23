@@ -75,6 +75,5 @@ namespace SFA.DAS.BadLanguage.UnitTests
         {
             return BadLanguageService.ContainsBadLanguage(phrase);
         }
-
     }
 }
