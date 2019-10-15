@@ -9,7 +9,7 @@ using NServiceBus.Raw;
 using NServiceBus.Transport;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
-using SFA.DAS.NServiceBus.AzureServiceBus;
+using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {

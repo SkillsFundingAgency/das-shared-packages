@@ -25,4 +25,8 @@
         <PackageReference Include="SFA.DAS.NServiceBus" Version="11.0.2" />
     </ItemGroup>
     
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.NServiceBus\SFA.DAS.NServiceBus.csproj" />
+    </ItemGroup>
+    
 </Project>
