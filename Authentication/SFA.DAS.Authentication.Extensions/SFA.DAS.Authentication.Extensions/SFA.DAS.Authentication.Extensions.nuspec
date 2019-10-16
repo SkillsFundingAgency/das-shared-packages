@@ -1,0 +1,30 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SFA.DAS.Authentication.Extensions</id>
+    <version>1.0.0</version>
+    <authors>DAS</authors>
+    <owners>DAS</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extension methods to support Authentication</description>
+    <releaseNotes>UseMixedModeAuthentication created to support dual AAD and key pair Jwt authentication.</releaseNotes>
+    <dependencies>
+		<dependency id="Microsoft.IdentityModel.Protocol.Extensions" version="1.0.2.206221351" />
+		<dependency id="Microsoft.Owin" version="3.1.0" />
+		<dependency id="Microsoft.Owin.Hosting" version="3.1.0" />
+		<dependency id="Microsoft.Owin.Security" version="3.1.0" />
+		<dependency id="Microsoft.Owin.Security.Jwt" version="3.1.0" />
+		<dependency id="Microsoft.Owin.Security.OAuth" version="3.1.0" />
+		<dependency id="Newtonsoft.Json" version="6.0.4" />
+		<dependency id="NLog" version="4.3.7" />
+		<dependency id="Owin" version="1.0" />
+		<dependency id="SFA.DAS.NLog.Logger" version="1.2.1" />
+		<dependency id="System.IdentityModel.Tokens.Jwt" version="4.0.2.206221351" />
+    </dependencies>
+    </metadata>
+  <files>
+    <file src="bin\Release\SFA.DAS.Authentication.Extensions.dll" target="lib\net451\SFA.DAS.Authentication.Extensions.dll" />
+  </files>
+</package>
