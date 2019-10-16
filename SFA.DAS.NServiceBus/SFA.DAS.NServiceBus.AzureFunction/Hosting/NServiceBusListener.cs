@@ -29,7 +29,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             _executor = executor;
             _attribute = attribute;
             _parameter = parameter;
-            _poisonMessageQueue = $"{attribute.Endpoint}.Error";
+            _poisonMessageQueue = $"{attribute.Endpoint}_Error";
         }
       
         public async Task StartAsync(CancellationToken cancellationToken)
