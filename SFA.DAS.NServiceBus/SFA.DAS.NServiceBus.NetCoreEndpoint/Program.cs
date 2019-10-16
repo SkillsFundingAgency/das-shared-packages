@@ -16,7 +16,7 @@ namespace SFA.DAS.NServiceBus.NetCoreEndpoint
         {
             var endpointConfiguration = new EndpointConfiguration("SFA.DAS.NServiceBus.NetCoreEndpoint")
                 .UseAzureServiceBusTransport(AzureServiceBusConnectionString, r => {})
-                .UseErrorQueue()
+                .UseErrorQueue("SFA.DAS.NServiceBus.NetCoreEndpoint-error")
                 .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer();
