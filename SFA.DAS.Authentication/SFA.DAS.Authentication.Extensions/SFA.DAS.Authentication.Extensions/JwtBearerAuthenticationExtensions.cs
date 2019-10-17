@@ -3,7 +3,6 @@ using Microsoft.Owin.Security.Jwt;
 using Owin;
 using System;
 using System.IdentityModel.Tokens;
-using System.Runtime.CompilerServices;
 
 namespace SFA.DAS.Authentication.Extensions
 {
