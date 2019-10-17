@@ -16,15 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.IdentityModel">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.IdentityModel.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>SFA.DAS.Authentication.Extensions.UnitTest</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IdentityModel" />
   </ItemGroup>
   
 </Project>
