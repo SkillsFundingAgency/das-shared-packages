@@ -1,0 +1,53 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.Authentication'
+
+pr: none
+
+workspace:
+    clean: all
+
+pool:
+  name: 'DAS - Continuous Integration'
+  
+variables:
+  BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '0'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.sln
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.sln
+    arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
