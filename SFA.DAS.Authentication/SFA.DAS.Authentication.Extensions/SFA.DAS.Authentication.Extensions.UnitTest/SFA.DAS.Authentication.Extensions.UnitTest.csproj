@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
@@ -16,8 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Authentication.Extensions\SFA.DAS.Authentication.Extensions.csproj" />
-  </ItemGroup>
-  
+  </ItemGroup>  
 
   <ItemGroup>
     <Reference Include="System.IdentityModel" />
