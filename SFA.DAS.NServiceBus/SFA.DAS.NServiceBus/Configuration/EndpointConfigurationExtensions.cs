@@ -6,7 +6,13 @@ namespace SFA.DAS.NServiceBus.Configuration
 {
     public static class EndpointConfigurationExtensions
     {
-        public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config, string errorQueue = "error")
+        [Obsolete("This will be removed in an upcoming release, please use the override requiring the errorQueue parameter", false)]
+        public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config)
+        {
+            return UseErrorQueue(config, "errors");
+        }
+
+        public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config, string errorQueue)
         {
             config.SendFailedMessagesTo(errorQueue);
 
