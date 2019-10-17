@@ -6,7 +6,7 @@ trigger:
       - "*"
   paths:
     include:
-      - 'SFA.DAS.Authentication.Extensions'
+      - 'SFA.DAS.Authentication'
 
 pr: none
 
