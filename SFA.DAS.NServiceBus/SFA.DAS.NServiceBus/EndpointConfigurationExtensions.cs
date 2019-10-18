@@ -5,9 +5,9 @@ namespace SFA.DAS.NServiceBus
 {
     public static class EndpointConfigurationExtensions
     {
-        public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config)
+        public static EndpointConfiguration UseErrorQueue(this EndpointConfiguration config, string errorQueue = null)
         {
-            config.SendFailedMessagesTo("errors");
+            config.SendFailedMessagesTo(errorQueue ?? "errors");
 
             return config;
         }
