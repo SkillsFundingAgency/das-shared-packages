@@ -14,8 +14,8 @@ workspace:
     clean: all
 
 pool:
-  name: 'DAS - Continuous Integration'
-  
+ vmImage: 'vs2017-win2016'
+   
 variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '1'
