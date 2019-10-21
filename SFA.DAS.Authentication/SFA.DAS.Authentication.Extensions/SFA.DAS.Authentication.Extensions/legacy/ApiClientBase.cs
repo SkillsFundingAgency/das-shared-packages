@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Net.Http;
 
-namespace SFA.DAS.Http
+namespace SFA.DAS.Authentication.Extensions.Legacy
 {
     public abstract class ApiClientBase
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace SFA.DAS.Http
+namespace SFA.DAS.Authentication.Extensions.Legacy
 {
     internal sealed class QueryStringHelper
     {
