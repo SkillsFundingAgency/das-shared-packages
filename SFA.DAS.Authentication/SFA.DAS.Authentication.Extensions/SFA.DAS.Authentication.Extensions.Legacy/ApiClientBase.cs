@@ -1,9 +1,11 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System;
 
 namespace SFA.DAS.Authentication.Extensions.Legacy
 {
+    [Obsolete("Included to allow older clients to be updated to use AAD without upgrading those clients away from using ApiClientBase")]
     public abstract class ApiClientBase
     {
         private readonly QueryStringHelper _queryStringHelper;
