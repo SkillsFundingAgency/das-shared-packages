@@ -4,8 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <PackageVersion>1.1.0-alpha</PackageVersion>
-  </PropertyGroup>
-  
 </Project>
