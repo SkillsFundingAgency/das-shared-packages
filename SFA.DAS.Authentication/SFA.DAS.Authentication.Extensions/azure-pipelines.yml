@@ -46,7 +46,10 @@ steps:
   inputs:
     command: pack
     packagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.Legacy/SFA.DAS.Authentication.Extensions.Legacy.csproj
-    versioningScheme: byPrereleaseNumber    
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '1'
+    minorVersion: '0'
+    patchVersion: '23'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
