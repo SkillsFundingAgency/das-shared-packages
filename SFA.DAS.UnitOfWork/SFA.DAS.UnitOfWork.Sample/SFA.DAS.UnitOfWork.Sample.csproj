@@ -16,7 +16,7 @@
         <PackageReference Include="dbup-sqlserver" Version="4.2.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.2.0" />
-        <PackageReference Include="SFA.DAS.NServiceBus.SqlServer" Version="15.0.8" />
+        <PackageReference Include="SFA.DAS.NServiceBus.SqlServer" Version="15.0.25" />
     </ItemGroup>
 
     <ItemGroup>
