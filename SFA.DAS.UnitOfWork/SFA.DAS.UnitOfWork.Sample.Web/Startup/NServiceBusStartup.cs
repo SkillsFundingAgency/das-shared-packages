@@ -15,9 +15,10 @@ namespace SFA.DAS.UnitOfWork.Sample.Web.Startup
     {
         public static void StartNServiceBus(this UpdateableServiceProvider serviceProvider, IConfiguration configuration)
         {
-            var endpointConfiguration = new EndpointConfiguration("SFA.DAS.UnitOfWork.Sample.Web")
+            var endpointName = "SFA.DAS.UnitOfWork.Sample.Web";
+            var endpointConfiguration = new EndpointConfiguration(endpointName)
                 .UseLearningTransport()
-                .UseErrorQueue()
+                .UseErrorQueue($"{endpointName}-errors")
                 .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer()
