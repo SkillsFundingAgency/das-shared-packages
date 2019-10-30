@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Azure.ServiceBus.Primitives;
 using NServiceBus;
 using NServiceBus.Transport.AzureServiceBus;
 #if NET462
@@ -15,6 +16,8 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
                 var transport = config.UseTransport<AzureServiceBusTransport>();
                 var ruleNameShortener = new RuleNameShortener();
 
+                var tokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider();
+                transport.CustomTokenProvider(tokenProvider);
                 transport.ConnectionString(connectionString);
                 transport.RuleNameShortener(ruleNameShortener.Shorten);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
@@ -24,6 +27,8 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
                 var transport = config.UseTransport<AzureServiceBusTransport>();
 
                 transport.BrokeredMessageBodyType(SupportedBrokeredMessageBodyTypes.Stream);
+                var tokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider();
+                transport.CustomTokenProvider(tokenProvider);
                 transport.ConnectionString(connectionString);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 transport.UseForwardingTopology();
