@@ -36,7 +36,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-        <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="9.0.0" />
+        <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="9.1.2" />
     </ItemGroup>
 
 </Project>
