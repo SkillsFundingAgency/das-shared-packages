@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus.Primitives;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using NServiceBus;
@@ -24,21 +25,23 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
         private IReceivingRawEndpoint _endpoint;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public NServiceBusListener(ITriggeredFunctionExecutor executor, NServiceBusTriggerAttribute attribute,ParameterInfo parameter)
+        public NServiceBusListener(ITriggeredFunctionExecutor executor, NServiceBusTriggerAttribute attribute, ParameterInfo parameter)
         {
             _executor = executor;
             _attribute = attribute;
             _parameter = parameter;
             _poisonMessageQueue = $"{attribute.Endpoint}-Error";
         }
-      
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var nameShortener = new RuleNameShortener();
             var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.Endpoint, OnMessage, _poisonMessageQueue);
+            var tokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider();
 
-            endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>().RuleNameShortener(nameShortener.Shorten)
-                
+            endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
+                .RuleNameShortener(nameShortener.Shorten)
+                .CustomTokenProvider(tokenProvider)
                 .ConnectionString(_attribute.Connection)
                 .Transactions(TransportTransactionMode.ReceiveOnly);
 
@@ -50,19 +53,19 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             endpointConfigurationRaw.AutoCreateQueue();
 
             _endpoint = await RawEndpoint.Start(endpointConfigurationRaw).ConfigureAwait(false);
-            
+
             await _endpoint.SubscriptionManager.Subscribe(_parameter.ParameterType, new ContextBag());
-            
+
 
         }
-        
+
         protected async Task OnMessage(MessageContext context, IDispatchMessages dispatcher)
         {
             _cancellationTokenSource = new CancellationTokenSource();
 
-            var triggerData = new TriggeredFunctionData
+            var triggerData = new TriggeredFunctionData 
             {
-                TriggerValue = new NServiceBusTriggerData
+                TriggerValue = new NServiceBusTriggerData 
                 {
                     Data = context.Body,
                     Headers = context.Headers,
