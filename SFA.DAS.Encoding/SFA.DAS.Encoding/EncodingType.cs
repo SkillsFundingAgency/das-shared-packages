@@ -7,6 +7,7 @@
         PublicAccountId, 
         AccountLegalEntityId, 
         PublicAccountLegalEntityId, 
-        ApprenticeshipId
+        ApprenticeshipId,
+        AgreementId
     }
 }
