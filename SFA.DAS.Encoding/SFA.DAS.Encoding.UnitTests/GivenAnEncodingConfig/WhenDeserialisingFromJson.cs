@@ -19,6 +19,12 @@ namespace SFA.DAS.Encoding.UnitTests.GivenAnEncodingConfig
       'Salt':'Saltfb789382-064a-4f01-9ff0-b21f3643e04a',
       'MinHashLength': 5,
       'Alphabet':'Alphabet69979ed2-4d14-4baa-a587-ce9a5d382ba8'
+    },
+    {
+      'EncodingType': 'AgreementId',
+      'Salt': 'Salt6C04203D-1AAE-4593-821F-4F57B02EBF59',
+      'MinHashLength': 7,
+      'Alphabet': 'Alphabet13BF041F-6B3F-42B4-AF3C-82E292BAB48E'
     }
 ]}";
 
@@ -36,32 +42,36 @@ namespace SFA.DAS.Encoding.UnitTests.GivenAnEncodingConfig
             Assert.IsNotNull(_encodingConfig.Encodings);
         }
 
-        [Test]
-        public void Then_Deserialises_EncodingType()
+        [TestCase(EncodingType.PublicAccountId, 0)]
+        [TestCase(EncodingType.PublicAccountLegalEntityId, 1)]
+        [TestCase(EncodingType.AgreementId, 2)]
+        public void Then_Deserialises_EncodingType(EncodingType encodingType, int index)
         {
-            Assert.AreEqual(EncodingType.PublicAccountId, _encodingConfig.Encodings[0].EncodingType);
-            Assert.AreEqual(EncodingType.PublicAccountLegalEntityId, _encodingConfig.Encodings[1].EncodingType);
+            Assert.AreEqual(encodingType, _encodingConfig.Encodings[index].EncodingType);
         }
 
-        [Test]
-        public void Then_Deserialises_Salt()
+        [TestCase("Salta8c7ae31-fbdd-416d-bfd6-6d137576d5d5", 0)]
+        [TestCase("Saltfb789382-064a-4f01-9ff0-b21f3643e04a", 1)]
+        [TestCase("Salt6C04203D-1AAE-4593-821F-4F57B02EBF59", 2)]
+        public void Then_Deserialises_Salt(string salt, int index)
         {
-            Assert.AreEqual("Salta8c7ae31-fbdd-416d-bfd6-6d137576d5d5", _encodingConfig.Encodings[0].Salt);
-            Assert.AreEqual("Saltfb789382-064a-4f01-9ff0-b21f3643e04a", _encodingConfig.Encodings[1].Salt);
+            Assert.AreEqual(salt, _encodingConfig.Encodings[index].Salt);
         }
 
-        [Test]
-        public void Then_Deserialises_MinHashLength()
+        [TestCase(234, 0)]
+        [TestCase(5, 1)]
+        [TestCase(7, 2)]
+        public void Then_Deserialises_MinHashLength(int minHashLength, int index)
         {
-            Assert.AreEqual(234, _encodingConfig.Encodings[0].MinHashLength);
-            Assert.AreEqual(5, _encodingConfig.Encodings[1].MinHashLength);
+            Assert.AreEqual(minHashLength, _encodingConfig.Encodings[index].MinHashLength);
         }
 
-        [Test]
-        public void Then_Deserialises_Alphabet()
+        [TestCase("Alphabet02411ad6-9da1-452e-a373-9675a446e0f7", 0)]
+        [TestCase("Alphabet69979ed2-4d14-4baa-a587-ce9a5d382ba8", 1)]
+        [TestCase("Alphabet13BF041F-6B3F-42B4-AF3C-82E292BAB48E", 2)]
+        public void Then_Deserialises_Alphabet(string alphabet, int index)
         {
-            Assert.AreEqual("Alphabet02411ad6-9da1-452e-a373-9675a446e0f7", _encodingConfig.Encodings[0].Alphabet);
-            Assert.AreEqual("Alphabet69979ed2-4d14-4baa-a587-ce9a5d382ba8", _encodingConfig.Encodings[1].Alphabet);
+            Assert.AreEqual(alphabet, _encodingConfig.Encodings[index].Alphabet);
         }
     }
 }
