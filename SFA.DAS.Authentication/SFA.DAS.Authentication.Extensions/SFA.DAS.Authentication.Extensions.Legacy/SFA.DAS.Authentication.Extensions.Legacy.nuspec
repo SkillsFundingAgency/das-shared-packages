@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>SFA.DAS.Authentication.Extensions.Legacy</id>
+    <version>1.1.0-alpha</version>
+    <authors>DAS</authors>
+    <owners>DAS</owners>
+    <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Classes to support Legacy clients when upgrading the authentication to AAD</description>
+    <releaseNotes>ApiClientBase moved here to support legacy client access being upgraded to AAD.</releaseNotes>
+    <dependencies />
+    </metadata>
+  <files>
+    <file src="bin\Release\SFA.DAS.Authentication.Extensions.Legacy.dll" target="lib\net451\SFA.DAS.Authentication.Extensions.Legacy.dll" />
+  </files>
+</package>

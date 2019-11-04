@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TargetFramework>net462</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.9.0" />
+    <PackageReference Include="Microsoft.Owin.Testing" Version="3.1.0" />
+    <PackageReference Include="Moq" Version="4.13.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Authentication.Extensions\SFA.DAS.Authentication.Extensions.csproj" />
+  </ItemGroup>  
+
+  <ItemGroup>
+    <Reference Include="System.IdentityModel" />
+  </ItemGroup>
+
+</Project>
+
