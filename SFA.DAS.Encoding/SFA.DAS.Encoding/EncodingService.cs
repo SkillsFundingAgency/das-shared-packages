@@ -11,7 +11,14 @@ namespace SFA.DAS.Encoding
 
         public EncodingService(EncodingConfig config)
         {
-            _hashids = config.Encodings.ToDictionary(e => e.EncodingType, e => new Hashids(e.Salt, e.MinHashLength, e.Alphabet));
+            _hashids = new Dictionary<EncodingType, Hashids>();
+            foreach (var configEntry in config.Encodings)
+            {
+                if (Enum.TryParse(configEntry.EncodingType, out EncodingType encodingType))
+                {
+                    _hashids.Add(encodingType, new Hashids(configEntry.Salt, configEntry.MinHashLength, configEntry.Alphabet));
+                }
+            }
         }
 
         public string Encode(long value, EncodingType encodingType)
