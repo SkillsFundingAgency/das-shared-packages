@@ -1,8 +1,10 @@
 ﻿using System;
 using NServiceBus;
 using NServiceBus.Transport.AzureServiceBus;
-#if NET462
-
+#if NETSTANDARD2_0
+using Microsoft.Azure.ServiceBus.Primitives;
+#elif NET462
+using Microsoft.ServiceBus;
 #endif
 
 namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
@@ -15,6 +17,8 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
                 var transport = config.UseTransport<AzureServiceBusTransport>();
                 var ruleNameShortener = new RuleNameShortener();
 
+                var tokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider();
+                transport.CustomTokenProvider(tokenProvider);
                 transport.ConnectionString(connectionString);
                 transport.RuleNameShortener(ruleNameShortener.Shorten);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
@@ -24,6 +28,14 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
                 var transport = config.UseTransport<AzureServiceBusTransport>();
 
                 transport.BrokeredMessageBodyType(SupportedBrokeredMessageBodyTypes.Stream);
+                var managers = transport.NamespaceManagers();
+                managers.NamespaceManagerSettingsFactory(
+                    factory: s =>
+                    {
+                        return new NamespaceManagerSettings {
+                            TokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider(ServiceAudience.ServiceBusAudience)
+                        };
+                    });
                 transport.ConnectionString(connectionString);
                 transport.Transactions(TransportTransactionMode.ReceiveOnly);
                 transport.UseForwardingTopology();
