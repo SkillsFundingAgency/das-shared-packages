@@ -14,12 +14,14 @@ workspace:
     clean: all
 
 pool:
-  name: DAS - Continuous Integration
+  name: 'DAS - Continuous Integration'
+
 variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '1'
   Build.MinorNumber: '1'
 
+steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
