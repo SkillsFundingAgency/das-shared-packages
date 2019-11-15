@@ -9,5 +9,6 @@ namespace SFA.DAS.Authentication
         void SignOutUser();
         bool TryGetClaimValue(string key, out string value);
         Task UpdateClaims();
+        bool HasClaim(string type, string value);
     }
 }
