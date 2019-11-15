@@ -1,0 +1,54 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.Authentication'
+
+pr: none
+
+workspace:
+    clean: all
+
+pool:
+  name: Continuous Integration 02 - SSD - 160ACU
+variables:
+  BuildConfiguration: 'Release'
+
+steps:
+- task: gittools.gitversion.gitversion-task.GitVersion@4
+  displayName: GitVersion
+  inputs:
+    updateAssemblyInfo: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: SFA.DAS.Authentication/SFA.DAS.Authentication.sln
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: SFA.DAS.Authentication/SFA.DAS.Authentication.sln
+    arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication/SFA.DAS.Authentication.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: SFA.DAS.Authentication/SFA.DAS.Authentication
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
