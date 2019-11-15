@@ -14,9 +14,11 @@ workspace:
     clean: all
 
 pool:
-  name: Continuous Integration 02 - SSD - 160ACU
+  name: DAS - Continuous Integration
 variables:
   BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '1'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
