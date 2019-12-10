@@ -50,6 +50,11 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
         {
             return GetLinkGenerator(urlHelper).UsersLink(path);
         }
+
+        public static string PublicSectorReportingLink(this IUrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator(urlHelper).PublicSectorReportingLink(path);
+        }
         
         private static ILinkGenerator GetLinkGenerator(IUrlHelper urlHelper)
         {
@@ -108,7 +113,12 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
         {
             return GetLinkGenerator().ReservationsLink(path);
         }
-        
+
+        public static string PublicSectorReportingLink(this UrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator().PublicSectorReportingLink(path);
+        }
+
         private static ILinkGenerator GetLinkGenerator()
         {
             return DependencyResolver.Current.GetService<ILinkGenerator>();
