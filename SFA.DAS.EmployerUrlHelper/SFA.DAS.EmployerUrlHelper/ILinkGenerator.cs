@@ -10,6 +10,7 @@ namespace SFA.DAS.EmployerUrlHelper
         string ProjectionsLink(string path = null);
         string RecruitLink(string path = null);
         string ReservationsLink(string path = null);
+        string PublicSectorReportingLink(string path = null);
         string UsersLink(string path = null);
     }
 }

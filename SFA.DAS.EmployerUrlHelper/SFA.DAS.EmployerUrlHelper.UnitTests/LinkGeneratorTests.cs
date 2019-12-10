@@ -19,6 +19,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 ProjectionsBaseUrl = "https://projections/",
                 RecruitBaseUrl = "https://recruit/",
                 ReservationsBaseUrl = "https://reservations/",
+                PublicSectorReportingBaseUrl = "https://public-sector-reporting/",
                 UsersBaseUrl = "https://users/"
             };
             
@@ -32,6 +33,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
             Assert.AreEqual("https://projections/path", linkGenerator.ProjectionsLink("/path/"));
             Assert.AreEqual("https://recruit/path", linkGenerator.RecruitLink("/path/"));
             Assert.AreEqual("https://reservations/path", linkGenerator.ReservationsLink("/path/"));
+            Assert.AreEqual("https://public-sector-reporting/path", linkGenerator.PublicSectorReportingLink("/path/"));
             Assert.AreEqual("https://users/path", linkGenerator.UsersLink("/path/"));
         }
 
@@ -48,6 +50,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 ProjectionsBaseUrl = "https://projections/",
                 RecruitBaseUrl = "https://recruit/",
                 ReservationsBaseUrl = "https://reservations/",
+                PublicSectorReportingBaseUrl = "https://public-sector-reporting/",
                 UsersBaseUrl = "https://users/"
             };
 
@@ -61,6 +64,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
             Assert.AreEqual("https://projections", linkGenerator.ProjectionsLink());
             Assert.AreEqual("https://recruit", linkGenerator.RecruitLink());
             Assert.AreEqual("https://reservations", linkGenerator.ReservationsLink());
+            Assert.AreEqual("https://public-sector-reporting", linkGenerator.PublicSectorReportingLink());
             Assert.AreEqual("https://users", linkGenerator.UsersLink());
         }
     }
