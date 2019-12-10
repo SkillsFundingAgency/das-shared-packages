@@ -53,6 +53,11 @@ namespace SFA.DAS.EmployerUrlHelper
             return Action(_configuration.ReservationsBaseUrl, path);
         }
 
+        public string PublicSectorReportingLink(string path = null)
+        {
+            return Action(_configuration.PublicSectorReportingBaseUrl, path);
+        }
+
         public string UsersLink(string path = null)
         {
             return Action(_configuration.UsersBaseUrl, path);
