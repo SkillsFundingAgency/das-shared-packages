@@ -47,7 +47,7 @@ DateTimeProvider.ResetToDefault();
 ```
 
 ## CodeGenerator
-Provides a way of generating a code that can be used for verification of a suer entering a website. The length of the desired code can be passed in. There is the option of making a numeric code or alphanumeric, the alphanumeric conforms to the DEC alphabet. It is also possible to pass your own implementation of the abstract class RandomNumberGenerator
+Provides a way of generating a code that can be used for verification of a user entering a website. The length of the desired code can be passed in. There is the option of making a numeric code or alphanumeric, the alphanumeric conforms to the DEC alphabet. It is also possible to pass your own implementation of the abstract class RandomNumberGenerator
 
 ## SFA.DAS.Oidc.Middleware
 Creates a NuGet package that is to be used for Code flow authentication. Once you have referenced the nuget package the following needs to configured in Startup
