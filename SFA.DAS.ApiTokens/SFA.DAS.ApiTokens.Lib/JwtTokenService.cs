@@ -9,7 +9,8 @@ namespace SFA.DAS.ApiTokens.Lib
 {
     public class JwtTokenService : IJwtTokenService
     {
-        private const string ValueClaim = "data"; // name of claim to hold the value
+        private const string ValueClaimData = "data"; // name of claim to hold the value
+        private const string ValueClaimRoles = "roles"; // name of claim to hold the value
 
         private readonly double _allowedClockSkewInMinutes;
         private readonly InMemorySymmetricSecurityKey _signingKey;
@@ -32,7 +33,8 @@ namespace SFA.DAS.ApiTokens.Lib
             var signingCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest);
 
             var claimsIdentity = new ClaimsIdentity();
-            claimsIdentity.AddClaim(new Claim(ValueClaim, data));
+            claimsIdentity.AddClaim(new Claim(ValueClaimData, data));
+            claimsIdentity.AddClaim(new Claim(ValueClaimRoles, data));
 
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
@@ -64,7 +66,7 @@ namespace SFA.DAS.ApiTokens.Lib
             SecurityToken validatedToken;
 
             var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out validatedToken);
-            var claim = claimsPrincipal.FindFirst(x => x.Type == ValueClaim);
+            var claim = claimsPrincipal.FindFirst(x => x.Type == ValueClaimData);
 
             return claim.Value;
         }
