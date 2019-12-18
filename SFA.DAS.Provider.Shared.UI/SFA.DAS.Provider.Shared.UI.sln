@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Provider.Shared.UI", "SFA.DAS.Provider.Shared.UI\SFA.DAS.Provider.Shared.UI.csproj", "{17B2005D-A0EC-47D6-83C9-6F1EE137EBD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Shared.UI.Tests", "SFA.DAS.Provider.Shared.UI.Tests\SFA.DAS.Provider.Shared.UI.Tests.csproj", "{B7375FE7-5654-41E4-8973-7642015E5A5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{17B2005D-A0EC-47D6-83C9-6F1EE137EBD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17B2005D-A0EC-47D6-83C9-6F1EE137EBD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17B2005D-A0EC-47D6-83C9-6F1EE137EBD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7375FE7-5654-41E4-8973-7642015E5A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7375FE7-5654-41E4-8973-7642015E5A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7375FE7-5654-41E4-8973-7642015E5A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7375FE7-5654-41E4-8973-7642015E5A5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
