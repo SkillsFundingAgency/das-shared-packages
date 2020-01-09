@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Protocols.WSTrust;
 using System.IdentityModel.Tokens;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -34,7 +35,16 @@ namespace SFA.DAS.ApiTokens.Lib
 
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim(ValueClaimData, data));
-            claimsIdentity.AddClaim(new Claim(ValueClaimRoles, data));
+
+            // for the roles claims, if there is more than one role in the data parameter, we need a seperate claim per role,
+            // the day the data payload used to work was a space separated list which was processed by a custom authorisation handler
+            // See ApiKeyHandler. 
+            var roles = data.Split(' ');
+            foreach (var role in roles)
+            {
+                claimsIdentity.AddClaim(new Claim(ValueClaimRoles, role));
+            }
+            
 
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
