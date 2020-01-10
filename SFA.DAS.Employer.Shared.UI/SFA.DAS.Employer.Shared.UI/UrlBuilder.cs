@@ -25,7 +25,7 @@ namespace SFA.DAS.Employer.Shared.UI
 
         public string AccountsLink(string routeName, params string[] args)
         {
-            if (string.IsNullOrWhiteSpace(routeName))
+            if (string.IsNullOrWhiteSpace(routeName) || args == null || args.Length == 0 || string.IsNullOrWhiteSpace(args[0]) ) 
                 return _generator.AccountsLink(string.Empty);
 
             var route = _routes.Accounts[routeName];
