@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 
@@ -29,6 +30,15 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
             builder.Services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add(new SuppressNavigationSectionAttribute(sections));
+            });
+            return builder;
+        }
+
+        public static IMvcBuilder EnableGoogleAnalytics(this IMvcBuilder builder)
+        {
+            builder.Services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new EnableGoogleAnalyticsAttribute());
             });
             return builder;
         }
