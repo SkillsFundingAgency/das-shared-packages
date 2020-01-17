@@ -27,5 +27,10 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
                 ? (NavigationSection[]) viewData[ViewDataKeys.SuppressNavigationSection]
                 : new NavigationSection[0];
         }
+
+        public static bool EnableGoogleAnalytics(this ViewDataDictionary viewData)
+        {
+            return viewData.ContainsKey(ViewDataKeys.EnableGoogleAnalytics) && (bool)viewData[ViewDataKeys.EnableGoogleAnalytics];
+        }
     }
 }
