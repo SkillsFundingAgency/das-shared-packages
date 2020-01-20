@@ -1,0 +1,33 @@
+﻿@using System.Web
+@using Microsoft.AspNetCore.Http
+@using SFA.DAS.Provider.Shared.UI.Models
+
+<script>
+    @if (ViewBag.GaData == null)
+    {
+        ViewBag.GaData = new GaData();
+    }
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        'event': '@ViewBag.GaData.DataLoaded',
+        'vpv': '@ViewBag.GaData.Vpv',
+        'ukPrn': '@ViewBag.GaData.UkPrn',
+        'org': ''
+        @if (ViewBag.GaData.Extras.Count>0)
+        {
+            @Html.Raw(",");
+        }
+        @{
+            var count = 0;
+            foreach (var extra in ViewBag.GaData.Extras)
+            {
+                count++;
+                @Html.Raw($"'{extra.Key}' : '{extra.Value}'");
+                if (count < ViewBag.GaData.Extras.Count)
+                {
+                    @Html.Raw("," + Environment.NewLine);
+                }
+            }
+        }
+    });
+</script>
