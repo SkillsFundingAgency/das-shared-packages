@@ -8,6 +8,12 @@
     <html lang="en" class="govuk-template ">
 
     <head>
+
+        @if (enableGoogleAnalytics)
+        {
+            <partial name="_GoogleTagManagerProviderHeadScript" />
+        }
+
         <meta charset="utf-8" />
         <title>@ViewData["Title"]</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,8 +36,14 @@
 
 
     <body class="govuk-template__body">
+
+        @if (enableGoogleAnalytics)
+        {
+            <partial name="_GoogleTagManagerProviderBodyScript" />
+        }
+
         <script>
-    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+        document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
         </script>
         <partial name="_ZenDeskWidget" />
         <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
@@ -82,8 +94,10 @@
             <main class="govuk-main-wrapper " id="main-content" role="main">
                 @RenderBody()
             </main>
+
         </div>
         <footer class="govuk-footer " role="contentinfo">
+
             <div class="govuk-width-container ">
                 <div class="govuk-footer__meta">
                     <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
@@ -110,17 +124,19 @@
                 </div>
             </div>
         </footer>
+
         @if (enableGoogleAnalytics)
         {
             <partial name="_GoogleAnalyticsInfo" />
         }
+
         <script src="/libs/govuk-frontend/all.js"></script>
         <script src="/libs/jquery/jquery.min.js"></script>
         <script src="/js/das-all.js"></script>
         <script src="/js/app.min.js"></script>
         <script>
-    window.GOVUKFrontend.initAll();
-    window.DASFrontend.initAll();
+        window.GOVUKFrontend.initAll();
+        window.DASFrontend.initAll();
         </script>
         @RenderSection("Scripts", required: false)
     </body>
