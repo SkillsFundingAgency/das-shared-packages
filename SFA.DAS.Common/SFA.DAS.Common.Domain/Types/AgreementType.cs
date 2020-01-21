@@ -6,5 +6,6 @@ namespace SFA.DAS.Common.Domain.Types
     {
         [Description("Levy")] Levy = 0,
         [Description("Expression of Interest")] NonLevyExpressionOfInterest = 1,
+        [Description("Combined")] Combined = 2,
     }
 }
