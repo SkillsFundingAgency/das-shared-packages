@@ -66,6 +66,17 @@ namespace SFA.DAS.Employer.Shared.UI
             return _generator.CommitmentsLink(route);
         }
 
+        public string CommitmentsV2Link(string routeName, params string[] args)
+        {
+            var route = _routes.Commitments[routeName];
+
+            if (args != null && args.Length > 0)
+                route = string.Format(route, args);
+
+            return _generator.CommitmentsLink(route);
+        }
+
+
         public string RecruitLink(string routeName, params string[] args)
         {
             var route = _routes.Recruit[routeName];
