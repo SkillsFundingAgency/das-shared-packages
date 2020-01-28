@@ -131,7 +131,6 @@ namespace SFA.DAS.VacancyServices.Wage
                     7.70m,
                     8.21m
                 ),
-                //April 1st, 2020
                 new NationalMinimumWageRates
                 (
                     new DateTime(2020, 04, 1),
