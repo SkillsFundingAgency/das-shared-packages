@@ -73,7 +73,7 @@ namespace SFA.DAS.Employer.Shared.UI
             if (args != null && args.Length > 0)
                 route = string.Format(route, args);
 
-            return _generator.CommitmentsLink(route);
+            return _generator.CommitmentsV2Link(route);
         }
 
 
