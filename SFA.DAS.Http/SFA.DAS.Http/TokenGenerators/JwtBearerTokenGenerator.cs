@@ -1,39 +1,20 @@
-using System.Threading.Tasks;
-using System.Text;
+﻿using System.Threading.Tasks;
 using SFA.DAS.Http.Configuration;
-using System;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace SFA.DAS.Http.TokenGenerators
 {
     public class JwtBearerTokenGenerator : IGenerateBearerToken
     {
-        private readonly IJwtClientConfiguration _config;
+        private readonly string _jwtToken;
 
         public JwtBearerTokenGenerator(IJwtClientConfiguration configuration)
         {
-            _config = configuration;
+            _jwtToken = configuration.ClientToken;
         }
 
-        public async Task<string> Generate()
+        public Task<string> Generate()
         {
-            var handler = new JwtSecurityTokenHandler();
-            var signingSecret = Encoding.UTF8.GetBytes(_config.ClientSecret);
-            var securitytokenDescriptor = new SecurityTokenDescriptor
-            {
-                Issuer = _config.Issuer,
-                Audience = _config.Audience,
-                Expires = DateTime.UtcNow.AddSeconds(_config.TokenExpirySeconds),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(signingSecret), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = handler.CreateToken(securitytokenDescriptor);
-
-            return await Task.Run(() =>
-            {
-                return handler.WriteToken(token);
-            });
+            return Task.FromResult(_jwtToken);
         }
     }
 }
