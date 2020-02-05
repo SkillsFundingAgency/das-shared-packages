@@ -3,9 +3,6 @@
     public interface IJwtClientConfiguration
     {
         // JWT Configuration
-        string Issuer {get; }
-        string Audience {get; }
-        string ClientSecret {get; }
-        int TokenExpirySeconds {get; }
+        string ClientToken { get; }
     }
 }
