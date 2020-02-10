@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>SFA.DAS.Employer.Shared.UI</RootNamespace>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>2.0.7</Version>
+    <Version>2.0.8</Version>
     <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
     <Description>Shared library containing shared Employer UI components.</Description>
     <License>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</License>
@@ -13,10 +13,13 @@
     <EmbedUntrackedSources>false</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0"/>
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0"/>
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0"/>
-    <PackageReference Include="SFA.DAS.EmployerUrlHelper" Version="3.0.18"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
+    <PackageReference Include="SFA.DAS.EmployerUrlHelper" Version="3.0.18" />
   </ItemGroup>
 </Project>
