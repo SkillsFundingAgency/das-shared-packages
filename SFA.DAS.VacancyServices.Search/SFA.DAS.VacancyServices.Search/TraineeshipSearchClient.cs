@@ -66,7 +66,7 @@
 
             return response;
         }
-        
+
         private ISearchResponse<TraineeshipSearchResult> PerformSearch(TraineeshipSearchRequestParameters parameters)
         {
             var client = _elasticSearchFactory.GetElasticClient(_config);
@@ -136,19 +136,23 @@
             switch (parameters.SortType)
             {
                 case VacancySearchSortType.RecentlyAdded:
-                    search.Sort(s => s.Descending(r => r.PostedDate));
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Descending(r => r.PostedDate)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 case VacancySearchSortType.Distance:
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .TrySortByGeoDistance(parameters));
                     break;
                 case VacancySearchSortType.ClosingDate:
-                    search.Sort(s => s.Ascending(r => r.ClosingDate));
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Ascending(r => r.ClosingDate)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 default:
-                    search.Sort(s => s.Descending(r => r.Score));
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Descending(r => r.Score)
+                        .TrySortByGeoDistance(parameters));
                     break;
             }
         }

@@ -262,27 +262,31 @@
             switch (parameters.SortType)
             {
                 case VacancySearchSortType.RecentlyAdded:
-                    search.Sort(r => r.Descending(s => s.PostedDate));
-                    search.TrySortByGeoDistance(parameters);
-                    search.Sort(r => r.Descending(s => s.VacancyReference));
+                    search.Sort(r => r
+                        .Descending(s => s.PostedDate)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 case VacancySearchSortType.Distance:
-                    search.TrySortByGeoDistance(parameters);
-                    search.Sort(s => s.Descending(r => r.PostedDate));
-                    search.Sort(s => s.Descending(r => r.VacancyReference));
+                    search.Sort(s => s
+                        .Descending(r => r.PostedDate)
+                        .Descending(r => r.VacancyReference)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 case VacancySearchSortType.ClosingDate:
-                    search.Sort(s => s.Ascending(r => r.ClosingDate));
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Ascending(r => r.ClosingDate)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 case VacancySearchSortType.ExpectedStartDate:
-                    search.Sort(s => s.Ascending(r => r.StartDate));
-                    search.Sort(s => s.Ascending(r => r.VacancyReference));
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Ascending(r => r.StartDate)
+                        .Ascending(r => r.VacancyReference)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 default:
-                    search.Sort(s => s.Descending(r => r.Score));
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Descending(r => r.Score)
+                        .TrySortByGeoDistance(parameters));
                     break;
             }
         }
