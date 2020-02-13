@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Authorization.Services;
+﻿using System;
+using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.MA.Shared.UI.Configuration
 {
@@ -11,5 +12,6 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
         public string ClientId { get; set; }
         public string EmployerRecruitBaseUrl { get; set; }
         public IAuthorizationService AuthorizationService { get; set; }
+        public Uri SignOutUrl { get; set; }
     }
 }

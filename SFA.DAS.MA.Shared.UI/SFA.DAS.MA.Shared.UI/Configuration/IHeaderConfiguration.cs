@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace SFA.DAS.MA.Shared.UI.Configuration
 {
     public interface IHeaderConfiguration
@@ -8,6 +10,7 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
         string EmployerAccountsBaseUrl { get; set; }
         string IdentityServerBaseUrl { get; set; }
         string EmployerRecruitBaseUrl { get; set; }
+        Uri SignOutUrl { get; set; }
         string ClientId { get; set; }
         Authorization.Services.IAuthorizationService AuthorizationService { get; set; }
     }

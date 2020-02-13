@@ -49,7 +49,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.IdentityServerBaseUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={returnUrl}")));
 
             AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "settings/notifications")));
-            AddOrUpdateLink(new SignOut(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/signOut")));
+            AddOrUpdateLink(new SignOut(configuration.SignOutUrl?.AbsoluteUri));
             AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/signIn")));
             // global nav links
             AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "teams")));

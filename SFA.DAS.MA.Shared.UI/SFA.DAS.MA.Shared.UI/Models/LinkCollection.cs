@@ -7,7 +7,6 @@ namespace SFA.DAS.MA.Shared.UI.Models
     {
         public IReadOnlyList<Link> Links
         {
-
             get
             {
                 return _links.AsReadOnly();

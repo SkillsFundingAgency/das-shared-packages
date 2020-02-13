@@ -191,17 +191,17 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
         public void ThenSignOutHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testSignoutUrl = new Uri($"http://{Guid.NewGuid()}");
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.SignOutUrl)
+                .Returns(testSignoutUrl);
 
             // act
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<SignOut>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/service/signOut")).Count().Should().Be(1);
+            _sut.Links.OfType<SignOut>().Where(t => t.Href.Equals(testSignoutUrl.AbsoluteUri)).Count().Should().Be(1);
         }
 
         [Test]
