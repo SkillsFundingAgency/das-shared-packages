@@ -1,9 +1,7 @@
 ﻿namespace SFA.DAS.VacancyServices.Search
 {
-    public class ApprenticeshipSearchClientConfiguration
+    public class ApprenticeshipSearchClientConfiguration : ElasticClientConfigurationBase
     {
-        public string HostName { get; set; }
-        public string Index { get; set; }
     }
     
 }

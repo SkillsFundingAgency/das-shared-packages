@@ -4,6 +4,11 @@
 
     internal interface IElasticSearchFactory
     {
-        IElasticClient GetElasticClient(string hostName);
+        IElasticClient GetElasticClient(ApprenticeshipSearchClientConfiguration config);
+
+        IElasticClient GetElasticClient(TraineeshipSearchClientConfiguration config);
+
+        IElasticClient GetElasticClient(LocationSearchClientConfiguration config);
+
     }
 }

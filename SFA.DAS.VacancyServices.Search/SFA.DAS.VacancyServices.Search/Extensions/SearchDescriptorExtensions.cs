@@ -11,12 +11,12 @@ namespace SFA.DAS.VacancyServices.Search
         {
             if (searchParameters.CanSortByGeoDistance)
             {
-                searchDescriptor.SortGeoDistance(g =>
-                {
-                    g.PinTo(searchParameters.Latitude.Value, searchParameters.Longitude.Value)
-                        .Unit(GeoUnit.Miles).OnField(f => f.Location);
-                    return g;
-                });
+                searchDescriptor.Sort(s => s.GeoDistance(g => g
+                .Field(f => f.Location)
+                .DistanceType(GeoDistanceType.Arc)
+                .Unit(DistanceUnit.Miles)
+                .Mode(SortMode.Min)
+                .Points(new GeoLocation(searchParameters.Latitude.Value, searchParameters.Longitude.Value))));
             }
 
             return searchDescriptor;
@@ -26,12 +26,12 @@ namespace SFA.DAS.VacancyServices.Search
         {
             if (searchParameters.CanSortByGeoDistance)
             {
-                searchDescriptor.SortGeoDistance(g =>
-                {
-                    g.PinTo(searchParameters.Latitude.Value, searchParameters.Longitude.Value)
-                        .Unit(GeoUnit.Miles).OnField(f => f.Location);
-                    return g;
-                });
+                searchDescriptor.Sort(s => s.GeoDistance(g => g
+                .Field(f => f.Location)
+                .DistanceType(GeoDistanceType.Arc)
+                .Unit(DistanceUnit.Miles)
+                .Mode(SortMode.Min)
+                .Points(new GeoLocation(searchParameters.Latitude.Value, searchParameters.Longitude.Value))));
             }
 
             return searchDescriptor;
