@@ -2,6 +2,6 @@
 {
     public class FooterConfiguration : IFooterConfiguration
     {
-        public string EmployerAccountsBaseUrl { get; set; }
+        public string ManageApprenticeshipsBaseUrl { get; set; }
     }
 }

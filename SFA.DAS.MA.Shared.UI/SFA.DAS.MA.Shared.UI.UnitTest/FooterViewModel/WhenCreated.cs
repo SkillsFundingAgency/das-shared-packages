@@ -27,17 +27,17 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
         public void ThenHelpFooterLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockFooterConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.FooterViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<Help>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/service/help")).Count().Should().Be(1);
+            _sut.Links.OfType<Help>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/help")).Count().Should().Be(1);
         }
 
         [Test]
@@ -99,12 +99,12 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
         public void ThenPrivacyFooterLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
             var testHashedAccountId = Guid.NewGuid().ToString();
 
             _mockFooterConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockUserContext
                 .Setup(m => m.HashedAccountId)
@@ -114,19 +114,19 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
             _sut = new Models.FooterViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<Privacy>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/service/{testHashedAccountId}/privacy")).Count().Should().Be(1);
+            _sut.Links.OfType<Privacy>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/{testHashedAccountId}/privacy")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenWhenUserContextHasAHashedAccountIdTheCookiesFooterLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
             var testHashedAccountId = Guid.NewGuid().ToString();
 
             _mockFooterConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockUserContext
                 .Setup(m => m.HashedAccountId)
@@ -136,24 +136,24 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
             _sut = new Models.FooterViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<Cookies>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/accounts/{testHashedAccountId}/cookieConsent")).Count().Should().Be(1);
+            _sut.Links.OfType<Cookies>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/accounts/{testHashedAccountId}/cookieConsent")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenWhenUserContextDoesNotHaveAHashedAccountIdTheCookiesFooterLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockFooterConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.FooterViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<Cookies>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/cookieConsent")).Count().Should().Be(1);
+            _sut.Links.OfType<Cookies>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/cookieConsent")).Count().Should().Be(1);
         }
     }
 }

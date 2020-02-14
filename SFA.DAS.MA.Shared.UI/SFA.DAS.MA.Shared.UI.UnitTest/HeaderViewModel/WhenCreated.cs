@@ -27,32 +27,6 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
         }
 
         [Test]
-        public void ThenTheHeaderLinksAreInitialised()
-        {
-            // arrange
-            // act
-            _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
-
-            // assert            
-            _sut.Links.OfType<GovUk>().Where(t => t.Href.Equals("https://www.gov.uk/")).Count().Should().Be(1);
-            _sut.Links.OfType<Help>().Count().Should().Be(1);
-            _sut.Links.OfType<YourAccounts>().Count().Should().Be(1);
-            _sut.Links.OfType<RenameAccount>().Count().Should().Be(1);
-            _sut.Links.OfType<ChangePasssword>().Count().Should().Be(1);
-            _sut.Links.OfType<ChangeEmail>().Count().Should().Be(1);
-            _sut.Links.OfType<NotificationSettings>().Count().Should().Be(1);
-            _sut.Links.OfType<SignOut>().Count().Should().Be(1);
-            _sut.Links.OfType<SignIn>().Count().Should().Be(1);
-            _sut.Links.OfType<Home>().Count().Should().Be(1);
-            _sut.Links.OfType<Finance>().Count().Should().Be(1);
-            _sut.Links.OfType<Recruitment>().Count().Should().Be(1);
-            _sut.Links.OfType<Apprentices>().Count().Should().Be(1);
-            _sut.Links.OfType<YourTeam>().Count().Should().Be(1);
-            _sut.Links.OfType<YourOrganisations>().Count().Should().Be(1);
-            _sut.Links.OfType<PayeSchemes>().Count().Should().Be(1);
-        }
-
-        [Test]
         public void ThenGovUkHeaderLinkIsInitialised()
         {
             // arrange
@@ -64,72 +38,89 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
         }
 
         [Test]
-        public void ThenHelpHeaderLinkIsInitialised()
+        public void ThenManageApprenticeshipsHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<Help>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/service/help")).Count().Should().Be(1);
+            _sut.Links.OfType<ManageApprenticeships>().Where(t => t.Href.Equals(testManageApprenticeshipsBaseUrl)).Count().Should().Be(1);
+        }
+
+        [Test]
+        public void ThenHelpHeaderLinkIsInitialised()
+        {
+            // arrange
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
+
+            _mockHeaderConfiguration
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
+
+            // act
+            _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
+
+            // assert            
+            _sut.Links.OfType<Help>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/help")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenYourAccountsHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<YourAccounts>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/service/accounts")).Count().Should().Be(1);
+            _sut.Links.OfType<YourAccounts>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/accounts")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenRenameAccountHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<RenameAccount>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/accounts/rename")).Count().Should().Be(1);
+            _sut.Links.OfType<RenameAccount>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/accounts/rename")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenChangePassswordHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
-            var testIdentityServerBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testAuthenticationAuthorityUrl = $"http://{Guid.NewGuid()}";
             var testClientId = Guid.NewGuid().ToString();
-            var returnUrl = System.Net.WebUtility.UrlEncode($"{testEmployerAccountsBaseUrl}/service/password/change");
+            var returnUrl = System.Net.WebUtility.UrlEncode($"{testManageApprenticeshipsBaseUrl}/service/password/change");
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockHeaderConfiguration
-                .Setup(m => m.IdentityServerBaseUrl)
-                .Returns(testIdentityServerBaseUrl);
+                .Setup(m => m.AuthenticationAuthorityUrl)
+                .Returns(testAuthenticationAuthorityUrl);
 
             _mockHeaderConfiguration
                 .Setup(m => m.ClientId)
@@ -139,25 +130,25 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<ChangePasssword>().Where(t => t.Href.Equals($"{testIdentityServerBaseUrl}/account/changepassword?clientId={testClientId}&returnurl={returnUrl}")).Count().Should().Be(1);
+            _sut.Links.OfType<ChangePasssword>().Where(t => t.Href.Equals($"{testAuthenticationAuthorityUrl}/account/changepassword?clientId={testClientId}&returnurl={returnUrl}")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenChangeEmailHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
-            var testIdentityServerBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testAuthenticationAuthorityUrl = $"http://{Guid.NewGuid()}";
             var testClientId = Guid.NewGuid().ToString();
-            var returnUrl = System.Net.WebUtility.UrlEncode($"{testEmployerAccountsBaseUrl}/service/email/change");
+            var returnUrl = System.Net.WebUtility.UrlEncode($"{testManageApprenticeshipsBaseUrl}/service/email/change");
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockHeaderConfiguration
-                .Setup(m => m.IdentityServerBaseUrl)
-                .Returns(testIdentityServerBaseUrl);
+                .Setup(m => m.AuthenticationAuthorityUrl)
+                .Returns(testAuthenticationAuthorityUrl);
 
             _mockHeaderConfiguration
                 .Setup(m => m.ClientId)
@@ -167,24 +158,24 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<ChangeEmail>().Where(t => t.Href.Equals($"{testIdentityServerBaseUrl}/account/changeemail?clientId={testClientId}&returnurl={returnUrl}")).Count().Should().Be(1);
+            _sut.Links.OfType<ChangeEmail>().Where(t => t.Href.Equals($"{testAuthenticationAuthorityUrl}/account/changeemail?clientId={testClientId}&returnurl={returnUrl}")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenNotificationSettingsHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<NotificationSettings>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/settings/notifications")).Count().Should().Be(1);
+            _sut.Links.OfType<NotificationSettings>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/settings/notifications")).Count().Should().Be(1);
         }
 
         [Test]
@@ -208,29 +199,29 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
         public void ThenSignInHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<SignIn>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/service/signIn")).Count().Should().Be(1);
+            _sut.Links.OfType<SignIn>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/signIn")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenHomeHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
             var testHashedAccountId = Guid.NewGuid().ToString();
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockUserContext
                 .Setup(m => m.HashedAccountId)
@@ -240,7 +231,7 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<Home>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/accounts/{testHashedAccountId}/teams")).Count().Should().Be(1);
+            _sut.Links.OfType<Home>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/accounts/{testHashedAccountId}/teams")).Count().Should().Be(1);
         }
 
         [Test]
@@ -317,12 +308,12 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
         public void ThenYourTeamHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
             var testHashedAccountId = Guid.NewGuid().ToString();
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockUserContext
                 .Setup(m => m.HashedAccountId)
@@ -332,19 +323,19 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<YourTeam>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/accounts/{testHashedAccountId}/teams/view")).Count().Should().Be(1);
+            _sut.Links.OfType<YourTeam>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/accounts/{testHashedAccountId}/teams/view")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenYourOrganisationsHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
             var testHashedAccountId = Guid.NewGuid().ToString();
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockUserContext
                 .Setup(m => m.HashedAccountId)
@@ -354,19 +345,19 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<YourOrganisations>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/accounts/{testHashedAccountId}/agreements")).Count().Should().Be(1);
+            _sut.Links.OfType<YourOrganisations>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/accounts/{testHashedAccountId}/agreements")).Count().Should().Be(1);
         }
 
         [Test]
         public void ThenPayeSchemesHeaderLinkIsInitialised()
         {
             // arrange
-            var testEmployerAccountsBaseUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
             var testHashedAccountId = Guid.NewGuid().ToString();
 
             _mockHeaderConfiguration
-                .Setup(m => m.EmployerAccountsBaseUrl)
-                .Returns(testEmployerAccountsBaseUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             _mockUserContext
                 .Setup(m => m.HashedAccountId)
@@ -376,7 +367,7 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<PayeSchemes>().Where(t => t.Href.Equals($"{testEmployerAccountsBaseUrl}/accounts/{testHashedAccountId}/schemes")).Count().Should().Be(1);
+            _sut.Links.OfType<PayeSchemes>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/accounts/{testHashedAccountId}/schemes")).Count().Should().Be(1);
         }
     }
 }

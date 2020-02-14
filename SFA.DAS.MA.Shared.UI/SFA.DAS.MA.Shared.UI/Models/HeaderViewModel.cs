@@ -38,28 +38,29 @@ namespace SFA.DAS.MA.Shared.UI.Models
             
             // floating header links
             AddOrUpdateLink(new GovUk(GovUkHref));
-            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/help")));
-            AddOrUpdateLink(new YourAccounts(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/accounts")));
-            AddOrUpdateLink(new RenameAccount(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "rename")));
+            AddOrUpdateLink(new ManageApprenticeships(configuration.ManageApprenticeshipsBaseUrl));
+            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/help")));
+            AddOrUpdateLink(new YourAccounts(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/accounts")));
+            AddOrUpdateLink(new RenameAccount(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "rename")));
 
-            var returnUrl = System.Net.WebUtility.UrlEncode(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/password/change"));
-            AddOrUpdateLink(new ChangePasssword(_urlHelper.GetPath(configuration.IdentityServerBaseUrl?.Replace("/identity", ""), $"account/changepassword?clientId={configuration.ClientId}&returnurl={returnUrl}")));
+            var returnUrl = configuration.ChangePasswordReturnUrl?.AbsoluteUri ?? _urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/password/change");
+            AddOrUpdateLink(new ChangePasssword(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changepassword?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));
 
-            returnUrl = System.Net.WebUtility.UrlEncode(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/email/change"));
-            AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.IdentityServerBaseUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={returnUrl}")));
+            returnUrl = configuration.ChangeEmailReturnUrl?.AbsoluteUri ?? _urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/email/change");
+            AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));
 
-            AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "settings/notifications")));
+            AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/notifications")));
             AddOrUpdateLink(new SignOut(configuration.SignOutUrl?.AbsoluteUri));
-            AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/signIn")));
+            AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/signIn")));
             // global nav links
-            AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "teams")));
+            AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams")));
             AddOrUpdateLink(new Finance(_urlHelper.GetPath(userContext, configuration.EmployerFinanceBaseUrl, "finance")));
             AddOrUpdateLink(new Recruitment(configuration.AuthorizationService, _urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl)));
             AddOrUpdateLink(new Apprentices(_urlHelper.GetPath(userContext, configuration.EmployerCommitmentsBaseUrl, "apprentices/home")));
-            AddOrUpdateLink(new YourTeam(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "teams/view")));
+            AddOrUpdateLink(new YourTeam(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams/view")));
 
-            AddOrUpdateLink(new YourOrganisations(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "agreements")));
-            AddOrUpdateLink(new PayeSchemes(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "schemes")));
+            AddOrUpdateLink(new YourOrganisations(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "agreements")));
+            AddOrUpdateLink(new PayeSchemes(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "schemes")));
         }
 
         public void HideMenu()

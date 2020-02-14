@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0; net462</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.4.0</AssemblyVersion>
     <PackageId>SFA.DAS.MA.Shared.UI</PackageId>
     <Authors>SFA.DAS.MA.Shared.UI</Authors>
     <Product>SFA.DAS.MA.Shared.UI</Product>

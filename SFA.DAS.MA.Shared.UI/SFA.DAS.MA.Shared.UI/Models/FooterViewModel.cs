@@ -35,16 +35,16 @@ namespace SFA.DAS.MA.Shared.UI.Models
             _linkHelper = linkHelper ?? new LinkHelper(_linkCollection);
             _urlHelper = urlHelper ?? new UrlHelper();
 
-            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "service/help")));
+            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/help")));
             AddOrUpdateLink(new Feedback(SurveyHRef));
-            AddOrUpdateLink(new Privacy(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "privacy", "service")));
+            AddOrUpdateLink(new Privacy(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "privacy", "service")));
             if (userContext?.HashedAccountId == null)
             {
-                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(configuration.EmployerAccountsBaseUrl, "cookieConsent")));
+                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "cookieConsent")));
             }
             else
             {
-                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(userContext, configuration.EmployerAccountsBaseUrl, "cookieConsent")));
+                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "cookieConsent")));
             }
             AddOrUpdateLink(new BuiltBy(BuiltByHRef));
             AddOrUpdateLink(new OpenGovernmentLicense(OpenGovernmentLicenseHRef));
