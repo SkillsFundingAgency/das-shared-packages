@@ -2,10 +2,6 @@
 
 namespace SFA.DAS.VacancyServices.Search.UnitTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
     using Entities;
     using FluentAssertions;
     using FluentAssertions.Json;
@@ -15,6 +11,10 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
     using NUnit.Framework;
     using SFA.DAS.VacancyServices.Search.Clients;
     using SFA.DAS.VacancyServices.Search.Configuration;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
 
     public class TraineeshipSearchClientTests
     {

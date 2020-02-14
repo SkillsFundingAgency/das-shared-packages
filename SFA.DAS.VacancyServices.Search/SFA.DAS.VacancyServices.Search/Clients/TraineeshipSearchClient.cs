@@ -1,14 +1,13 @@
 ﻿namespace SFA.DAS.VacancyServices.Search.Clients
 {
+    using Entities;
+    using Nest;
     using Requests;
+    using Responses;
+    using SFA.DAS.VacancyServices.Search.Configuration;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Elasticsearch.Net;
-    using Entities;
-    using Nest;
-    using Responses;
-    using SFA.DAS.VacancyServices.Search.Configuration;
 
     public class TraineeshipSearchClient : ITraineeshipSearchClient
     {
