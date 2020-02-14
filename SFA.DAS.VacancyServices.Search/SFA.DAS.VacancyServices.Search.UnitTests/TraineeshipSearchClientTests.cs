@@ -4,6 +4,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using Entities;
     using FluentAssertions;
@@ -117,12 +118,12 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var searchResponse = new Mock<ISearchResponse<TraineeshipSearchResult>>();
             searchResponse.Setup(s => s.ScrollId).Returns("scrollId-100");
 
-            Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>> actualSearchDescriptorFunc = null;
+            Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest> actualSearchDescriptorFunc = null;
 
             var mockClient = new Mock<IElasticClient>();
 
-            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>()))
-                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>(d => actualSearchDescriptorFunc = d)
+            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>()))
+                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
             var scrollResponse1 = new Mock<ISearchResponse<TraineeshipSearchResult>>();
@@ -143,7 +144,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 
             var scrollResponse3 = new Mock<ISearchResponse<TraineeshipSearchResult>>();
             scrollResponse3.Setup(r => r.Documents)
-                .Returns(Enumerable.Empty<TraineeshipSearchResult>());
+                .Returns(Enumerable.Empty<TraineeshipSearchResult>().ToList());
 
             mockClient.SetupSequence(c => c.Scroll<TraineeshipSearchResult>(It.Is<ScrollRequest>(r => r.ScrollId == "scrollId-100")))
                 .Returns(scrollResponse1.Object)
@@ -151,7 +152,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Returns(scrollResponse3.Object);
 
             var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
+            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
 
             var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
 
@@ -161,9 +162,9 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var query = actualSearchDescriptorFunc(baseSearchDescriptor);
 
             var elasticClient = new ElasticClient();
-
-            var actualJsonQueryBytes = elasticClient.Serializer.Serialize(query);
-            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(actualJsonQueryBytes.ToArray());
+            var stream = new MemoryStream();
+            elasticClient.RequestResponseSerializer.Serialize(query, stream);
+            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
 
             var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
 
@@ -184,18 +185,18 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
         {
             var searchResponse = new Mock<ISearchResponse<TraineeshipSearchResult>>();
             searchResponse.Setup(s => s.Total).Returns(0);
-            searchResponse.Setup(s => s.Documents).Returns(Enumerable.Empty<TraineeshipSearchResult>());
+            searchResponse.Setup(s => s.Documents).Returns(Enumerable.Empty<TraineeshipSearchResult>().ToList());
 
-            Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>> actualSearchDescriptorFunc = null;
+            Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest> actualSearchDescriptorFunc = null;
 
             var mockClient = new Mock<IElasticClient>();
 
-            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>()))
-                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>(d => actualSearchDescriptorFunc = d)
+            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>()))
+                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
             var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
+            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
 
             var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
 
@@ -205,9 +206,9 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var query = actualSearchDescriptorFunc(baseSearchDescriptor);
 
             var elasticClient = new ElasticClient();
-
-            var actualJsonQueryBytes = elasticClient.Serializer.Serialize(query);
-            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(actualJsonQueryBytes.ToArray());
+            var stream = new MemoryStream();
+            elasticClient.RequestResponseSerializer.Serialize(query, stream);
+            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
 
             var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
 
