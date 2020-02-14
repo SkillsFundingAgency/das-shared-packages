@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.VacancyServices.Search
+﻿namespace SFA.DAS.VacancyServices.Search.Clients
 {
     using Responses;
 

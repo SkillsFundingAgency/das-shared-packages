@@ -13,6 +13,8 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
     using Nest;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
+    using SFA.DAS.VacancyServices.Search.Clients;
+    using SFA.DAS.VacancyServices.Search.Configuration;
 
     public class TraineeshipSearchClientTests
     {
@@ -29,7 +31,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"mode\":\"min\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -48,7 +50,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"mode\":\"min\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -68,7 +70,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"match\":{\"ukprn\":{\"query\":\"12345678\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}],\"mode\":\"min\",\"unit\":\"mi\"}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"match\":{\"ukprn\":{\"query\":\"12345678\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}],\"unit\":\"mi\"}}],\"track_scores\":true}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -87,7 +89,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},\"size\":5,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"mode\":\"min\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},\"size\":5,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -105,7 +107,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyReference = "1104004"
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"vacancyReference\":{\"value\":\"1104004\"}}}]}},\"size\":5,\"sort\":[{\"score\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"mode\":\"min\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"vacancyReference\":{\"value\":\"1104004\"}}}]}},\"size\":5,\"sort\":[{\"score\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -151,10 +153,10 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Returns(scrollResponse2.Object)
                 .Returns(scrollResponse3.Object);
 
-            var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
+            var factory = new Mock<IElasticSearchClientFactory>();
+            factory.Setup(f => f.GetElasticClient()).Returns(mockClient.Object);
 
-            var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
+            var sut = new TraineeshipSearchClient(factory.Object, new SearchConfiguration());
 
             var actualResponse = sut.GetAllVacancyIds().ToList();
 
@@ -195,10 +197,10 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
-            var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
+            var factory = new Mock<IElasticSearchClientFactory>();
+            factory.Setup(f => f.GetElasticClient()).Returns(mockClient.Object);
 
-            var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
+            var sut = new TraineeshipSearchClient(factory.Object, new SearchConfiguration());
 
             var response = sut.Search(parameters);
 

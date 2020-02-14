@@ -2,10 +2,12 @@
 {
     using System.Collections.Generic;
     using Entities;
+    using Moq;
+    using SFA.DAS.VacancyServices.Search.Clients;
 
     public class TestLocationSearchClient : LocationSearchClient
     {
-        public TestLocationSearchClient() : base(null, null) { }
+        public TestLocationSearchClient() : base(new Mock<IElasticSearchClientFactory>().Object, null) { }
 
         public override IEnumerable<LocationSearchResult> SearchExact(string placeName, int maxResults = MaxResults)
         {

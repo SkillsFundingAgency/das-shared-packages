@@ -11,6 +11,8 @@
     using Nest;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
+    using SFA.DAS.VacancyServices.Search.Clients;
+    using SFA.DAS.VacancyServices.Search.Configuration;
 
     public class LocationClientTests
     {
@@ -75,10 +77,10 @@
                 .Callback<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchReponse.Object);
 
-            var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<LocationSearchClientConfiguration>())).Returns(mockClient.Object);
+            var factory = new Mock<IElasticSearchClientFactory>();
+            factory.Setup(f => f.GetElasticClient()).Returns(mockClient.Object);
 
-            var sut = new LocationSearchClient(factory.Object, new LocationSearchClientConfiguration());
+            var sut = new LocationSearchClient(factory.Object, new SearchConfiguration());
 
             var response = searchFunc(sut);
 

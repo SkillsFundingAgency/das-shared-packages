@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.VacancyServices.Search.Requests;
 
-namespace SFA.DAS.VacancyServices.Search
+namespace SFA.DAS.VacancyServices.Search.Clients
 {
     using Responses;
     using System.Collections.Generic;

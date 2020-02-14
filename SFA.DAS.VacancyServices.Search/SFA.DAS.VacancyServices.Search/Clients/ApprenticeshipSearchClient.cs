@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.VacancyServices.Search
+﻿namespace SFA.DAS.VacancyServices.Search.Clients
 {
     using Requests;
     using System.Collections.Generic;
@@ -8,6 +8,8 @@
     using Entities;
     using Nest;
     using Responses;
+    using SFA.DAS.VacancyServices.Search.Configuration;
+    using SFA.DAS.VacancyServices.Search.Clients;
 
     public class ApprenticeshipSearchClient : IApprenticeshipSearchClient
     {
@@ -17,20 +19,16 @@
         private const int ScrollSize = 100;
         private const string ScrollTimeout = "5s";
 
-        private readonly IElasticSearchFactory _elasticSearchFactory;
-        private readonly ApprenticeshipSearchClientConfiguration _config;
         private readonly SearchFactorConfiguration _searchFactorConfiguration;
         private readonly IEnumerable<string> _keywordExcludedTerms;
+        private readonly SearchConfiguration _config;
+        private readonly IElasticClient _client;
 
-        public ApprenticeshipSearchClient(ApprenticeshipSearchClientConfiguration config)
-        : this(new ElasticSearchFactory(), config)
-        {
-        }
 
-        internal ApprenticeshipSearchClient(IElasticSearchFactory elasticSearchFactory, ApprenticeshipSearchClientConfiguration config)
+        public ApprenticeshipSearchClient(IElasticSearchClientFactory elasticSearchFactory, SearchConfiguration config)
         {
-            _elasticSearchFactory = elasticSearchFactory;
             _config = config;
+            _client = elasticSearchFactory.GetElasticClient();
             _searchFactorConfiguration = GetSearchFactorConfiguration();
             _keywordExcludedTerms = new[] { "apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee" };
         }
@@ -51,10 +49,8 @@
 
         public IEnumerable<int> GetAllVacancyIds()
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
-
-            var scanResults = client.Search<ApprenticeshipSearchResult>(search => search
-                .Index(_config.Index)
+            var scanResults = _client.Search<ApprenticeshipSearchResult>(search => search
+                .Index(_config.ApprenticeshipsIndex)
                 .From(0)
                 .Size(ScrollSize)
                 .MatchAll()
@@ -65,7 +61,7 @@
 
             while (true)
             {
-                var results = client.Scroll<ApprenticeshipSearchResult>(scrollRequest);
+                var results = _client.Scroll<ApprenticeshipSearchResult>(scrollRequest);
 
                 if (!results.Documents.Any())
                 {
@@ -93,11 +89,9 @@
 
         private ISearchResponse<ApprenticeshipSearchResult> PerformSearch(ApprenticeshipSearchRequestParameters parameters)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
-
-            var results = client.Search<ApprenticeshipSearchResult>(s =>
+            var results = _client.Search<ApprenticeshipSearchResult>(s =>
             {
-                s.Index(_config.Index);
+                s.Index(_config.ApprenticeshipsIndex);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
                 s.Take(parameters.PageSize);
 
