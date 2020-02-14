@@ -142,8 +142,8 @@
 
             if (parameters.FrameworkLarsCodes.Any() || parameters.StandardLarsCodes.Any())
             {
-                var queryClause = q.Term(apprenticeship => apprenticeship.FrameworkLarsCode, parameters.FrameworkLarsCodes)
-                                  || q.Term(apprenticeship => apprenticeship.StandardLarsCode, parameters.StandardLarsCodes);
+                var queryClause = q.Terms(apprenticeship => apprenticeship.Field(f => f.FrameworkLarsCode).Terms(parameters.FrameworkLarsCodes))
+                                  || q.Terms(apprenticeship => apprenticeship.Field(f => f.StandardLarsCode).Terms(parameters.StandardLarsCodes));
 
                 query &= queryClause;
             }
@@ -208,12 +208,13 @@
 
             if (parameters.CanFilterByGeoDistance)
             {
-                var queryClause = q.Bool(qf => qf.Filter(f => f
+                var geoQueryClause = q.Bool(qf => qf.Filter(f => f
                     .GeoDistance(vs => vs
+                        .Field(field => field.Location)
                         .Location(parameters.Latitude.Value, parameters.Longitude.Value)
                         .Distance(parameters.SearchRadius.Value, DistanceUnit.Miles))));
 
-                query &= queryClause;
+                query &= geoQueryClause;
             }
 
             return query;
@@ -263,14 +264,15 @@
             {
                 case VacancySearchSortType.RecentlyAdded:
                     search.Sort(r => r
+                        .TrySortByGeoDistance(parameters)
                         .Descending(s => s.PostedDate)
-                        .TrySortByGeoDistance(parameters));
+                        .Descending(s => s.VacancyReference));
                     break;
                 case VacancySearchSortType.Distance:
                     search.Sort(s => s
+                        .TrySortByGeoDistance(parameters)
                         .Descending(r => r.PostedDate)
-                        .Descending(r => r.VacancyReference)
-                        .TrySortByGeoDistance(parameters));
+                        .Descending(r => r.VacancyReference));
                     break;
                 case VacancySearchSortType.ClosingDate:
                     search.Sort(s => s
