@@ -15,7 +15,6 @@ namespace SFA.DAS.VacancyServices.Search
                 .Field(f => f.Location)
                 .DistanceType(GeoDistanceType.Arc)
                 .Unit(DistanceUnit.Miles)
-                .Mode(SortMode.Min)
                 .Points(new GeoLocation(searchParameters.Latitude.Value, searchParameters.Longitude.Value)));
             }
 
@@ -30,7 +29,6 @@ namespace SFA.DAS.VacancyServices.Search
                 .Field(f => f.Location)
                 .DistanceType(GeoDistanceType.Arc)
                 .Unit(DistanceUnit.Miles)
-                .Mode(SortMode.Min)
                 .Points(new GeoLocation(searchParameters.Latitude.Value, searchParameters.Longitude.Value)));
             }
 

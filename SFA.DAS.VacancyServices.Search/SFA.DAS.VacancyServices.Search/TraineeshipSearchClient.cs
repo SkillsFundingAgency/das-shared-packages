@@ -121,11 +121,13 @@
 
             if (parameters.CanFilterByGeoDistance)
             {
-                var queryClause = q.Bool(qf => qf.Filter(f => f
+                var geoQueryClause = q.Bool(qf => qf.Filter(f => f
                     .GeoDistance(vs => vs
+                        .Field(field => field.Location)
                         .Location(parameters.Latitude.Value, parameters.Longitude.Value)
                         .Distance(parameters.SearchRadius.Value, DistanceUnit.Miles))));
-                query &= queryClause;
+
+                query &= geoQueryClause;
             }
 
             return query;

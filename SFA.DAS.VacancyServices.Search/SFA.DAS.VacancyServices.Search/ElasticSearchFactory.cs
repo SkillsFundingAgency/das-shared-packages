@@ -6,28 +6,44 @@
     using Newtonsoft.Json.Converters;
 
     internal class ElasticSearchFactory : IElasticSearchFactory
-    {
-        public IElasticClient GetElasticClient(ApprenticeshipSearchClientConfiguration config)
+    {      
+        private ConnectionSettings SetupCloudConnection(ElasticClientConfigurationBase configuration)
         {
-            return GetElasticClient(config.HostName, config.Username, config.Password);
+            if (string.IsNullOrEmpty(configuration.CloudId)
+                || string.IsNullOrWhiteSpace(configuration.Username)
+                || string.IsNullOrWhiteSpace(configuration.Password))
+            {
+                throw new Exception("The cloudid, username and password is required in the search configuration.");
+            }
+
+            var credentials = new BasicAuthenticationCredentials(configuration.Username,
+                   configuration.Password);
+            var connectionPool = new CloudConnectionPool(configuration.CloudId, credentials);
+            return new ConnectionSettings(connectionPool);
         }
 
-        public IElasticClient GetElasticClient(TraineeshipSearchClientConfiguration config)
+        private ConnectionSettings SetupLocalConnection(ElasticClientConfigurationBase configuration)
         {
-            return GetElasticClient(config.HostName, config.Username, config.Password);
+            if (string.IsNullOrWhiteSpace(configuration.HostName))
+            {
+                throw new Exception("HostName in Search Configuration is required.");
+            }
+            var connectionPool = new SingleNodeConnectionPool(new Uri(configuration.HostName));
+            var connectionSettings = new ConnectionSettings(connectionPool);
+            connectionSettings.EnableDebugMode();
+            return connectionSettings;
         }
 
-        public IElasticClient GetElasticClient(LocationSearchClientConfiguration config)
+        public IElasticClient GetElasticClient(ElasticClientConfigurationBase configuration)
         {
-            return GetElasticClient(config.HostName, config.Username, config.Password);
-        }
-
-        private IElasticClient GetElasticClient(string hostname, string username, string password)
-        {
-            var nodePool = new SingleNodeConnectionPool(new Uri(hostname));
-            var elasticConnectionSettings = new ConnectionSettings(nodePool)
-                .BasicAuthentication(username, password);
-            return new ElasticClient(elasticConnectionSettings);
+            ConnectionSettings connectionSettings;
+#if DEBUG
+            connectionSettings = SetupLocalConnection(configuration);
+#else
+            connectionSettings = SetupCloudConnection(configuration);   
+#endif
+            var client = new ElasticClient(connectionSettings);
+            return client;
         }
     }
 }
