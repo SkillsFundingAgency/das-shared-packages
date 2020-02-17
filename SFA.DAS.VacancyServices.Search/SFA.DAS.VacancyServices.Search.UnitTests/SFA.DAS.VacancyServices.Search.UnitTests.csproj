@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApprenticeshipSearchClientTests.cs" />
+    <Compile Include="IntegrationTests\LocationSearchClientIntegrationTests.cs" />
     <Compile Include="LocationSearchClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestLocationSearchClient.cs" />
