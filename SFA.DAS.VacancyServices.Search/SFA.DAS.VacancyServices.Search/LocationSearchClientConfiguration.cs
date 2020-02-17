@@ -1,9 +1,7 @@
 ﻿namespace SFA.DAS.VacancyServices.Search
 {
-    public class LocationSearchClientConfiguration
+    public class LocationSearchClientConfiguration : ElasticClientConfigurationBase
     {
-        public string HostName { get; set; }
-        public string Index { get; set; }
     }
     
 }

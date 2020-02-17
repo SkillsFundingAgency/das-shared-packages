@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using Entities;
     using FluentAssertions;
@@ -63,18 +64,19 @@
         {
             var searchReponse = new Mock<ISearchResponse<LocationSearchResult>>();
             searchReponse.Setup(s => s.Total).Returns(0);
-            searchReponse.Setup(s => s.Documents).Returns(Enumerable.Empty<LocationSearchResult>());
-
-            Func<SearchDescriptor<LocationSearchResult>, SearchDescriptor<LocationSearchResult>> actualSearchDescriptorFunc = null;
+            searchReponse.Setup(s => s.Documents).Returns(Enumerable.Empty<LocationSearchResult>().ToList());
+            searchReponse.Setup(s => s.Documents).Returns(new Mock<IReadOnlyCollection<LocationSearchResult>>().Object);
+            
+            Func<SearchDescriptor<LocationSearchResult>, ISearchRequest> actualSearchDescriptorFunc = null;
 
             var mockClient = new Mock<IElasticClient>();
 
-            mockClient.Setup(c => c.Search<LocationSearchResult>(It.IsAny<Func<SearchDescriptor<LocationSearchResult>, SearchDescriptor<LocationSearchResult>>>()))
-                .Callback<Func<SearchDescriptor<LocationSearchResult>, SearchDescriptor<LocationSearchResult>>>(d => actualSearchDescriptorFunc = d)
+            mockClient.Setup(c => c.Search<LocationSearchResult>(It.IsAny<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>()))
+                .Callback<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchReponse.Object);
 
             var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
+            factory.Setup(f => f.GetElasticClient(It.IsAny<LocationSearchClientConfiguration>())).Returns(mockClient.Object);
 
             var sut = new LocationSearchClient(factory.Object, new LocationSearchClientConfiguration());
 
@@ -84,9 +86,9 @@
             var query = actualSearchDescriptorFunc(baseSearchDescriptor);
 
             var elasticClient = new ElasticClient();
-
-            var actualJsonQueryBytes = elasticClient.Serializer.Serialize(query);
-            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(actualJsonQueryBytes.ToArray());
+            var stream = new MemoryStream();
+            elasticClient.RequestResponseSerializer.Serialize(query, stream);
+            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
 
             var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
 
