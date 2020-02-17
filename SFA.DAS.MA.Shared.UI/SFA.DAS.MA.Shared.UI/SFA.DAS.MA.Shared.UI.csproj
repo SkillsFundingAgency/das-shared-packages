@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0; net462</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.4</Version>
-    <AssemblyVersion>1.0.4.0</AssemblyVersion>
+    <Version>1.0.10</Version>
+    <AssemblyVersion>1.0.10.0</AssemblyVersion>
     <PackageId>SFA.DAS.MA.Shared.UI</PackageId>
     <Authors>SFA.DAS.MA.Shared.UI</Authors>
     <Product>SFA.DAS.MA.Shared.UI</Product>
@@ -13,9 +13,6 @@
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <RazorCompileOnBuild>true</RazorCompileOnBuild>
     <RazorOutputPath></RazorOutputPath>
-    <!--<MvcRazorCompileOnBuild>true</MvcRazorCompileOnBuild>
-    <RazorCompileOnBuild>true</RazorCompileOnBuild>
-    <PreserveCompilationContext>true</PreserveCompilationContext>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
@@ -41,11 +38,8 @@
       <CopyToOutputDirectory>true</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-
+  
   <ItemGroup>
-    
-    <!--<PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.7" Condition="$(TargetFramework) == 'net462'" />-->    
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" Condition="'$(TargetFramework)'=='netstandard2.0'" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" Condition="'$(TargetFramework)'=='netstandard2.0'" />
     <PackageReference Include="RazorGenerator.Mvc" Version="2.4.9" Condition="$(TargetFramework) == 'net462'" />
@@ -70,12 +64,6 @@
     <ProjectReference Include="..\SFA.DAS.MA.Shared.UI.MsBuild\SFA.DAS.MA.Shared.UI.MsBuild.csproj" Condition="$(TargetFramework) == 'net462'">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Models\HeaderViewModel.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
