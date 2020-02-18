@@ -14,7 +14,7 @@ workspace:
     clean: all
 
 pool:
-  name: 'Continuous Integration 02 - SSD - 160ACU'
+  vmImage: 'windows-2019'
 
 variables:
   BuildConfiguration: 'Release'
