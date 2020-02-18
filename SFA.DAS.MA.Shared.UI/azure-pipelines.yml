@@ -29,10 +29,16 @@ steps:
     projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
+  displayName: 'dotnet build restore'
   inputs:
     projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
     arguments: '/p:Configuration=$(BuildConfiguration) /t:restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    arguments: '/p:Configuration=$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
