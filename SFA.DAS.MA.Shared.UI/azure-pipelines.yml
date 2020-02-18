@@ -14,7 +14,7 @@ workspace:
     clean: all
 
 pool:
-  name: 'DAS - Continuous Integration'
+  vmImage: 'windows-2019'
 
 variables:
   BuildConfiguration: 'Release'
@@ -22,17 +22,17 @@ variables:
   Build.MinorNumber: '1'
 
 steps:
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet restore'
+- task: VSBuild@1
+  displayName: 'VSBuild restore'
   inputs:
-    command: restore
-    projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    msbuildArgs: '/t:restore'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
+- task: VSBuild@1
+  displayName: 'VS build'
   inputs:
-    projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    arguments: '/p:Configuration=$(BuildConfiguration)'
+    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    Configuration: '$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
@@ -40,13 +40,6 @@ steps:
     command: pack
     packagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
     versioningScheme: byBuildNumber
-
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    SourceFolder: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI
-    Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
