@@ -41,13 +41,6 @@ steps:
     packagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
     versioningScheme: byBuildNumber
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    SourceFolder: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI
-    Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
 
