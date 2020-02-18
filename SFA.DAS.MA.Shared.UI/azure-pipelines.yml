@@ -28,7 +28,7 @@ steps:
     command: restore
     projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
 
-- task: VSBuild@2
+- task: VSBuild@1
   displayName: 'VS build'
   inputs:
     solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
