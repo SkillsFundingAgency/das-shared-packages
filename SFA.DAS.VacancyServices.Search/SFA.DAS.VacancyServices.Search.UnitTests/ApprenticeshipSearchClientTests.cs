@@ -174,7 +174,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyReference = "123456789"
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"vacancyReference\":{\"value\":\"123456789\"}}}]}},\"size\":1,\"sort\":[{\"score\":{\"order\":\"desc\"}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"vacancyReference\":{\"value\":\"123456789\"}}}]}},\"size\":1,\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"track_scores\":true}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -190,7 +190,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 CalculateSubCategoryAggregations = true
             };
 
-            const string expectedJsonQuery = "{\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"from\":0,\"post_filter\":{\"terms\":{\"subCategoryCode\":[\"sub-code\"]}},\"size\":5,\"sort\":[{\"score\":{\"order\":\"desc\"}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"aggs\":{\"SubCategoryCodes\":{\"terms\":{\"field\":\"subCategoryCode\",\"size\":0}}},\"from\":0,\"post_filter\":{\"terms\":{\"subCategoryCode\":[\"sub-code\"]}},\"size\":5,\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"track_scores\":true}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
