@@ -14,7 +14,7 @@ workspace:
     clean: all
 
 pool:
-  name: 'DAS - Continuous Integration'
+  name: 'Continuous Integration - SSD - 160ACU'
 
 variables:
   BuildConfiguration: 'Release'
