@@ -31,7 +31,7 @@ steps:
 - task: VSBuild@2
   displayName: 'VS build'
   inputs:
-    projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
     Configuration: '$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
