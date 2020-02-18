@@ -130,7 +130,7 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<ChangePasssword>().Where(t => t.Href.Equals($"{testAuthenticationAuthorityUrl}/account/changepassword?clientId={testClientId}&returnurl={returnUrl}")).Count().Should().Be(1);
+            _sut.Links.OfType<ChangePassword>().Where(t => t.Href.Equals($"{testAuthenticationAuthorityUrl}/account/changepassword?clientId={testClientId}&returnurl={returnUrl}")).Count().Should().Be(1);
         }
 
         [Test]

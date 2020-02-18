@@ -44,7 +44,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new RenameAccount(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "rename")));
 
             var returnUrl = configuration.ChangePasswordReturnUrl?.AbsoluteUri ?? _urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/password/change");
-            AddOrUpdateLink(new ChangePasssword(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changepassword?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));
+            AddOrUpdateLink(new ChangePassword(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changepassword?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));
 
             returnUrl = configuration.ChangeEmailReturnUrl?.AbsoluteUri ?? _urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/email/change");
             AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));

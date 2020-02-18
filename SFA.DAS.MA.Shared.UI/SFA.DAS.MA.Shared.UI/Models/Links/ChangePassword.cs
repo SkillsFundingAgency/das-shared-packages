@@ -1,8 +1,8 @@
 ﻿namespace SFA.DAS.MA.Shared.UI.Models.Links
 {
-    public class ChangePasssword : Link
+    public class ChangePassword : Link
     {
-        public ChangePasssword(string href) : base(href)
+        public ChangePassword(string href) : base(href)
         {
         }
 
