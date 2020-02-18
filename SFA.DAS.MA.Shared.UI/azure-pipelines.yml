@@ -32,7 +32,7 @@ steps:
   displayName: 'dotnet build'
   inputs:
     projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    arguments: '/p:Configuration=$(BuildConfiguration) /r:win10-x64'
+    arguments: '/p:Configuration=$(BuildConfiguration) /t:restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
