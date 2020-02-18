@@ -28,17 +28,11 @@ steps:
     command: restore
     projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build restore'
+- task: VSBuild@2
+  displayName: 'VS build'
   inputs:
     projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    arguments: '/p:Configuration=$(BuildConfiguration) /t:restore'
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    projects: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    arguments: '/p:Configuration=$(BuildConfiguration)'
+    Configuration: '$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
