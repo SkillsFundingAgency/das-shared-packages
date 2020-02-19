@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.MA.Shared.UI.Configuration;
 using SFA.DAS.MA.Shared.UI.Models;
 using SFA.DAS.MA.Shared.UI.Models.Links;
@@ -16,14 +15,12 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
         private IHeaderViewModel _sut;
         private Mock<IHeaderConfiguration> _mockHeaderConfiguration;
         private Mock<IUserContext> _mockUserContext;
-        private Mock<IAuthorizationService> _mockAuthorizationService;
 
         [SetUp]
         public void Setup()
         {
             _mockHeaderConfiguration = new Mock<IHeaderConfiguration>();
             _mockUserContext = new Mock<IUserContext>();
-            _mockAuthorizationService = new Mock<IAuthorizationService>();
         }
 
         [Test]
@@ -266,10 +263,6 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
             _mockHeaderConfiguration
                 .Setup(m => m.EmployerRecruitBaseUrl)
                 .Returns(testEmployerRecruitBaseUrl);
-
-            _mockHeaderConfiguration
-               .Setup(m => m.AuthorizationService)
-               .Returns(_mockAuthorizationService.Object);
 
             _mockUserContext
                 .Setup(m => m.HashedAccountId)
