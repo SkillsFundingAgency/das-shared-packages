@@ -43,14 +43,15 @@
 
         public virtual IEnumerable<LocationSearchResult> SearchExact(string placeName, int maxResults = MaxResults)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
+            var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
             var term = placeName.ToLowerInvariant();
 
             var exactMatchResults = client.Search<LocationSearchResult>(s => s
                 .Index(_config.Index)
+                .Type(ElasticTypes.Location)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
-                            .Match(m => m.Field(f => f.Name).Query(term)))
+                            .Match(m => m.OnField(f => f.Name).Query(term)))
                         .Functions(f => f.FieldValueFactor(fvf => fvf.Field(ll => ll.Size))).ScoreMode(FunctionScoreMode.Sum))
                 )
                 .From(0)
@@ -62,14 +63,15 @@
 
         public virtual IEnumerable<LocationSearchResult> SearchPrefixed(string placeName, int maxResults = MaxResults)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
+            var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
             var term = placeName.ToLowerInvariant();
 
             var prefixMatchResults = client.Search<LocationSearchResult>(s => s
                 .Index(_config.Index)
+                .Type(ElasticTypes.Location)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
-                            .Prefix(p => p.Field(n => n.Name).Value(term)))
+                            .Prefix(p => p.OnField(n => n.Name).Value(term)))
                         .Functions(f => f.FieldValueFactor(fvf => fvf.Field(ll => ll.Size))).ScoreMode(FunctionScoreMode.Sum))
                 )
                 .From(0)
@@ -80,15 +82,16 @@
 
         public virtual IEnumerable<LocationSearchResult> SearchFuzzy(string placeName, int maxResults = MaxResults)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
+            var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
             var term = placeName.ToLowerInvariant();
 
             var fuzzyMatchResults = client.Search<LocationSearchResult>(s => s
                 .Index(_config.Index)
+                .Type(ElasticTypes.Location)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 =>
-                            q2.Fuzzy(f => f.PrefixLength(1).Field(n => n.Name).Value(term).Boost(2.0)) ||
-                            q2.Fuzzy(f => f.PrefixLength(1).Field(n => n.County).Value(term).Boost(1.0)))
+                            q2.Fuzzy(f => f.PrefixLength(1).OnField(n => n.Name).Value(term).Boost(2.0)) ||
+                            q2.Fuzzy(f => f.PrefixLength(1).OnField(n => n.County).Value(term).Boost(1.0)))
                         .Functions(f => f.FieldValueFactor(fvf => fvf.Field(ll => ll.Size))).ScoreMode(FunctionScoreMode.Sum))
                 )
                 .From(0)

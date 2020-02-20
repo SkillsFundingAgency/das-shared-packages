@@ -7,32 +7,34 @@ namespace SFA.DAS.VacancyServices.Search
 
     internal static class SearchDescriptorExtensions
     {
-        internal static SortDescriptor<ApprenticeshipSearchResult> TrySortByGeoDistance(this SortDescriptor<ApprenticeshipSearchResult> sortDescriptor, ApprenticeshipSearchRequestParameters searchParameters)
+        internal static SearchDescriptor<ApprenticeshipSearchResult> TrySortByGeoDistance(this SearchDescriptor<ApprenticeshipSearchResult> searchDescriptor, ApprenticeshipSearchRequestParameters searchParameters)
         {
             if (searchParameters.CanSortByGeoDistance)
             {
-                sortDescriptor.GeoDistance(g => g
-                .Field(f => f.Location)
-                .DistanceType(GeoDistanceType.Arc)
-                .Unit(DistanceUnit.Miles)
-                .Points(new GeoLocation(searchParameters.Latitude.Value, searchParameters.Longitude.Value)));
+                searchDescriptor.SortGeoDistance(g =>
+                {
+                    g.PinTo(searchParameters.Latitude.Value, searchParameters.Longitude.Value)
+                        .Unit(GeoUnit.Miles).OnField(f => f.Location);
+                    return g;
+                });
             }
 
-            return sortDescriptor;
+            return searchDescriptor;
         }
 
-        internal static SortDescriptor<TraineeshipSearchResult> TrySortByGeoDistance(this SortDescriptor<TraineeshipSearchResult> sortDescriptor, TraineeshipSearchRequestParameters searchParameters)
+        internal static SearchDescriptor<TraineeshipSearchResult> TrySortByGeoDistance(this SearchDescriptor<TraineeshipSearchResult> searchDescriptor, TraineeshipSearchRequestParameters searchParameters)
         {
             if (searchParameters.CanSortByGeoDistance)
             {
-                sortDescriptor.GeoDistance(g => g
-                .Field(f => f.Location)
-                .DistanceType(GeoDistanceType.Arc)
-                .Unit(DistanceUnit.Miles)
-                .Points(new GeoLocation(searchParameters.Latitude.Value, searchParameters.Longitude.Value)));
+                searchDescriptor.SortGeoDistance(g =>
+                {
+                    g.PinTo(searchParameters.Latitude.Value, searchParameters.Longitude.Value)
+                        .Unit(GeoUnit.Miles).OnField(f => f.Location);
+                    return g;
+                });
             }
 
-            return sortDescriptor;
+            return searchDescriptor;
         }
     }
 }

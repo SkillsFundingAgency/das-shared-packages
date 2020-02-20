@@ -4,7 +4,6 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using Entities;
     using FluentAssertions;
@@ -29,7 +28,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\":40.5,\"unit\":\"mi\"}}}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -48,7 +47,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\": \"mi\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\": 40.5,\"unit\":\"mi\"}}}}]}}}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -68,7 +67,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"match\":{\"ukprn\":{\"query\":\"12345678\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}],\"unit\":\"mi\"}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"bool\":{\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"match\":{\"ukprn\":{\"query\":\"12345678\"}}},{\"filtered\":{\"filter\":{\"geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"distance\":40.5,\"unit\":\"mi\"}}}}]}}}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -87,7 +86,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},\"size\":5,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}}}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -105,7 +104,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 VacancyReference = "1104004"
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"term\":{\"vacancyReference\":{\"value\":\"1104004\"}}}]}},\"size\":5,\"sort\":[{\"score\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"size\":5,\"track_scores\":true,\"sort\":[{\"_score\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"location\":\"52.4173666904458, -1.88983017452229\",\"unit\":\"mi\"}}],\"query\":{\"filtered\":{\"filter\":{\"term\":{\"vacancyReference\":\"1104004\"}}}}}";
             
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -118,12 +117,12 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var searchResponse = new Mock<ISearchResponse<TraineeshipSearchResult>>();
             searchResponse.Setup(s => s.ScrollId).Returns("scrollId-100");
 
-            Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest> actualSearchDescriptorFunc = null;
+            Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>> actualSearchDescriptorFunc = null;
 
             var mockClient = new Mock<IElasticClient>();
 
-            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>()))
-                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
+            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>()))
+                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
             var scrollResponse1 = new Mock<ISearchResponse<TraineeshipSearchResult>>();
@@ -144,7 +143,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 
             var scrollResponse3 = new Mock<ISearchResponse<TraineeshipSearchResult>>();
             scrollResponse3.Setup(r => r.Documents)
-                .Returns(Enumerable.Empty<TraineeshipSearchResult>().ToList());
+                .Returns(Enumerable.Empty<TraineeshipSearchResult>());
 
             mockClient.SetupSequence(c => c.Scroll<TraineeshipSearchResult>(It.Is<ScrollRequest>(r => r.ScrollId == "scrollId-100")))
                 .Returns(scrollResponse1.Object)
@@ -152,7 +151,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Returns(scrollResponse3.Object);
 
             var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
+            factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
 
             var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
 
@@ -162,9 +161,9 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var query = actualSearchDescriptorFunc(baseSearchDescriptor);
 
             var elasticClient = new ElasticClient();
-            var stream = new MemoryStream();
-            elasticClient.RequestResponseSerializer.Serialize(query, stream);
-            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+
+            var actualJsonQueryBytes = elasticClient.Serializer.Serialize(query);
+            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(actualJsonQueryBytes.ToArray());
 
             var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
 
@@ -185,18 +184,18 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
         {
             var searchResponse = new Mock<ISearchResponse<TraineeshipSearchResult>>();
             searchResponse.Setup(s => s.Total).Returns(0);
-            searchResponse.Setup(s => s.Documents).Returns(Enumerable.Empty<TraineeshipSearchResult>().ToList());
+            searchResponse.Setup(s => s.Documents).Returns(Enumerable.Empty<TraineeshipSearchResult>());
 
-            Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest> actualSearchDescriptorFunc = null;
+            Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>> actualSearchDescriptorFunc = null;
 
             var mockClient = new Mock<IElasticClient>();
 
-            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>()))
-                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
+            mockClient.Setup(c => c.Search<TraineeshipSearchResult>(It.IsAny<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>()))
+                .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, SearchDescriptor<TraineeshipSearchResult>>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
             var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
+            factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
 
             var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
 
@@ -206,9 +205,9 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var query = actualSearchDescriptorFunc(baseSearchDescriptor);
 
             var elasticClient = new ElasticClient();
-            var stream = new MemoryStream();
-            elasticClient.RequestResponseSerializer.Serialize(query, stream);
-            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+
+            var actualJsonQueryBytes = elasticClient.Serializer.Serialize(query);
+            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(actualJsonQueryBytes.ToArray());
 
             var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
 

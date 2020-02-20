@@ -32,7 +32,7 @@
             _elasticSearchFactory = elasticSearchFactory;
             _config = config;
             _searchFactorConfiguration = GetSearchFactorConfiguration();
-            _keywordExcludedTerms = new[] { "apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee" };
+            _keywordExcludedTerms = new[] {"apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee"};
         }
 
         public ApprenticeshipSearchResponse Search(ApprenticeshipSearchRequestParameters searchParameters)
@@ -40,9 +40,9 @@
             SanitizeSearchParameters(searchParameters);
 
             var results = PerformSearch(searchParameters);
-
-            var aggregationResults = searchParameters.CalculateSubCategoryAggregations ?
-                GetAggregationResultsFrom(results.Aggregations) :
+           
+            var aggregationResults = searchParameters.CalculateSubCategoryAggregations ? 
+                GetAggregationResultsFrom(results.Aggs) : 
                 null;
             var response = new ApprenticeshipSearchResponse(results.Total, results.Documents, aggregationResults, searchParameters);
 
@@ -51,13 +51,15 @@
 
         public IEnumerable<int> GetAllVacancyIds()
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
+            var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
 
             var scanResults = client.Search<ApprenticeshipSearchResult>(search => search
                 .Index(_config.Index)
+                .Type(ElasticTypes.Apprenticeship)
                 .From(0)
                 .Size(ScrollSize)
                 .MatchAll()
+                .SearchType(SearchType.Scan)
                 .Scroll(ScrollIndexConsistencyTime));
 
             var vacancyIds = new List<int>();
@@ -93,29 +95,28 @@
 
         private ISearchResponse<ApprenticeshipSearchResult> PerformSearch(ApprenticeshipSearchRequestParameters parameters)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
+            var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
 
             var results = client.Search<ApprenticeshipSearchResult>(s =>
             {
                 s.Index(_config.Index);
+                s.Type(ElasticTypes.Apprenticeship);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
                 s.Take(parameters.PageSize);
-
+                
                 s.TrackScores();
 
                 s.Query(q => GetQuery(parameters, q));
 
                 SetSort(s, parameters);
 
-                if (parameters.CalculateSubCategoryAggregations)
+                if(parameters.CalculateSubCategoryAggregations)
                     s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode).Size(0)));
 
                 //Filters to run after the aggregations have been calculated
                 if (parameters.SubCategoryCodes != null && parameters.SubCategoryCodes.Any())
                 {
-                    s.PostFilter(ff => ff.Terms(f =>
-                        f.Field(g => g.SubCategoryCode)
-                        .Terms(parameters.SubCategoryCodes.Distinct())));
+                    s.Filter(ff => ff.Terms(f => f.SubCategoryCode, parameters.SubCategoryCodes.Distinct()));
                 }
 
                 return s;
@@ -126,11 +127,11 @@
             return results;
         }
 
-        private QueryContainer GetQuery(ApprenticeshipSearchRequestParameters parameters, QueryContainerDescriptor<ApprenticeshipSearchResult> q)
+        private QueryContainer GetQuery(ApprenticeshipSearchRequestParameters parameters, QueryDescriptor<ApprenticeshipSearchResult> q)
         {
             if (!string.IsNullOrEmpty(parameters.VacancyReference))
             {
-                return q.Bool(fq =>
+                return q.Filtered(fq =>
                     fq.Filter(f =>
                         f.Term(t =>
                             t.VacancyReference, parameters.VacancyReference)));
@@ -142,8 +143,8 @@
 
             if (parameters.FrameworkLarsCodes.Any() || parameters.StandardLarsCodes.Any())
             {
-                var queryClause = q.Terms(apprenticeship => apprenticeship.Field(f => f.FrameworkLarsCode).Terms(parameters.FrameworkLarsCodes))
-                                  || q.Terms(apprenticeship => apprenticeship.Field(f => f.StandardLarsCode).Terms(parameters.StandardLarsCodes));
+                var queryClause = q.Terms(apprenticeship => apprenticeship.FrameworkLarsCode, parameters.FrameworkLarsCodes)
+                                  || q.Terms(apprenticeship => apprenticeship.StandardLarsCode, parameters.StandardLarsCodes);
 
                 query &= queryClause;
             }
@@ -155,29 +156,29 @@
                             parameters.CategoryCode
                         };
 
-                var queryCategory = q.Terms(f => f.Field(g => g.CategoryCode).Terms(categoryCodes.Distinct()));
+                var queryCategory = q.Terms(f => f.CategoryCode, categoryCodes.Distinct());
 
                 query &= queryCategory;
             }
 
             if (parameters.ExcludeVacancyIds != null && parameters.ExcludeVacancyIds.Any())
             {
-                var queryExcludeVacancyIds = !q.Ids(i => i.Values(parameters.ExcludeVacancyIds.Select(x => x.ToString(CultureInfo.InvariantCulture))));
+                var queryExcludeVacancyIds = !q.Ids(parameters.ExcludeVacancyIds.Select(x => x.ToString(CultureInfo.InvariantCulture)));
                 query &= queryExcludeVacancyIds;
             }
 
             if (parameters.VacancyLocationType != VacancyLocationType.Unknown)
             {
-                var queryVacancyLocation = q.Match(m => m.Field(f => f.VacancyLocationType).Query(parameters.VacancyLocationType.ToString()));
+                var queryVacancyLocation = q.Match(m => m.OnField(f => f.VacancyLocationType).Query(parameters.VacancyLocationType.ToString()));
 
                 query &= queryVacancyLocation;
             }
 
             if (parameters.FromDate.HasValue)
             {
-                var queryClause = q.DateRange(range =>
-                    range.Field(apprenticeship => apprenticeship.PostedDate)
-                        .GreaterThanOrEquals(parameters.FromDate));
+                var queryClause = q.Range(range =>
+                    range.OnField(apprenticeship => apprenticeship.PostedDate)
+                        .GreaterOrEquals(parameters.FromDate));
 
                 query &= queryClause;
             }
@@ -185,7 +186,7 @@
             if (parameters.Ukprn.HasValue)
             {
                 var queryClause = q
-                    .Match(m => m.Field(f => f.Ukprn)
+                    .Match(m => m.OnField(f => f.Ukprn)
                         .Query(parameters.Ukprn.ToString()));
                 query &= queryClause;
             }
@@ -193,7 +194,7 @@
             if (!string.IsNullOrWhiteSpace(parameters.ApprenticeshipLevel) && parameters.ApprenticeshipLevel != "All")
             {
                 var queryClause = q
-                    .Match(m => m.Field(f => f.ApprenticeshipLevel)
+                    .Match(m => m.OnField(f => f.ApprenticeshipLevel)
                         .Query(parameters.ApprenticeshipLevel));
                 query &= queryClause;
             }
@@ -201,34 +202,36 @@
             if (parameters.DisabilityConfidentOnly)
             {
                 var queryDisabilityConfidentOnly = q
-                    .Match(m => m.Field(f => f.IsDisabilityConfident)
+                    .Match(m => m.OnField(f => f.IsDisabilityConfident)
                         .Query(parameters.DisabilityConfidentOnly.ToString()));
                 query &= queryDisabilityConfidentOnly;
             }
 
             if (parameters.CanFilterByGeoDistance)
             {
-                var geoQueryClause = q.Bool(qf => qf.Filter(f => f
+                var queryClause = q.Filtered(qf => qf.Filter(f => f
                     .GeoDistance(vs => vs
-                        .Field(field => field.Location)
-                        .Location(parameters.Latitude.Value, parameters.Longitude.Value)
-                        .Distance(parameters.SearchRadius.Value, DistanceUnit.Miles))));
+                        .Location, descriptor => descriptor
+                            .Location(parameters.Latitude.Value, parameters.Longitude.Value)
+                            .Distance(parameters.SearchRadius.Value, GeoUnit.Miles))));
 
-                query &= geoQueryClause;
+                query &= queryClause;
             }
 
             return query;
         }
 
-        private QueryContainer GetKeywordQuery(ApprenticeshipSearchRequestParameters parameters, QueryContainerDescriptor<ApprenticeshipSearchResult> q)
+        private QueryContainer GetKeywordQuery(ApprenticeshipSearchRequestParameters parameters, QueryDescriptor<ApprenticeshipSearchResult> q)
         {
             QueryContainer keywordQuery = null;
             if (!string.IsNullOrWhiteSpace(parameters.Keywords)
                 && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.JobTitle))
             {
                 var queryClause = q.Match(m =>
-                    BuildFieldQuery(m, _searchFactorConfiguration.JobTitleFactors)
-                    .Field(f => f.Title).Query(parameters.Keywords));
+                {
+                    m.OnField(f => f.Title).Query(parameters.Keywords);
+                    BuildFieldQuery(m, _searchFactorConfiguration.JobTitleFactors);
+                });
 
                 keywordQuery |= queryClause;
             }
@@ -237,9 +240,10 @@
                 && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.Description))
             {
                 var queryClause = q.Match(m =>
-                    BuildFieldQuery(m, _searchFactorConfiguration.DescriptionFactors)
-                    .Field(f => f.Description).Query(parameters.Keywords)
-                );
+                {
+                    m.OnField(f => f.Description).Query(parameters.Keywords);
+                    BuildFieldQuery(m, _searchFactorConfiguration.DescriptionFactors);
+                });
 
                 keywordQuery |= queryClause;
             }
@@ -248,9 +252,10 @@
                 && (parameters.SearchField == ApprenticeshipSearchField.All || parameters.SearchField == ApprenticeshipSearchField.Employer))
             {
                 var queryClause = q.Match(m =>
-                    BuildFieldQuery(m, _searchFactorConfiguration.EmployerFactors)
-                    .Field(f => f.EmployerName).Query(parameters.Keywords)
-                );
+                {
+                    m.OnField(f => f.EmployerName).Query(parameters.Keywords);
+                    BuildFieldQuery(m, _searchFactorConfiguration.EmployerFactors);
+                });
 
                 keywordQuery |= queryClause;
             }
@@ -263,37 +268,32 @@
             switch (parameters.SortType)
             {
                 case VacancySearchSortType.RecentlyAdded:
-                    search.Sort(r => r
-                        .TrySortByGeoDistance(parameters)
-                        .Descending(s => s.PostedDate)
-                        .Descending(s => s.VacancyReference));
+                    search.SortDescending(r => r.PostedDate);
+                    search.TrySortByGeoDistance(parameters);
+                    search.SortDescending(r => r.VacancyReference);
                     break;
                 case VacancySearchSortType.Distance:
-                    search.Sort(s => s
-                        .TrySortByGeoDistance(parameters)
-                        .Descending(r => r.PostedDate)
-                        .Descending(r => r.VacancyReference));
+                    search.TrySortByGeoDistance(parameters);
+                    search.SortDescending(r => r.PostedDate);
+                    search.SortDescending(r => r.VacancyReference);
                     break;
                 case VacancySearchSortType.ClosingDate:
-                    search.Sort(s => s
-                        .Ascending(r => r.ClosingDate)
-                        .TrySortByGeoDistance(parameters));
+                    search.SortAscending(r => r.ClosingDate);
+                    search.TrySortByGeoDistance(parameters);
                     break;
                 case VacancySearchSortType.ExpectedStartDate:
-                    search.Sort(s => s
-                        .Ascending(r => r.StartDate)
-                        .Ascending(r => r.VacancyReference)
-                        .TrySortByGeoDistance(parameters));
+                    search.SortAscending(r => r.StartDate);
+                    search.SortAscending(r => r.VacancyReference);
+                    search.TrySortByGeoDistance(parameters);
                     break;
                 default:
-                    search.Sort(s => s
-                        .Descending(r => r.Score)
-                        .TrySortByGeoDistance(parameters));
+                    search.Sort(sort => sort.OnField("_score").Descending());
+                    search.TrySortByGeoDistance(parameters);
                     break;
             }
         }
 
-        private static MatchQueryDescriptor<ApprenticeshipSearchResult> BuildFieldQuery(MatchQueryDescriptor<ApprenticeshipSearchResult> queryDescriptor,
+        private static void BuildFieldQuery(MatchQueryDescriptor<ApprenticeshipSearchResult> queryDescriptor,
             SearchTermFactors searchFactors)
         {
             if (searchFactors.Boost.HasValue)
@@ -303,7 +303,7 @@
 
             if (searchFactors.Fuzziness.HasValue)
             {
-                queryDescriptor.Fuzziness(Fuzziness.EditDistance(searchFactors.Fuzziness.Value));
+                queryDescriptor.Fuzziness(searchFactors.Fuzziness.Value);
             }
 
             if (searchFactors.FuzzyPrefix.HasValue)
@@ -321,19 +321,22 @@
                 queryDescriptor.MinimumShouldMatch(searchFactors.MinimumMatch);
             }
 
-            return queryDescriptor;
+            if (searchFactors.PhraseProximity.HasValue)
+            {
+                queryDescriptor.Slop(searchFactors.PhraseProximity.Value);
+            }
         }
 
         private static void SetHitValuesOnSearchResults(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results)
         {
             foreach (var result in results.Documents)
             {
-                var hitMd = results.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
+                var hitMd = results.HitsMetaData.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
-                if (searchParameters.CanSortByGeoDistance)
+                if(searchParameters.CanSortByGeoDistance)
                     result.Distance = (double)hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
 
-                result.Score = hitMd.Score.GetValueOrDefault(0);
+                result.Score = hitMd.Score;
             }
         }
 
@@ -350,7 +353,7 @@
             }
         }
 
-        private static IEnumerable<AggregationResult> GetAggregationResultsFrom(AggregateDictionary aggregations)
+        private static IEnumerable<AggregationResult> GetAggregationResultsFrom(AggregationsHelper aggregations)
         {
             if (aggregations == null)
                 return Enumerable.Empty<AggregationResult>();
@@ -362,10 +365,10 @@
                 return Enumerable.Empty<AggregationResult>();
             }
 
-            var items = terms.Buckets.Select(bucket => new AggregationResult
+            var items = terms.Items.Select(bucket => new AggregationResult
             {
                 Code = bucket.Key,
-                Count = bucket.DocCount.GetValueOrDefault(0)
+                Count = bucket.DocCount
             });
 
             return items;
@@ -397,7 +400,8 @@
                     Fuzziness = 1,
                     FuzzyPrefix = 1,
                     MatchAllKeywords = false,
-                    MinimumMatch = "2<75%"
+                    MinimumMatch = "2<75%",
+                    PhraseProximity = 2
                 }
             };
         }
