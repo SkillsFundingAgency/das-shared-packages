@@ -287,7 +287,7 @@
                     break;
                 default:
                     search.Sort(s => s
-                        .Descending(SortSpecialField.Score)
+                        .Descending(r => r.Score)
                         .TrySortByGeoDistance(parameters));
                     break;
             }
