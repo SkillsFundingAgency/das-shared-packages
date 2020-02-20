@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0; net462</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.10</Version>
-    <AssemblyVersion>1.0.10.0</AssemblyVersion>
+    <Version>1.0.14</Version>
+    <AssemblyVersion>1.0.14.0</AssemblyVersion>
     <PackageId>SFA.DAS.MA.Shared.UI</PackageId>
     <Authors>SFA.DAS.MA.Shared.UI</Authors>
     <Product>SFA.DAS.MA.Shared.UI</Product>
@@ -43,7 +43,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" Condition="'$(TargetFramework)'=='netstandard2.0'" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" Condition="'$(TargetFramework)'=='netstandard2.0'" />
     <PackageReference Include="RazorGenerator.Mvc" Version="2.4.9" Condition="$(TargetFramework) == 'net462'" />
-    <PackageReference Include="SFA.DAS.Authorization" Version="6.0.52" />
     <PackageReference Include="WebActivatorEx" Version="2.2.0" Condition="$(TargetFramework) == 'net462'" />
     
     <PackageReference Include="Microsoft.Build.Framework" Version="15.9.20">

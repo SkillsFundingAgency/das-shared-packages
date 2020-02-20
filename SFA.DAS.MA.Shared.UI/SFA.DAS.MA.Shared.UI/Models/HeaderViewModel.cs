@@ -55,7 +55,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             // global nav links
             AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams")));
             AddOrUpdateLink(new Finance(_urlHelper.GetPath(userContext, configuration.EmployerFinanceBaseUrl, "finance")));
-            AddOrUpdateLink(new Recruitment(configuration.AuthorizationService, _urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl)));
+            AddOrUpdateLink(new Recruitment(_urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl)));
             AddOrUpdateLink(new Apprentices(_urlHelper.GetPath(userContext, configuration.EmployerCommitmentsBaseUrl, "apprentices/home")));
             AddOrUpdateLink(new YourTeam(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams/view")));
 
