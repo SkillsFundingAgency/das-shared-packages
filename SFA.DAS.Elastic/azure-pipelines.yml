@@ -31,7 +31,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
-    projects: SFA.DAS.Elastic/SFA.DAS.Elastic/SFA.DAS.Elastic.csproj
+    projects: SFA.DAS.Elastic/SFA.DAS.Elastic.sln
     arguments: '/p:Configuration=$(BuildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
