@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Elastic", "SFA.DAS.Elastic\SFA.DAS.Elastic.csproj", "{F8F73252-6967-419B-8705-F9488680A39F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Elastic", "SFA.DAS.Elastic\SFA.DAS.Elastic.csproj", "{F8F73252-6967-419B-8705-F9488680A39F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Elastic.UnitTests", "SFA.DAS.Elastic.UnitTests\SFA.DAS.Elastic.UnitTests.csproj", "{8506DE95-3485-4F61-A5A8-5B7362CFBEBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Elastic.UnitTests", "SFA.DAS.Elastic.UnitTests\SFA.DAS.Elastic.UnitTests.csproj", "{8506DE95-3485-4F61-A5A8-5B7362CFBEBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F8F73252-6967-419B-8705-F9488680A39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -44,5 +41,11 @@ Global
 		{8506DE95-3485-4F61-A5A8-5B7362CFBEBF}.Release|x64.Build.0 = Debug|Any CPU
 		{8506DE95-3485-4F61-A5A8-5B7362CFBEBF}.Release|x86.ActiveCfg = Debug|Any CPU
 		{8506DE95-3485-4F61-A5A8-5B7362CFBEBF}.Release|x86.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F03E0818-86B0-4024-BC57-0E00494DED77}
 	EndGlobalSection
 EndGlobal
