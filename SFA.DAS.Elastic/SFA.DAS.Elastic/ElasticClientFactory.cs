@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Elasticsearch.Net;
@@ -7,48 +6,52 @@ using Nest;
 
 namespace SFA.DAS.Elastic
 {
-    public class ElasticClientFactory : IElasticClientFactory
+    public sealed class ElasticClientFactory : IElasticClientFactory
     {
-        public IConnectionSettingsValues ConnectionSettings { get; }
-        public string EnvironmentName { get; }
-        public IEnumerable<IIndexMapper> IndexMappers { get; }
+        internal readonly ElasticClientConfiguration _configuration;
 
-        public ElasticClientFactory(string environmentName, string url, string username, string password, Action<IApiCallDetails> onRequestCompleted, IEnumerable<IIndexMapper> indexMappers)
+        internal ElasticClientFactory(ElasticClientConfiguration configuration)
         {
-            var connectionSettings = new ConnectionSettings(new SingleNodeConnectionPool(new Uri(url))).ThrowExceptions();
-            
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                connectionSettings.BasicAuthentication(username, password);
-            }
-
-            if (onRequestCompleted != null)
-            {
-                connectionSettings.OnRequestCompleted(onRequestCompleted);
-            }
-
-            ConnectionSettings = connectionSettings;
-            EnvironmentName = environmentName;
-            IndexMappers = indexMappers ?? new List<IIndexMapper>();
+            _configuration = configuration;
         }
 
         public IElasticClient CreateClient()
         {
-            var client = new ElasticClient(ConnectionSettings);
-            
-            Task.WaitAll(IndexMappers.Select(m => m.EnureIndexExistsAsync(EnvironmentName, client)).ToArray());
+            var connectionSettings = _configuration.IsCloudConnectionConfigured ? GetCloudBasedConnectionSettings(_configuration) : GetSingleNodeBasedConnectionSettings(_configuration);
+
+            if (_configuration.OnRequestCompleted != null) connectionSettings.OnRequestCompleted(_configuration.OnRequestCompleted);
+
+            if (_configuration.EnableDebugMode) connectionSettings.EnableDebugMode();
+
+            connectionSettings.ThrowExceptions();
+            var client = new ElasticClient(connectionSettings);
+
+            Task.WaitAll(_configuration.IndexMappers.Select(m => m.EnureIndexExistsAsync(_configuration.EnvironmentName, client)).ToArray());
 
             return client;
         }
 
-        public void Dispose()
+        private static ConnectionSettings GetCloudBasedConnectionSettings(ElasticClientConfiguration configuration)
         {
-            ConnectionSettings.Dispose();
-
-            foreach (var indexMapper in IndexMappers)
+            if (string.IsNullOrEmpty(configuration.CloudId)
+                || string.IsNullOrWhiteSpace(configuration.Username)
+                || string.IsNullOrWhiteSpace(configuration.Password))
             {
-                indexMapper.Dispose();
+                throw new Exception("The cloudid, username and password is required in the search configuration.");
             }
+
+            var credentials = new BasicAuthenticationCredentials(configuration.Username, configuration.Password);
+            var connectionPool = new CloudConnectionPool(configuration.CloudId, credentials);
+
+            return new ConnectionSettings(connectionPool);
+        }
+
+        private static ConnectionSettings GetSingleNodeBasedConnectionSettings(ElasticClientConfiguration configuration)
+        {
+            var connectionPool = new SingleNodeConnectionPool(configuration.HostUri);
+            var connectionSettings = new ConnectionSettings(connectionPool);
+            connectionSettings.BasicAuthentication(configuration.Username, configuration.Password);
+            return connectionSettings;
         }
     }
 }
