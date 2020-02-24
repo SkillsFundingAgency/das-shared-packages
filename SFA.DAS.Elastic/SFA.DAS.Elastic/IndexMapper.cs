@@ -14,7 +14,7 @@ namespace SFA.DAS.Elastic
         public async Task EnureIndexExistsAsync(string environmentName, IElasticClient client)
         {
             var type = typeof(T);
-            var indexName = $"{environmentName.ToLower()}-{IndexName}";
+            var indexName = string.IsNullOrEmpty(environmentName) ? IndexName : $"{environmentName.ToLower()}-{IndexName}";
 
             await _mutex.WaitAsync();
 
