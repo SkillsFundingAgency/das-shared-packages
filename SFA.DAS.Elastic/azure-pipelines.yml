@@ -18,7 +18,7 @@ pool:
 
 variables:
   BuildConfiguration: 'Release'
-  Build.MajorNumber: '1'
+  Build.MajorNumber: '2'
   Build.MinorNumber: '0'
 
 steps:
@@ -39,7 +39,7 @@ steps:
   inputs:
     command: test
     projects: SFA.DAS.Elastic/SFA.DAS.Elastic.UnitTests/SFA.DAS.Elastic.UnitTests.csproj
-    arguments: '--configuration $(buildConfiguration) --no-build'
+    arguments: '--configuration $(BuildConfiguration) --no-build'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
