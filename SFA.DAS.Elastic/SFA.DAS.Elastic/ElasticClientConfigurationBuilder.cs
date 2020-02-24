@@ -8,15 +8,15 @@ namespace SFA.DAS.Elastic
 {
     public class ElasticClientConfiguration : IDisposable
     {
-        public Action<IApiCallDetails> OnRequestCompleted { get; private set; }
-        public string Username { get; private set; }
-        public string Password { get; private set; }
-        public string EnvironmentName { get; private set; }
-        public Uri HostUri { get; private set; }
-        public string CloudId { get; private set; }
-        public bool EnableDebugMode { get; private set; }
-        public List<IIndexMapper> IndexMappers { get; internal set; } = new List<IIndexMapper>();
-        public bool IsCloudConnectionConfigured => string.IsNullOrWhiteSpace(CloudId) == false;
+        internal Action<IApiCallDetails> OnRequestCompleted { get; private set; }
+        internal string Username { get; private set; }
+        internal string Password { get; private set; }
+        internal string EnvironmentName { get; private set; }
+        internal Uri HostUri { get; private set; }
+        internal string CloudId { get; private set; }
+        internal bool EnableDebugMode { get; private set; }
+        internal List<IIndexMapper> IndexMappers { get; set; } = new List<IIndexMapper>();
+        internal bool IsCloudConnectionConfigured => string.IsNullOrWhiteSpace(CloudId) == false;
 
         public ElasticClientConfiguration OnRequestCompletedCallbackAction(Action<IApiCallDetails> handler)
         {
