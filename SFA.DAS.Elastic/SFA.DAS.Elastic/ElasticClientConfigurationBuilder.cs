@@ -30,7 +30,7 @@ namespace SFA.DAS.Elastic
             return this;
         }
 
-        public ElasticClientConfiguration SuffixEnvironmentNameToIndex(string environmentName = "local")
+        public ElasticClientConfiguration SuffixEnvironmentNameToIndex(string environmentName)
         {
             if (string.IsNullOrWhiteSpace(environmentName))
             {
