@@ -75,10 +75,7 @@
                 .Callback<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchReponse.Object);
 
-            var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<LocationSearchClientConfiguration>())).Returns(mockClient.Object);
-
-            var sut = new LocationSearchClient(factory.Object, new LocationSearchClientConfiguration());
+            var sut = new LocationSearchClient(mockClient.Object, new LocationSearchClientConfiguration());
 
             var response = searchFunc(sut);
 

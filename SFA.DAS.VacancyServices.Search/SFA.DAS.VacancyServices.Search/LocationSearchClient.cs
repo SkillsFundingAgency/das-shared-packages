@@ -9,17 +9,12 @@
     public class LocationSearchClient : ILocationSearchClient
     {
         public const int MaxResults = 50;
-        private readonly IElasticSearchFactory _elasticSearchFactory;
+        private readonly IElasticClient _elasticClient;
         private readonly LocationSearchClientConfiguration _config;
 
-        public LocationSearchClient(LocationSearchClientConfiguration config)
-            : this(new ElasticSearchFactory(), config)
+        internal LocationSearchClient(IElasticClient elasticClient, LocationSearchClientConfiguration config)
         {
-        }
-
-        internal LocationSearchClient(IElasticSearchFactory elasticSearchFactory, LocationSearchClientConfiguration config)
-        {
-            _elasticSearchFactory = elasticSearchFactory;
+            _elasticClient = elasticClient;
             _config = config;
         }
 
@@ -43,10 +38,9 @@
 
         public virtual IEnumerable<LocationSearchResult> SearchExact(string placeName, int maxResults = MaxResults)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
             var term = placeName.ToLowerInvariant();
 
-            var exactMatchResults = client.Search<LocationSearchResult>(s => s
+            var exactMatchResults = _elasticClient.Search<LocationSearchResult>(s => s
                 .Index(_config.Index)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
@@ -62,10 +56,9 @@
 
         public virtual IEnumerable<LocationSearchResult> SearchPrefixed(string placeName, int maxResults = MaxResults)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
             var term = placeName.ToLowerInvariant();
 
-            var prefixMatchResults = client.Search<LocationSearchResult>(s => s
+            var prefixMatchResults = _elasticClient.Search<LocationSearchResult>(s => s
                 .Index(_config.Index)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
@@ -80,10 +73,9 @@
 
         public virtual IEnumerable<LocationSearchResult> SearchFuzzy(string placeName, int maxResults = MaxResults)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
             var term = placeName.ToLowerInvariant();
 
-            var fuzzyMatchResults = client.Search<LocationSearchResult>(s => s
+            var fuzzyMatchResults = _elasticClient.Search<LocationSearchResult>(s => s
                 .Index(_config.Index)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 =>
