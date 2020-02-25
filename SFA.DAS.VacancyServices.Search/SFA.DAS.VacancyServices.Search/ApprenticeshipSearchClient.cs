@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Elasticsearch.Net;
     using Entities;
     using Nest;
     using Responses;
@@ -17,19 +16,14 @@
         private const int ScrollSize = 100;
         private const string ScrollTimeout = "5s";
 
-        private readonly IElasticSearchFactory _elasticSearchFactory;
+        private readonly IElasticClient _elasticClient;
         private readonly ApprenticeshipSearchClientConfiguration _config;
         private readonly SearchFactorConfiguration _searchFactorConfiguration;
         private readonly IEnumerable<string> _keywordExcludedTerms;
 
-        public ApprenticeshipSearchClient(ApprenticeshipSearchClientConfiguration config)
-        : this(new ElasticSearchFactory(), config)
+        internal ApprenticeshipSearchClient(IElasticClient elasticClient, ApprenticeshipSearchClientConfiguration config)
         {
-        }
-
-        internal ApprenticeshipSearchClient(IElasticSearchFactory elasticSearchFactory, ApprenticeshipSearchClientConfiguration config)
-        {
-            _elasticSearchFactory = elasticSearchFactory;
+            _elasticClient = elasticClient;
             _config = config;
             _searchFactorConfiguration = GetSearchFactorConfiguration();
             _keywordExcludedTerms = new[] { "apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee" };
@@ -51,9 +45,7 @@
 
         public IEnumerable<int> GetAllVacancyIds()
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
-
-            var scanResults = client.Search<ApprenticeshipSearchResult>(search => search
+            var scanResults = _elasticClient.Search<ApprenticeshipSearchResult>(search => search
                 .Index(_config.Index)
                 .From(0)
                 .Size(ScrollSize)
@@ -65,7 +57,7 @@
 
             while (true)
             {
-                var results = client.Scroll<ApprenticeshipSearchResult>(scrollRequest);
+                var results = _elasticClient.Scroll<ApprenticeshipSearchResult>(scrollRequest);
 
                 if (!results.Documents.Any())
                 {
@@ -93,9 +85,7 @@
 
         private ISearchResponse<ApprenticeshipSearchResult> PerformSearch(ApprenticeshipSearchRequestParameters parameters)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
-
-            var results = client.Search<ApprenticeshipSearchResult>(s =>
+            var results = _elasticClient.Search<ApprenticeshipSearchResult>(s =>
             {
                 s.Index(_config.Index);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
