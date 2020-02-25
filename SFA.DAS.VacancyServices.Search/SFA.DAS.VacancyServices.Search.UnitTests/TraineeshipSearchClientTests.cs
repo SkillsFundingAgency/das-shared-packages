@@ -151,10 +151,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Returns(scrollResponse2.Object)
                 .Returns(scrollResponse3.Object);
 
-            var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
-
-            var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
+            var sut = new TraineeshipSearchClient(mockClient.Object, new TraineeshipSearchClientConfiguration());
 
             var actualResponse = sut.GetAllVacancyIds().ToList();
 
@@ -195,10 +192,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
-            var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<TraineeshipSearchClientConfiguration>())).Returns(mockClient.Object);
-
-            var sut = new TraineeshipSearchClient(factory.Object, new TraineeshipSearchClientConfiguration());
+            var sut = new TraineeshipSearchClient(mockClient.Object, new TraineeshipSearchClientConfiguration());
 
             var response = sut.Search(parameters);
 

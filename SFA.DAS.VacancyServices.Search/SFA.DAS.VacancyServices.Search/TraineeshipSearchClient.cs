@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Elasticsearch.Net;
     using Entities;
     using Nest;
     using Responses;
@@ -15,25 +14,18 @@
         private const int ScrollSize = 100;
         private const string ScrollTimeout = "5s";
 
-        private readonly IElasticSearchFactory _elasticSearchFactory;
+        private readonly IElasticClient _elasticClient;
         private readonly TraineeshipSearchClientConfiguration _config;
 
-        public TraineeshipSearchClient(TraineeshipSearchClientConfiguration config)
-            : this(new ElasticSearchFactory(), config)
+        internal TraineeshipSearchClient(IElasticClient elasticClient, TraineeshipSearchClientConfiguration config)
         {
-        }
-
-        internal TraineeshipSearchClient(IElasticSearchFactory elasticSearchFactory, TraineeshipSearchClientConfiguration config)
-        {
-            _elasticSearchFactory = elasticSearchFactory;
+            _elasticClient = elasticClient;
             _config = config;
         }
 
         public IEnumerable<int> GetAllVacancyIds()
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
-
-            var scanResults = client.Search<TraineeshipSearchResult>(search => search
+            var scanResults = _elasticClient.Search<TraineeshipSearchResult>(search => search
                 .Index(_config.Index)
                 .From(0)
                 .Size(ScrollSize)
@@ -45,7 +37,7 @@
 
             while (true)
             {
-                var results = client.Scroll<TraineeshipSearchResult>(scrollRequest);
+                var results = _elasticClient.Scroll<TraineeshipSearchResult>(scrollRequest);
 
                 if (!results.Documents.Any())
                 {
@@ -69,9 +61,7 @@
 
         private ISearchResponse<TraineeshipSearchResult> PerformSearch(TraineeshipSearchRequestParameters parameters)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config);
-
-            var results = client.Search<TraineeshipSearchResult>(s =>
+            var results = _elasticClient.Search<TraineeshipSearchResult>(s =>
             {
                 s.Index(_config.Index);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);

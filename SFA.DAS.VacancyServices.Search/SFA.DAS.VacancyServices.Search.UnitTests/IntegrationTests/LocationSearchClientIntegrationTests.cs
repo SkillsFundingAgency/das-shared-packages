@@ -1,10 +1,7 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+using SFA.DAS.Elastic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.VacancyServices.Search.UnitTests.IntegrationTests
 {
@@ -13,14 +10,24 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests.IntegrationTests
     {
         [Test]
         [Category("integration")]
-        public async Task GivenASearchCriteriaThatHasRepresentativeDataThenIGetDataReturned()
+        public void GivenASearchCriteriaThatHasRepresentativeDataThenIGetDataReturned()
         {
             var criteria = "cov";
-            var searchClient = new LocationSearchClient(new LocationSearchClientConfiguration()
+
+            var config = new LocationSearchClientConfiguration()
             {
                 HostName = ConfigurationManager.AppSettings.Get("elasticsearchUrl"),
-                Index = ConfigurationManager.AppSettings.Get("elasticsearchIndex")
-            });
+                Index = ConfigurationManager.AppSettings.Get("elasticsearchIndex"),
+                Username = ConfigurationManager.AppSettings.Get("elasticsearchUsername"),
+                Password = ConfigurationManager.AppSettings.Get("elasticsearchPassword"),
+            };
+
+            var client = new ElasticClientConfiguration()
+                .UseSingleNodeConnectionPool(config.HostName, config.Username, config.Password)
+                .CreateClientFactory()
+                .CreateClient();
+
+            var searchClient = new LocationSearchClient(client, config);
 
             var result = searchClient.Search(criteria);
 
