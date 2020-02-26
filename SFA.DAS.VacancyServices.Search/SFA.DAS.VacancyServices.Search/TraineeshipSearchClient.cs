@@ -17,7 +17,7 @@
         private readonly IElasticClient _elasticClient;
         private readonly string _indexName;
 
-        internal TraineeshipSearchClient(IElasticClient elasticClient, string indexName)
+        public TraineeshipSearchClient(IElasticClient elasticClient, string indexName)
         {
             _elasticClient = elasticClient;
             _indexName = indexName;

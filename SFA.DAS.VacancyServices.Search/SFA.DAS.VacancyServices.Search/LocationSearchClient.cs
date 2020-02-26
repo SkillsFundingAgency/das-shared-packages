@@ -12,7 +12,7 @@
         private readonly IElasticClient _elasticClient;
         private readonly string _indexName;
 
-        internal LocationSearchClient(IElasticClient elasticClient, string indexName)
+        public LocationSearchClient(IElasticClient elasticClient, string indexName)
         {
             _elasticClient = elasticClient;
             _indexName = indexName;
