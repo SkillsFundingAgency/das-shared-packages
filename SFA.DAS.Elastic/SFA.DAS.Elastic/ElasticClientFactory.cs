@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Elasticsearch.Net;
 using Nest;
 
@@ -24,9 +22,8 @@ namespace SFA.DAS.Elastic
             if (_configuration.EnableDebugMode) connectionSettings.EnableDebugMode();
 
             connectionSettings.ThrowExceptions();
-            var client = new ElasticClient(connectionSettings);
 
-            Task.WaitAll(_configuration.IndexMappers.Select(m => m.EnureIndexExistsAsync(_configuration.EnvironmentName, client)).ToArray());
+            var client = new ElasticClient(connectionSettings);
 
             return client;
         }
