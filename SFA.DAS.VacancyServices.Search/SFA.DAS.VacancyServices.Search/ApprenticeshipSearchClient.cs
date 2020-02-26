@@ -21,7 +21,7 @@
         private readonly IEnumerable<string> _keywordExcludedTerms;
         private readonly string _indexName;
 
-        internal ApprenticeshipSearchClient(IElasticClient elasticClient, string indexName)
+        public ApprenticeshipSearchClient(IElasticClient elasticClient, string indexName)
         {
             _elasticClient = elasticClient;
             _indexName = indexName;
