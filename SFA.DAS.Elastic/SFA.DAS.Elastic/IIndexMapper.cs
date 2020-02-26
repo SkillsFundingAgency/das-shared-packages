@@ -6,6 +6,6 @@ namespace SFA.DAS.Elastic
 {
     public interface IIndexMapper : IDisposable
     {
-        Task EnureIndexExistsAsync(string environmentName, IElasticClient client);
+        Task EnureIndexExistsAsync(IElasticClient client, string environmentName = "");
     }
 }

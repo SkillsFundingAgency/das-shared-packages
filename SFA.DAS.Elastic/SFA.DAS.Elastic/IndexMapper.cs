@@ -7,14 +7,19 @@ namespace SFA.DAS.Elastic
 {
     public abstract class IndexMapper<T> : IIndexMapper where T : class
     {
-        protected abstract string IndexName { get; }
-        
+        private readonly string _indexName;
+
         private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1, 1);
 
-        public async Task EnureIndexExistsAsync(string environmentName, IElasticClient client)
+        public IndexMapper(string indexName)
+        {
+            _indexName = indexName;
+        }
+
+        public async Task EnureIndexExistsAsync(IElasticClient client, string environmentName = "")
         {
             var type = typeof(T);
-            var indexName = string.IsNullOrEmpty(environmentName) ? IndexName : $"{environmentName.ToLower()}-{IndexName}";
+            var indexName = string.IsNullOrEmpty(environmentName) ? _indexName : $"{environmentName.ToLower()}-{_indexName}";
 
             await _mutex.WaitAsync();
 
