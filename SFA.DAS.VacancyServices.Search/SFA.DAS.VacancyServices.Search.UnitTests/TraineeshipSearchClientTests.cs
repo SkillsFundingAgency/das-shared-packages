@@ -151,7 +151,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Returns(scrollResponse2.Object)
                 .Returns(scrollResponse3.Object);
 
-            var sut = new TraineeshipSearchClient(mockClient.Object, new TraineeshipSearchClientConfiguration());
+            var sut = new TraineeshipSearchClient(mockClient.Object, "traineeships");
 
             var actualResponse = sut.GetAllVacancyIds().ToList();
 
@@ -192,7 +192,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
-            var sut = new TraineeshipSearchClient(mockClient.Object, new TraineeshipSearchClientConfiguration());
+            var sut = new TraineeshipSearchClient(mockClient.Object, "traineeships");
 
             var response = sut.Search(parameters);
 

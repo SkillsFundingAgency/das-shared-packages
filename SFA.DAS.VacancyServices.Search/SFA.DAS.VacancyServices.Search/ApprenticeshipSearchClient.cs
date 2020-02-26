@@ -17,14 +17,14 @@
         private const string ScrollTimeout = "5s";
 
         private readonly IElasticClient _elasticClient;
-        private readonly ApprenticeshipSearchClientConfiguration _config;
         private readonly SearchFactorConfiguration _searchFactorConfiguration;
         private readonly IEnumerable<string> _keywordExcludedTerms;
+        private readonly string _indexName;
 
-        internal ApprenticeshipSearchClient(IElasticClient elasticClient, ApprenticeshipSearchClientConfiguration config)
+        internal ApprenticeshipSearchClient(IElasticClient elasticClient, string indexName)
         {
             _elasticClient = elasticClient;
-            _config = config;
+            _indexName = indexName;
             _searchFactorConfiguration = GetSearchFactorConfiguration();
             _keywordExcludedTerms = new[] { "apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee" };
         }
@@ -46,7 +46,7 @@
         public IEnumerable<int> GetAllVacancyIds()
         {
             var scanResults = _elasticClient.Search<ApprenticeshipSearchResult>(search => search
-                .Index(_config.Index)
+                .Index(_indexName)
                 .From(0)
                 .Size(ScrollSize)
                 .MatchAll()
@@ -87,7 +87,7 @@
         {
             var results = _elasticClient.Search<ApprenticeshipSearchResult>(s =>
             {
-                s.Index(_config.Index);
+                s.Index(_indexName);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
                 s.Take(parameters.PageSize);
 

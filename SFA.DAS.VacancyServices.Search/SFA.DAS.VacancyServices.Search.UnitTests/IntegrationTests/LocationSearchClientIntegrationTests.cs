@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.Elastic;
+using System;
 using System.Configuration;
 using System.Linq;
 
@@ -14,20 +15,16 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests.IntegrationTests
         {
             var criteria = "cov";
 
-            var config = new LocationSearchClientConfiguration()
-            {
-                HostName = ConfigurationManager.AppSettings.Get("elasticsearchUrl"),
-                Index = ConfigurationManager.AppSettings.Get("elasticsearchIndex"),
-                Username = ConfigurationManager.AppSettings.Get("elasticsearchUsername"),
-                Password = ConfigurationManager.AppSettings.Get("elasticsearchPassword"),
-            };
+            var hostName = ConfigurationManager.AppSettings.Get("elasticsearchUrl");
+            var index = ConfigurationManager.AppSettings.Get("elasticsearchIndex");
+            var username = ConfigurationManager.AppSettings.Get("elasticsearchUsername");
+            var password = ConfigurationManager.AppSettings.Get("elasticsearchPassword");
 
-            var client = new ElasticClientConfiguration()
-                .UseSingleNodeConnectionPool(config.HostName, config.Username, config.Password)
+            var client = new ElasticClientConfiguration(new Uri(hostName), username, password)
                 .CreateClientFactory()
                 .CreateClient();
 
-            var searchClient = new LocationSearchClient(client, config);
+            var searchClient = new LocationSearchClient(client, index);
 
             var result = searchClient.Search(criteria);
 

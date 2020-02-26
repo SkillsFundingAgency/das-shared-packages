@@ -75,7 +75,7 @@
                 .Callback<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchReponse.Object);
 
-            var sut = new LocationSearchClient(mockClient.Object, new LocationSearchClientConfiguration());
+            var sut = new LocationSearchClient(mockClient.Object, "locations");
 
             var response = searchFunc(sut);
 

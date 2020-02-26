@@ -15,18 +15,18 @@
         private const string ScrollTimeout = "5s";
 
         private readonly IElasticClient _elasticClient;
-        private readonly TraineeshipSearchClientConfiguration _config;
+        private readonly string _indexName;
 
-        internal TraineeshipSearchClient(IElasticClient elasticClient, TraineeshipSearchClientConfiguration config)
+        internal TraineeshipSearchClient(IElasticClient elasticClient, string indexName)
         {
             _elasticClient = elasticClient;
-            _config = config;
+            _indexName = indexName;
         }
 
         public IEnumerable<int> GetAllVacancyIds()
         {
             var scanResults = _elasticClient.Search<TraineeshipSearchResult>(search => search
-                .Index(_config.Index)
+                .Index(_indexName)
                 .From(0)
                 .Size(ScrollSize)
                 .MatchAll()
@@ -63,7 +63,7 @@
         {
             var results = _elasticClient.Search<TraineeshipSearchResult>(s =>
             {
-                s.Index(_config.Index);
+                s.Index(_indexName);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
                 s.Take(parameters.PageSize);
 
