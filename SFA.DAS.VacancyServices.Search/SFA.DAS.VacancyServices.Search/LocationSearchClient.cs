@@ -10,12 +10,12 @@
     {
         public const int MaxResults = 50;
         private readonly IElasticClient _elasticClient;
-        private readonly LocationSearchClientConfiguration _config;
+        private readonly string _indexName;
 
-        internal LocationSearchClient(IElasticClient elasticClient, LocationSearchClientConfiguration config)
+        internal LocationSearchClient(IElasticClient elasticClient, string indexName)
         {
             _elasticClient = elasticClient;
-            _config = config;
+            _indexName = indexName;
         }
 
         public LocationSearchResponse Search(string placeName, int maxResults = MaxResults)
@@ -41,7 +41,7 @@
             var term = placeName.ToLowerInvariant();
 
             var exactMatchResults = _elasticClient.Search<LocationSearchResult>(s => s
-                .Index(_config.Index)
+                .Index(_indexName)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
                             .Match(m => m.Field(f => f.Name).Query(term)))
@@ -59,7 +59,7 @@
             var term = placeName.ToLowerInvariant();
 
             var prefixMatchResults = _elasticClient.Search<LocationSearchResult>(s => s
-                .Index(_config.Index)
+                .Index(_indexName)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 => q2
                             .Prefix(p => p.Field(n => n.Name).Value(term)))
@@ -76,7 +76,7 @@
             var term = placeName.ToLowerInvariant();
 
             var fuzzyMatchResults = _elasticClient.Search<LocationSearchResult>(s => s
-                .Index(_config.Index)
+                .Index(_indexName)
                 .Query(q1 => q1
                     .FunctionScore(fs => fs.Query(q2 =>
                             q2.Fuzzy(f => f.PrefixLength(1).Field(n => n.Name).Value(term).Boost(2.0)) ||

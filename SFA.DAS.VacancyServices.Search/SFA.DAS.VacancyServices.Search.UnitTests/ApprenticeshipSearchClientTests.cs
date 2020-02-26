@@ -362,7 +362,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Returns(scrollResponse2.Object)
                 .Returns(scrollResponse3.Object);
 
-            var sut = new ApprenticeshipSearchClient(mockClient.Object, new ApprenticeshipSearchClientConfiguration());
+            var sut = new ApprenticeshipSearchClient(mockClient.Object, "apprenticeships");
 
             var actualResponse = sut.GetAllVacancyIds().ToList();
 
@@ -405,7 +405,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Callback<Func<SearchDescriptor<ApprenticeshipSearchResult>, ISearchRequest>>(a => actualSearchDescriptorFunc = a)
                 .Returns(searchResponse.Object);
 
-            var sut = new ApprenticeshipSearchClient(mockClient.Object, new ApprenticeshipSearchClientConfiguration());
+            var sut = new ApprenticeshipSearchClient(mockClient.Object, "apprenticeships");
 
             var response = sut.Search(parameters);
 
