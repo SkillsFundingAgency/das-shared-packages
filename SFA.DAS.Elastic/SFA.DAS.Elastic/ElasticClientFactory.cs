@@ -13,6 +13,12 @@ namespace SFA.DAS.Elastic
             _configuration = configuration;
         }
 
+        public IElasticClient CreateClient(Action<IApiCallDetails> callbackAction)
+        {
+            _configuration.OnRequestCompleted = callbackAction;
+            return CreateClient();
+        }
+
         public IElasticClient CreateClient()
         {
             var connectionSettings = _configuration.IsCloudConnectionConfigured ? GetCloudBasedConnectionSettings(_configuration) : GetSingleNodeBasedConnectionSettings(_configuration);
