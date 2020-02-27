@@ -3,6 +3,7 @@
     using Entities;
     using Nest;
     using Responses;
+    using SFA.DAS.Elastic;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -12,9 +13,9 @@
         private readonly IElasticClient _elasticClient;
         private readonly string _indexName;
 
-        public LocationSearchClient(IElasticClient elasticClient, string indexName)
+        public LocationSearchClient(IElasticClientFactory elasticClientFactory, string indexName)
         {
-            _elasticClient = elasticClient;
+            _elasticClient = elasticClientFactory.CreateClient();
             _indexName = indexName;
         }
 

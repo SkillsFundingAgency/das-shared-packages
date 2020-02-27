@@ -7,6 +7,8 @@
     using Entities;
     using Nest;
     using Responses;
+    using SFA.DAS.Elastic;
+    using SFA.DAS.NLog.Logger;
 
     public class ApprenticeshipSearchClient : IApprenticeshipSearchClient
     {
@@ -21,9 +23,9 @@
         private readonly IEnumerable<string> _keywordExcludedTerms;
         private readonly string _indexName;
 
-        public ApprenticeshipSearchClient(IElasticClient elasticClient, string indexName)
+        public ApprenticeshipSearchClient(IElasticClientFactory elasticClientFactory, string indexName, ILog logger = null)
         {
-            _elasticClient = elasticClient;
+            _elasticClient = elasticClientFactory.CreateClient(r => logger?.Debug(r.DebugInformation));
             _indexName = indexName;
             _searchFactorConfiguration = GetSearchFactorConfiguration();
             _keywordExcludedTerms = new[] { "apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee" };

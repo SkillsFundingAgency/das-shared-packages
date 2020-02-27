@@ -6,6 +6,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Elasticsearch.Net;
     using Entities;
     using FluentAssertions;
     using FluentAssertions.Json;
@@ -13,6 +14,8 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
     using Nest;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
+    using SFA.DAS.Elastic;
+    using SFA.DAS.NLog.Logger;
 
     public class TraineeshipSearchClientTests
     {
@@ -151,7 +154,12 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Returns(scrollResponse2.Object)
                 .Returns(scrollResponse3.Object);
 
-            var sut = new TraineeshipSearchClient(mockClient.Object, "traineeships");
+            var mockFactory = new Mock<IElasticClientFactory>();
+            mockFactory.Setup(f => f.CreateClient(It.IsAny<Action<IApiCallDetails>>())).Returns(mockClient.Object);
+
+            var mockLogger = new Mock<ILog>();
+
+            var sut = new TraineeshipSearchClient(mockFactory.Object, "traineeships", mockLogger.Object);
 
             var actualResponse = sut.GetAllVacancyIds().ToList();
 
@@ -192,7 +200,12 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 .Callback<Func<SearchDescriptor<TraineeshipSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchResponse.Object);
 
-            var sut = new TraineeshipSearchClient(mockClient.Object, "traineeships");
+            var mockFactory = new Mock<IElasticClientFactory>();
+            mockFactory.Setup(f => f.CreateClient(It.IsAny<Action<IApiCallDetails>>())).Returns(mockClient.Object);
+
+            var mockLogger = new Mock<ILog>();
+
+            var sut = new TraineeshipSearchClient(mockFactory.Object, "traineeships", mockLogger.Object);
 
             var response = sut.Search(parameters);
 

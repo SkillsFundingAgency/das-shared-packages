@@ -7,6 +7,8 @@
     using Entities;
     using Nest;
     using Responses;
+    using SFA.DAS.NLog.Logger;
+    using SFA.DAS.Elastic;
 
     public class TraineeshipSearchClient : ITraineeshipSearchClient
     {
@@ -17,9 +19,9 @@
         private readonly IElasticClient _elasticClient;
         private readonly string _indexName;
 
-        public TraineeshipSearchClient(IElasticClient elasticClient, string indexName)
+        public TraineeshipSearchClient(IElasticClientFactory elasticClientFactory, string indexName, ILog logger = null)
         {
-            _elasticClient = elasticClient;
+            _elasticClient = elasticClientFactory.CreateClient(r => logger?.Debug(r.DebugInformation));
             _indexName = indexName;
         }
 

@@ -11,13 +11,18 @@
     using Nest;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
+    using SFA.DAS.Elastic;
+    using SFA.DAS.NLog.Logger;
 
     public class LocationClientTests
     {
         [Test]
         public void Search_ShouldReturnOrderedResults()
         {
-            LocationSearchClient sut = new TestLocationSearchClient();
+            var mockClient = new Mock<IElasticClient>();
+            var mockFactory = new Mock<IElasticClientFactory>();
+            mockFactory.Setup(f => f.CreateClient()).Returns(mockClient.Object);
+            LocationSearchClient sut = new TestLocationSearchClient(mockFactory.Object);
 
             const string searchTerm = "coventry";
 
@@ -75,7 +80,10 @@
                 .Callback<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchReponse.Object);
 
-            var sut = new LocationSearchClient(mockClient.Object, "locations");
+            var mockFactory = new Mock<IElasticClientFactory>();
+            mockFactory.Setup(f => f.CreateClient()).Returns(mockClient.Object);
+
+            var sut = new LocationSearchClient(mockFactory.Object, "locations");
 
             var response = searchFunc(sut);
 

@@ -21,8 +21,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests.IntegrationTests
             var password = ConfigurationManager.AppSettings.Get("elasticsearchPassword");
 
             var client = new ElasticClientConfiguration(new Uri(hostName), username, password)
-                .CreateClientFactory()
-                .CreateClient();
+                .CreateClientFactory();
 
             var searchClient = new LocationSearchClient(client, index);
 
