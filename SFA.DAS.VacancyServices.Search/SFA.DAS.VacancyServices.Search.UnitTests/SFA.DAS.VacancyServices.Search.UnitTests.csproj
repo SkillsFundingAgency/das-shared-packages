@@ -70,7 +70,7 @@
       <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.Elastic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Elastic.2.0.11\lib\netstandard2.0\SFA.DAS.Elastic.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Elastic.2.0.12\lib\netstandard2.0\SFA.DAS.Elastic.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.NLog.Logger, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Logger.1.1.5\lib\net45\SFA.DAS.NLog.Logger.dll</HintPath>

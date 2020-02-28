@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="NEST" Version="7.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SFA.DAS.Elastic" Version="2.0.11" />
+    <PackageReference Include="SFA.DAS.Elastic" Version="2.0.12" />
     <PackageReference Include="SFA.DAS.NLog.Logger" Version="1.1.5" />
   </ItemGroup>
 </Project>
