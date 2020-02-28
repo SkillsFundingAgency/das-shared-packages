@@ -8,7 +8,7 @@ namespace SFA.DAS.Elastic
     {
         internal readonly ElasticClientConfiguration _configuration;
 
-        internal ElasticClientFactory(ElasticClientConfiguration configuration)
+        public ElasticClientFactory(ElasticClientConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -16,6 +16,7 @@ namespace SFA.DAS.Elastic
         public IElasticClient CreateClient(Action<IApiCallDetails> callbackAction)
         {
             _configuration.OnRequestCompleted = callbackAction;
+            _configuration.EnableDebugMode = true;
             return CreateClient();
         }
 
