@@ -26,8 +26,6 @@ namespace SFA.DAS.Elastic.UnitTests
             protected override void When()
             {
                 _factory = new ElasticClientConfiguration(new Uri(ElasticUrl), ElasticUsername, ElasticPassword)
-                    .SetOnRequestCompletedCallbackAction(_onRequestCompleted.Object)
-                    .SetDebugMode()
                     .CreateClientFactory() as ElasticClientFactory;
             }
 
@@ -37,8 +35,6 @@ namespace SFA.DAS.Elastic.UnitTests
                 Assert.That(_factory, Is.Not.Null);
                 Assert.That(_factory._configuration.Username, Is.EqualTo(ElasticUsername));
                 Assert.That(_factory._configuration.Password.Length, Is.EqualTo(ElasticPassword.Length));
-                Assert.That(_factory._configuration.OnRequestCompleted, Is.Not.Null);
-                Assert.That(_factory._configuration.EnableDebugMode, Is.True);
             }
         }
 
