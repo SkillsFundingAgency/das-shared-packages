@@ -9,9 +9,9 @@ namespace SFA.DAS.Elastic
         public string CloudId { get; private set; }
         public string Username { get; private set; }
         public string Password { get; private set; }
-        public Action<IApiCallDetails> OnRequestCompleted { get; set; }
-        public bool EnableDebugMode { get; set; }
         public bool IsCloudConnectionConfigured => string.IsNullOrWhiteSpace(CloudId) == false;
+        internal Action<IApiCallDetails> OnRequestCompleted { get; set; }
+        internal bool EnableDebugMode { get; set; }
 
         public ElasticClientConfiguration(Uri hostUri)
         {
