@@ -16,28 +16,6 @@ namespace SFA.DAS.Elastic.UnitTests
         private const string ElasticUsername = "elastic";
         private const string ElasticPassword = "changeme";
 
-        public class When_using_extensions_to_build_configuration : Test
-        {
-            private ElasticClientFactory _factory;
-            private readonly Mock<Action<IApiCallDetails>> _onRequestCompleted = new Mock<Action<IApiCallDetails>>();
-
-            protected override void Given() { }
-
-            protected override void When()
-            {
-                _factory = new ElasticClientConfiguration(new Uri(ElasticUrl), ElasticUsername, ElasticPassword)
-                    .CreateClientFactory() as ElasticClientFactory;
-            }
-
-            [Test]
-            public void Then_should_populate_configuration_correctly()
-            {
-                Assert.That(_factory, Is.Not.Null);
-                Assert.That(_factory._configuration.Username, Is.EqualTo(ElasticUsername));
-                Assert.That(_factory._configuration.Password.Length, Is.EqualTo(ElasticPassword.Length));
-            }
-        }
-
         public class When_configuring_with_index_mappers : Test
         {
             private readonly IEnumerable<Mock<IIndexMapper>> _mappers = new List<Mock<IIndexMapper>>
@@ -46,10 +24,10 @@ namespace SFA.DAS.Elastic.UnitTests
                 new Mock<IIndexMapper>(),
                 new Mock<IIndexMapper>()
             };
-            protected override void Given()
-            {
 
-            }
+            protected override void Given()
+            {}
+
             protected override void When()
             {
                 new ElasticClientConfiguration(new Uri(ElasticUrl))
@@ -74,8 +52,7 @@ namespace SFA.DAS.Elastic.UnitTests
             private List<IIndexMapper> _indexMappers;
 
             protected override void Given()
-            {
-            }
+            {}
 
             protected override void When()
             {
@@ -94,13 +71,10 @@ namespace SFA.DAS.Elastic.UnitTests
         public class IndexMapperStub : IndexMapper<Stub>
         {
             public IndexMapperStub() : base("stubs")
-            {
-
-            }
+            {}
 
             protected override void Map(TypeMappingDescriptor<Stub> mapper)
-            {
-            }
+            {}
         }
 
         public class Stub
