@@ -1,5 +1,7 @@
 ﻿@using SFA.DAS.Provider.Shared.UI.Extensions
 @using SFA.DAS.ProviderUrlHelper.Core
+@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator
 
 @{
     var enableGoogleAnalytics = ViewData.EnableGoogleAnalytics();
@@ -108,6 +110,11 @@
                                         Privacy policy
                                     </a>*@
                             </li>
+                            
+                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("home/help" )">Help</a></li>
+                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank" aria-label="Give feedback">Feedback </a></li>
+                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("home/privacy")">Privacy and cookies</a></li>
+                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("home/terms")">Terms and conditions</a></li>
                             <li class="govuk-footer__inline-list-item">Built by the <a href="http://gov.uk/sfa" target="_blank" class="govuk-footer__link">Education and Skills Funding Agency</a></li>
                         </ul>
                         <svg role="presentation" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 483.2 195.7" height="17" width="41">
