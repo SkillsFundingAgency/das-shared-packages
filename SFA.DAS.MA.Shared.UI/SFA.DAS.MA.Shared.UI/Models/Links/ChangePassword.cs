@@ -2,7 +2,7 @@
 {
     public class ChangePassword : Link
     {
-        public ChangePassword(string href) : base(href)
+        public ChangePassword(string href, string @class = "") : base(href, @class: @class)
         {
         }
 

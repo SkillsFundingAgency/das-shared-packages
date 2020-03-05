@@ -2,13 +2,13 @@
 {
     public class NotificationSettings : Link
     {
-        public NotificationSettings(string href) : base(href)
+        public NotificationSettings(string href, string @class = "") : base(href, @class: @class)
         {
         }
 
         public override string Render()
         {
-            return $"<a href = \"{Href}\" class=\"sub-menu-item\">Notification settings</a>";
+            return $"<a href = \"{Href}\" class=\"sub-menu-item\" class=\"{Class}\">Notification settings</a>";
         }
     }
 }

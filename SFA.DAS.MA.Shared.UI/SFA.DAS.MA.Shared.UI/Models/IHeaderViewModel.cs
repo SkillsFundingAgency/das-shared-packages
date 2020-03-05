@@ -10,5 +10,6 @@ namespace SFA.DAS.MA.Shared.UI.Models
         IUserContext UserContext { get; }
         void HideMenu();
         void SelectMenu(string menu);
+        bool UseLegacyStyles { get; }
     }
 }

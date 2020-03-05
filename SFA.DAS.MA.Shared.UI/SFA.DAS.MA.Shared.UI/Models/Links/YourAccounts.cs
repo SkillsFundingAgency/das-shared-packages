@@ -2,7 +2,7 @@
 {
     public class YourAccounts : Link
     {
-        public YourAccounts(string href) : base(href)
+        public YourAccounts(string href, string @class = "") : base(href, @class: @class)
         {
         }
 

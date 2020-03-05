@@ -2,13 +2,13 @@
 {
     public class BuiltBy : Link
     {
-        public BuiltBy(string href) : base(href)
+        public BuiltBy(string href, string @class = "") : base(href, @class: @class)
         {        
         }
 
         public override string Render()
         {
-            return $"<a href = \"{Href}\" target=\"_blank\">Education and Skills Funding Agency</a>";
+            return $"<a href = \"{Href}\" target=\"_blank\" class=\"{Class}\">Education and Skills Funding Agency</a>";
         }
     }
 }

@@ -2,73 +2,144 @@
 @model SFA.DAS.MA.Shared.UI.Models.IHeaderViewModel
 @using SFA.DAS.MA.Shared.UI.Models.Links
 
-<header role="banner" id="global-header" class="with-proposition">
-    <div class="header-wrapper">
-        <div class="header-global">
-            <div class="header-logo">
-                @Html.Raw(Model.RenderLink<GovUk>())
+@if (Model.UseLegacyStyles)
+{
+    <header role="banner" id="global-header" class="with-proposition">
+        <div class="header-wrapper">
+            <div class="header-global">
+                <div class="header-logo">
+                    @Html.Raw(Model.RenderLink<GovUk>())
+                </div>
+            </div>
+            <div class="header-proposition">
+                <div class="content">
+                    @Html.Raw(Model.RenderLink<ManageApprenticeships>())
+                </div>
             </div>
         </div>
-        <div class="header-proposition">
-            <div class="content">
+    </header>
+    <div id="floating-menu-holder">
+        <div class="account-information floating-menu" role="navigation">
+            <div class="js-float">
+                <p class="floating-head-text">Your employer account </p>
+                <nav id="user-nav">
+                    <ul>
+                        @Html.Raw(Model.RenderListItemLink<Help>())
+                        @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
+                        {
+                            <li class="has-sub-menu">
+                                <a href="/" role="menuitem">Settings</a>
+                                <ul role="menu" class="js-hidden" id="settings-menu">
+                                    @if (!Model.MenuIsHidden)
+                                    {
+                                        @Html.Raw(Model.RenderListItemLink<YourAccounts>())
+                                        @Html.Raw(Model.RenderListItemLink<RenameAccount>())
+                                    }
+                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>())
+                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>())
+                                    @if (!Model.MenuIsHidden)
+                                    {
+                                        @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
+                                    }
+                                </ul>
+                            </li>
+                            @Html.Raw(Model.RenderListItemLink<SignOut>())
+                        }
+                        else
+                        {
+                            @Html.Raw(Model.RenderListItemLink<SignIn>())
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
+    {
+        if (!Model.MenuIsHidden)
+        {
+            <div class="header-organisation" role="navigation">
+                <nav class="header-inner">
+                    <ul id="global-nav-links">
+                        @Html.Raw(Model.RenderListItemLink<Home>(Model.SelectedMenu?.ToLower() == "home"))
+                        @Html.Raw(Model.RenderListItemLink<Finance>(Model.SelectedMenu?.ToLower() == "finance"))
+                        @Html.Raw(Model.RenderListItemLink<Recruitment>(Model.SelectedMenu?.ToLower() == "recruitment"))
+                        @Html.Raw(Model.RenderListItemLink<Apprentices>(Model.SelectedMenu?.ToLower() == "employercommitments"))
+                        @Html.Raw(Model.RenderListItemLink<YourTeam>(Model.SelectedMenu?.ToLower() == "team"))
+                        @Html.Raw(Model.RenderListItemLink<YourOrganisations>(Model.SelectedMenu?.ToLower() == "organisations"))
+                        @Html.Raw(Model.RenderListItemLink<PayeSchemes>(Model.SelectedMenu?.ToLower() == "paye"))
+                    </ul>
+                </nav>
+            </div>
+        }
+    }
+}
+else
+{
+    <header class="govuk-header " role="banner" data-module="header">
+        <div class="govuk-header__container govuk-width-container">
+            <div class="govuk-header__logo">
+                @Html.Raw(Model.RenderLink<GovUk>())
+            </div>
+            <div class="govuk-header__content">
                 @Html.Raw(Model.RenderLink<ManageApprenticeships>())
             </div>
         </div>
-    </div>
-</header>
-<div id="floating-menu-holder">
-    <div class="account-information floating-menu" role="navigation">
-        <div class="js-float">
-            <p class="floating-head-text">Your employer account </p>
-            <nav id="user-nav">
-                <ul>
-                    @Html.Raw(Model.RenderListItemLink<Help>())
-                    @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
-                    {
-                        <li class="has-sub-menu">
-                            <a href="/" role="menuitem">Settings</a>
-                            <ul role="menu" class="js-hidden" id="settings-menu">
-                                @if (!Model.MenuIsHidden)
-                                {
-                                    @Html.Raw(Model.RenderListItemLink<YourAccounts>())
-                                    @Html.Raw(Model.RenderListItemLink<RenameAccount>())
-                                }
-                                @Html.Raw(Model.RenderListItemLink<ChangePassword>())
-                                @Html.Raw(Model.RenderListItemLink<ChangeEmail>())
-                                @if (!Model.MenuIsHidden)
-                                {
-                                    @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
-                                }
-                            </ul>
-                        </li>
-                        @Html.Raw(Model.RenderListItemLink<SignOut>())
-                    }
-                    else
-                    {
-                        @Html.Raw(Model.RenderListItemLink<SignIn>())
-                    }
-                </ul>
-            </nav>
+    </header>
+    <div id="floating-menu-holder">
+        <div class="account-information floating-menu" role="navigation">
+            <div class="js-float">
+                <p class="floating-head-text">Your employer account</p>
+                <nav id="user-nav">
+                    <ul role="menubar">
+                        @Html.Raw(Model.RenderListItemLink<Help>())
+                        @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
+                        {
+                            <li class="has-sub-menu">
+                                <a href="/" role="menuitem" class="menu-main">Settings</a>
+                                <ul role="menu" id="settings-menu" class="js-hidden">
+                                    @if (!Model.MenuIsHidden)
+                                    {
+                                        @Html.Raw(Model.RenderListItemLink<YourAccounts>())
+                                        @Html.Raw(Model.RenderListItemLink<RenameAccount>())
+                                    }
+                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>())
+                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>())
+                                    @if (!Model.MenuIsHidden)
+                                    {
+                                        @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
+                                    }
+                                </ul>
+                            </li>
+                            @Html.Raw(Model.RenderListItemLink<SignOut>())
+                        }
+                        else
+                        {
+                            @Html.Raw(Model.RenderListItemLink<SignIn>())
+                        }
+                    </ul>
+                </nav>
+            </div>
         </div>
-    </div>
-</div>
-
-@if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
-{
-    if (!Model.MenuIsHidden)
+    </div> <!--/floating-menu-holder-->
+    if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
     {
-        <div class="header-organisation" role="navigation">
-            <nav class="header-inner">
-                <ul id="global-nav-links">
-                    @Html.Raw(Model.RenderListItemLink<Home>(Model.SelectedMenu?.ToLower() == "home"))
-                    @Html.Raw(Model.RenderListItemLink<Finance>(Model.SelectedMenu?.ToLower() == "finance"))
-                    @Html.Raw(Model.RenderListItemLink<Recruitment>())
-                    @Html.Raw(Model.RenderListItemLink<Apprentices>(Model.SelectedMenu?.ToLower() == "employercommitments"))
-                    @Html.Raw(Model.RenderListItemLink<YourTeam>(Model.SelectedMenu?.ToLower() == "team"))
-                    @Html.Raw(Model.RenderListItemLink<YourOrganisations>(Model.SelectedMenu?.ToLower() == "organisations"))
-                    @Html.Raw(Model.RenderListItemLink<PayeSchemes>(Model.SelectedMenu?.ToLower() == "paye"))
-                </ul>
-            </nav>
-        </div>
+        if (!Model.MenuIsHidden)
+        {
+            <div class="header-organisation" role="navigation">
+                <nav class="header-inner">
+                    <ul role="menubar" id="global-nav-links">
+                        @Html.Raw(Model.RenderListItemLink<Home>(Model.SelectedMenu?.ToLower() == "home"))
+                        @Html.Raw(Model.RenderListItemLink<Finance>(Model.SelectedMenu?.ToLower() == "finance"))
+                        @Html.Raw(Model.RenderListItemLink<Recruitment>(Model.SelectedMenu?.ToLower() == "recruitment"))
+                        @Html.Raw(Model.RenderListItemLink<Apprentices>(Model.SelectedMenu?.ToLower() == "employercommitments"))
+                        @Html.Raw(Model.RenderListItemLink<YourTeam>(Model.SelectedMenu?.ToLower() == "team"))
+                        @Html.Raw(Model.RenderListItemLink<YourOrganisations>(Model.SelectedMenu?.ToLower() == "organisations"))
+                        @Html.Raw(Model.RenderListItemLink<PayeSchemes>(Model.SelectedMenu?.ToLower() == "paye"))
+                    </ul>
+                </nav>
+            </div>
+        }
     }
 }

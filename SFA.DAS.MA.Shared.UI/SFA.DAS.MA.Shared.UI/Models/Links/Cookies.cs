@@ -2,13 +2,13 @@
 {
     public class Cookies : Link
     {
-        public Cookies(string href) : base(href)
+        public Cookies(string href, string @class = "") : base(href, @class: @class)
         {
         }
 
         public override string Render()
         {
-            return $"<a href=\"{Href}\">Cookies</a>";
+            return $"<a href=\"{Href}\" class=\"{Class}\">Cookies</a>";
         }
     }
 }

@@ -28,7 +28,7 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.LinkHelper
             var result = _sut.RenderListItemLink<TestLink>();
 
             // assert            
-            result.Should().Be($"<li>{content}</li>");
+            result.Should().Be($"<li class=\"\">{content}</li>");
         }
     }
 }

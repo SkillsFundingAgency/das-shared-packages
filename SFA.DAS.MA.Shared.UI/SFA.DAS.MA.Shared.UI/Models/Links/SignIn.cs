@@ -2,13 +2,13 @@
 {
     public class SignIn : Link
     {
-        public SignIn(string href) : base(href)
+        public SignIn(string href, string @class = "") : base(href, @class: @class)
         {
         }
 
         public override string Render()
         {
-            return $"<a href = \"{Href}\" role=\"menuitem\">Sign in / Register</a>";
+            return $"<a href = \"{Href}\" role=\"menuitem\" class=\"{Class}\">Sign in / Register</a>";
         }
     }
 }
