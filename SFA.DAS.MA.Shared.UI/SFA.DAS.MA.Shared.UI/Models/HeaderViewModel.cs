@@ -50,7 +50,10 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));
 
             AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/notifications")));
-            AddOrUpdateLink(new SignOut(configuration.SignOutUrl?.AbsoluteUri));
+            if (configuration.SignOutUrl != null)
+            {
+                AddOrUpdateLink(new SignOut(configuration.SignOutUrl.IsAbsoluteUri ? configuration.SignOutUrl?.AbsoluteUri : configuration.SignOutUrl.PathAndQuery));
+            }
             AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/signIn")));
             // global nav links
             AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams")));
