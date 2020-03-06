@@ -5,7 +5,7 @@
         private readonly string _class;
         private readonly string _role;
 
-        public YourOrganisations(string href, string @class = "organisations", string role = "menuitem") : base(href)
+        public YourOrganisations(string href, string @class = "organisations", string role = "menuitem") : base(href, @class: @class)
         {
             _class = @class;
             _role = role;
@@ -15,10 +15,10 @@
         {
             if (IsSelected)
             {
-                return $"<a href = \"{Href}\" class=\"{_class} selected\" role=\"menuitem\">Your organisations and agreements</a>";
+                return $"<a href = \"{Href}\" class=\"{_class} selected\" role=\"{_role}\">Your organisations and agreements</a>";
             }
 
-            return $"<a href = \"{Href}\" class=\"{_class}\" role=\"menuitem\">Your organisations and agreements</a>";
+            return $"<a href = \"{Href}\" class=\"{_class}\" role=\"{_role}\">Your organisations and agreements</a>";
         }
     }
 }

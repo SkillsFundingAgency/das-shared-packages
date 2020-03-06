@@ -15,16 +15,19 @@ namespace SFA.DAS.MA.Shared.UI.Models
 
         public IReadOnlyList<Link> Links => _linkCollection.Links;
 
+        public bool UseLegacyStyles { get; private set; }
+
         private readonly ILinkCollection _linkCollection;
         private readonly ILinkHelper _linkHelper;
         private readonly IUrlHelper _urlHelper;
-
+        
         public HeaderViewModel(
             IHeaderConfiguration configuration, 
             IUserContext userContext,
             ILinkCollection linkCollection = null,
             ILinkHelper linkHelper = null, 
-            IUrlHelper urlHelper = null)
+            IUrlHelper urlHelper = null,
+            bool useLegacyStyles = false)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
             UserContext = userContext ?? throw new ArgumentNullException("userContext");
@@ -32,27 +35,28 @@ namespace SFA.DAS.MA.Shared.UI.Models
             _linkCollection = linkCollection ?? new LinkCollection();
             _linkHelper = linkHelper ?? new LinkHelper(_linkCollection);
             _urlHelper = urlHelper ?? new UrlHelper();
+            UseLegacyStyles = useLegacyStyles;
 
             MenuIsHidden = false;
             SelectedMenu = "home";
             
             // floating header links
-            AddOrUpdateLink(new GovUk(GovUkHref));
-            AddOrUpdateLink(new ManageApprenticeships(configuration.ManageApprenticeshipsBaseUrl));
-            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/help")));
-            AddOrUpdateLink(new YourAccounts(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/accounts")));
-            AddOrUpdateLink(new RenameAccount(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "rename")));
+            AddOrUpdateLink(new GovUk(GovUkHref, isLegacy: UseLegacyStyles));
+            AddOrUpdateLink(new ManageApprenticeships(configuration.ManageApprenticeshipsBaseUrl, UseLegacyStyles ? "" : "govuk-header__link govuk-header__link--service-name"));
+            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/help"), UseLegacyStyles ? "" : "menu-main"));
+            AddOrUpdateLink(new YourAccounts(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/accounts"), UseLegacyStyles ? "" : "sub-menu-item"));
+            AddOrUpdateLink(new RenameAccount(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "rename"), UseLegacyStyles ? "" : "sub-menu-item"));
 
             var returnUrl = configuration.ChangePasswordReturnUrl?.AbsoluteUri ?? _urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/password/change");
-            AddOrUpdateLink(new ChangePassword(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changepassword?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));
+            AddOrUpdateLink(new ChangePassword(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changepassword?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}"), UseLegacyStyles ? "" : "sub-menu-item"));
 
             returnUrl = configuration.ChangeEmailReturnUrl?.AbsoluteUri ?? _urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/email/change");
-            AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}")));
+            AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}"), UseLegacyStyles ? "" : "sub-menu-item"));
 
-            AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/notifications")));
+            AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/notifications"), UseLegacyStyles ? "" : "sub-menu-item"));
             if (configuration.SignOutUrl != null)
             {
-                AddOrUpdateLink(new SignOut(configuration.SignOutUrl.IsAbsoluteUri ? configuration.SignOutUrl?.AbsoluteUri : configuration.SignOutUrl.OriginalString));
+                AddOrUpdateLink(new SignOut(configuration.SignOutUrl.IsAbsoluteUri ? configuration.SignOutUrl?.AbsoluteUri : configuration.SignOutUrl.OriginalString, UseLegacyStyles ? "" : "menu-main"));
             }
             AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/signIn")));
             // global nav links
@@ -86,9 +90,9 @@ namespace SFA.DAS.MA.Shared.UI.Models
             _linkCollection.RemoveLink<T>();
         }
 
-        public string RenderListItemLink<T>(bool isSelected = false) where T : Link
+        public string RenderListItemLink<T>(bool isSelected = false, string @class = "") where T : Link
         {
-            return _linkHelper.RenderListItemLink<T>(isSelected);
+            return _linkHelper.RenderListItemLink<T>(isSelected, @class);
         }
 
         public string RenderLink<T>(Func<string> before = null, Func<string> after = null, bool isSelected = false) where T : Link

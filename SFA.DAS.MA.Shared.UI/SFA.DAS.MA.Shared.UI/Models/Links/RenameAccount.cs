@@ -2,7 +2,7 @@
 {
     public class RenameAccount : Link
     {
-        public RenameAccount(string href) : base(href)
+        public RenameAccount(string href, string @class = "") : base(href, @class: @class)
         {
         }
 

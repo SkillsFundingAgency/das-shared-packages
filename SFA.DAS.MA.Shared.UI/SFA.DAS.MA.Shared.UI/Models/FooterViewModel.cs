@@ -15,6 +15,8 @@ namespace SFA.DAS.MA.Shared.UI.Models
 
         public IReadOnlyList<Link> Links => _linkCollection.Links;
 
+        public bool UseLegacyStyles { get; private set; }
+
         private readonly ILinkCollection _linkCollection;
         private readonly ILinkHelper _linkHelper;
         private readonly IUrlHelper _urlHelper;
@@ -24,7 +26,8 @@ namespace SFA.DAS.MA.Shared.UI.Models
             IUserContext userContext,
             ILinkCollection linkCollection = null,
             ILinkHelper linkHelper = null, 
-            IUrlHelper urlHelper = null)
+            IUrlHelper urlHelper = null,
+            bool useLegacyStyles = false)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
             if (userContext == null) throw new ArgumentNullException("userContext");
@@ -34,22 +37,28 @@ namespace SFA.DAS.MA.Shared.UI.Models
             _linkCollection = linkCollection ?? new LinkCollection();
             _linkHelper = linkHelper ?? new LinkHelper(_linkCollection);
             _urlHelper = urlHelper ?? new UrlHelper();
+            UseLegacyStyles = useLegacyStyles;
 
-            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/help")));
-            AddOrUpdateLink(new Feedback(SurveyHRef));
-            AddOrUpdateLink(new Privacy(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "privacy", "service")));
+            AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/help"), GetLinkClass()));
+            AddOrUpdateLink(new Feedback(SurveyHRef, GetLinkClass()));
+            AddOrUpdateLink(new Privacy(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "privacy", "service"), GetLinkClass()));
             if (userContext?.HashedAccountId == null)
             {
-                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "cookieConsent")));
+                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "cookieConsent"), GetLinkClass()));
             }
             else
             {
-                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "cookieConsent")));
+                AddOrUpdateLink(new Cookies(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "cookieConsent"), GetLinkClass()));
             }
-            AddOrUpdateLink(new BuiltBy(BuiltByHRef));
-            AddOrUpdateLink(new OpenGovernmentLicense(OpenGovernmentLicenseHRef));
-            AddOrUpdateLink(new OpenGovernmentLicenseV3(OpenGovernmentLicenseHRef));
-            AddOrUpdateLink(new CrownCopyright(CrownCopyrightHRef));
+            AddOrUpdateLink(new BuiltBy(BuiltByHRef, GetLinkClass()));
+            AddOrUpdateLink(new OpenGovernmentLicense(OpenGovernmentLicenseHRef, GetLinkClass()));
+            AddOrUpdateLink(new OpenGovernmentLicenseV3(OpenGovernmentLicenseHRef, GetLinkClass()));
+            AddOrUpdateLink(new CrownCopyright(CrownCopyrightHRef, UseLegacyStyles ? "" : "govuk-footer__link govuk-footer__copyright-logo"));
+        }
+
+        private string GetLinkClass()
+        {
+            return UseLegacyStyles ? "" : "govuk-footer__link";
         }
 
         public void AddOrUpdateLink<T>(T link) where T : Link
@@ -62,9 +71,9 @@ namespace SFA.DAS.MA.Shared.UI.Models
             _linkCollection.RemoveLink<T>();
         }
 
-        public string RenderListItemLink<T>(bool isSelected = false) where T : Link
+        public string RenderListItemLink<T>(bool isSelected = false, string @class = "") where T : Link
         {
-            return _linkHelper.RenderListItemLink<T>(isSelected);
+            return _linkHelper.RenderListItemLink<T>(isSelected, @class);
         }
 
         public string RenderLink<T>(Func<string> before = null, Func<string> after = null, bool isSelected = false) where T : Link
