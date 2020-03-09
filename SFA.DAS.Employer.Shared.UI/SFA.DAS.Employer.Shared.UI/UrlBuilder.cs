@@ -68,7 +68,7 @@ namespace SFA.DAS.Employer.Shared.UI
 
         public string CommitmentsV2Link(string routeName, params string[] args)
         {
-            var route = _routes.Commitments[routeName];
+            var route = _routes.CommitmentsV2[routeName];
 
             if (args != null && args.Length > 0)
                 route = string.Format(route, args);
