@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using Entities;
     using FluentAssertions;
@@ -10,13 +11,18 @@
     using Nest;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
+    using SFA.DAS.Elastic;
+    using SFA.DAS.NLog.Logger;
 
     public class LocationClientTests
     {
         [Test]
         public void Search_ShouldReturnOrderedResults()
         {
-            LocationSearchClient sut = new TestLocationSearchClient();
+            var mockClient = new Mock<IElasticClient>();
+            var mockFactory = new Mock<IElasticClientFactory>();
+            mockFactory.Setup(f => f.CreateClient()).Returns(mockClient.Object);
+            LocationSearchClient sut = new TestLocationSearchClient(mockFactory.Object);
 
             const string searchTerm = "coventry";
 
@@ -63,20 +69,21 @@
         {
             var searchReponse = new Mock<ISearchResponse<LocationSearchResult>>();
             searchReponse.Setup(s => s.Total).Returns(0);
-            searchReponse.Setup(s => s.Documents).Returns(Enumerable.Empty<LocationSearchResult>());
-
-            Func<SearchDescriptor<LocationSearchResult>, SearchDescriptor<LocationSearchResult>> actualSearchDescriptorFunc = null;
+            searchReponse.Setup(s => s.Documents).Returns(Enumerable.Empty<LocationSearchResult>().ToList());
+            searchReponse.Setup(s => s.Documents).Returns(new Mock<IReadOnlyCollection<LocationSearchResult>>().Object);
+            
+            Func<SearchDescriptor<LocationSearchResult>, ISearchRequest> actualSearchDescriptorFunc = null;
 
             var mockClient = new Mock<IElasticClient>();
 
-            mockClient.Setup(c => c.Search<LocationSearchResult>(It.IsAny<Func<SearchDescriptor<LocationSearchResult>, SearchDescriptor<LocationSearchResult>>>()))
-                .Callback<Func<SearchDescriptor<LocationSearchResult>, SearchDescriptor<LocationSearchResult>>>(d => actualSearchDescriptorFunc = d)
+            mockClient.Setup(c => c.Search<LocationSearchResult>(It.IsAny<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>()))
+                .Callback<Func<SearchDescriptor<LocationSearchResult>, ISearchRequest>>(d => actualSearchDescriptorFunc = d)
                 .Returns(searchReponse.Object);
 
-            var factory = new Mock<IElasticSearchFactory>();
-            factory.Setup(f => f.GetElasticClient(It.IsAny<string>())).Returns(mockClient.Object);
+            var mockFactory = new Mock<IElasticClientFactory>();
+            mockFactory.Setup(f => f.CreateClient()).Returns(mockClient.Object);
 
-            var sut = new LocationSearchClient(factory.Object, new LocationSearchClientConfiguration());
+            var sut = new LocationSearchClient(mockFactory.Object, "locations");
 
             var response = searchFunc(sut);
 
@@ -84,9 +91,9 @@
             var query = actualSearchDescriptorFunc(baseSearchDescriptor);
 
             var elasticClient = new ElasticClient();
-
-            var actualJsonQueryBytes = elasticClient.Serializer.Serialize(query);
-            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(actualJsonQueryBytes.ToArray());
+            var stream = new MemoryStream();
+            elasticClient.RequestResponseSerializer.Serialize(query, stream);
+            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
 
             var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
 

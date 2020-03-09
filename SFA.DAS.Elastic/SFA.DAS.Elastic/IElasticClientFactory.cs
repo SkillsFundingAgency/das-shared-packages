@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using Elasticsearch.Net;
 using Nest;
 
 namespace SFA.DAS.Elastic
 {
-    public interface IElasticClientFactory : IDisposable
+    public interface IElasticClientFactory
     {
-        IConnectionSettingsValues ConnectionSettings { get; }
-        string EnvironmentName { get; }
-        IEnumerable<IIndexMapper> IndexMappers { get; }
-
         IElasticClient CreateClient();
+        IElasticClient CreateClient(Action<IApiCallDetails> callbackAction);
     }
 }

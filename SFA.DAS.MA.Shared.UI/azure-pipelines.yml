@@ -1,0 +1,46 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.MA.Shared.UI'
+
+pr: none
+
+workspace:
+    clean: all
+
+pool:
+  vmImage: 'windows-2019'
+
+variables:
+  BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '1'
+
+steps:
+- task: VSBuild@1
+  displayName: 'VSBuild restore'
+  inputs:
+    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    msbuildArgs: '/t:restore'
+
+- task: VSBuild@1
+  displayName: 'VS build'
+  inputs:
+    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    Configuration: '$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
+    versioningScheme: byBuildNumber
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+

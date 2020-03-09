@@ -4,10 +4,11 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Elasticsearch.Net;
     using Entities;
     using Nest;
     using Responses;
+    using SFA.DAS.NLog.Logger;
+    using SFA.DAS.Elastic;
 
     public class TraineeshipSearchClient : ITraineeshipSearchClient
     {
@@ -15,31 +16,22 @@
         private const int ScrollSize = 100;
         private const string ScrollTimeout = "5s";
 
-        private readonly IElasticSearchFactory _elasticSearchFactory;
-        private readonly TraineeshipSearchClientConfiguration _config;
+        private readonly IElasticClient _elasticClient;
+        private readonly string _indexName;
 
-        public TraineeshipSearchClient(TraineeshipSearchClientConfiguration config)
-            : this(new ElasticSearchFactory(), config)
+        public TraineeshipSearchClient(IElasticClientFactory elasticClientFactory, string indexName, ILog logger = null)
         {
-        }
-
-        internal TraineeshipSearchClient(IElasticSearchFactory elasticSearchFactory, TraineeshipSearchClientConfiguration config)
-        {
-            _elasticSearchFactory = elasticSearchFactory;
-            _config = config;
+            _elasticClient = elasticClientFactory.CreateClient(r => logger?.Debug(r.DebugInformation));
+            _indexName = indexName;
         }
 
         public IEnumerable<int> GetAllVacancyIds()
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
-
-            var scanResults = client.Search<TraineeshipSearchResult>(search => search
-                .Index(_config.Index)
-                .Type(ElasticTypes.Traineeship)
+            var scanResults = _elasticClient.Search<TraineeshipSearchResult>(search => search
+                .Index(_indexName)
                 .From(0)
                 .Size(ScrollSize)
                 .MatchAll()
-                .SearchType(SearchType.Scan)
                 .Scroll(ScrollIndexConsistencyTime));
 
             var vacancyIds = new List<int>();
@@ -47,7 +39,7 @@
 
             while (true)
             {
-                var results = client.Scroll<TraineeshipSearchResult>(scrollRequest);
+                var results = _elasticClient.Scroll<TraineeshipSearchResult>(scrollRequest);
 
                 if (!results.Documents.Any())
                 {
@@ -68,15 +60,12 @@
 
             return response;
         }
-        
+
         private ISearchResponse<TraineeshipSearchResult> PerformSearch(TraineeshipSearchRequestParameters parameters)
         {
-            var client = _elasticSearchFactory.GetElasticClient(_config.HostName);
-
-            var results = client.Search<TraineeshipSearchResult>(s =>
+            var results = _elasticClient.Search<TraineeshipSearchResult>(s =>
             {
-                s.Index(_config.Index);
-                s.Type(ElasticTypes.Traineeship);
+                s.Index(_indexName);
                 s.Skip((parameters.PageNumber - 1) * parameters.PageSize);
                 s.Take(parameters.PageSize);
 
@@ -94,11 +83,11 @@
             return results;
         }
 
-        private QueryContainer GetQuery(TraineeshipSearchRequestParameters parameters, QueryDescriptor<TraineeshipSearchResult> q)
+        private QueryContainer GetQuery(TraineeshipSearchRequestParameters parameters, QueryContainerDescriptor<TraineeshipSearchResult> q)
         {
             if (!string.IsNullOrEmpty(parameters.VacancyReference))
             {
-                return q.Filtered(fq =>
+                return q.Bool(fq =>
                     fq.Filter(f =>
                         f.Term(t =>
                             t.VacancyReference, parameters.VacancyReference)));
@@ -109,7 +98,7 @@
             if (parameters.DisabilityConfidentOnly)
             {
                 var queryDisabilityConfidentOnly = q
-                    .Match(m => m.OnField(f => f.IsDisabilityConfident)
+                    .Match(m => m.Field(f => f.IsDisabilityConfident)
                         .Query(parameters.DisabilityConfidentOnly.ToString()));
                 query &= queryDisabilityConfidentOnly;
             }
@@ -117,19 +106,20 @@
             if (parameters.Ukprn.HasValue)
             {
                 var queryClause = q
-                    .Match(m => m.OnField(f => f.Ukprn)
+                    .Match(m => m.Field(f => f.Ukprn)
                         .Query(parameters.Ukprn.ToString()));
                 query &= queryClause;
             }
 
             if (parameters.CanFilterByGeoDistance)
             {
-                var queryClause = q.Filtered(qf => qf.Filter(f => f
+                var geoQueryClause = q.Bool(qf => qf.Filter(f => f
                     .GeoDistance(vs => vs
-                        .Location, descriptor => descriptor
-                            .Location(parameters.Latitude.Value, parameters.Longitude.Value)
-                            .Distance(parameters.SearchRadius.Value, GeoUnit.Miles))));
-                query &= queryClause;
+                        .Field(field => field.Location)
+                        .Location(parameters.Latitude.Value, parameters.Longitude.Value)
+                        .Distance(parameters.SearchRadius.Value, DistanceUnit.Miles))));
+
+                query &= geoQueryClause;
             }
 
             return query;
@@ -140,19 +130,23 @@
             switch (parameters.SortType)
             {
                 case VacancySearchSortType.RecentlyAdded:
-                    search.SortDescending(r => r.PostedDate);
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Descending(r => r.PostedDate)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 case VacancySearchSortType.Distance:
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .TrySortByGeoDistance(parameters));
                     break;
                 case VacancySearchSortType.ClosingDate:
-                    search.SortAscending(r => r.ClosingDate);
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Ascending(r => r.ClosingDate)
+                        .TrySortByGeoDistance(parameters));
                     break;
                 default:
-                    search.Sort(sort => sort.OnField("_score").Descending());
-                    search.TrySortByGeoDistance(parameters);
+                    search.Sort(s => s
+                        .Descending(SortSpecialField.Score)
+                        .TrySortByGeoDistance(parameters));
                     break;
             }
         }
@@ -161,12 +155,12 @@
         {
             foreach (var result in results.Documents)
             {
-                var hitMd = results.HitsMetaData.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
+                var hitMd = results.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
                 if (searchParameters.CanSortByGeoDistance)
                     result.Distance = (double)hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
 
-                result.Score = hitMd.Score;
+                result.Score = hitMd.Score.GetValueOrDefault(0);
             }
         }
 

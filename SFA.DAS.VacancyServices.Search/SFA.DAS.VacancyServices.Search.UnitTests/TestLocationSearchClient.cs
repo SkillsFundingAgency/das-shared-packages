@@ -2,10 +2,11 @@
 {
     using System.Collections.Generic;
     using Entities;
+    using SFA.DAS.Elastic;
 
     public class TestLocationSearchClient : LocationSearchClient
     {
-        public TestLocationSearchClient() : base(null, null) { }
+        public TestLocationSearchClient(IElasticClientFactory factory) : base(factory, null) { }
 
         public override IEnumerable<LocationSearchResult> SearchExact(string placeName, int maxResults = MaxResults)
         {
