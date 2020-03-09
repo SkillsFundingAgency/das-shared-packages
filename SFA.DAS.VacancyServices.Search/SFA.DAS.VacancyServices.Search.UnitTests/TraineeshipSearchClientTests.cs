@@ -51,7 +51,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"true\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -71,7 +71,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.Distance,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},{\"match\":{\"ukprn\":{\"query\":\"12345678\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}],\"unit\":\"mi\"}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"bool\":{\"filter\":[{\"geo_distance\":{\"distance\":\"40.5mi\",\"location\":{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}}}],\"must\":[{\"match\":{\"isDisabilityConfident\":{\"query\":\"true\"}}},{\"match\":{\"ukprn\":{\"query\":\"12345678\"}}}]}},\"size\":5,\"sort\":[{\"_geo_distance\":{\"distance_type\":\"arc\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}],\"unit\":\"mi\"}}],\"track_scores\":true}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }
@@ -90,7 +90,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
                 SortType = VacancySearchSortType.RecentlyAdded,
             };
 
-            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"match\":{\"isDisabilityConfident\":{\"query\":\"True\"}}},\"size\":5,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
+            const string expectedJsonQuery = "{\"from\":0,\"query\":{\"match\":{\"isDisabilityConfident\":{\"query\":\"true\"}}},\"size\":5,\"sort\":[{\"postedDate\":{\"order\":\"desc\"}},{\"_geo_distance\":{\"distance_type\":\"arc\",\"unit\":\"mi\",\"location\":[{\"lat\":52.4173666904458,\"lon\":-1.88983017452229}]}}],\"track_scores\":true}";
 
             AssertSearch(parameters, expectedJsonQuery);
         }

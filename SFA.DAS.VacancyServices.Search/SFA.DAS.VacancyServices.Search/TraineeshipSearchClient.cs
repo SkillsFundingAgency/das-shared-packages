@@ -97,9 +97,13 @@
 
             if (parameters.DisabilityConfidentOnly)
             {
+                // Nest package won't allow a boolean directly and has to be a string
+                // Elastic will throw if its not lower case
+                // As we specifically only add this when this statement is true, explicit value is passed.
                 var queryDisabilityConfidentOnly = q
                     .Match(m => m.Field(f => f.IsDisabilityConfident)
-                        .Query(parameters.DisabilityConfidentOnly.ToString()));
+                        .Query("true"));
+
                 query &= queryDisabilityConfidentOnly;
             }
 
