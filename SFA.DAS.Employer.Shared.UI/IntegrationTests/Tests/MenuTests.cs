@@ -73,7 +73,7 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/teams", homeLink.Attributes["href"].Value, ignoreCase: true); 
             Assert.Equal("https://finance.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/finance", financeLink.Attributes["href"].Value, ignoreCase: true); 
             Assert.Equal("https://recruit.at-eas.apprenticeships.education.gov.uk/accounts/ABC123", recruitLink.Attributes["href"].Value, ignoreCase: true); 
-            Assert.Equal("https://at-empc.apprenticeships.education.gov.uk/commitments/accounts/ABC123/apprentices/home", apprenticesLink.Attributes["href"].Value, ignoreCase: true); 
+            Assert.Equal("https://localhost:44376/ABC123", apprenticesLink.Attributes["href"].Value, ignoreCase: true); 
             Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/teams/view", yourTeamLink.Attributes["href"].Value, ignoreCase: true); 
             Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/agreements", orgsLink.Attributes["href"].Value, ignoreCase: true); 
             Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/schemes", payeLink.Attributes["href"].Value, ignoreCase: true);
