@@ -32,5 +32,25 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         {
             return viewData.ContainsKey(ViewDataKeys.EnableGoogleAnalytics) && (bool)viewData[ViewDataKeys.EnableGoogleAnalytics];
         }
+
+        public static string GetZenDeskSectionId(this ViewDataDictionary viewData)
+        {
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskSectionId))
+            {
+                return viewData[ViewDataKeys.ZenDeskSectionId].ToString();
+            }
+
+            return string.Empty;
+        }
+
+        public static string GetZenDeskSnippetKey(this ViewDataDictionary viewData)
+        {
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskSnippetKey))
+            {
+                return viewData[ViewDataKeys.ZenDeskSnippetKey].ToString();
+            }
+
+            return string.Empty;
+        }
     }
 }
