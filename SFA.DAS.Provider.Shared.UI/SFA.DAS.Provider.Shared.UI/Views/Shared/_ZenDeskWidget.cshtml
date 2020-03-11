@@ -1,20 +1,27 @@
-﻿<script type="text/javascript">
-    window.zESettings = {
-        webWidget: {
-            contactForm: {
-                attachments: false
-            },
-            chat: {
-                menuOptions: {
-                    emailTranscript: false
-                }
-            },
-            helpCenter: {
-                filter: {
-                    section: "360002328100"
+﻿@using SFA.DAS.Provider.Shared.UI.Extensions
+
+@{
+    var sectionId = ViewData.GetZenDeskSectionId();
+    var snippetKey = ViewData.GetZenDeskSnippetKey();
+    var snippetUrl = $"https://static.zdassets.com/ekr/snippet.js?key={snippetKey}";
+}
+    <script type="text/javascript">
+        window.zESettings = {
+            webWidget: {
+                contactForm: {
+                    attachments: false
+                },
+                chat: {
+                    menuOptions: {
+                        emailTranscript: false
+                    }
+                },
+                helpCenter: {
+                    filter: {
+                        section: @sectionId
+                    }
                 }
             }
-        }
-    };
-</script>
-<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=1b1ce288-39ea-4d40-a5e1-3a5e08aadd89"></script>
+        };
+    </script>
+    <script id="ze-snippet" src="@snippetUrl"></script>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SFA.DAS.Provider.Shared.UI.Models;
 using System;
 
 namespace SFA.DAS.Provider.Shared.UI.Attributes
@@ -7,20 +8,17 @@ namespace SFA.DAS.Provider.Shared.UI.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class SetZenDeskValuesAttribute : ResultFilterAttribute
     {
-        public string SnippetKey { get; }
-        public string SectionId { get; }
+        public ZenDeskConfiguration ZenDeskConfiguration { get; }
 
-        public SetZenDeskValuesAttribute(string snippetKey, string sectionId)
+        public SetZenDeskValuesAttribute(ZenDeskConfiguration zenDeskConfiguration)
         {
-            SnippetKey = snippetKey;
-            SectionId = sectionId;
+            ZenDeskConfiguration = zenDeskConfiguration;
         }
 
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             if (!(context.Controller is Controller controller)) return;
-            controller.ViewData[ViewDataKeys.ZenDeskSnippetKey] = SnippetKey;
-            controller.ViewData[ViewDataKeys.ZenDeskSectionId] = SectionId;
+            controller.ViewData[ViewDataKeys.ZenDeskConfiguration] = ZenDeskConfiguration;
         }
     }
 }

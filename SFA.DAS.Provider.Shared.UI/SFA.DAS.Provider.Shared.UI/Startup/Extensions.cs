@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Provider.Shared.UI.Attributes;
+using SFA.DAS.Provider.Shared.UI.Models;
 
 namespace SFA.DAS.Provider.Shared.UI.Startup
 {
@@ -39,6 +40,15 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
             builder.Services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add(new EnableGoogleAnalyticsAttribute());
+            });
+            return builder;
+        }
+
+        public static IMvcBuilder SetZenDeskConfiguration(this IMvcBuilder builder, ZenDeskConfiguration zenDeskConfiguration)
+        {
+            builder.Services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new SetZenDeskValuesAttribute(zenDeskConfiguration));
             });
             return builder;
         }

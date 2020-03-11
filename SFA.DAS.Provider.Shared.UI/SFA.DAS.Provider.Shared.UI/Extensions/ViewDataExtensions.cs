@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SFA.DAS.Provider.Shared.UI.Models;
 
 namespace SFA.DAS.Provider.Shared.UI.Extensions
 {
@@ -35,9 +36,10 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
 
         public static string GetZenDeskSectionId(this ViewDataDictionary viewData)
         {
-            if (viewData.ContainsKey(ViewDataKeys.ZenDeskSectionId))
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskConfiguration))
             {
-                return viewData[ViewDataKeys.ZenDeskSectionId].ToString();
+                var zenDeskConfig = viewData[ViewDataKeys.ZenDeskConfiguration] as ZenDeskConfiguration;
+                return zenDeskConfig?.SectionId;
             }
 
             return string.Empty;
@@ -45,9 +47,10 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
 
         public static string GetZenDeskSnippetKey(this ViewDataDictionary viewData)
         {
-            if (viewData.ContainsKey(ViewDataKeys.ZenDeskSnippetKey))
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskConfiguration))
             {
-                return viewData[ViewDataKeys.ZenDeskSnippetKey].ToString();
+                var zenDeskConfig = viewData[ViewDataKeys.ZenDeskConfiguration] as ZenDeskConfiguration;
+                return zenDeskConfig?.SnippetKey;
             }
 
             return string.Empty;
