@@ -5,7 +5,7 @@
     var snippetKey = ViewData.GetZenDeskSnippetKey();
     var snippetUrl = $"https://static.zdassets.com/ekr/snippet.js?key={snippetKey}";
 }
-    <script type="text/javascript">
+<script type="text/javascript">
         window.zESettings = {
             webWidget: {
                 contactForm: {
@@ -23,5 +23,6 @@
                 }
             }
         };
-    </script>
-    <script id="ze-snippet" src="@snippetUrl"></script>
+</script>
+<script id="ze-snippet" src="@snippetUrl"></script>
+@Html.SetZendeskLabels($"App-{ViewBag.Title}")
