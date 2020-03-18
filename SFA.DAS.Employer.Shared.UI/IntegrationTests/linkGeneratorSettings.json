@@ -2,7 +2,7 @@
   "SFA.DAS.EmployerUrlHelper": {
     "AccountsBaseUrl": "https://accounts.at-eas.apprenticeships.education.gov.uk",
     "CommitmentsBaseUrl": "https://at-empc.apprenticeships.education.gov.uk",
-    "CommitmentsV2BaseUrl": "https://localhost:44376",
+    "CommitmentsV2BaseUrl": "https://approvals.at-eas.apprenticeships.education.gov.uk/",
     "PortalBaseUrl": "https://localhost",
     "ProjectionsBaseUrl": "http://localhost:50770",
     "RecruitBaseUrl": "https://recruit.at-eas.apprenticeships.education.gov.uk",

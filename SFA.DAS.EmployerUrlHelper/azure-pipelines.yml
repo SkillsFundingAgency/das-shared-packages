@@ -15,10 +15,19 @@ workspace:
 
 pool:
   name: Continuous Integration 02 - SSD - 160ACU
+
 variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '3'
   Build.MinorNumber: '0'
+
+resources:
+  repositories:
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/heads/master
+    endpoint: "GitHub (SFA)"
 
 steps:
 - task: DotNetCoreCLI@2
@@ -32,6 +41,8 @@ steps:
   inputs:
     projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.sln
     arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
