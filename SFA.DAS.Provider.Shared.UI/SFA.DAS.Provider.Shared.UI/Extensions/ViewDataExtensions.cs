@@ -42,7 +42,7 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
                 return zenDeskConfig?.SectionId;
             }
 
-            return string.Empty;
+            return null;
         }
 
         public static string GetZenDeskSnippetKey(this ViewDataDictionary viewData)
@@ -53,7 +53,7 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
                 return zenDeskConfig?.SnippetKey;
             }
 
-            return string.Empty;
+            return null;
         }
     }
 }
