@@ -93,7 +93,7 @@ else
             <p class="das-account-header__title">Your employer account</p>
             <nav class="das-user-navigation" id="das-user-navigation">
                 <ul class="das-user-navigation__list" role="menu">
-                    @Html.Raw(Model.RenderListItemLink<Help>(@class: "das-user-navigation__list-item", @linkClass: "das-user-navigation__link"))
+                    @Html.Raw(Model.RenderListItemLink<Help>(@class: "das-user-navigation__list-item"))
                     @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
                     {
                         <li role="menuitem" class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
@@ -101,21 +101,21 @@ else
                             <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
                                 @if (!Model.MenuIsHidden)
                                 {
-                                    @Html.Raw(Model.RenderListItemLink<YourAccounts>(@class: "das-user-navigation__sub-menu-list-item", @linkClass: "das-user-navigation__sub-menu-link"))
-                                    @Html.Raw(Model.RenderListItemLink<RenameAccount>(@class: "das-user-navigation__sub-menu-list-item", @linkClass: "das-user-navigation__sub-menu-link"))
+                                    @Html.Raw(Model.RenderListItemLink<YourAccounts>(@class: "das-user-navigation__sub-menu-list-item"))
+                                    @Html.Raw(Model.RenderListItemLink<RenameAccount>(@class: "das-user-navigation__sub-menu-list-item"))
                                 }
-                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item", @linkClass: "das-user-navigation__sub-menu-link")))
-                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item", @linkClass: "das-user-navigation__sub-menu-link")))
+                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item")))
+                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item")))
 
                                 @if (!Model.MenuIsHidden)
                                 {
-                                    @Html.Raw(Model.RenderListItemLink<NotificationSettings>(@class: "das-user-navigation__sub-menu-list-item", @linkClass: "das-user-navigation__sub-menu-link"))
+                                    @Html.Raw(Model.RenderListItemLink<NotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
                                 }
                             </ul>
                         </li>
-                        @Html.Raw(Model.RenderListItemLink<SignOut>(@class: "das-user-navigation__sub-menu-list-item", @linkClass: "das-user-navigation__link"))
+                        @Html.Raw(Model.RenderListItemLink<SignOut>(@class: "das-user-navigation__sub-menu-list-item"))
                     } else {
-                        @Html.Raw(Model.RenderListItemLink<SignIn>(@class: "das-user-navigation__sub-menu-list-item", @linkClass: "das-user-navigation__link"))
+                        @Html.Raw(Model.RenderListItemLink<SignIn>(@class: "das-user-navigation__sub-menu-list-item"))
                     }
                 </ul>
             </nav>
@@ -130,13 +130,13 @@ else
             <nav class="das-navigation">
                 <div class="govuk-width-container">
                     <ul class="das-navigation__list" id="navigation">
-                        @Html.Raw(Model.RenderListItemLink<Home>(Model.SelectedMenu?.ToLower() == "home", @class: "das-navigation__list-item", @linkClass: "das-navigation__link"))
-                        @Html.Raw(Model.RenderListItemLink<Finance>(Model.SelectedMenu?.ToLower() == "finance", @class: "das-navigation__list-item", @linkClass: "das-navigation__link"))
-                        @Html.Raw(Model.RenderListItemLink<Recruitment>(Model.SelectedMenu?.ToLower() == "recruitment", @class: "das-navigation__list-item", @linkClass: "das-navigation__link"))
-                        @Html.Raw(Model.RenderListItemLink<Apprentices>(Model.SelectedMenu?.ToLower() == "employercommitments", @class: "das-navigation__list-item", @linkClass: "das-navigation__link"))
-                        @Html.Raw(Model.RenderListItemLink<YourTeam>(Model.SelectedMenu?.ToLower() == "team", @class: "das-navigation__list-item", @linkClass: "das-navigation__link"))
-                        @Html.Raw(Model.RenderListItemLink<YourOrganisations>(Model.SelectedMenu?.ToLower() == "organisations", @class: "das-navigation__list-item", @linkClass: "das-navigation__link"))
-                        @Html.Raw(Model.RenderListItemLink<PayeSchemes>(Model.SelectedMenu?.ToLower() == "paye", @class: "das-navigation__list-item", @linkClass: "das-navigation__link das-navigation__link--last"))
+                        @Html.Raw(Model.RenderListItemLink<Home>(Model.SelectedMenu?.ToLower() == "home", @class: "das-navigation__list-item"))
+                        @Html.Raw(Model.RenderListItemLink<Finance>(Model.SelectedMenu?.ToLower() == "finance", @class: "das-navigation__list-item"))
+                        @Html.Raw(Model.RenderListItemLink<Recruitment>(Model.SelectedMenu?.ToLower() == "recruitment", @class: "das-navigation__list-item"))
+                        @Html.Raw(Model.RenderListItemLink<Apprentices>(Model.SelectedMenu?.ToLower() == "employercommitments", @class: "das-navigation__list-item"))
+                        @Html.Raw(Model.RenderListItemLink<YourTeam>(Model.SelectedMenu?.ToLower() == "team", @class: "das-navigation__list-item"))
+                        @Html.Raw(Model.RenderListItemLink<YourOrganisations>(Model.SelectedMenu?.ToLower() == "organisations", @class: "das-navigation__list-item"))
+                        @Html.Raw(Model.RenderListItemLink<PayeSchemes>(Model.SelectedMenu?.ToLower() == "paye", @class: "das-navigation__list-item"))
                      </ul>
                 </div>
             </nav>
