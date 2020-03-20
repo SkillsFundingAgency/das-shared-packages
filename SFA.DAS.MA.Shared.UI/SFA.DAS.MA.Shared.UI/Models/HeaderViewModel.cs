@@ -61,7 +61,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/signIn"), UseLegacyStyles ? "" : "das-user-navigation__link"));
             // global nav links
             AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams"), UseLegacyStyles ? "" : "das-navigation__link"));
-            AddOrUpdateLink(new Finance(_urlHelper.GetPath(userContext, configuration.EmployerFinanceBaseUrl, "finance", UseLegacyStyles ? "" : "das-navigation__link")));
+            AddOrUpdateLink(new Finance(_urlHelper.GetPath(userContext, configuration.EmployerFinanceBaseUrl, "finance"), UseLegacyStyles ? "" : "das-navigation__link"));
             AddOrUpdateLink(new Recruitment(_urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl), UseLegacyStyles ? "" : "das-navigation__link"));
             AddOrUpdateLink(new Apprentices(_urlHelper.GetPath(userContext, configuration.EmployerCommitmentsBaseUrl, "apprentices/home"), UseLegacyStyles ? "" : "das-navigation__link"));
             AddOrUpdateLink(new YourTeam(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams/view"), UseLegacyStyles ? "" : "das-navigation__link"));
