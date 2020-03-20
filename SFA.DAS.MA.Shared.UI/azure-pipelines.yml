@@ -14,7 +14,7 @@ workspace:
     clean: all
 
 pool:
-  vmImage: 'windows-2019'
+  name: 'DAS - Continuous Integration'
 
 variables:
   BuildConfiguration: 'Release'
