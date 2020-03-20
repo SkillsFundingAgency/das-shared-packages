@@ -26,15 +26,15 @@ variables:
   BuildPlatform: 'any cpu'
 
 steps:    
-- task: VSBuild@1
-  displayName: 'VSBuild restore'
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.3.0'
   inputs:
-    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    vsVersion: 15.0
-    msbuildArgs: '/t:restore'
-    platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
-    clean: true
+    versionSpec: 4.x
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    restoreSolution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
     
 - task: VSBuild@1
   displayName: 'VS Build'
