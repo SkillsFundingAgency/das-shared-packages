@@ -23,6 +23,7 @@ variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '1'
   Build.MinorNumber: '1'
+  BuildPlatform: 'any cpu'
 
 steps:    
 - task: VSBuild@1
@@ -31,7 +32,7 @@ steps:
     solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
     vsVersion: 15.0
     msbuildArgs: '/t:restore'
-    platform: '$(buildPlatform)'
+    platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
     clean: true
     
@@ -41,7 +42,7 @@ steps:
     solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
     vsVersion: 15.0
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
-    platform: '$(buildPlatform)'
+    platform: '$(BuildPlatform)'
     Configuration: '$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
