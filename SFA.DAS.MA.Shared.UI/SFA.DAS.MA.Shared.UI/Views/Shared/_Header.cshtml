@@ -35,12 +35,15 @@
                                         @Html.Raw(Model.RenderListItemLink<YourAccounts>())
                                         @Html.Raw(Model.RenderListItemLink<RenameAccount>())
                                     }
+
                                     @Html.Raw(Model.RenderListItemLink<ChangePassword>())
                                     @Html.Raw(Model.RenderListItemLink<ChangeEmail>())
+
                                     @if (!Model.MenuIsHidden)
                                     {
                                         @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
                                     }
+
                                 </ul>
                             </li>
                             @Html.Raw(Model.RenderListItemLink<SignOut>())
@@ -104,8 +107,8 @@ else
                                     @Html.Raw(Model.RenderListItemLink<YourAccounts>(@class: "das-user-navigation__sub-menu-list-item"))
                                     @Html.Raw(Model.RenderListItemLink<RenameAccount>(@class: "das-user-navigation__sub-menu-list-item"))
                                 }
-                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item")))
-                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item")))
+                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item"))
+                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item"))
 
                                 @if (!Model.MenuIsHidden)
                                 {
@@ -113,9 +116,9 @@ else
                                 }
                             </ul>
                         </li>
-                        @Html.Raw(Model.RenderListItemLink<SignOut>(@class: "das-user-navigation__sub-menu-list-item"))
+                        @Html.Raw(Model.RenderListItemLink<SignOut>(@class: "das-user-navigation__list-item"))
                     } else {
-                        @Html.Raw(Model.RenderListItemLink<SignIn>(@class: "das-user-navigation__sub-menu-list-item"))
+                        @Html.Raw(Model.RenderListItemLink<SignIn>(@class: "das-user-navigation__list-item"))
                     }
                 </ul>
             </nav>

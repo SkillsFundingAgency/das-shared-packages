@@ -40,10 +40,17 @@ namespace SFA.DAS.MA.Shared.UI.Models
             MenuIsHidden = false;
             SelectedMenu = "home";
             
-            // floating header links
+            // Header links
             AddOrUpdateLink(new GovUk(GovUkHref, isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new ManageApprenticeships(configuration.ManageApprenticeshipsBaseUrl, UseLegacyStyles ? "" : "govuk-header__link govuk-header__link--service-name"));
             AddOrUpdateLink(new Help(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/help"), UseLegacyStyles ? "" : "das-user-navigation__link"));
+            if (configuration.SignOutUrl != null)
+            {
+                AddOrUpdateLink(new SignOut(configuration.SignOutUrl.IsAbsoluteUri ? configuration.SignOutUrl?.AbsoluteUri : configuration.SignOutUrl.OriginalString, UseLegacyStyles ? "" : "das-user-navigation__link"));
+            }
+            AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/signIn"), UseLegacyStyles ? "" : "das-user-navigation__link"));
+
+            // User menu - drop down menu link
             AddOrUpdateLink(new YourAccounts(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/accounts"), UseLegacyStyles ? "" : "das-user-navigation__sub-menu-link"));
             AddOrUpdateLink(new RenameAccount(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "rename"), UseLegacyStyles ? "" : "das-user-navigation__sub-menu-link"));
 
@@ -54,12 +61,8 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}"), UseLegacyStyles ? "" : "das-user-navigation__sub-menu-link"));
 
             AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/notifications"), UseLegacyStyles ? "" : "das-user-navigation__sub-menu-link"));
-            if (configuration.SignOutUrl != null)
-            {
-                AddOrUpdateLink(new SignOut(configuration.SignOutUrl.IsAbsoluteUri ? configuration.SignOutUrl?.AbsoluteUri : configuration.SignOutUrl.OriginalString, UseLegacyStyles ? "" : "das-user-navigation__link"));
-            }
-            AddOrUpdateLink(new SignIn(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/signIn"), UseLegacyStyles ? "" : "das-user-navigation__link"));
-            // global nav links
+            
+            // Main navigation links
             AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams"), UseLegacyStyles ? "" : "das-navigation__link"));
             AddOrUpdateLink(new Finance(_urlHelper.GetPath(userContext, configuration.EmployerFinanceBaseUrl, "finance"), UseLegacyStyles ? "" : "das-navigation__link"));
             AddOrUpdateLink(new Recruitment(_urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl), UseLegacyStyles ? "" : "das-navigation__link"));
