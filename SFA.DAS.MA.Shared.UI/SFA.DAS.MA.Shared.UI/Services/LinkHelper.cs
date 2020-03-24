@@ -15,7 +15,7 @@ namespace SFA.DAS.MA.Shared.UI.Services
 
         public string RenderListItemLink<T>(bool isSelected = false, string @class = "") where T : Link
         {
-            return RenderLink<T>(() => $"<li class=\"{@class}\">", () => "</li>", isSelected);
+            return RenderLink<T>(() => $"<li class=\"{@class}\" role=\"menuitem\">", () => "</li>", isSelected);
         }
 
         public string RenderLink<T>(Func<string> before = null, Func<string> after = null, bool isSelected = false) where T : Link

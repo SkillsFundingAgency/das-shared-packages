@@ -2,21 +2,25 @@
 {
     public class Apprentices : Link
     {
-        private readonly string _role;
+        private readonly string _class;
+        private readonly bool _isLegacy;
+        private readonly string _selectedClass;
 
-        public Apprentices(string href, string @class = "EmployerCommitments", string role = "menuitem") : base(href, @class: @class)
+        public Apprentices(string href, string @class = "apprentices", bool isLegacy = false) : base(href, @class: @class)
         {
-            _role = role;
+            _class = @class;
+            _isLegacy = isLegacy;
+            _selectedClass = _isLegacy ? "selected" : "das-navigation__link--current";
         }
 
         public override string Render()
         {
             if (IsSelected)
             {
-                return $"<a href = \"{Href}\" class=\"{Class} selected\" role=\"{_role}\">Apprentices</a>";
+                return $"<a href = \"{Href}\" class=\"{_class} {_selectedClass}\">Apprentices</a>";
             }
 
-            return $"<a href = \"{Href}\" class=\"{Class}\" role=\"{_role}\">Apprentices</a>";
+            return $"<a href = \"{Href}\" class=\"{_class}\">Apprentices</a>";
         }
     }
 }

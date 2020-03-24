@@ -8,7 +8,7 @@
 
         public override string Render()
         {
-            return $"<a href = \"{Href}\" class=\"sub-menu-item\" class=\"{Class}\">Change your email address</a>";
+            return $"<a href = \"{Href}\" class=\"{Class}\">Change your email address</a>";
         }
     }
 }
