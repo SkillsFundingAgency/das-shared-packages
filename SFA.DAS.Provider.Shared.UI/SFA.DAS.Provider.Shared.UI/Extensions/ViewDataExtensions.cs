@@ -55,5 +55,16 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
 
             return null;
         }
+
+        public static string GetCobrowsingSnippetKey(this ViewDataDictionary viewData)
+        {
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskConfiguration))
+            {
+                var zenDeskConfig = viewData[ViewDataKeys.ZenDeskConfiguration] as ZenDeskConfiguration;
+                return zenDeskConfig?.CobrowsingSnippetKey;
+            }
+
+            return null;
+        }
     }
 }
