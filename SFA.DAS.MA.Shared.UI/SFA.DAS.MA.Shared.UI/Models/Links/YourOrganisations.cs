@@ -3,22 +3,24 @@
     public class YourOrganisations : Link
     {
         private readonly string _class;
-        private readonly string _role;
+        private readonly bool _isLegacy;
+        private readonly string _selectedClass;
 
-        public YourOrganisations(string href, string @class = "organisations", string role = "menuitem") : base(href, @class: @class)
+        public YourOrganisations(string href, string @class = "organisations", bool isLegacy = false) : base(href, @class: @class)
         {
             _class = @class;
-            _role = role;
+            _isLegacy = isLegacy;
+            _selectedClass = _isLegacy ? "selected" : "das-navigation__link--current";
         }
 
         public override string Render()
         {
             if (IsSelected)
             {
-                return $"<a href = \"{Href}\" class=\"{_class} selected\" role=\"{_role}\">Your organisations and agreements</a>";
+                return $"<a href = \"{Href}\" class=\"{_class} {_selectedClass}\">Your organisations and agreements</a>";
             }
 
-            return $"<a href = \"{Href}\" class=\"{_class}\" role=\"{_role}\">Your organisations and agreements</a>";
+            return $"<a href = \"{Href}\" class=\"{_class}\">Your organisations and agreements</a>";
         }
     }
 }

@@ -1,25 +1,26 @@
-﻿
-namespace SFA.DAS.MA.Shared.UI.Models.Links
+﻿namespace SFA.DAS.MA.Shared.UI.Models.Links
 {
     public class Recruitment : Link
     {
         private readonly string _class;
-        private readonly string _role;
+        private readonly bool _isLegacy;
+        private readonly string _selectedClass;
 
-        public Recruitment(string href, string @class = "", string role = "menuitem") : base(href, @class: @class)
+        public Recruitment(string href, string @class = "recruitment", bool isLegacy = false) : base(href, @class: @class)
         {
             _class = @class;
-            _role = role;
+            _isLegacy = isLegacy;
+            _selectedClass = _isLegacy ? "selected" : "das-navigation__link--current";
         }
 
         public override string Render()
         {
             if (IsSelected)
             {
-                return $"<a href = \"{Href}\" class=\"{_class} selected\" role=\"{_role}\">Recruitment</a>";
+                return $"<a href = \"{Href}\" class=\"{_class} {_selectedClass}\">Recruitment</a>";
             }
 
-            return $"<a href = \"{Href}\" class=\"{_class}\" role=\"{_role}\">Recruitment</a>";
+            return $"<a href = \"{Href}\" class=\"{_class}\">Recruitment</a>";
         }
     }
 }

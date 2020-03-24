@@ -14,24 +14,35 @@ workspace:
     clean: all
 
 pool:
-  vmImage: 'windows-2019'
+  name: 'Continuous Integration 02 - SSD - 160ACU'
+  demands: 
+  - msbuild
+  - visualstudio
 
 variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '1'
   Build.MinorNumber: '1'
+  BuildPlatform: 'any cpu'
 
-steps:
+steps:    
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.3.0'
+  inputs:
+    versionSpec: 4.x
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    restoreSolution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    
 - task: VSBuild@1
-  displayName: 'VSBuild restore'
+  displayName: 'VS Build'
   inputs:
     solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    msbuildArgs: '/t:restore'
-
-- task: VSBuild@1
-  displayName: 'VS build'
-  inputs:
-    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
+    vsVersion: 15.0
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
+    platform: '$(BuildPlatform)'
     Configuration: '$(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
