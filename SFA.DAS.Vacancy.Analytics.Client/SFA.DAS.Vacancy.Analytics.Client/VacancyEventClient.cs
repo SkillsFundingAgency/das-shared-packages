@@ -18,16 +18,20 @@ namespace Esfa.Vacancy.Analytics
 		private readonly string _publisherId;
 		private readonly ILogger<VacancyEventClient> _logger;
 		private readonly RetryPolicy _retryPolicy = new RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(3), DefaultMaxRetrySendAttempts);
+        private readonly EventHubClient _client;
 
 		public VacancyEventClient(string eventHubSendConnectionString, string publisherId, ILogger<VacancyEventClient> logger, RetryPolicy retryPolicy = null)
 		{
 			_eventHubSendConnectionString = eventHubSendConnectionString;
-			_publisherId = publisherId;
+            _publisherId = publisherId;
 			_logger = logger;
 
 			if (retryPolicy != null)
 				_retryPolicy = retryPolicy;
-		}
+
+            _client = EventHubClient.CreateFromConnectionString(_eventHubSendConnectionString);
+            _client.RetryPolicy = _retryPolicy;
+        }
 
 		public async Task PushApprenticeshipSearchEventAsync(long vacancyReference)
 		{
@@ -72,9 +76,8 @@ namespace Esfa.Vacancy.Analytics
 
 			try
 			{
-				var client = GetClient();
-				await client.SendAsync(evtData);
-				await client.CloseAsync();
+				await _client.SendAsync(evtData);
+				await _client.CloseAsync();
 			}
 			catch (EventHubsException ex)
 			{
@@ -93,15 +96,14 @@ namespace Esfa.Vacancy.Analytics
 
 			try
 			{
-				var client = GetClient();
-				var batchedEvents = client.CreateBatch();
+				var batchedEvents = _client.CreateBatch();
 
 				var addedSuccesfully = PopulateBatch(events, batchedEvents);
 
 				if (!addedSuccesfully) throw new BatchEventPublishException(exMsg);
 
-				await client.SendAsync(batchedEvents);
-				await client.CloseAsync();
+				await _client.SendAsync(batchedEvents);
+				await _client.CloseAsync();
 			}
 			catch (EventHubsException ex)
 			{
@@ -121,13 +123,6 @@ namespace Esfa.Vacancy.Analytics
 				var hasAdded = batchedEvents.TryAdd(evtData);
 				return hasAdded;
 			});
-		}
-
-		private EventHubClient GetClient()
-		{
-			var client = EventHubClient.CreateFromConnectionString(_eventHubSendConnectionString);
-			client.RetryPolicy = _retryPolicy;
-			return client;
 		}
 	}
 }
