@@ -23,6 +23,7 @@
         private readonly SearchFactorConfiguration _searchFactorConfiguration;
         private readonly IEnumerable<string> _keywordExcludedTerms;
         private readonly string _indexName;
+        private readonly ILog _logger;
 
         public ApprenticeshipSearchClient(IElasticClientFactory elasticClientFactory, string indexName, ILog logger = null)
         {
@@ -30,6 +31,7 @@
             _indexName = indexName;
             _searchFactorConfiguration = GetSearchFactorConfiguration();
             _keywordExcludedTerms = new[] { "apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee" };
+            _logger = logger;
         }
 
         public ApprenticeshipSearchResponse Search(ApprenticeshipSearchRequestParameters searchParameters)
@@ -321,7 +323,7 @@
             return queryDescriptor;
         }
 
-        private static void SetHitValuesOnSearchResults(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results)
+        private void SetHitValuesOnSearchResults(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results)
         {
             foreach (var result in results.Documents)
             {
@@ -334,8 +336,9 @@
                         var distance = hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
                         result.Distance = Convert.ToDouble(distance);
                     }
-                    catch
+                    catch(Exception e)
                     {
+                        _logger?.Error(e, "Error converting distance sort value from Elastic Result Set");
                         result.Distance = 0;
                     }
                 }

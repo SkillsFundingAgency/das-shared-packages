@@ -19,11 +19,13 @@
 
         private readonly IElasticClient _elasticClient;
         private readonly string _indexName;
+        private readonly ILog _logger;
 
         public TraineeshipSearchClient(IElasticClientFactory elasticClientFactory, string indexName, ILog logger = null)
         {
             _elasticClient = elasticClientFactory.CreateClient(r => logger?.Debug(r.DebugInformation));
             _indexName = indexName;
+            _logger = logger;
         }
 
         public IEnumerable<int> GetAllVacancyIds()
@@ -156,7 +158,7 @@
             }
         }
 
-        private static void SetHitValuesOnSearchResults(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results)
+        private void SetHitValuesOnSearchResults(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results)
         {
             foreach (var result in results.Documents)
             {
@@ -169,8 +171,9 @@
                         var distance = hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
                         result.Distance = Convert.ToDouble(distance);
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        _logger?.Error(e, "Error converting distance sort value from Elastic Result Set");
                         result.Distance = 0;
                     }
                 }
