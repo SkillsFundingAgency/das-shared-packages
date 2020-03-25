@@ -18,20 +18,20 @@ namespace Esfa.Vacancy.Analytics
 		private readonly string _publisherId;
 		private readonly ILogger<VacancyEventClient> _logger;
 		private readonly RetryPolicy _retryPolicy = new RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(3), DefaultMaxRetrySendAttempts);
-        private readonly EventHubClient _client;
+		private readonly EventHubClient _client;
 
 		public VacancyEventClient(string eventHubSendConnectionString, string publisherId, ILogger<VacancyEventClient> logger, RetryPolicy retryPolicy = null)
 		{
 			_eventHubSendConnectionString = eventHubSendConnectionString;
-            _publisherId = publisherId;
+			_publisherId = publisherId;
 			_logger = logger;
 
 			if (retryPolicy != null)
 				_retryPolicy = retryPolicy;
 
-            _client = EventHubClient.CreateFromConnectionString(_eventHubSendConnectionString);
-            _client.RetryPolicy = _retryPolicy;
-        }
+			_client = EventHubClient.CreateFromConnectionString(_eventHubSendConnectionString);
+			_client.RetryPolicy = _retryPolicy;
+		}
 
 		public async Task PushApprenticeshipSearchEventAsync(long vacancyReference)
 		{
