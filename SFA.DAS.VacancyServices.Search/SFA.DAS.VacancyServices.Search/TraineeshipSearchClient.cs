@@ -9,6 +9,7 @@
     using Responses;
     using SFA.DAS.NLog.Logger;
     using SFA.DAS.Elastic;
+    using System;
 
     public class TraineeshipSearchClient : ITraineeshipSearchClient
     {
@@ -162,7 +163,17 @@
                 var hitMd = results.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
                 if (searchParameters.CanSortByGeoDistance)
-                    result.Distance = (double)hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
+                {
+                    try
+                    {
+                        var distance = hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
+                        result.Distance = Convert.ToDouble(distance);
+                    }
+                    catch
+                    {
+                        result.Distance = 0;
+                    }
+                }
 
                 result.Score = hitMd.Score.GetValueOrDefault(0);
             }
