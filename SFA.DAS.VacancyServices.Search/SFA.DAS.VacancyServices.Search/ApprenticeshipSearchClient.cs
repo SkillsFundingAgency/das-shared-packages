@@ -9,6 +9,7 @@
     using Responses;
     using SFA.DAS.Elastic;
     using SFA.DAS.NLog.Logger;
+    using System;
 
     public class ApprenticeshipSearchClient : IApprenticeshipSearchClient
     {
@@ -22,6 +23,7 @@
         private readonly SearchFactorConfiguration _searchFactorConfiguration;
         private readonly IEnumerable<string> _keywordExcludedTerms;
         private readonly string _indexName;
+        private readonly ILog _logger;
 
         public ApprenticeshipSearchClient(IElasticClientFactory elasticClientFactory, string indexName, ILog logger = null)
         {
@@ -29,6 +31,7 @@
             _indexName = indexName;
             _searchFactorConfiguration = GetSearchFactorConfiguration();
             _keywordExcludedTerms = new[] { "apprenticeships", "apprenticeship", "traineeship", "traineeships", "trainee" };
+            _logger = logger;
         }
 
         public ApprenticeshipSearchResponse Search(ApprenticeshipSearchRequestParameters searchParameters)
@@ -260,8 +263,8 @@
             {
                 case VacancySearchSortType.RecentlyAdded:
                     search.Sort(r => r
-                        .TrySortByGeoDistance(parameters)
                         .Descending(s => s.PostedDate)
+                        .TrySortByGeoDistance(parameters)
                         .Descending(s => s.VacancyReference));
                     break;
                 case VacancySearchSortType.Distance:
@@ -320,14 +323,25 @@
             return queryDescriptor;
         }
 
-        private static void SetHitValuesOnSearchResults(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results)
+        private void SetHitValuesOnSearchResults(ApprenticeshipSearchRequestParameters searchParameters, ISearchResponse<ApprenticeshipSearchResult> results)
         {
             foreach (var result in results.Documents)
             {
                 var hitMd = results.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
                 if (searchParameters.CanSortByGeoDistance)
-                    result.Distance = (double)hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
+                {
+                    try
+                    {
+                        var distance = hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
+                        result.Distance = Convert.ToDouble(distance);
+                    }
+                    catch(Exception e)
+                    {
+                        _logger?.Error(e, "Error converting distance sort value from Elastic Result Set");
+                        result.Distance = 0;
+                    }
+                }
 
                 result.Score = hitMd.Score.GetValueOrDefault(0);
             }

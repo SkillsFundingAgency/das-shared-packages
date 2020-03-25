@@ -9,6 +9,7 @@
     using Responses;
     using SFA.DAS.NLog.Logger;
     using SFA.DAS.Elastic;
+    using System;
 
     public class TraineeshipSearchClient : ITraineeshipSearchClient
     {
@@ -18,11 +19,13 @@
 
         private readonly IElasticClient _elasticClient;
         private readonly string _indexName;
+        private readonly ILog _logger;
 
         public TraineeshipSearchClient(IElasticClientFactory elasticClientFactory, string indexName, ILog logger = null)
         {
             _elasticClient = elasticClientFactory.CreateClient(r => logger?.Debug(r.DebugInformation));
             _indexName = indexName;
+            _logger = logger;
         }
 
         public IEnumerable<int> GetAllVacancyIds()
@@ -155,14 +158,25 @@
             }
         }
 
-        private static void SetHitValuesOnSearchResults(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results)
+        private void SetHitValuesOnSearchResults(TraineeshipSearchRequestParameters searchParameters, ISearchResponse<TraineeshipSearchResult> results)
         {
             foreach (var result in results.Documents)
             {
                 var hitMd = results.Hits.First(h => h.Id == result.Id.ToString(CultureInfo.InvariantCulture));
 
                 if (searchParameters.CanSortByGeoDistance)
-                    result.Distance = (double)hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
+                {
+                    try
+                    {
+                        var distance = hitMd.Sorts.ElementAt(GetGeoDistanceSortHitPosition(searchParameters));
+                        result.Distance = Convert.ToDouble(distance);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger?.Error(e, "Error converting distance sort value from Elastic Result Set");
+                        result.Distance = 0;
+                    }
+                }
 
                 result.Score = hitMd.Score.GetValueOrDefault(0);
             }
