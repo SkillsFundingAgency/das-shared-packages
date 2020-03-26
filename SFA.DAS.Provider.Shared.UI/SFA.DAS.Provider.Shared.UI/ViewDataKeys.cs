@@ -7,5 +7,6 @@
         public const string ShowBetaPhaseBanner = "SharedUI.ShowBetaPhaseBanner";
         public const string SuppressNavigationSection = "SharedUI.SuppressedNavigationSections";
         public const string EnableGoogleAnalytics = "SharedUI.EnableGoogleAnalytics";
+        public const string ZenDeskConfiguration = "SharedUI.ZenDeskConfiguration";
     }
 }

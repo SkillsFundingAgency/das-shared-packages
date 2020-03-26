@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SFA.DAS.Provider.Shared.UI.Models;
 
 namespace SFA.DAS.Provider.Shared.UI.Extensions
 {
@@ -31,6 +32,39 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         public static bool EnableGoogleAnalytics(this ViewDataDictionary viewData)
         {
             return viewData.ContainsKey(ViewDataKeys.EnableGoogleAnalytics) && (bool)viewData[ViewDataKeys.EnableGoogleAnalytics];
+        }
+
+        public static string GetZenDeskSectionId(this ViewDataDictionary viewData)
+        {
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskConfiguration))
+            {
+                var zenDeskConfig = viewData[ViewDataKeys.ZenDeskConfiguration] as ZenDeskConfiguration;
+                return zenDeskConfig?.SectionId;
+            }
+
+            return null;
+        }
+
+        public static string GetZenDeskSnippetKey(this ViewDataDictionary viewData)
+        {
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskConfiguration))
+            {
+                var zenDeskConfig = viewData[ViewDataKeys.ZenDeskConfiguration] as ZenDeskConfiguration;
+                return zenDeskConfig?.SnippetKey;
+            }
+
+            return null;
+        }
+
+        public static string GetCobrowsingSnippetKey(this ViewDataDictionary viewData)
+        {
+            if (viewData.ContainsKey(ViewDataKeys.ZenDeskConfiguration))
+            {
+                var zenDeskConfig = viewData[ViewDataKeys.ZenDeskConfiguration] as ZenDeskConfiguration;
+                return zenDeskConfig?.CobrowsingSnippetKey;
+            }
+
+            return null;
         }
     }
 }
