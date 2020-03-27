@@ -103,7 +103,7 @@
                 SetSort(s, parameters);
 
                 if (parameters.CalculateSubCategoryAggregations)
-                    s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode).Size(0)));
+                    s.Aggregations(a => a.Terms(SubCategoriesAggregationName, st => st.Field(o => o.SubCategoryCode)));
 
                 //Filters to run after the aggregations have been calculated
                 if (parameters.SubCategoryCodes != null && parameters.SubCategoryCodes.Any())
