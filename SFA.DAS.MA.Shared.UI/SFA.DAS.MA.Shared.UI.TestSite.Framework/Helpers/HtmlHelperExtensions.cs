@@ -9,7 +9,7 @@ namespace SFA.DAS.MA.Shared.UI.TestSite.Framework.Helpers
 {
     public static class HtmlHelperExtensions
     {
-        public static IHeaderViewModel GetHeaderViewModel(this HtmlHelper html)
+        public static IHeaderViewModel GetHeaderViewModel(this HtmlHelper html, bool useLegacyStyles = false)
         {
             var configuration = DependencyResolver.Current.GetService<IConfiguration>();
             var oidcConfiguration = DependencyResolver.Current.GetService<IOidcConfiguration>();
@@ -32,14 +32,14 @@ namespace SFA.DAS.MA.Shared.UI.TestSite.Framework.Helpers
             {
                 User = html.ViewContext.HttpContext.User,
                 HashedAccountId = html.ViewContext.RouteData.Values["accountHashedId"]?.ToString()
-            });
+            }, useLegacyStyles: true);
 
             headerModel.SelectMenu("home");
 
             return headerModel;
         }
 
-        public static IFooterViewModel GetFooterViewModel(this HtmlHelper html)
+        public static IFooterViewModel GetFooterViewModel(this HtmlHelper html, bool useLegacyStyles = false)
         {
             var configuration = DependencyResolver.Current.GetService<IConfiguration>();
 
