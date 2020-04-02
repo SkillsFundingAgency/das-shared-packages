@@ -1,52 +1,71 @@
-﻿<!doctype html>
-<html class="govuk-template" lang="en">
+﻿<!DOCTYPE html>
+<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en">
+<!--<![endif]-->
 <head>
     <meta charset="utf-8" />
-    <title>@ViewBag.Title - Provider relationships</title>
-    <meta name="theme-color" content="#0b0c0c" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:image" content="@Html.CdnLink("assets/images","govuk-opengraph-image.png")">
-    <link rel="mask-icon" href="@Html.CdnLink("assets/images","govuk-mask-icon.svg")" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="@Html.CdnLink("assets/images","govuk-apple-touch-icon-180x180.png")">
-    <link rel="apple-touch-icon" sizes="167x167" href="@Html.CdnLink("assets/images","govuk-apple-touch-icon-167x167.png")">
-    <link rel="apple-touch-icon" sizes="152x152" href="@Html.CdnLink("assets/images","govuk-apple-touch-icon-152x152.png")">
-    <link rel="apple-touch-icon" href="@Html.CdnLink("assets/images","govuk-apple-touch-icon.png")">
-    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="@Html.CdnLink("assets/images","favicon.ico")" type="image/x-icon" />
-    <!--[if !IE 8]><!-->
-    <link href="@Html.CdnLink("css", "main.css")" rel="stylesheet" />
+    <title>Legacy layout</title>
+    @if (!string.IsNullOrWhiteSpace(ViewBag.MetaDesc))
+    {
+        <meta name="description" content="@ViewBag.MetaDesc">
+    }
+    <!--[if gt IE 8]><!-->
+    <link href="~/dist/css/govuk-template.css" media="screen" rel="stylesheet" /><!--<![endif]-->
+    <!--[if IE 6]><link href="/dist/css/govuk-template-ie6.css" media="screen" rel="stylesheet" /><![endif]-->
+    <!--[if IE 7]><link href="/dist/css/govuk-template-ie7.css" media="screen" rel="stylesheet" /><![endif]-->
+    <!--[if IE 8]><link href="/dist/css/govuk-template-ie8.css" media="screen" rel="stylesheet" /><![endif]-->
+    <link href="~/dist/css/govuk-template-print.css" media="print" rel="stylesheet" />
+    <!--[if IE 8]><link href="/dist/css/fonts-ie8.css" media="all" rel="stylesheet" /><![endif]-->
+    <!--[if gte IE 9]><!-->
+    <link href="~/dist/css/fonts.css" media="all" rel="stylesheet" /><!--<![endif]-->
+    <!--[if lt IE 9]><script src="/dist/javascripts/ie.js"></script><![endif]-->
+    <link rel="shortcut icon" href="/dist/images/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/dist/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/dist/images/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/dist/images/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/dist/images/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon-precomposed" href="/dist/images/apple-touch-icon-60x60.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="/dist/images/opengraph-image.png">
+    <meta name="msapplication-config" content="none" />
+    <link href="~/dist/css/select2.min.css" media="all" rel="stylesheet" />
+
+    <!--[if IE 6]><link href="@Styles.Url("~/bundles/screenie6")" media="screen" rel="stylesheet" /><![endif]-->
+    <!--[if IE 7]><link href="@Styles.Url("~/bundles/screenie7")" media="screen" rel="stylesheet" /><![endif]-->
+    <!--[if IE 8]><link href="@Styles.Url("~/bundles/screenie8")" media="screen" rel="stylesheet" /><![endif]-->
+    <!--[if gt IE 8]><!-->
+    <link href="@Styles.Url("~/bundles/screen")" media="all" rel="stylesheet" />
     <!--<![endif]-->
-    @*@Html.Partial("_ZenDeskWidget")
-    @Html.Partial("_GoogleAnalyticsHead")*@
+    <link href="@Styles.Url("~/bundles/site")" media="all" rel="stylesheet" />
+    <!--[if lt IE 9]><script src="/dist/javascripts/respond.min.js"></script><![endif]-->
 </head>
-<body class="govuk-template__body">
-    @*@Html.Partial("_GoogleAnalyticsBody")*@
-    <script>
-        document.body.className = (document.body.className ? document.body.className + ' js-enabled' : 'js-enabled');
-    </script>
-    <a class="govuk-skip-link" href="#main-content">Skip to main content</a>
-
-    @Html.Partial("_Header", Html.GetHeaderViewModel())
-
-    <div class="govuk-width-container">
-        @RenderSection("breadcrumb", false)
-        <main class="govuk-main-wrapper " id="main-content" role="main">
-            @RenderBody()
-        </main>
+<body id="@ViewBag.PageID">
+    <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+    <div id="skiplink-container">
+        <div>
+            <a href="#content" class="skiplink">Skip to main content</a>
+        </div>
     </div>
+    <!--[if lt IE 8]>
+        <div id="unsupported-browser-message" aria-hidden="true">
+            <p>
+                You're using a web browser that we don't support. Upgrade to one of the <a href="https://www.gov.uk/help/browsers" target="_blank">browsers that we do support</a> to access all the site's features.
+            </p>
+        </div>
+    <![endif]-->
 
-    @Html.Partial("_Footer", Html.GetFooterViewModel())
 
-    <script src="@Html.CdnLink("libs/jquery","jquery.min.js")"></script>
-    <script src="@Html.CdnLink("libs/govuk-frontend","all.js")"></script>
+    @Html.Partial("_Header", Html.GetHeaderViewModel(useLegacyStyles: true))
 
-    <script src="@Html.CdnLink("js","das-all.min.js")"></script>
-    <script src="@Html.CdnLink("js","app.min.js")"></script>
+    <main role="main" id="content">
+        @RenderBody()
+    </main>
 
-    <script>
-        window.GOVUKFrontend.initAll();
-        window.DASFrontend.initAll();
-    </script>
+    @Html.Partial("_Footer", Html.GetFooterViewModel(useLegacyStyles: true))
 
-    @RenderSection("footerJS", required: false)
+    <div id="global-app-error" class="app-error hidden"></div>
+    @Scripts.Render("~/bundles/sfajs")
 </body>
 </html>
