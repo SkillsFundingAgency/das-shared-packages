@@ -32,7 +32,8 @@ namespace SFA.DAS.MA.Shared.UI.TestSite.Framework.Helpers
             {
                 User = html.ViewContext.HttpContext.User,
                 HashedAccountId = html.ViewContext.RouteData.Values["accountHashedId"]?.ToString()
-            }, useLegacyStyles: true);
+            }, 
+            useLegacyStyles: useLegacyStyles);
 
             headerModel.SelectMenu("home");
 
@@ -51,7 +52,8 @@ namespace SFA.DAS.MA.Shared.UI.TestSite.Framework.Helpers
             {
                 User = html.ViewContext.HttpContext.User,
                 HashedAccountId = html.ViewContext.RouteData.Values["accountHashedId"]?.ToString()
-            }
+            },
+            useLegacyStyles: useLegacyStyles
             );
         }
 
