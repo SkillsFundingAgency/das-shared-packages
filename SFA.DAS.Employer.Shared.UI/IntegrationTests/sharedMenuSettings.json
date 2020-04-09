@@ -1,11 +1,11 @@
 {
-  "SFA.DAS.Employer.Shared.UI":  {
+  "SFA.DAS.Employer.Shared.UI": {
     "MaPageConfiguration": {
       "Routes": {
         "Accounts": {
           "AccountsHome": "/accounts/{0}/teams",
           "Help": "/service/help",
-          "Privacy": "/service/privacy",
+          "Privacy": "/service/{0}/privacy",
           "Accounts": "/service/accounts",
           "RenameAccount": "/accounts/{0}/rename",
           "Notifications": "/settings/notifications",
@@ -14,13 +14,14 @@
           "AccountsAgreements": "/accounts/{0}/agreements",
           "AccountsSchemes": "/accounts/{0}/schemes",
           "ChangePasswordReturn": "/service/password/change",
-          "ChangeEmailReturn": "/service/email/change"
+          "ChangeEmailReturn": "/service/email/change",
+          "CookieConsent": "/accounts/{0}/cookieConsent"
         },
         "Finance": {
           "AccountsFinance": "/accounts/{0}/finance"
         },
         "Commitments": {
-          "ApprenticesHome": "/commitments/accounts/{0}/apprentices/home"
+          "ApprenticesHome": "/accounts/{0}/apprentices/home"
         },
         "CommitmentsV2": {
           "ApprenticesHome": "/{0}"
@@ -33,7 +34,9 @@
           "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
         }
       },
-      "AccountsOidcClientId": "easaccdev"
+      "AccountsOidcClientId": "easaccat"
     }
   }
 }
+
+
