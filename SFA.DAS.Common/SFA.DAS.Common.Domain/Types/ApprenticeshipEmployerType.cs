@@ -6,5 +6,6 @@ namespace SFA.DAS.Common.Domain.Types
     {
         [Description("Non Levy")] NonLevy = 0,
         [Description("Levy")] Levy = 1,
+        [Description("Unknown")] Unknown = 2
     }
 }
