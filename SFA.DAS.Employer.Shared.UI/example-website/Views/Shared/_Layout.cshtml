@@ -1,64 +1,65 @@
-﻿@{
+﻿ @using SFA.DAS.Employer.Shared.UI.Models
+@{
     string accountId = (string)this.ViewContext.RouteData.Values["employerAccountId"];
-    ViewBag.HideHeaderBorder = true; 
+    ViewBag.HideHeaderBorder = true;
+    var footerModel = new FooterModel { AccountId = accountId, UsePrivacyV2 = true };
 }
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
 <head>
-  <meta charset="utf-8" />
-  <title>@ViewData["Title"]</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0c0c" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/assets/images/favicon.ico" type="image/x-icon" />
-  <link rel="mask-icon" href="/assets/images/govuk-mask-icon.svg" color="#0b0c0c" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/govuk-apple-touch-icon-180x180.png" />
-  <link rel="apple-touch-icon" sizes="167x167" href="/assets/images/govuk-apple-touch-icon-167x167.png" />
-  <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png" />
-  <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png" />
-  <!--[if !IE 8]><!-->
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0c0c" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/assets/images/govuk-mask-icon.svg" color="#0b0c0c" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/govuk-apple-touch-icon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/assets/images/govuk-apple-touch-icon-167x167.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png" />
+    <!--[if !IE 8]><!-->
     <link href="/css/main.css" rel="stylesheet" />
     <!--<![endif]-->
-    
-  <!--[if IE 8]>
-    
-  <![endif]-->
+    <!--[if IE 8]>
 
-  <link href="/css/application.css" rel="stylesheet" no-cdn/>
+    <![endif]-->
 
-  <!--[if lt IE 9]>
-    <script src="/libs/html5-shiv/html5shiv.js"></script>
-  <![endif]-->
-  <meta property="og:image" content="/assets/images/govuk-opengraph-image.png">
+    <link href="/css/application.css" rel="stylesheet" no-cdn />
+
+    <!--[if lt IE 9]>
+      <script src="/libs/html5-shiv/html5shiv.js"></script>
+    <![endif]-->
+    <meta property="og:image" content="/assets/images/govuk-opengraph-image.png">
 
 </head>
 <body class="govuk-template__body ">
-  <script nws-csp-add-nonce="true">
-    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-  </script>
-  <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+    <script nws-csp-add-nonce="true">
+        document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+    </script>
+    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
-  <partial name="_Header">
-  <partial name="_Menu" model="@accountId">
-  <div class="govuk-width-container app-account-header">
-    @RenderSection("BodyHeader", required: false)
-  </div>
+    <partial name="_Header">
+        <partial name="_Menu" model="@accountId">
+            <div class="govuk-width-container app-account-header">
+                @RenderSection("BodyHeader", required: false)
+            </div>
 
-  <div class="das-section--dashboard">
-    <div class="govuk-width-container" >
-      <main class="govuk-main-wrapper" id="main-content" role="main">
-        @RenderBody()
-      </main>
-    </div>
-  </div>
-  <partial name="_Footer"  model="@accountId">
-<script src="/libs/govuk-frontend/all.js"></script>
-<script src="/libs/jquery/jquery.min.js"></script>
-<script src="/js/das-all.js"></script>
-<script src="/js/app.min.js"></script>
-<script>
-    window.GOVUKFrontend.initAll();
-    window.DASFrontend.initAll();
-</script>
+            <div class="das-section--dashboard">
+                <div class="govuk-width-container">
+                    <main class="govuk-main-wrapper" id="main-content" role="main">
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
+            <partial name="_Footer" model="@footerModel">
+                <script src="/libs/govuk-frontend/all.js"></script>
+                <script src="/libs/jquery/jquery.min.js"></script>
+                <script src="/js/das-all.js"></script>
+                <script src="/js/app.min.js"></script>
+                <script>
+                    window.GOVUKFrontend.initAll();
+                    window.DASFrontend.initAll();
+                </script>
 </body>
 </html>

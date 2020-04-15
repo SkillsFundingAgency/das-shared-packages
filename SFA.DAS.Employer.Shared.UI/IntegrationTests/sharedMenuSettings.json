@@ -5,7 +5,7 @@
         "Accounts": {
           "AccountsHome": "/accounts/{0}/teams",
           "Help": "/service/help",
-          "Privacy": "/service/{0}/privacy",
+          "Privacy": "/service/privacy",
           "Accounts": "/service/accounts",
           "RenameAccount": "/accounts/{0}/rename",
           "Notifications": "/settings/notifications",
@@ -15,7 +15,8 @@
           "AccountsSchemes": "/accounts/{0}/schemes",
           "ChangePasswordReturn": "/service/password/change",
           "ChangeEmailReturn": "/service/email/change",
-          "CookieConsent": "/accounts/{0}/cookieConsent"
+          "CookieConsent": "/accounts/{0}/cookieConsent",
+          "PrivacyV2": "/service/{0}/privacy"
         },
         "Finance": {
           "AccountsFinance": "/accounts/{0}/finance"
