@@ -22,7 +22,7 @@
           "AccountsFinance": "/accounts/{0}/finance"
         },
         "Commitments": {
-          "ApprenticesHome": "/accounts/{0}/apprentices/home"
+          "ApprenticesHome": "commitments/accounts/{0}/apprentices/home"
         },
         "CommitmentsV2": {
           "ApprenticesHome": "/{0}"
@@ -35,7 +35,7 @@
           "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
         }
       },
-      "AccountsOidcClientId": "easaccat"
+      "AccountsOidcClientId": "easaccdev"
     }
   }
 }
