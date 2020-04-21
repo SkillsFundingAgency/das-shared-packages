@@ -10,5 +10,6 @@ namespace SFA.DAS.Provider.Shared.UI.Models
         public IDictionary<string, string> Extras { get; set; } = new Dictionary<string, string>();
         public string UkPrn { get; set; }
         public string Vpv { get; set; }
+        public string UserId { get; set; }
     }
 }
