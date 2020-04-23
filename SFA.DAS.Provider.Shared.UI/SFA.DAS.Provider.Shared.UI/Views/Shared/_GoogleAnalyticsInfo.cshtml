@@ -11,8 +11,8 @@
     dataLayer.push({
         'event': '@ViewBag.GaData.DataLoaded',
         'vpv': '@ViewBag.GaData.Vpv',
-        'ukPrn': '@ViewBag.GaData.UkPrn',
-        'org': ''
+        'UserID': '@ViewBag.GaData.UserId',
+        'Account': '@ViewBag.GaData.UkPrn'
         @if (ViewBag.GaData.Extras.Count>0)
         {
             @Html.Raw(",");
