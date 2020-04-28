@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
+using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using MongoDB.Bson.Serialization.Conventions;
@@ -67,6 +68,27 @@ namespace SFA.DAS.Recruit.Vacancies.Client
                             .AsQueryable()
                             .Where(each => each.ViewType.Equals(LiveVacancyDocumentType))
                             .ToList();
+            return vacancies;
+        }
+
+        public Task<List<Vacancy>> GetLiveVacancies(int pageSize, int pageNumber)
+        {
+            var skip =  (((pageNumber < 1 ? 1 : pageNumber) - 1) * pageSize);
+            var collection = GetCollection();
+            var vacancies = collection
+                            .AsQueryable()
+                            .Where(each => each.ViewType.Equals(LiveVacancyDocumentType))
+                            .Skip(skip)
+                            .Take(pageSize)
+                            .ToListAsync();
+            return vacancies;
+        }
+
+        public Task<long> GetLiveVacanciesCount()
+        {
+            var collection = GetCollection();
+            var vacancies = collection
+                            .CountDocumentsAsync(vacancy => vacancy.ViewType.Equals(LiveVacancyDocumentType));
             return vacancies;
         }
 
