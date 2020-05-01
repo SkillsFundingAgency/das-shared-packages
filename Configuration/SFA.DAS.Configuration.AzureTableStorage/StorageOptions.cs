@@ -20,5 +20,6 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         public string StorageConnectionString { get; set; }
         public string[] ConfigurationKeys { get; set; }
         public bool PreFixConfigurationKeys { get; set; } = true;
+        public string[] ConfigurationKeysRawJsonResult { get ; set ; } = null;
     }
 }

@@ -60,6 +60,8 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                 ConfigurationBootstrapper.GetConnectionStringFromEnvironmentVariable(
                     options.StorageConnectionStringEnvironmentVariableName, configOptions.EnvironmentName);
 
+            configOptions.ConfigurationKeysRawJsonResult = options.ConfigurationKeysRawJsonResult;
+            
             var configurationSource = new AzureTableStorageConfigurationSource(configOptions);
 
             return builder.Add(configurationSource);
