@@ -28,6 +28,12 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             Test(f => f.SetConfigs(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
         }
 
+        [Test, TestCaseSource(typeof(AzureTableStorageConfigurationProviderTestsSource), nameof(AzureTableStorageConfigurationProviderTestsSource.TestCasesNoConversion))]
+        public void WhenReadingTables_AndConfigSetToIgnoreParsingKey_ThenTheRawJsonIsReturned(IEnumerable<(string configKey, string json)> sourceConfigs, IEnumerable<(string key, string value)> expected)
+        {
+            Test(f => f.SetConfigsNoConvert(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
+        }
+
         [Test]
         public void WhenReadingTablesAndConfigRowIsNotFound_ThenExceptionIsThrown()
         {
@@ -42,11 +48,20 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             return Enumerable.Range(0, tableCount).Select(cnt => ($"t{cnt}", $@"{{""k{cnt}"": ""v{cnt}""}}"));
         }
 
+        public static IEnumerable TestCasesNoConversion
+        {
+            get
+            {
+                yield return new TestCaseData(new[] {("t1", @"{""k1"": [{""a1"":""b1""}]}")}, new[] {("t1", @"{""k1"": [{""a1"":""b1""}]}")}).SetName("SingleItemArrayNoConvert");
+            }
+        }
+
         public static IEnumerable TestCasesWithPrefix
         {
             get
             {
                 yield return new TestCaseData(new[] {("t1", @"{}")}, new (string, string)[] {}).SetName("EmptyJsonFromSingleTableWithPrefix");
+                yield return new TestCaseData(new[] {("t1", @"{""k1"": [{""a1"":""b1""}]}")}, new[] {("t1:k1:0:a1", "b1")}).SetName("SingleItemArrayTableWithPrefix");
                 yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1""}")}, new[] {("t1:k1", "v1")}).SetName("SingleItemInFlatJsonFromSingleTableWithPrefix");
                 yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1"", ""k2"": ""v2""}")}, new[] {("t1:k1", "v1"), ("t1:k2", "v2")}).SetName("MultipleItemsInFlatJsonFromSingleTableWithPrefix");
                 yield return new TestCaseData(new[] {("t1", @"{""k1"": ""v1""}"), ("t2", @"{""k2"": ""v2""}")}, new[] {("t1:k1", "v1"), ("t2:k2", "v2")}).SetName("FlatJsonsFromMultipleTablesWithPrefix");
@@ -83,8 +98,8 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     
     public class TestableAzureTableStorageConfigurationProvider : AzureTableStorageConfigurationProvider
     {
-        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys = true)
-            : base(cloudStorageAccount, environmentName, configurationKeys, prefixConfigurationKeys)
+        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, IEnumerable<string> rawConfigurationKeys, bool prefixConfigurationKeys = true)
+            : base(cloudStorageAccount, environmentName, configurationKeys, prefixConfigurationKeys,rawConfigurationKeys)
         {
         } 
         
@@ -123,7 +138,20 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         
         public void SetConfigs(IEnumerable<(string configKey, string json)> configs, bool prefixConfigurationKeySetting = true)
         {
-            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, configs.Select(c => c.configKey), prefixConfigurationKeySetting);
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, configs.Select(c => c.configKey), null, prefixConfigurationKeySetting);
+
+            foreach (var config in configs)
+            {
+                var configurationRow = new AzureTableStorageConfigurationProvider.ConfigurationRow {Data = config.json};
+
+                CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == config.configKey)))
+                    .ReturnsAsync(new TableResult { Result = configurationRow });
+            }
+        }
+        
+        public void SetConfigsNoConvert(IEnumerable<(string configKey, string json)> configs, bool prefixConfigurationKeySetting = true)
+        {
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, configs.Select(c => c.configKey), configs.Select(c => c.configKey), prefixConfigurationKeySetting);
 
             foreach (var config in configs)
             {
@@ -137,7 +165,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         public void ArrangeConfigNotFound()
         {
             const string configKey = "ConfigRowNotInTable";
-            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, new[] {configKey});
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, new[] {configKey},new[]{""});
 
             CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == configKey)))
                 .ReturnsAsync(new TableResult { HttpStatusCode = 404 });
