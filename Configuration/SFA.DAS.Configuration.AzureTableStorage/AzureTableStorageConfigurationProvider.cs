@@ -19,13 +19,15 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private readonly string _environmentName;
         private readonly IEnumerable<string> _configurationKeys;
         private readonly bool _prefixConfigurationKeys;
+        private readonly IEnumerable<string> _configurationKeysRawJsonResult;
 
-        public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys)
+        public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys, IEnumerable<string> configurationKeysRawJsonResult)
         {
             _storageAccount = cloudStorageAccount;
             _environmentName = environmentName;
             _configurationKeys = configurationKeys;
             _prefixConfigurationKeys = prefixConfigurationKeys;
+            _configurationKeysRawJsonResult = configurationKeysRawJsonResult;
         }
         
         public override void Load()
@@ -50,7 +52,13 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                 throw new Exception($"Configuration row not found. StorageAccount:{_storageAccount}, PartitionKey:{_environmentName}, RowKey:{configurationKey}");
                 
             var configurationRow = (ConfigurationRow)row.Result;
-
+            
+            if (_configurationKeysRawJsonResult != null && _configurationKeysRawJsonResult.Contains(configurationKey))
+            {
+                data.AddOrUpdate(configurationKey, configurationRow.Data, (k, v) => configurationRow.Data);
+                return;
+            }
+            
             using (var stream = configurationRow.Data.ToStream())
             {
                 var parsedData = JsonConfigurationStreamParser.Parse(stream);
