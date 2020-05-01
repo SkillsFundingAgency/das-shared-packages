@@ -71,7 +71,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             return vacancies;
         }
 
-        public Task<List<Vacancy>> GetLiveVacancies(int pageSize, int pageNumber)
+        public Task<List<Vacancy>> GetLiveVacanciesAsync(int pageSize, int pageNumber)
         {
             var skip =  (((pageNumber < 1 ? 1 : pageNumber) - 1) * pageSize);
             var collection = GetCollection();

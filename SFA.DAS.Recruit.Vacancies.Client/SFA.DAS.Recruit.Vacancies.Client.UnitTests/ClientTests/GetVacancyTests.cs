@@ -45,7 +45,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests.ClientTests
             while(i < pages)
             {
                 i++;
-                var vac = await sut.GetLiveVacancies(4,i);
+                var vac = await sut.GetLiveVacanciesAsync(4,i);
                 retrievedCount += vac.Count;
             }
 
