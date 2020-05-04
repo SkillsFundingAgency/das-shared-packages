@@ -33,6 +33,12 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         {
             Test(f => f.SetConfigsNoConvert(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
         }
+        
+        [Test, TestCaseSource(typeof(AzureTableStorageConfigurationProviderTestsSource), nameof(AzureTableStorageConfigurationProviderTestsSource.TestCasesWithSuppliedPrefix))]
+        public void WhenReadingTables_AndConfigPrefixSupplied_ThenThePrefixIsUsed(IEnumerable<(string configKey, string json)> sourceConfigs, IEnumerable<(string key, string value)> expected)
+        {
+            Test(f => f.SetConfigs(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
+        }
 
         [Test]
         public void WhenReadingTablesAndConfigRowIsNotFound_ThenExceptionIsThrown()
@@ -53,6 +59,14 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             get
             {
                 yield return new TestCaseData(new[] {("t1", @"{""k1"": [{""a1"":""b1""}]}")}, new[] {("t1", @"{""k1"": [{""a1"":""b1""}]}")}).SetName("SingleItemArrayNoConvert");
+            }
+        }
+
+        public static IEnumerable TestCasesWithSuppliedPrefix
+        {
+            get
+            {
+                yield return new TestCaseData(new [] {("t1:MyValue", @"{""k2"": ""v1""}"),("t2", @"{""k1"": ""v1""}")}, new[] {("MyValue:k2", "v1"),("k1","v1")}).SetName("SingleItemInFlatJsonFromSingleTableWithPrefixProvided");
             }
         }
 
@@ -143,8 +157,8 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             foreach (var config in configs)
             {
                 var configurationRow = new AzureTableStorageConfigurationProvider.ConfigurationRow {Data = config.json};
-
-                CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == config.configKey)))
+                var key = config.configKey.Split(':').Length != 0 ? config.configKey.Split(':')[0] : config.configKey;
+                CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == key)))
                     .ReturnsAsync(new TableResult { Result = configurationRow });
             }
         }

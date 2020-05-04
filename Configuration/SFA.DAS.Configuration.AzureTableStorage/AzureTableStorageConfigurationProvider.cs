@@ -42,8 +42,13 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             Data = data;
         }
 
-        private async Task GetTableRowData(CloudTable table, string configurationKey, ConcurrentDictionary<string, string> data)
+        private async Task GetTableRowData(CloudTable table, string configurationName, ConcurrentDictionary<string, string> data)
         {
+            var configParams = configurationName.Split(':');
+            var configDefaultSectionName = configParams.Length > 1 ? configParams[1] : string.Empty;
+            var configurationKey = configParams[0];
+                
+            
             var operation = GetTableRowOperation(configurationKey);
             var row = await table.ExecuteAsync(operation).ConfigureAwait(false);
             
@@ -71,7 +76,15 @@ namespace SFA.DAS.Configuration.AzureTableStorage
                     }
                     else
                     {
-                        data.AddOrUpdate($"{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
+                        if (string.IsNullOrEmpty(configDefaultSectionName))
+                        {
+                            data.AddOrUpdate($"{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);    
+                        }
+                        else
+                        {
+                            data.AddOrUpdate($"{configDefaultSectionName}:{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
+                        }
+                        
                     }
                 }
             }
