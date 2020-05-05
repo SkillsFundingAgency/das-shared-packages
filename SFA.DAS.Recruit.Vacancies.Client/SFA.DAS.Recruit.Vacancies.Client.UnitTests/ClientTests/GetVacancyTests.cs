@@ -6,7 +6,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests.ClientTests
     [TestFixture]
     public class GetVacancyTests
     {
-        private readonly string connectionString = "mongodb://localhost:C2y6yDjf5%2FR%2Bob0N8A7Cgv30VRDJIWEHLM%2B4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw%2FJw%3D%3D@localhost:10255/admin?ssl=true";
+        private readonly string connectionString = "";
         [Ignore("A helper test to get vacancy")]
         [Test]
         public void ShouldGetVacancyFromLiveOrClosedView()
