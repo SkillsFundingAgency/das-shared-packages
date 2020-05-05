@@ -8,8 +8,6 @@ trigger:
     include:
       - 'SFA.DAS.MA.Shared.UI'
 
-pr: none
-
 workspace:
     clean: all
 
@@ -20,12 +18,28 @@ pool:
   - visualstudio
 
 variables:
-  BuildConfiguration: 'Release'
-  Build.MajorNumber: '1'
-  Build.MinorNumber: '1'
-  BuildPlatform: 'any cpu'
+  - group: "ESFA - SonarCloud"
+  - name: sonarCloudProjectKey
+    value: "SkillsFundingAgency_das-shared-packages"
+  - name: BuildConfiguration
+    value: 'Release'
+  - name: Build.MajorNumber
+    value: '1'
+  - name: Build.MinorNumber
+    value: '1'
+  - name: BuildPlatform
+    value: 'any cpu'
 
-steps:    
+steps:
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare Sonarcloud analysis configuration'
+  inputs:
+    SonarCloud: "$(SonarCloudConnectionId)"
+    organization: "$(SonarCloudOrganisationKey)"
+    scannerMode: 'MSBuild'
+    projectName: "$(Build.DefinitionName)"
+    projectKey: "$(sonarCloudProjectKey)" 
+
 - task: NuGetToolInstaller@0
   displayName: 'Use NuGet 4.3.0'
   inputs:
@@ -44,6 +58,14 @@ steps:
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
     platform: '$(BuildPlatform)'
     Configuration: '$(BuildConfiguration)'
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud analysis'
+  
+- task: SonarCloudPublish@1
+  displayName: 'Publish results on build summary'
+  inputs:
+    pollingTimeoutSec: '300'     
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'

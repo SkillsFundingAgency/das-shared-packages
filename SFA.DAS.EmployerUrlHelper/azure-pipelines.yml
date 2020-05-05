@@ -8,8 +8,6 @@ trigger:
     include:
       - 'SFA.DAS.EmployerUrlHelper'
 
-pr: none
-
 workspace:
     clean: all
 
@@ -17,9 +15,15 @@ pool:
   name: Continuous Integration 02 - SSD - 160ACU
 
 variables:
-  BuildConfiguration: 'Release'
-  Build.MajorNumber: '3'
-  Build.MinorNumber: '0'
+  - group: "ESFA - SonarCloud"
+  - name: sonarCloudProjectKey
+    value: "SkillsFundingAgency_das-shared-packages"
+  - name: BuildConfiguration
+    value: 'Release'
+  - name: Build.MajorNumber
+    value: '3'
+  - name: Build.MinorNumber
+    value: '0'
 
 resources:
   repositories:
@@ -30,6 +34,15 @@ resources:
     endpoint: "GitHub (SFA)"
 
 steps:
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare Sonarcloud analysis configuration'
+  inputs:
+    SonarCloud: "$(SonarCloudConnectionId)"
+    organization: "$(SonarCloudOrganisationKey)"
+    scannerMode: 'MSBuild'
+    projectName: "$(Build.DefinitionName)"
+    projectKey: "$(sonarCloudProjectKey)" 
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
@@ -41,6 +54,14 @@ steps:
   inputs:
     projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.sln
     arguments: '/p:Configuration=$(BuildConfiguration)'
+  
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud analysis'
+  
+- task: SonarCloudPublish@1
+  displayName: 'Publish results on build summary'
+  inputs:
+    pollingTimeoutSec: '300'
 
 - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
 
