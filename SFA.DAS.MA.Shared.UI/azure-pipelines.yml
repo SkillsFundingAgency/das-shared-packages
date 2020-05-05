@@ -59,13 +59,6 @@ steps:
     platform: '$(BuildPlatform)'
     Configuration: '$(BuildConfiguration)'
 
-- task: VSTest@2
-  displayName: 'VsTest - testAssemblies'
-  inputs:
-    testAssemblyVer2: '**/bin/**/*UnitTests.dll'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud analysis'
   
