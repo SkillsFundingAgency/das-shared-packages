@@ -18,9 +18,12 @@ variables:
   - group: "ESFA - SonarCloud"
   - name: sonarCloudProjectKey
     value: "SkillsFundingAgency_das-reservations"
-  BuildConfiguration: 'Release'
-  Build.MajorNumber: '1'
-  Build.MinorNumber: '1'
+  - name: BuildConfiguration
+    value: 'Release'
+  - name: Build.MajorNumber
+    value: '1'
+  - name: Build.MinorNumber
+    value: '1'
 
 steps:
 - task: SonarCloudPrepare@1
