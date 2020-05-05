@@ -17,7 +17,7 @@ pool:
 variables:
   - group: "ESFA - SonarCloud"
   - name: sonarCloudProjectKey
-    value: "SkillsFundingAgency_das-reservations"
+    value: "SkillsFundingAgency_das-shared-packages"
   - name: BuildConfiguration
     value: 'Release'
   - name: Build.MajorNumber
