@@ -37,7 +37,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests.ClientTests
         {
             var sut = new Client(connectionString, "recruit", "queryStore", null);
 
-            var count = await sut.GetLiveVacanciesCount();
+            var count = await sut.GetLiveVacanciesCountAsync();
 
             var pages = (count / 4) + 1;
             var i = 0;

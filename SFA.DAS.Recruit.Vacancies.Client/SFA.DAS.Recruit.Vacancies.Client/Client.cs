@@ -84,12 +84,11 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             return vacancies;
         }
 
-        public Task<long> GetLiveVacanciesCount()
+        public Task<long> GetLiveVacanciesCountAsync()
         {
             var collection = GetCollection();
-            var vacancies = collection
-                            .CountDocumentsAsync(vacancy => vacancy.ViewType.Equals(LiveVacancyDocumentType));
-            return vacancies;
+            return collection
+                .CountDocumentsAsync(vacancy => vacancy.ViewType.Equals(LiveVacancyDocumentType));
         }
 
         public void SubmitApplication(Application application)
