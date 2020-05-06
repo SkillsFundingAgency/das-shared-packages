@@ -39,7 +39,7 @@
                 @if (!suppressed.Contains(NavigationSection.YourCohorts))
                 {
                     <li class="das-navigation__list-item">
-                        <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/cohorts")" class="das-navigation__link @(selected == NavigationSection.YourCohorts ? "das-navigation__link--current" : "")">Your cohorts</a>
+                        <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/cohorts")" class="das-navigation__link @(selected == NavigationSection.YourCohorts ? "das-navigation__link--current" : "")">Apprentice requests</a>
                     </li>
                 }
                 @if (!suppressed.Contains(NavigationSection.Reservations))
