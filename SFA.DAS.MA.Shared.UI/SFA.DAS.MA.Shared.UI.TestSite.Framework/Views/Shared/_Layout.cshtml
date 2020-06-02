@@ -56,7 +56,7 @@
         </div>
     <![endif]-->
 
-    @Html.Partial("_CookieBanner")
+    @Html.Partial("_CookieBanner", Html.GetCookieBannerViewModel())
 
     @Html.Partial("_Header", Html.GetHeaderViewModel(useLegacyStyles: true))
 
