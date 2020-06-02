@@ -42,6 +42,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CookieBannerViewModel\WhenCreated.cs" />
     <Compile Include="HeaderViewModel\WhenSelectMenu.cs" />
     <Compile Include="HeaderViewModel\WhenCreated.cs" />
     <Compile Include="FooterViewModel\WhenCreated.cs" />

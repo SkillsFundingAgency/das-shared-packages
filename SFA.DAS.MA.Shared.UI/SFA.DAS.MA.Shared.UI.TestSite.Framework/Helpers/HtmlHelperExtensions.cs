@@ -57,6 +57,22 @@ namespace SFA.DAS.MA.Shared.UI.TestSite.Framework.Helpers
             );
         }
 
+        public static ICookieBannerViewModel GetCookieBannerViewModel(this HtmlHelper html)
+        {
+            var configuration = DependencyResolver.Current.GetService<IConfiguration>();
+
+            return new CookieBannerViewModel(new FooterConfiguration
+            {
+                ManageApprenticeshipsBaseUrl = configuration.EmployerAccountsBaseUrl
+            },
+            new UserContext
+            {
+                User = html.ViewContext.HttpContext.User,
+                HashedAccountId = html.ViewContext.RouteData.Values["accountHashedId"]?.ToString()
+            }
+            );
+        }
+
         private static string GetRootUrl(HttpRequestBase request)
         {
             var requestUrl = new Uri(request.Url.AbsoluteUri);
