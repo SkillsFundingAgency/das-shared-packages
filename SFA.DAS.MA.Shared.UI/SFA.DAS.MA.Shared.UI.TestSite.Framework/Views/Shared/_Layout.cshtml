@@ -67,6 +67,13 @@
     @Html.Partial("_Footer", Html.GetFooterViewModel(useLegacyStyles: true))
 
     <div id="global-app-error" class="app-error hidden"></div>
-    @Scripts.Render("~/bundles/sfajs")
+
+    <script src="/dist/javascripts/jquery-1.11.0.min.js"></script>
+    <script src="/dist/javascripts/selection-buttons.js"></script>
+    <script src="/dist/javascripts/showhide-content.js"></script>
+    <script src="/dist/javascripts/stacker.js"></script>
+    <script src="/dist/javascripts/app.js"></script>
+    <script src="/dist/javascripts/cookiebanner.js"></script>
+
 </body>
 </html>
