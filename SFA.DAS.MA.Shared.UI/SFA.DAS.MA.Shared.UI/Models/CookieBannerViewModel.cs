@@ -25,7 +25,6 @@ namespace SFA.DAS.MA.Shared.UI.Models
 
             _configuration = configuration;
             _userContext = userContext;
-            _urlHelper = urlHelper;
         }
 
         public string CookieConsentUrl => _userContext?.HashedAccountId == null 
