@@ -11,13 +11,13 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.CookieBannerViewModel
     public class WhenCreated
     {
         private ICookieBannerViewModel _sut;
-        private Mock<IFooterConfiguration> _mockFooterConfiguration;
+        private Mock<ICookieBannerConfiguration> _mockCookieBannerConfiguration;
         private Mock<IUserContext> _mockUserContext;
 
         [SetUp]
         public void Setup()
         {
-            _mockFooterConfiguration = new Mock<IFooterConfiguration>();
+            _mockCookieBannerConfiguration = new Mock<ICookieBannerConfiguration>();
             _mockUserContext = new Mock<IUserContext>();
         }
 
@@ -28,12 +28,12 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.CookieBannerViewModel
             var cookieConsentPath = "cookieConsent";
             var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
-            _mockFooterConfiguration
+            _mockCookieBannerConfiguration
                 .Setup(m => m.ManageApprenticeshipsBaseUrl)
                 .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
-            _sut = new Models.CookieBannerViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object, new UrlHelper());
+            _sut = new Models.CookieBannerViewModel(_mockCookieBannerConfiguration.Object, _mockUserContext.Object, new UrlHelper());
 
             // assert  
             Assert.AreEqual($"{testManageApprenticeshipsBaseUrl}/{cookieConsentPath}", _sut.CookieConsentUrl);
@@ -46,12 +46,12 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.CookieBannerViewModel
             var cookieDetailsPath = "cookieConsent/details";
             var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
-            _mockFooterConfiguration
+            _mockCookieBannerConfiguration
                 .Setup(m => m.ManageApprenticeshipsBaseUrl)
                 .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
-            _sut = new Models.CookieBannerViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object, new UrlHelper());
+            _sut = new Models.CookieBannerViewModel(_mockCookieBannerConfiguration.Object, _mockUserContext.Object, new UrlHelper());
 
             // assert  
             Assert.AreEqual($"{testManageApprenticeshipsBaseUrl}/{cookieDetailsPath}", _sut.CookieDetailsUrl);

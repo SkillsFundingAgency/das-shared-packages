@@ -9,12 +9,12 @@ namespace SFA.DAS.MA.Shared.UI.Models
         private const string CookieConsentPath = "cookieConsent";
         private const string CookieDetailsPath = CookieConsentPath + "/details";
 
-        private readonly IFooterConfiguration _configuration;
+        private readonly ICookieBannerConfiguration _configuration;
         private readonly IUserContext _userContext;
         private readonly IUrlHelper _urlHelper;
 
         public CookieBannerViewModel(
-            IFooterConfiguration configuration, 
+            ICookieBannerConfiguration configuration, 
             IUserContext userContext,
             IUrlHelper urlHelper = null)
         {

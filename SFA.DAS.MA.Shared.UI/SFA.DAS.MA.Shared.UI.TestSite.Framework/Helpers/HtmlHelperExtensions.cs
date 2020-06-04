@@ -61,7 +61,7 @@ namespace SFA.DAS.MA.Shared.UI.TestSite.Framework.Helpers
         {
             var configuration = DependencyResolver.Current.GetService<IConfiguration>();
 
-            return new CookieBannerViewModel(new FooterConfiguration
+            return new CookieBannerViewModel(new CookieBannerConfiguration
             {
                 ManageApprenticeshipsBaseUrl = configuration.EmployerAccountsBaseUrl
             },
