@@ -44,7 +44,7 @@ namespace SFA.DAS.OidcMiddleware.Validators
 
             if (!string.Equals(nonceClaim.Value, nonce, StringComparison.Ordinal))
             {
-                throw new Exception("Invalid nonce.");
+                throw new Exception($"Invalid nonce. {nonce} , nonceClaim {nonceClaim.Value}");
             }
         }
     }
