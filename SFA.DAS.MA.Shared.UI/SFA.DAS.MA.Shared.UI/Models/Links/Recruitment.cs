@@ -17,10 +17,10 @@
         {
             if (IsSelected)
             {
-                return $"<a href = \"{Href}\" class=\"{_class} {_selectedClass}\">Recruitment</a>";
+                return $"<a href = \"{Href}\" class=\"{_class} {_selectedClass}\">Adverts</a>";
             }
 
-            return $"<a href = \"{Href}\" class=\"{_class}\">Recruitment</a>";
+            return $"<a href = \"{Href}\" class=\"{_class}\">Adverts</a>";
         }
     }
 }
