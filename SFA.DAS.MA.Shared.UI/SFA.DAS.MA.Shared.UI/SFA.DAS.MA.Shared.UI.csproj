@@ -22,11 +22,17 @@
   
 
   <ItemGroup>
+    <None Remove="Views\Shared\_CookieBanner.cshtml" />
     <None Remove="Views\Shared\_Footer.cshtml" />
     <None Remove="Views\Shared\_Header.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Views\Shared\_CookieBanner.cshtml">
+      <CopyToOutputDirectory>true</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="Views\Shared\_Footer.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

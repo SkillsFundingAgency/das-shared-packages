@@ -25,6 +25,8 @@
     </script>
     <a class="govuk-skip-link" href="#main-content">Skip to main content</a>
 
+    @Html.Partial("_CookieBanner", @Html.GetCookieBannerViewModel())
+
     @Html.Partial("_Header", Html.GetHeaderViewModel())
 
     <div class="govuk-width-container">
