@@ -22,28 +22,42 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
         private readonly ITriggeredFunctionExecutor _executor;
         private readonly NServiceBusTriggerAttribute _attribute;
         private readonly ParameterInfo _parameter;
+        private readonly NServiceBusOptions _nServiceBusOptions;
         private IReceivingRawEndpoint _endpoint;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public NServiceBusListener(ITriggeredFunctionExecutor executor, NServiceBusTriggerAttribute attribute, ParameterInfo parameter)
+        public NServiceBusListener(
+            ITriggeredFunctionExecutor executor, 
+            NServiceBusTriggerAttribute attribute, 
+            ParameterInfo parameter,
+            NServiceBusOptions nServiceBusOptions = null)
         {
             _executor = executor;
             _attribute = attribute;
             _parameter = parameter;
             _poisonMessageQueue = $"{attribute.Endpoint}-Error";
+            _nServiceBusOptions = nServiceBusOptions ?? new NServiceBusOptions();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var nameShortener = new RuleNameShortener();
             var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.Endpoint, OnMessage, _poisonMessageQueue);
-            var tokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider();
 
-            endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
-                .RuleNameShortener(nameShortener.Shorten)
-                .CustomTokenProvider(tokenProvider)
-                .ConnectionString(_attribute.Connection)
-                .Transactions(TransportTransactionMode.ReceiveOnly);
+            if (_nServiceBusOptions.EndpointConfiguration != null)
+            {
+                endpointConfigurationRaw = _nServiceBusOptions.EndpointConfiguration.Invoke(endpointConfigurationRaw);
+            }
+            else
+            {
+                var tokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider();
+
+                endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
+                    .RuleNameShortener(nameShortener.Shorten)
+                    .CustomTokenProvider(tokenProvider)
+                    .ConnectionString(_attribute.Connection)
+                    .Transactions(TransportTransactionMode.ReceiveOnly);
+            }
 
             if (!string.IsNullOrEmpty(EnvironmentVariables.NServiceBusLicense))
             {
@@ -55,8 +69,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             _endpoint = await RawEndpoint.Start(endpointConfigurationRaw).ConfigureAwait(false);
 
             await _endpoint.SubscriptionManager.Subscribe(_parameter.ParameterType, new ContextBag());
-
-
         }
 
         protected async Task OnMessage(MessageContext context, IDispatchMessages dispatcher)
@@ -73,10 +85,20 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
                 }
             };
 
+            if (_nServiceBusOptions.OnMessageReceived != null)
+            {
+                _nServiceBusOptions.OnMessageReceived.Invoke(context);
+            }
+
             var result = await _executor.TryExecuteAsync(triggerData, _cancellationTokenSource.Token);
 
             if (!result.Succeeded)
             {
+                if (_nServiceBusOptions.OnMessageErrored != null)
+                {
+                    _nServiceBusOptions.OnMessageErrored.Invoke(result.Exception, context);
+                }
+
                 throw result.Exception;
             }
         }
