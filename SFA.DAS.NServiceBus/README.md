@@ -120,3 +120,39 @@ public static async Task Run([NServiceBusTrigger(Endpoint = "SFA.DAS.NServiceBus
 ```
 
 `Endpoint` is the name of the subscription/queue and `NetFrameworkEvent` is the event that you wish to subscribe to. Each function endpoint should only subscribe to a single event.
+
+To configure additional extensibility points the NServiceBusOptions can be set up.
+
+The EndpointConfiguration can be changed for testing purposes e.g. using the LearningTransport or pointing to a test queue using a SharedAccess token.
+The OnMessageReceived hook allows the raw message to be viewed as it is removed from the queue prior to processing. Useful for logging or debugging.
+The OnMessageErrored hook allows the raw message to be viewed after processing has errored along with the Exception. Useful for logging or debugging.
+
+```c#
+public class Startup : IWebJobsStartup
+{
+    public void Configure(IWebJobsBuilder builder)
+    {
+	    //...
+		
+		 var options = new NServiceBusOptions
+            {
+                EndpointConfiguration = (endpoint) =>
+                {
+                    endpoint.UseTransport<LearningTransport>().StorageDirectory(<Path>);
+                    return endpoint;
+                },
+                OnMessageReceived = (context) =>
+                {
+					// e.g. Logging
+                },
+                OnMessageErrored = (ex, context) =>
+                {
+					// e.g. Logging
+                }
+            };
+            builder.Services.AddSingleton(options);
+			
+		//...
+    }
+}
+```

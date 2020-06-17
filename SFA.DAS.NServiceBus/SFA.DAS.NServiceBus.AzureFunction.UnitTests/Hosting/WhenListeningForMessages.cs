@@ -9,7 +9,10 @@ using NServiceBus.Extensibility;
 using NServiceBus.Transport;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+using SFA.DAS.NServiceBus.AzureFunction.Configuration;
 using SFA.DAS.NServiceBus.AzureFunction.Hosting;
+using FluentAssertions;
+using NServiceBus.Raw;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
 {
@@ -19,13 +22,15 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         private NServiceBusTriggerAttribute _attribute;
         private TestListener _listener;
         private MessageContext _messageContext;
+        private NServiceBusOptions _options;
 
         [SetUp]
         public void Arrange()
         {
             _executor = new Mock<ITriggeredFunctionExecutor>();
             _attribute = new NServiceBusTriggerAttribute();
-            _listener = new TestListener(_executor.Object, _attribute, null);
+            _options = new NServiceBusOptions();
+            _listener = new TestListener(_executor.Object, _attribute, null, _options);
             _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), new CancellationTokenSource(), new ContextBag());
 
             _executor.Setup(e => e.TryExecuteAsync(It.IsAny<TriggeredFunctionData>(), It.IsAny<CancellationToken>()))
@@ -43,6 +48,57 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         }
 
         [Test]
+        public async Task ThenInvokesOnMessageReceivedWhenOptionIsConfigured()
+        {
+            //Arrange
+            bool onMessageReceivedCalled = false;
+            MessageContext messageContext = null;
+            _options.OnMessageReceived = o =>
+            {
+                onMessageReceivedCalled = true;
+                messageContext = o;
+            };
+
+            //Act
+            await _listener.CallOnMessage(_messageContext, Mock.Of<IDispatchMessages>());
+
+            //Assert
+            onMessageReceivedCalled.Should().Be(true);
+            messageContext.Should().Be(_messageContext);
+        }
+
+        [Test]
+        public async Task ThenInvokesOnMessageErroredWhenOptionIsConfigured()
+        {
+            //Arrange
+            bool onMessageErroredCalled = false;
+            MessageContext messageContext = null;
+            Exception expectedException = null;
+            Exception testException = new Exception("Test");
+            _options.OnMessageErrored = (e, o) =>
+            {
+                onMessageErroredCalled = true;
+                messageContext = o;
+                expectedException = e;
+            };
+
+            _executor.Setup(e => e.TryExecuteAsync(It.IsAny<TriggeredFunctionData>(), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(new FunctionResult(false, testException));
+
+            //Act
+            try
+            {
+                await _listener.CallOnMessage(_messageContext, Mock.Of<IDispatchMessages>());
+            }
+            catch { }
+
+            //Assert
+            onMessageErroredCalled.Should().Be(true);
+            messageContext.Should().Be(_messageContext);
+            expectedException.Should().Be(testException);
+        }
+
+        [Test]
         public void ThenIfCallToBindingFailsThrowsException()
         {
             //Arrange
@@ -52,10 +108,9 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             //Act + Assert
             Assert.ThrowsAsync<Exception>(() => _listener.CallOnMessage(_messageContext, Mock.Of<IDispatchMessages>()));
         }
-
         private class TestListener : NServiceBusListener
         {
-            public TestListener(ITriggeredFunctionExecutor contextExecutor, NServiceBusTriggerAttribute attribute, ParameterInfo parameter ) : base(contextExecutor, attribute, parameter)
+            public TestListener(ITriggeredFunctionExecutor contextExecutor, NServiceBusTriggerAttribute attribute, ParameterInfo parameter, NServiceBusOptions options ) : base(contextExecutor, attribute, parameter, options)
             {
             }
 

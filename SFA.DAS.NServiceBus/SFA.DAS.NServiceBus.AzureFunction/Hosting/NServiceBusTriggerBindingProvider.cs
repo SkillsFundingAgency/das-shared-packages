@@ -8,6 +8,13 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {
     public class NServiceBusTriggerBindingProvider : ITriggerBindingProvider
     {
+        private readonly NServiceBusOptions _nServiceBusOptions;
+
+        public NServiceBusTriggerBindingProvider(NServiceBusOptions nServiceBusOptions = null)
+        {
+            _nServiceBusOptions = nServiceBusOptions ?? new NServiceBusOptions();
+        }
+
         public Task<ITriggerBinding> TryCreateAsync(TriggerBindingProviderContext context)
         {
             var parameter = context.Parameter;
@@ -23,7 +30,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
                 attribute.Connection = EnvironmentVariables.NServiceBusConnectionString;
             }
 
-            return Task.FromResult<ITriggerBinding>(new NServiceBusTriggerBinding(parameter, attribute));
+            return Task.FromResult<ITriggerBinding>(new NServiceBusTriggerBinding(parameter, attribute, _nServiceBusOptions));
         }
     }
 }

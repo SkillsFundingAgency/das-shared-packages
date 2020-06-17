@@ -10,6 +10,7 @@ using Microsoft.Azure.WebJobs.Host.Triggers;
 using Newtonsoft.Json;
 using NServiceBus.Transport;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
+using SFA.DAS.NServiceBus.AzureFunction.Configuration;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {
@@ -17,6 +18,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
     {
         public ParameterInfo Parameter { get; }
         public NServiceBusTriggerAttribute Attribute { get; }
+        private readonly NServiceBusOptions _nServiceBusOptions;
 
         private struct BindingNames
         {
@@ -32,10 +34,11 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             {BindingNames.Dispatcher, typeof(IDispatchMessages) }
         };
 
-        public NServiceBusTriggerBinding(ParameterInfo parameter, NServiceBusTriggerAttribute attribute)
+        public NServiceBusTriggerBinding(ParameterInfo parameter, NServiceBusTriggerAttribute attribute, NServiceBusOptions nServiceBusOptions = null)
         {
             Parameter = parameter;
             Attribute = attribute;
+            _nServiceBusOptions = nServiceBusOptions ?? new NServiceBusOptions();
         }
 
         public Task<ITriggerData> BindAsync(object value, ValueBindingContext context)
@@ -90,7 +93,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
         public Task<IListener> CreateListenerAsync(ListenerFactoryContext context)
         {
-            return Task.FromResult<IListener>(new NServiceBusListener(context.Executor, Attribute, Parameter));
+            return Task.FromResult<IListener>(new NServiceBusListener(context.Executor, Attribute, Parameter, _nServiceBusOptions));
         }
 
         public ParameterDescriptor ToParameterDescriptor()
