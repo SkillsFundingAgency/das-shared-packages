@@ -123,7 +123,7 @@ namespace SFA.DAS.VacancyServices.Wage
             string higherRange =
                 FormatWageAmount(WageCalculator.GetYearlyRateFromHourlyRate(wageRange.Over25NationalMinimumWage, hoursPerWeek));
 
-            return $"{lowerRange} - {higherRange}";
+            return $"{lowerRange} to {higherRange}";
         }
 
         private static string FormatWageAmount(decimal? wageAmount)
