@@ -111,7 +111,7 @@ namespace SFA.DAS.VacancyServices.Wage
             string lowerRange = FormatWageAmount(wageRange.Under18NationalMinimumWage * hoursPerWeek);
             string higherRange = FormatWageAmount(wageRange.Over25NationalMinimumWage * hoursPerWeek);
 
-            return $"{lowerRange} - {higherRange}";
+            return $"{lowerRange} to {higherRange}";
         }
 
         private static string GetYearlyNationalMinimumWage(decimal hoursPerWeek, DateTime possibleStartDate)
@@ -123,7 +123,7 @@ namespace SFA.DAS.VacancyServices.Wage
             string higherRange =
                 FormatWageAmount(WageCalculator.GetYearlyRateFromHourlyRate(wageRange.Over25NationalMinimumWage, hoursPerWeek));
 
-            return $"{lowerRange} - {higherRange}";
+            return $"{lowerRange} to {higherRange}";
         }
 
         private static string FormatWageAmount(decimal? wageAmount)

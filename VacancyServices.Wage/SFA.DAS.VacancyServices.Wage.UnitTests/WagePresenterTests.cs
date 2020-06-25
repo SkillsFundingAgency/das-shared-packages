@@ -54,8 +54,8 @@ namespace SFA.DAS.VacancyServices.Wage.UnitTests
             actual.Should().Be(expected);
         }
 
-        [TestCase(WageUnit.Weekly, "£150.00 - £270.00" + Space + WageConstants.PerWeekText)]
-        [TestCase(WageUnit.Annually, "£7,800.00 - £14,040.00" + Space + WageConstants.PerYearText)]
+        [TestCase(WageUnit.Weekly, "£150.00 to £270.00" + Space + WageConstants.PerWeekText)]
+        [TestCase(WageUnit.Annually, "£7,800.00 to £14,040.00" + Space + WageConstants.PerYearText)]
         public void ShouldGetDisplayAmountWithFrequencyPostfixNationalMinimums_After1stOct2016(WageUnit unit, string expected)
         {
             // Act.
