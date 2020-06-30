@@ -1,4 +1,5 @@
 ﻿#if NETCOREAPP2_0
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ namespace SFA.DAS.Validation.Mvc.Filters
     {
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
+            if (!(filterContext.Result is RedirectToActionResult)) return;
             var tempDataFactory = filterContext.HttpContext.RequestServices.GetRequiredService<ITempDataDictionaryFactory>();
             var tempData = tempDataFactory.GetTempData(filterContext.HttpContext);
             var serializableModelState = filterContext.ModelState.ToSerializable();
