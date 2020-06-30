@@ -7,7 +7,7 @@ using SFA.DAS.Validation.Mvc.ModelBinding;
 
 namespace SFA.DAS.Validation.Mvc.Filters
 {
-    public class RestoreModelState : ActionFilterAttribute
+    public class RestoreModelStateFilter : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {

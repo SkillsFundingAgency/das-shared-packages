@@ -6,7 +6,7 @@ using SFA.DAS.Validation.Mvc.Extensions;
 
 namespace SFA.DAS.Validation.Mvc.Filters
 {
-    public class PreserveModelState : ActionFilterAttribute
+    public class PreserveModelStateFilter : ActionFilterAttribute
     {
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
