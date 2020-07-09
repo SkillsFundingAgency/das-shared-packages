@@ -8,7 +8,7 @@
         AccountLegalEntityId, 
         PublicAccountLegalEntityId, 
         ApprenticeshipId,
-        ApprenticeReferenceId,
-        EmployerReferenceId
+        RedundancyServiceApprenticeReference,
+        RedundancyServiceEmployerReference
     }
 }
