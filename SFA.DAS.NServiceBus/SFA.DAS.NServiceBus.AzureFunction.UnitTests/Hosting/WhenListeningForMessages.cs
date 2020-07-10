@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Moq;
 using NServiceBus.Extensibility;
@@ -11,8 +12,6 @@ using NUnit.Framework;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
 using SFA.DAS.NServiceBus.AzureFunction.Hosting;
-using FluentAssertions;
-using NServiceBus.Raw;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
 {
@@ -64,6 +63,26 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
 
             //Assert
             onMessageReceivedCalled.Should().Be(true);
+            messageContext.Should().Be(_messageContext);
+        }
+
+        [Test]
+        public async Task ThenInvokesOnMessageProcessedWhenOptionIsConfigured()
+        {
+            //Arrange
+            bool onMessageProcessedCalled = false;
+            MessageContext messageContext = null;
+            _options.OnMessageProcessed= o =>
+            {
+                onMessageProcessedCalled = true;
+                messageContext = o;
+            };
+
+            //Act
+            await _listener.CallOnMessage(_messageContext, Mock.Of<IDispatchMessages>());
+
+            //Assert
+            onMessageProcessedCalled.Should().Be(true);
             messageContext.Should().Be(_messageContext);
         }
 

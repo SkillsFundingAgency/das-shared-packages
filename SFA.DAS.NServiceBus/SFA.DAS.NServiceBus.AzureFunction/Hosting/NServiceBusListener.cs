@@ -92,6 +92,11 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
             var result = await _executor.TryExecuteAsync(triggerData, _cancellationTokenSource.Token);
 
+            if (_nServiceBusOptions.OnMessageProcessed != null)
+            {
+                _nServiceBusOptions.OnMessageProcessed.Invoke(context);
+            }
+
             if (!result.Succeeded)
             {
                 if (_nServiceBusOptions.OnMessageErrored != null)
