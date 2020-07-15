@@ -3,6 +3,6 @@
     public interface IAzureManagedServiceClientConfiguration
     {
         string ApiBaseUrl { get; }
-        string SubscriptionKey { get; }
+        string ResourceIdentifier { get; }
     }
 }
