@@ -15,13 +15,13 @@ namespace SFA.DAS.Http.MessageHandlers
             _generator = generator;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var bearerToken = await _generator.Generate().ConfigureAwait(false);
 
-            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
 
-            return await base.SendAsync(message, cancellationToken).ConfigureAwait(false);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

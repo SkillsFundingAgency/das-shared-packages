@@ -6,11 +6,11 @@ namespace SFA.DAS.Http.MessageHandlers
 {
     public sealed class DefaultHeadersHandler : DelegatingHandler
     {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            message.Headers.Add("accept", "application/json");
+            request.Headers.Add("accept", "application/json");
 
-            return await base.SendAsync(message, cancellationToken).ConfigureAwait(false);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }
