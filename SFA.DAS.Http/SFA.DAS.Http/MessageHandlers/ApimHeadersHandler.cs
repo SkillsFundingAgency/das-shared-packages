@@ -17,6 +17,7 @@ namespace SFA.DAS.Http.MessageHandlers
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             request.Headers.Add("Ocp-Apim-Subscription-Key", _config.SubscriptionKey);
+            request.Headers.Add("X-Version", _config.ApiVersion);
 
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
