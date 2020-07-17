@@ -2,6 +2,7 @@
 using SFA.DAS.Http.TokenGenerators;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Http.Configuration;
 
 namespace SFA.DAS.Http
 {
@@ -33,6 +34,15 @@ namespace SFA.DAS.Http
         public HttpClientBuilder WithHandler(DelegatingHandler handler)
         {
             AddHandlerToChain(handler);
+
+            return this;
+        }
+
+        public HttpClientBuilder WithApimAuthorisationHeader(IApimClientConfiguration configuration)
+        {
+            var newHandler = new ApimHeadersHandler(configuration);
+
+            AddHandlerToChain(newHandler);
 
             return this;
         }
