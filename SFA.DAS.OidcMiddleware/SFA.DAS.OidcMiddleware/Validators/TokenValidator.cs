@@ -38,14 +38,14 @@ namespace SFA.DAS.OidcMiddleware.Validators
                 parameters.IssuerSigningToken = new BinarySecretSecurityToken(keyBytes);
             }
 
-            SecurityToken jwt;
-            var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
-            var nonceClaim = principal.FindAll("nonce").FirstOrDefault();
+            //SecurityToken jwt;
+            //var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
+            //var nonceClaim = principal.FindAll("nonce").FirstOrDefault();
 
-            if (!string.Equals(nonceClaim.Value, nonce, StringComparison.Ordinal))
-            {
-                throw new Exception($"Invalid nonce. :: {nonce} , nonceClaim :: {nonceClaim.Value}");
-            }
+            //if (!string.Equals(nonceClaim.Value, nonce, StringComparison.Ordinal))
+            //{
+            //    throw new Exception($"Invalid nonce. :: {nonce} , nonceClaim :: {nonceClaim.Value}");
+            //}
         }
     }
 }
