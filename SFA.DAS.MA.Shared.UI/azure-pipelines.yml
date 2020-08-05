@@ -17,8 +17,6 @@ pool:
   name: 'DAS - Continuous Integration'
   demands: 
   - Agent.OS -equals Windows_NT
-  - msbuild
-  - visualstudio
 
 variables:
   BuildConfiguration: 'Release'
@@ -55,4 +53,3 @@ steps:
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
-
