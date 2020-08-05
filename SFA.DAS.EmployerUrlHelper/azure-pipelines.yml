@@ -14,7 +14,8 @@ workspace:
     clean: all
 
 pool:
-  name: Continuous Integration 02 - SSD - 160ACU
+  name: DAS - Continuous Integration
+  demands: Agent.OS -equals Windows_NT
 
 variables:
   BuildConfiguration: 'Release'
@@ -40,6 +41,13 @@ steps:
   displayName: 'dotnet build'
   inputs:
     projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.sln
+    arguments: '/p:Configuration=$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: test
+    projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.UnitTests/SFA.DAS.EmployerUrlHelper.UnitTests.csproj
     arguments: '/p:Configuration=$(BuildConfiguration)'
 
 - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks

@@ -14,10 +14,9 @@ workspace:
     clean: all
 
 pool:
-  name: 'Continuous Integration 02 - SSD - 160ACU'
+  name: 'DAS - Continuous Integration'
   demands: 
-  - msbuild
-  - visualstudio
+  - Agent.OS -equals Windows_NT
 
 variables:
   BuildConfiguration: 'Release'
@@ -54,4 +53,3 @@ steps:
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
-
