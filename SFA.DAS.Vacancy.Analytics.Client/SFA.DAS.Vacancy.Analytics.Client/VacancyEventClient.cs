@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Esfa.Vacancy.Analytics
 {
-	public class VacancyEventClient : IVacancyEventClient
+	public class VacancyEventClient : IVacancyEventClient , IDisposable
 	{
 		private const int DefaultMaxRetrySendAttempts = 3;
 		private const string CustomEventDataTypeKey = "Type";
@@ -77,7 +77,6 @@ namespace Esfa.Vacancy.Analytics
 			try
 			{
 				await _client.SendAsync(evtData);
-				await _client.CloseAsync();
 			}
 			catch (EventHubsException ex)
 			{
@@ -103,12 +102,16 @@ namespace Esfa.Vacancy.Analytics
 				if (!addedSuccesfully) throw new BatchEventPublishException(exMsg);
 
 				await _client.SendAsync(batchedEvents);
-				await _client.CloseAsync();
 			}
 			catch (EventHubsException ex)
 			{
 				_logger.LogError(exMsg, ex);
 			}
+		}
+
+		public void Dispose()
+		{
+			_client.Close();
 		}
 
 		private bool PopulateBatch<T>(IEnumerable<T> events, EventDataBatch batchedEvents) where T : VacancyEvent
