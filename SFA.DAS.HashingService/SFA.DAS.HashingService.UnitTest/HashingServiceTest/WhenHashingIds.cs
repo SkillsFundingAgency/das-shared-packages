@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using System;
-using System.Text;
 
 namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
 {
@@ -134,7 +132,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
         public void Then_AlphaNumeric_HashId_Should_Equal_Decode_Value(string hashId)
         {
             //Act
-            var _sut =  new HashingService(AllowedCharacters, Hashstring);
+            var _sut = new HashingService(AllowedCharacters, Hashstring);
             var encodedValue = _sut.HashValue(hashId);
             var decodedValue = _sut.DecodeValueToString(encodedValue);
 
@@ -157,7 +155,7 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             hashId.Should().NotBe(encodedValue);
         }
 
-        
+
         [TestCase("")]
         [TestCase(" ")]
         [TestCase(null)]
@@ -173,5 +171,17 @@ namespace SFA.DAS.HashingService.UnitTest.HashingServiceTest
             testDelegate.ShouldThrow<ArgumentException>();
         }
 
+        [Test]
+        public void Encode_12345_returns_WDEDP5()
+        {
+            //Arrange
+            const long input = 12345L;
+            var sut = new HashingService(AllowedCharacters, Hashstring);
+
+            //Act
+            var encodedValue = sut.HashValue(input);
+            //Assert
+            encodedValue.Should().Be("WDEDP5");
+        }
     }
 }
