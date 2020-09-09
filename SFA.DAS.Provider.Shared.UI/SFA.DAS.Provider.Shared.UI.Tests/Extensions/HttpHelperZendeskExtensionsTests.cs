@@ -39,16 +39,16 @@ namespace SFA.DAS.Provider.Shared.UI.Tests.Extensions
         public void SetZendeskLabels_IsCreatedCorrectlyForNoItems()
         {
             var labels = new String[0];
-            var htmlSnippet = _fixture.Sut.SetZendeskLabels(labels);
+            var htmlSnippet = _fixture.Sut.SetZenDeskLabels(labels);
 
-            _fixture.ExpectedLabelJavaScriptSnippet("", htmlSnippet.ToString());
+            _fixture.ExpectedLabelJavaScriptSnippet("''", htmlSnippet.ToString());
         }
 
         [Test]
         public void SetZendeskLabels_IsCreatedCorrectlyForOneItem()
         {
             var labels = new[] { "one" };
-            var htmlSnippet = _fixture.Sut.SetZendeskLabels(labels);
+            var htmlSnippet = _fixture.Sut.SetZenDeskLabels(labels);
 
             _fixture.ExpectedLabelJavaScriptSnippet("'one'", htmlSnippet.ToString());
         }
@@ -57,7 +57,7 @@ namespace SFA.DAS.Provider.Shared.UI.Tests.Extensions
         public void SetZendeskLabels_IsCreatedCorrectlyForTwoItems()
         {
             var labels = new[] { "one", "two" };
-            var htmlSnippet = _fixture.Sut.SetZendeskLabels(labels);
+            var htmlSnippet = _fixture.Sut.SetZenDeskLabels(labels);
 
             _fixture.ExpectedLabelJavaScriptSnippet("'one','two'", htmlSnippet.ToString());
         }
@@ -66,7 +66,7 @@ namespace SFA.DAS.Provider.Shared.UI.Tests.Extensions
         public void SetZendeskLabels_IsCreatedCorrectlyForOneItemWithApostrophesEscaped()
         {
             var labels = new[] { "one's" };
-            var htmlSnippet = _fixture.Sut.SetZendeskLabels(labels);
+            var htmlSnippet = _fixture.Sut.SetZenDeskLabels(labels);
 
             _fixture.ExpectedLabelJavaScriptSnippet(@"'one\'s'", htmlSnippet.ToString());
         }
