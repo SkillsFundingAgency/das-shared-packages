@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.Services.AppAuthentication;
-using SFA.DAS.Api.Authentication.Interfaces;
+using SFA.DAS.Api.Common.Interfaces;
 
-namespace SFA.DAS.Api.Authentication.Infrastructure
+namespace SFA.DAS.Api.Common.Infrastructure
 {
     public class AzureClientCredentialHelper : IAzureClientCredentialHelper
     {

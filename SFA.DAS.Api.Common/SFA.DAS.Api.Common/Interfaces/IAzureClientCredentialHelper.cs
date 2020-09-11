@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SFA.DAS.Api.Authentication.Interfaces
+namespace SFA.DAS.Api.Common.Interfaces
 {
     public interface IAzureClientCredentialHelper
     {

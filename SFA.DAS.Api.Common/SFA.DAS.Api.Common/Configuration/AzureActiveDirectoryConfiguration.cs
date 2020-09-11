@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Api.Authentication.Configuration
+﻿namespace SFA.DAS.Api.Common.Configuration
 {
     public class AzureActiveDirectoryConfiguration
     {

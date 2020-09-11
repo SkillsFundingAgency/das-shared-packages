@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Api.Authentication.Infrastructure.Configuration
+﻿namespace SFA.DAS.Api.Common.Infrastructure.Configuration
 {
     public static class Constants
     {

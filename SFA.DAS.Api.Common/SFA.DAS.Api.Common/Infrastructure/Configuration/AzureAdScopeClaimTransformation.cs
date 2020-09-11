@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 
-namespace SFA.DAS.Api.Authentication.Infrastructure.Configuration
+namespace SFA.DAS.Api.Common.Infrastructure.Configuration
 {
     public class AzureAdScopeClaimTransformation : IClaimsTransformation
     {

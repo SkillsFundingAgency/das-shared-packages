@@ -2,24 +2,27 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.Api.Authentication.Configuration;
-using SFA.DAS.Api.Authentication.Infrastructure.Configuration;
+using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Api.Common.Infrastructure.Configuration;
 
-namespace SFA.DAS.Api.Authentication.AppStart
+namespace SFA.DAS.Api.Common.AppStart
 {
     public static class AddAuthenticationExtension
     {
         public static void AddAuthentication(
             this IServiceCollection services,
-            AzureActiveDirectoryConfiguration config)
+            AzureActiveDirectoryConfiguration config, Dictionary<string, string> policies)
         {
             services.AddAuthorization(o =>
             {
-                o.AddPolicy("default", policy =>
+                foreach (var policyName in policies)
                 {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireRole("APIM");
-                });
+                    o.AddPolicy(policyName.Key, policy =>
+                    {
+                        policy.RequireAuthenticatedUser();
+                        policy.RequireRole(policyName.Value);
+                    });
+                }
             });
 
             services.AddAuthentication(auth => { auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
