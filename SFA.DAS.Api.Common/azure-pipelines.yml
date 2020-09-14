@@ -31,36 +31,36 @@ stages:
   displayName: 'Build and test'
   jobs:
   - job: 'BuildAndTest'
-  pool:
-    name: 'DAS - Continuous Integration'
-  workspace:
-    clean: all
-  steps:
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet restore'
-    inputs:
-      command: restore
-      projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
+    pool:
+      name: 'DAS - Continuous Integration'
+    workspace:
+      clean: all
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: restore
+        projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
 
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet build'
-    inputs:
-      projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
-      arguments: '/p:Configuration=$(BuildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
+        arguments: '/p:Configuration=$(BuildConfiguration)'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: pack
-      packagesToPack: SFA.DAS.Api.Common/SFA.DAS.Api.Common/SFA.DAS.Api.Common.csproj
-      versioningScheme: byBuildNumber
-      packDirectory: $(Build.ArtifactStagingDirectory)/NugetPackages
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet pack'
+      inputs:
+        command: pack
+        packagesToPack: SFA.DAS.Api.Common/SFA.DAS.Api.Common/SFA.DAS.Api.Common.csproj
+        versioningScheme: byBuildNumber
+        packDirectory: $(Build.ArtifactStagingDirectory)/NugetPackages
 
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish Artifact: NugetPackages'
-    inputs:
-      targetPath: $(Build.ArtifactStagingDirectorygit )/NugetPackages
-      artifactName: NugetPackages
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Artifact: NugetPackages'
+      inputs:
+        targetPath: $(Build.ArtifactStagingDirectorygit )/NugetPackages
+        artifactName: NugetPackages
 
 - stage: NugetPublish
   displayName: 'Publish Nuget Package'
