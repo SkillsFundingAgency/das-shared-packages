@@ -1,4 +1,6 @@
-name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+parameters:
+  - name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+
 trigger:
   batch: true
   branches:
@@ -10,43 +12,79 @@ trigger:
 
 pr: none
 
-workspace:
-    clean: all
-
-pool:
-  name: 'DAS - Continuous Integration'
-
 variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '1'
   Build.MinorNumber: '0'
 
-steps:
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet restore'
-  inputs:
-    command: restore
-    projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
+resources:
+    repositories:
+    - repository: self
+    - repository: das-platform-building-blocks
+      type: github
+      name: SkillsFundingAgency/das-platform-building-blocks
+      ref: refs/heads/master
+      endpoint: 'GitHub (SFA)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
-    arguments: '/p:Configuration=$(BuildConfiguration)'
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and test'
+  jobs:
+  - job: 'BuildAndTest'
+  pool:
+    name: 'DAS - Continuous Integration'
+  workspace:
+    clean: all
+  steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet restore'
+    inputs:
+      command: restore
+      projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack'
-  inputs:
-    command: pack
-    packagesToPack: SFA.DAS.Api.Common/SFA.DAS.Api.Common/SFA.DAS.Api.Common.csproj
-    versioningScheme: byBuildNumber
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build'
+    inputs:
+      projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
+      arguments: '/p:Configuration=$(BuildConfiguration)'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    SourceFolder: SFA.DAS.Api.Common/SFA.DAS.Api.Common
-    Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet pack'
+    inputs:
+      command: pack
+      packagesToPack: SFA.DAS.Api.Common/SFA.DAS.Api.Common/SFA.DAS.Api.Common.csproj
+      versioningScheme: byBuildNumber
+      packDirectory: $(Build.ArtifactStagingDirectory)/NugetPackages
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Artifact: NugetPackages'
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectorygit )/NugetPackages
+      artifactName: NugetPackages
+
+- stage: NugetPublish
+  displayName: 'Publish Nuget Package'
+  pool:
+    name: "DAS - Continuous Deployment"
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ${{ parameters.PublishBranchOfNugetPackage }}))
+  jobs:
+  - job: 'CleanArtifacts'
+    displayName: Clean artifacts directory
+    workspace:
+      clean: all
+  - deployment: 'NugetPush'
+    dependsOn: 'CleanArtifacts'
+    environment: 'Nuget'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: NugetPackages
+          - task: NuGetCommand@2
+            displayName: 'NuGet push'
+            inputs:
+              command: push
+              packagesToPush: '$(Pipeline.Workspace)/NugetPackages/*.nupkg;!$(Pipeline.Workspace)/NugetPackages/*.symbols.nupkg'
+              nuGetFeedType: external
+              publishFeedCredentials: 'SFA NuGet'
