@@ -63,7 +63,7 @@ stages:
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Artifact: NugetPackages'
       inputs:
-        targetPath: $(Build.ArtifactStagingDirectorygit )/NugetPackages
+        targetPath: $(Build.ArtifactStagingDirectory)/NugetPackages
         artifactName: NugetPackages
 
 - stage: NugetPublish
