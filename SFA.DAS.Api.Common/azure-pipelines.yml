@@ -1,5 +1,4 @@
-parameters:
-  - name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
 
 trigger:
   batch: true
