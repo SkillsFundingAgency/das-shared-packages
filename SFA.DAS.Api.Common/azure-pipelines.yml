@@ -1,5 +1,10 @@
 name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
 
+parameters:
+  - name: PublishBranchOfNugetPackage
+    type: boolean
+    default: false
+
 trigger:
   batch: true
   branches:
