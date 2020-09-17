@@ -11,7 +11,7 @@
     <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
     <Title>Provides classes for Api connectivity</Title>
     <Description>Provides classes for Api connectivity</Description>
-    <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-shared-packages</RepositoryUrl>
     <PackageTags>Esfa;Das;</PackageTags>
