@@ -47,6 +47,15 @@ namespace SFA.DAS.Http
             return this;
         }
 
+        public HttpClientBuilder WithManagedIdentityAuthorisationHeader(IManagedIdentityTokenGenerator tokenGenerator)
+        {
+            var newHandler = new ManagedIdentityHeadersHandler(tokenGenerator);
+
+            AddHandlerToChain(newHandler);
+
+            return this;
+        }
+
         public HttpClientBuilder WithBearerAuthorisationHeader(IGenerateBearerToken tokenGenerator)
         {
             var newHandler = new SecurityMessageHandler(tokenGenerator);
