@@ -5,6 +5,5 @@
         string ApiBaseUrl { get; }
         string SubscriptionKey { get; }
         string ApiVersion { get; }
-        
     }
 }
