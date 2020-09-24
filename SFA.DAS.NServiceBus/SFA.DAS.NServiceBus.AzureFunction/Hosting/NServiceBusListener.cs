@@ -50,7 +50,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             }
             else
             {
-                var tokenProvider = TokenProvider.CreateManagedServiceIdentityTokenProvider();
+                var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
 
                 endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
                     .RuleNameShortener(nameShortener.Shorten)
