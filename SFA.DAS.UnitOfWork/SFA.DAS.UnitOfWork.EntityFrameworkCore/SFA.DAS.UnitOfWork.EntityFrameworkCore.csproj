@@ -7,7 +7,7 @@
 
         <Authors>DAS</Authors>
         <Description>Entity Framework Core unit of work integration for SFA.DAS.UnitOfWork</Description>
-        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageLicense>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicense>
         <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.UnitOfWork</PackageProjectUrl>
 
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
