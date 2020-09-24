@@ -7,7 +7,7 @@
 
         <Authors>DAS</Authors>
         <Description>NServiceBus integration for SFA.DAS</Description>
-        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageLicense>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicense>
         <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.NServiceBus</PackageProjectUrl>
 
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
