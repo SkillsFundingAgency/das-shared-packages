@@ -7,6 +7,7 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
     {
         string ManageApprenticeshipsBaseUrl { get; set; }        
         string EmployerCommitmentsBaseUrl { get; set; }
+        string EmployerCommitmentsV2BaseUrl { get; set; }
         string EmployerFinanceBaseUrl { get; set; }        
         string AuthenticationAuthorityUrl { get; set; }
         string EmployerRecruitBaseUrl { get; set; }
@@ -14,5 +15,6 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
         Uri ChangePasswordReturnUrl { get; set; }
         Uri SignOutUrl { get; set; }
         string ClientId { get; set; }
+        string ApprovalsBaseUrl { get; }
     }
 }
