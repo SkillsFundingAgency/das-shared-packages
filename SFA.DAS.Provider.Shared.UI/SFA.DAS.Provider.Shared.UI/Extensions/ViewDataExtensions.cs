@@ -34,6 +34,11 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             return viewData.ContainsKey(ViewDataKeys.EnableGoogleAnalytics) && (bool)viewData[ViewDataKeys.EnableGoogleAnalytics];
         }
 
+        public static bool EnableCookieBanner(this ViewDataDictionary viewData)
+        {
+            return viewData.ContainsKey(ViewDataKeys.EnableCookieBanner) && (bool) viewData[ViewDataKeys.EnableCookieBanner];
+        }
+
         public static string GetZenDeskSectionId(this ViewDataDictionary viewData)
         {
             if (viewData.ContainsKey(ViewDataKeys.ZenDeskConfiguration))
