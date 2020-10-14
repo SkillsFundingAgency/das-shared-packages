@@ -66,7 +66,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new Finance(_urlHelper.GetPath(userContext, configuration.EmployerFinanceBaseUrl, "finance"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new Recruitment(_urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
-            AddOrUpdateLink(new Apprentices(_urlHelper.GetPath(userContext, configuration.EmployerCommitmentsBaseUrl, "apprentices/home"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
+            AddOrUpdateLink(new Apprentices(_urlHelper.GetPath(userContext, configuration.EmployerCommitmentsBaseUrl, string.Empty), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new YourTeam(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams/view"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
 
             AddOrUpdateLink(new YourOrganisations(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "agreements"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
