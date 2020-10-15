@@ -6,6 +6,7 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
     {
         public string ManageApprenticeshipsBaseUrl { get; set; }
         public string ApplicationBaseUrl { get; set; }
+        public string EmployerCommitmentsV2BaseUrl { get; set; }
         public string EmployerCommitmentsBaseUrl { get; set; }
         public string EmployerFinanceBaseUrl { get; set; }        
         public string AuthenticationAuthorityUrl { get; set; }
@@ -14,5 +15,7 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
         public Uri SignOutUrl { get; set; }
         public Uri ChangeEmailReturnUrl { get; set; }
         public Uri ChangePasswordReturnUrl { get; set; }
+
+        public string ApprovalsBaseUrl => string.IsNullOrEmpty(EmployerCommitmentsV2BaseUrl) ? EmployerCommitmentsBaseUrl : EmployerCommitmentsV2BaseUrl;
     }
 }

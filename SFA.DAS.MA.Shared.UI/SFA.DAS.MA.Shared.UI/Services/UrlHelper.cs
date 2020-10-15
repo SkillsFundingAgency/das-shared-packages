@@ -13,7 +13,8 @@ namespace SFA.DAS.MA.Shared.UI.Services
 
         public string GetPath(IUserContext userContext, string baseUrl, string path = "", string prefix = "accounts")
         {
-            var accountPath = userContext.HashedAccountId == null ? $"{prefix}/{path}" : $"{prefix}/{userContext.HashedAccountId}/{path}";
+            prefix = string.IsNullOrEmpty(prefix) ? string.Empty : prefix + '/';
+            var accountPath = userContext.HashedAccountId == null ? $"{prefix}{path}" : $"{prefix}{userContext.HashedAccountId}/{path}";
 
             var trimmedBaseUrl = baseUrl?.TrimEnd('/') ?? string.Empty;
 
