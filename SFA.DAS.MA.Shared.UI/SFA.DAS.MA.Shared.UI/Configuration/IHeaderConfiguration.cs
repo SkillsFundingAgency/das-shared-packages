@@ -15,6 +15,5 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
         Uri ChangePasswordReturnUrl { get; set; }
         Uri SignOutUrl { get; set; }
         string ClientId { get; set; }
-        string ApprovalsBaseUrl { get; }
     }
 }
