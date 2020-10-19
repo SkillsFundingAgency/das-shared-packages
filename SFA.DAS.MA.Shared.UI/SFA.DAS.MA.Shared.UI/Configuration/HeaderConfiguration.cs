@@ -15,7 +15,5 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
         public Uri SignOutUrl { get; set; }
         public Uri ChangeEmailReturnUrl { get; set; }
         public Uri ChangePasswordReturnUrl { get; set; }
-
-        public string ApprovalsBaseUrl => string.IsNullOrEmpty(EmployerCommitmentsV2BaseUrl) ? EmployerCommitmentsBaseUrl : EmployerCommitmentsV2BaseUrl;
     }
 }
