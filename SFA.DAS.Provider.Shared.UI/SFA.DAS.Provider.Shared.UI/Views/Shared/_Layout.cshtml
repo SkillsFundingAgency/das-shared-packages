@@ -1,7 +1,8 @@
-@using SFA.DAS.Provider.Shared.UI.Extensions
+﻿@using SFA.DAS.Provider.Shared.UI.Extensions
 @using SFA.DAS.ProviderUrlHelper.Core
 @{
     var enableGoogleAnalytics = ViewData.EnableGoogleAnalytics();
+    var enableCookieBanner = ViewData.EnableCookieBanner();
 
     <!DOCTYPE html>
     <html lang="en" class="govuk-template ">
@@ -46,6 +47,12 @@
         </script>
         <partial name="_ZenDeskWidget" />
         <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+        
+        @if (enableCookieBanner)
+        {
+            <partial name="_CookieBanner"/>
+        }
+
         <header class="govuk-header das-header--no-border das-header--provider-legacy" role="banner" data-module="header">
             <div class="govuk-header__container govuk-width-container">
                 <div class="govuk-header__logo">

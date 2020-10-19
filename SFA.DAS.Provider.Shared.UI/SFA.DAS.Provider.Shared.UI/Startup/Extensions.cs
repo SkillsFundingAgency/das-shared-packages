@@ -44,6 +44,15 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
             return builder;
         }
 
+        public static IMvcBuilder EnableCookieBanner(this IMvcBuilder builder)
+        {
+            builder.Services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new EnableCookieBannerAttribute());
+            });
+            return builder;
+        }
+
         public static IMvcBuilder SetZenDeskConfiguration(this IMvcBuilder builder, ZenDeskConfiguration zenDeskConfiguration)
         {
             builder.Services.Configure<MvcOptions>(options =>
