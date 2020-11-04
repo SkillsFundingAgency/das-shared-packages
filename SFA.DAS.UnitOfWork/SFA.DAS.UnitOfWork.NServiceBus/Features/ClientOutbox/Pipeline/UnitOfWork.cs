@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.Settings;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Models;
 using SFA.DAS.UnitOfWork.Context;
@@ -42,7 +44,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.Features.ClientOutbox.Pipeline
             {
                 var tasks = clientOutboxMessage.TransportOperations.Select(o => 
                 {
-                    if (o.Message is ICommand)
+                    if (o.Message.IsCommand())
                     {
                         return SendMessage(o);
                     }

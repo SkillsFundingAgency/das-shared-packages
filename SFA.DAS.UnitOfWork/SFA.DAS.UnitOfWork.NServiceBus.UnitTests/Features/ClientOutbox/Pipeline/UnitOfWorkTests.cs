@@ -102,7 +102,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
             Commands = new List<object>
             {
                 new TestCommand(DateTime.UtcNow),
-                new TestCommand(DateTime.UtcNow),
+                new AnotherCommand(DateTime.UtcNow),
                 new TestCommand(DateTime.UtcNow)
             };
 

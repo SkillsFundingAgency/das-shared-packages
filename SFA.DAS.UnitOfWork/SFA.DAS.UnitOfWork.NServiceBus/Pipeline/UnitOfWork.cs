@@ -24,8 +24,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.Pipeline
             var events = _unitOfWorkContext.GetEvents();
 
             await next().ConfigureAwait(false);
-            await Task.WhenAll(events.Where(x => !(x is ICommand)).Select(_uniformSession.Publish)).ConfigureAwait(false);
-            await Task.WhenAll(events.Where(x => x is ICommand).Select(_uniformSession.Send)).ConfigureAwait(false);
+            await Task.WhenAll(events.Where(x => !x.IsCommand()).Select(_uniformSession.Publish)).ConfigureAwait(false);
+            await Task.WhenAll(events.Where(x => x.IsCommand()).Select(_uniformSession.Send)).ConfigureAwait(false);
         }
     }
 }
