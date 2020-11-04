@@ -42,16 +42,33 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.Features.ClientOutbox.Pipeline
             {
                 var tasks = clientOutboxMessage.TransportOperations.Select(o => 
                 {
-                    var publishOptions = new PublishOptions();
-                
-                    publishOptions.SetMessageId(o.MessageId.ToString());
-
-                    return _messageSession.Publish(o.Message, publishOptions);
+                    if (o.Message is ICommand)
+                    {
+                        return SendMessage(o);
+                    }
+                    else
+                    {
+                        return PublishMessage(o);
+                    }
                 });
             
                 await Task.WhenAll(tasks).ConfigureAwait(false);
                 await _clientOutboxStorage.SetAsDispatchedAsync(clientOutboxMessage.MessageId).ConfigureAwait(false);
             }
+        }
+
+        private Task PublishMessage(TransportOperation o)
+        {
+            var publishOptions = new PublishOptions();
+            publishOptions.SetMessageId(o.MessageId.ToString());
+            return _messageSession.Publish(o.Message, publishOptions);
+        }
+
+        private Task SendMessage(TransportOperation o)
+        {
+            var sendOptions = new SendOptions();
+            sendOptions.SetMessageId(o.MessageId.ToString());
+            return _messageSession.Send(o.Message, sendOptions);
         }
     }
 }

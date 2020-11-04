@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NServiceBus;
 using NServiceBus.UniformSession;
 using SFA.DAS.UnitOfWork.Context;
 using SFA.DAS.UnitOfWork.Pipeline;
@@ -23,7 +24,8 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.Pipeline
             var events = _unitOfWorkContext.GetEvents();
 
             await next().ConfigureAwait(false);
-            await Task.WhenAll(events.Select(_uniformSession.Publish)).ConfigureAwait(false);
+            await Task.WhenAll(events.Where(x => !(x is ICommand)).Select(_uniformSession.Publish)).ConfigureAwait(false);
+            await Task.WhenAll(events.Where(x => x is ICommand).Select(_uniformSession.Send)).ConfigureAwait(false);
         }
     }
 }

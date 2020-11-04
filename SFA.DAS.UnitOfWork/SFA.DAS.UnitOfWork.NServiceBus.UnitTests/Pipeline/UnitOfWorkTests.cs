@@ -22,12 +22,23 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Pipeline
                 f.Events.ForEach(e => f.UniformSession.Verify(s => s.Publish(e, It.IsAny<PublishOptions>()), Times.Once));
             });
         }
+
+        [Test]
+        public Task CommitAsync_WhenCommittingUnitOfWork_ThenShouldPublishCommandsAfterNextTask()
+        {
+            return RunAsync(f => f.CommitAsync(), f =>
+            {
+                f.UniformSession.Verify(s => s.Send(It.IsAny<object>(), It.IsAny<SendOptions>()), Times.Exactly(f.Commands.Count));
+                f.Commands.ForEach(e => f.UniformSession.Verify(s => s.Send(e, It.IsAny<SendOptions>()), Times.Once));
+            });
+        }
     }
 
     public class UnitOfWorkTestsFixture
     {
         public Mock<IUniformSession> UniformSession { get; set; }
         public List<object> Events { get; set; }
+        public List<object> Commands { get; set; }
         public Mock<IUnitOfWorkContext> UnitOfWorkContext { get; set; }
         public NServiceBus.Pipeline.UnitOfWork UnitOfWork { get; set; }
         public Mock<Func<Task>> NextTask { get; set; }
@@ -43,6 +54,13 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Pipeline
                 new BarEvent(DateTime.UtcNow)
             };
 
+            Commands = new List<object>
+            {
+                new TestCommand(DateTime.UtcNow),
+                new TestCommand(DateTime.UtcNow),
+                new TestCommand(DateTime.UtcNow)
+            };
+
             UnitOfWorkContext = new Mock<IUnitOfWorkContext>();
 
             UniformSession.Setup(s => s.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>())).Returns(Task.CompletedTask).Callback<object, PublishOptions>((m, o) =>
@@ -51,7 +69,10 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Pipeline
                     throw new Exception("Publish called too early");
             });
 
-            UnitOfWorkContext.Setup(c => c.GetEvents()).Returns(Events);
+            var allMessages = new List<object>();
+            allMessages.AddRange(Events);
+            allMessages.AddRange(Commands);
+            UnitOfWorkContext.Setup(c => c.GetEvents()).Returns(allMessages);
 
             UnitOfWork = new NServiceBus.Pipeline.UnitOfWork(UniformSession.Object, UnitOfWorkContext.Object);
             NextTask = new Mock<Func<Task>>();
