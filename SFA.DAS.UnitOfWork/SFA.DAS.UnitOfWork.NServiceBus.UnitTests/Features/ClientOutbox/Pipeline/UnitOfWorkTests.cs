@@ -47,6 +47,15 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         }
 
         [Test]
+        public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldPublishCommands()
+        {
+            return RunAsync(
+                f => f.SetCommands(),
+                f => f.CommitAsync(),
+                f => f.MessageSession.SentMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), m.Message }).Should().BeEquivalentTo(f.ClientOutboxMessage.TransportOperations));
+        }
+
+        [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
             return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId)));
@@ -71,6 +80,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         public bool NextTaskInvoked { get; set; }
         public string EndpointName { get; set; }
         public List<object> Events { get; set; }
+        public List<object> Commands { get; set; }
         public ClientOutboxMessageV2 ClientOutboxMessage { get; set; }
 
         public UnitOfWorkTestsFixture()
@@ -87,6 +97,13 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
             {
                 new FooEvent(DateTime.UtcNow),
                 new BarEvent(DateTime.UtcNow)
+            };
+
+            Commands = new List<object>
+            {
+                new TestCommand(DateTime.UtcNow),
+                new TestCommand(DateTime.UtcNow),
+                new TestCommand(DateTime.UtcNow)
             };
 
             UnitOfWorkContext.Setup(c => c.Get<IClientOutboxTransaction>()).Returns(ClientOutboxTransaction.Object);
@@ -124,6 +141,13 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         public UnitOfWorkTestsFixture SetEvents()
         {
             UnitOfWorkContext.Setup(c => c.GetEvents()).Returns(Events);
+
+            return this;
+        }
+
+        public UnitOfWorkTestsFixture SetCommands()
+        {
+            UnitOfWorkContext.Setup(c => c.GetEvents()).Returns(Commands);
 
             return this;
         }
