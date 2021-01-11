@@ -37,6 +37,7 @@
         public ApprenticeshipSearchResponse Search(ApprenticeshipSearchRequestParameters searchParameters)
         {
             SanitizeSearchParameters(searchParameters);
+            ValidateSearchParameters(searchParameters);
 
             var results = PerformSearch(searchParameters);
 
@@ -46,6 +47,14 @@
             var response = new ApprenticeshipSearchResponse(results.Total, results.Documents, aggregationResults, searchParameters);
 
             return response;
+        }
+
+        private void ValidateSearchParameters(ApprenticeshipSearchRequestParameters parameters)
+        {
+            if ((parameters.PageNumber - 1) * parameters.PageSize > 10000)
+            {
+                throw new InvalidOperationException("Elastic search cannot return more than 10000 records, please use filter to narrow down your search.");
+            }
         }
 
         public IEnumerable<int> GetAllVacancyIds()
