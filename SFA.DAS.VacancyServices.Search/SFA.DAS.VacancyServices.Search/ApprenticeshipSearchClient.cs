@@ -53,7 +53,7 @@
         {
             if ((parameters.PageNumber - 1) * parameters.PageSize >= 10000)
             {
-                throw new InvalidOperationException("Elastic search cannot return more than 10000 records, please use filter to narrow down your search.");
+                throw new InvalidOperationException("Search cannot return more than 10000 records, please use filters to narrow down your search.");
             }
         }
 
