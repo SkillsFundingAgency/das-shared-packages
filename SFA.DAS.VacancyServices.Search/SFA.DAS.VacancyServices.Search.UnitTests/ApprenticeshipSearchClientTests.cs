@@ -164,6 +164,27 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             AssertSearch(parameters, expectedJsonQuery);
         }
 
+        [Test]
+        public void Search_ThrowsException_WhenItReachs_TenThousands_Record()
+        {
+            var parameters = new ApprenticeshipSearchRequestParameters
+            {
+                PageNumber = 101,
+                PageSize = 100,
+                VacancyLocationType = VacancyLocationType.NonNational,
+                StandardLarsCodes = new List<string> { "123", "124" },
+                FrameworkLarsCodes = new List<string> { "502", "501" },
+                Latitude = 52.4088862063274,
+                Longitude = 1.50554768088033,
+                Ukprn = 12345678,
+                SearchRadius = 40,
+                FromDate = DateTime.Parse("2018-11-24"),
+                SortType = VacancySearchSortType.ExpectedStartDate
+            };
+
+            AssertException(parameters);
+        }
+
         #endregion
 
         #region FAA searches
@@ -399,7 +420,31 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
 
         #endregion
 
+        private void AssertException(ApprenticeshipSearchRequestParameters parameters)
+        {
+            Assert.Throws<InvalidOperationException>(() => SetupApprenticeshipClient(parameters));
+        }
+
         private void AssertSearch(ApprenticeshipSearchRequestParameters parameters, string expectedJsonQuery)
+        {
+            Func<SearchDescriptor<ApprenticeshipSearchResult>, ISearchRequest> actualSearchDescriptorFunc = SetupApprenticeshipClient(parameters);
+
+            var baseSearchDescriptor = new SearchDescriptor<ApprenticeshipSearchResult>();
+            var query = actualSearchDescriptorFunc(baseSearchDescriptor);
+
+            var elasticClient = new ElasticClient();
+            var stream = new MemoryStream();
+            elasticClient.RequestResponseSerializer.Serialize(query, stream);
+            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+
+            var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
+
+            var expectedJsonQueryJToken = JToken.Parse(expectedJsonQuery);
+
+            actualJsonQueryJToken.Should().BeEquivalentTo(expectedJsonQueryJToken);
+        }
+
+        private static Func<SearchDescriptor<ApprenticeshipSearchResult>, ISearchRequest> SetupApprenticeshipClient(ApprenticeshipSearchRequestParameters parameters)
         {
             var searchResponse = new Mock<ISearchResponse<ApprenticeshipSearchResult>>();
             searchResponse.Setup(s => s.Total).Returns(0);
@@ -421,20 +466,7 @@ namespace SFA.DAS.VacancyServices.Search.UnitTests
             var sut = new ApprenticeshipSearchClient(mockFactory.Object, "apprenticeships", mockLogger.Object);
 
             var response = sut.Search(parameters);
-
-            var baseSearchDescriptor = new SearchDescriptor<ApprenticeshipSearchResult>();
-            var query = actualSearchDescriptorFunc(baseSearchDescriptor);
-
-            var elasticClient = new ElasticClient();
-            var stream = new MemoryStream();
-            elasticClient.RequestResponseSerializer.Serialize(query, stream);
-            var actualJsonQuery = System.Text.Encoding.UTF8.GetString(stream.ToArray());
-
-            var actualJsonQueryJToken = JToken.Parse(actualJsonQuery);
-            
-            var expectedJsonQueryJToken = JToken.Parse(expectedJsonQuery);
-
-            actualJsonQueryJToken.Should().BeEquivalentTo(expectedJsonQueryJToken);
+            return actualSearchDescriptorFunc;
         }
     }
 }

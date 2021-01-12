@@ -51,7 +51,7 @@
 
         private void ValidateSearchParameters(ApprenticeshipSearchRequestParameters parameters)
         {
-            if ((parameters.PageNumber - 1) * parameters.PageSize > 10000)
+            if ((parameters.PageNumber - 1) * parameters.PageSize >= 10000)
             {
                 throw new InvalidOperationException("Elastic search cannot return more than 10000 records, please use filter to narrow down your search.");
             }
