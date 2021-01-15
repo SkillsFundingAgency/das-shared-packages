@@ -68,6 +68,11 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
             _endpoint = await RawEndpoint.Start(endpointConfigurationRaw).ConfigureAwait(false);
 
+            if (_nServiceBusOptions.OnStarted != null)
+            {
+                _nServiceBusOptions.OnStarted.Invoke(_endpoint);
+            }
+
             await _endpoint.SubscriptionManager.Subscribe(_parameter.ParameterType, new ContextBag());
         }
 

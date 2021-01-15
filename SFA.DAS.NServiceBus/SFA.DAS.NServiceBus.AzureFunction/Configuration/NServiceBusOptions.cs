@@ -10,5 +10,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Configuration
         public Action<MessageContext> OnMessageReceived { get; set; }
         public Action<MessageContext> OnMessageProcessed { get; set; }
         public Action<Exception, MessageContext> OnMessageErrored { get; set; }
+        public Action<IReceivingRawEndpoint> OnStarted { get; set; }        
     }
 }
