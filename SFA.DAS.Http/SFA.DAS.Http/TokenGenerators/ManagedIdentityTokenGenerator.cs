@@ -15,7 +15,7 @@ namespace SFA.DAS.Http.TokenGenerators
         public Task<string> Generate()
         {
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            return azureServiceTokenProvider.GetAccessTokenAsync(_config.Identifier);
+            return azureServiceTokenProvider.GetAccessTokenAsync(_config.IdentifierUri);
         }
     }
 }
