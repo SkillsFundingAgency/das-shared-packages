@@ -15,15 +15,12 @@
     <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-shared-packages</RepositoryUrl>
     <PackageTags>Esfa;Das;</PackageTags>
-    <PackageReleaseNotes>Now only targets .NetStandard2.0. Removed client base and replaced with new rest client for APIs. Class names cleaned up.</PackageReleaseNotes>
+    <PackageReleaseNotes>Implements ManagedIdentityHttpClientFactory to allow clients to be created with Managed Identity authorisation header.</PackageReleaseNotes>
 
     <EmbedUntrackedSources>false</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>3.2.6</Version>
   </PropertyGroup>
 
   <ItemGroup>
