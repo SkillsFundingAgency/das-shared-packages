@@ -2,6 +2,7 @@
 {
     public interface IManagedIdentityClientConfiguration
     {
-        string Identifier { get; }
+        string ApiBaseUrl { get; }
+        string IdentifierUri { get; }
     }
 }
