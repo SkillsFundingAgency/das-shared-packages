@@ -1,8 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Logging", "SFA.DAS.Logging\SFA.DAS.Logging.csproj", "{FA4F44F4-C39E-4C75-91AD-AD59F9ED162A}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.NLog.Logger", "SFA.DAS.NLog.Logger\SFA.DAS.NLog.Logger.csproj", "{D5BDD8DD-D115-422D-8D5B-1FB1BB68BB50}"
 EndProject
 Global
@@ -11,6 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA4F44F4-C39E-4C75-91AD-AD59F9ED162A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA4F44F4-C39E-4C75-91AD-AD59F9ED162A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA4F44F4-C39E-4C75-91AD-AD59F9ED162A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA4F44F4-C39E-4C75-91AD-AD59F9ED162A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5BDD8DD-D115-422D-8D5B-1FB1BB68BB50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5BDD8DD-D115-422D-8D5B-1FB1BB68BB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5BDD8DD-D115-422D-8D5B-1FB1BB68BB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -20,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1D9375A9-06F1-4535-B73A-1D6C2CC1795C}
+		SolutionGuid = {0A190518-7FC0-4237-A4CB-693BBF4EF5EE}
 	EndGlobalSection
 EndGlobal
