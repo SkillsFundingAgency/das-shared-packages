@@ -55,7 +55,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.Features.ClientOutbox.Pipeline
                 });
             
                 await Task.WhenAll(tasks).ConfigureAwait(false);
-                await _clientOutboxStorage.SetAsDispatchedAsync(clientOutboxMessage.MessageId).ConfigureAwait(false);
+                await _clientOutboxStorage.SetAsDispatchedAsync(clientOutboxMessage.MessageId, clientOutboxTransaction).ConfigureAwait(false);
             }
         }
 
