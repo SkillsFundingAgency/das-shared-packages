@@ -134,12 +134,23 @@ namespace SFA.DAS.VacancyServices.Wage
                 new NationalMinimumWageRates
                 (
                     new DateTime(2020, 04, 1),
-                    DateTime.MaxValue,
+                    new DateTime(2021, 04, 1),
                     4.15m,
                     4.55m,
                     6.45m,
                     8.20m,
                     8.72m
+                ),
+                //April 1st, 2021
+                new NationalMinimumWageRates
+                (
+                    new DateTime(2021, 04, 1),
+                    DateTime.MaxValue,
+                    4.30m,
+                    4.62m,
+                    6.56m,
+                    8.36m,
+                    8.91m
                 )
             };
         }
