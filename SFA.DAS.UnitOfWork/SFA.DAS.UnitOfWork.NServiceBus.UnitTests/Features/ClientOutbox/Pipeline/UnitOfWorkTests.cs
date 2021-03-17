@@ -58,7 +58,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
-            return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId)));
+            return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, It.IsAny<IClientOutboxTransaction>())));
         }
 
         [Test]
