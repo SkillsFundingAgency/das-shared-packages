@@ -28,13 +28,17 @@ namespace SFA.DAS.Employer.Shared.UI
             //if (string.IsNullOrWhiteSpace(routeName) || args == null || args.Length == 0 || string.IsNullOrWhiteSpace(args[0]) ) 
             //return _generator.AccountsLink(string.Empty);
 
+            _logger.LogInformation($"RouteName : {routeName}");
+
             if (string.IsNullOrWhiteSpace(routeName))
                 return _generator.AccountsLink(string.Empty);
 
-            var route = _routes.Accounts[routeName];
-            
+            var route = _routes.Accounts[routeName];            
+
             if (args != null && args.Length > 0)
                 route = string.Format(route, args);
+
+            _logger.LogInformation($"Route : {route}");
 
             return _generator.AccountsLink(route);
         }
