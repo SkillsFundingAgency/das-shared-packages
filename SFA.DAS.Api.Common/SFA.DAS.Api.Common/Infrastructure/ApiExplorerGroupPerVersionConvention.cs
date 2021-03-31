@@ -23,7 +23,7 @@ namespace SFA.DAS.Api.Common.Infrastructure
                 controller.ApiExplorer.GroupName = "v1";    
             }
 
-            if (controller.ControllerName.Equals(PolicyNames.DataLoad))
+            if (controller.ControllerName.Equals(PolicyNames.DataLoad) || controller.ControllerName.Equals(PolicyNames.Export))
             {
                 controller.ApiExplorer.GroupName = "operations"; 
             }

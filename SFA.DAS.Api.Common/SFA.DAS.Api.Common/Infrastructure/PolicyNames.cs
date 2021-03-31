@@ -4,5 +4,6 @@
     {
         public static string Default => nameof(Default);
         public static string DataLoad => nameof(DataLoad);
+        public static string Export => nameof(Export);
     }
 }
