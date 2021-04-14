@@ -12,9 +12,14 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
                 : NavigationSection.Home;
         }
 
-        public static bool HiddenNavigationBar(this ViewDataDictionary viewData)
+        public static bool HiddenAccountHeader(this ViewDataDictionary viewData)
         {
-            return viewData.ContainsKey(ViewDataKeys.HideNavigationBar) && (bool)viewData[ViewDataKeys.HideNavigationBar];
+            return viewData.ContainsKey(ViewDataKeys.HideAccountHeader) && (bool)viewData[ViewDataKeys.HideAccountHeader];
+        }
+
+        public static bool HiddenNavigationLinks(this ViewDataDictionary viewData)
+        {   
+            return viewData.ContainsKey(ViewDataKeys.HideNavigationLinks) && (bool)viewData[ViewDataKeys.HideNavigationLinks];
         }
 
         public static bool ShowBetaPhaseBanner(this ViewDataDictionary viewData)
