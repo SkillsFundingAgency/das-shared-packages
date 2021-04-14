@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>SFA.DAS.OidcMiddleware</id>
-        <version>2.0.0</version>
+        <version>3.0.0</version>
         <authors>DAS</authors>
         <owners>DAS</owners>
         <licenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</licenseUrl>
@@ -15,7 +15,7 @@
             <group targetFramework=".NETFramework4.5">
                 <dependency id="IdentityModel" version="1.11.0" />
                 <dependency id="Microsoft.Owin.Security" version="3.0.1" />
-                <dependency id="System.IdentityModel.Tokens.Jwt" version="4.0.2.206221351" />
+                <dependency id="System.IdentityModel.Tokens.Jwt" version="6.1.10.0" />
             </group>
         </dependencies>
     </metadata>

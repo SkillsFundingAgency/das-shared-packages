@@ -1,8 +1,9 @@
 using System;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.ServiceModel.Security.Tokens;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
+
 
 namespace SFA.DAS.OidcMiddleware.Validators
 {
@@ -30,16 +31,15 @@ namespace SFA.DAS.OidcMiddleware.Validators
                 parameters.IssuerSigningKeyResolver = (token1, securityToken, keyIdentifier, validationParameters) =>
                 {
                     var certificate = options.TokenSigningCertificateLoader();
-                    return new X509SecurityKey(certificate);
+                    return new[] {new X509SecurityKey(certificate)};
                 };
             }
             else
             {
-                parameters.IssuerSigningToken = new BinarySecretSecurityToken(keyBytes);
+                parameters.IssuerSigningKey = new SymmetricSecurityKey(keyBytes); 
             }
 
-            SecurityToken jwt;
-            var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
+            var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out var jwt);
             var nonceClaim = principal.FindAll("nonce").FirstOrDefault();
 
             if (!string.Equals(nonceClaim.Value, nonce, StringComparison.Ordinal))
