@@ -1,10 +1,6 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Attributes;
-using SFA.DAS.Provider.Shared.UI.Extensions;
 using SFA.DAS.Provider.Shared.UI.Models;
 
 namespace SFA.DAS.Provider.Shared.UI.Startup
@@ -63,21 +59,6 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
                 options.Filters.Add(new SetZenDeskValuesAttribute(zenDeskConfiguration));
             });
             return builder;
-        }
-    }
-
-    public static class AddServiceExtensions
-    {
-        public static void AddProviderUiServiceRegistration(this IServiceCollection services, IConfiguration configuration)
-        {
-            if(configuration.GetSection(nameof(ProviderSharedUIConfiguration)) == null)
-            {
-                throw new Exception("Cannot find ProviderSharedUIConfiguration in configuration");
-            }
-            
-            services.Configure<ProviderSharedUIConfiguration>(configuration.GetSection(nameof(ProviderSharedUIConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderSharedUIConfiguration>>().Value);
-            services.AddSingleton<IExternalUrlHelper, ExternalUrlHelper>();
         }
     }
 }
