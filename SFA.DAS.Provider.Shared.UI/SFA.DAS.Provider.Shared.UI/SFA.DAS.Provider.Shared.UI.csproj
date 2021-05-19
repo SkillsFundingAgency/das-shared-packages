@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
-    <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.15" />
+    <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
   </ItemGroup>
 </Project>
