@@ -1,6 +1,6 @@
 # SFA.DAS.Provider.Shared.UI
 
-This package provides shared Provider UI components via a [Razor Class Library](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-2.2&tabs=visual-studio).
+This package provides shared Provider UI components via a [Razor Class Library](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-3.1&tabs=visual-studio).
 
 This consists of _Layout and _Menu razor views.
 
@@ -12,7 +12,7 @@ This consists of _Layout and _Menu razor views.
 ## Usage
 
 * Add a reference to the [SFA.DAS.Provider.Shared.UI](https://www.nuget.org/packages/SFA.DAS.Provider.Shared.UI/) package
-* in your configuration add a section called **ProviderSharedUIConfiguration** with DashboardUrl defined.
+* In your configuration add a section called **ProviderSharedUIConfiguration** with DashboardUrl defined.
 ```
    { 
       "ProviderSharedUIConfiguration" :
@@ -32,7 +32,7 @@ services.AddProviderUiServiceRegistration(_configuration);
 * Prevent the menu from being displayed by decorating controllers or individual action methods with the `HideNavigationBar` attribute filter
 * Show a "Beta" phase banner in the layout for your service by calling the `ShowBetaPhaseBanner` startup extension method (or adding the `ShowBetaPhaseBanner` attribute filter as appropriate)
 * Suppress navigation sections (for example, if an up-coming service is toggled off) by using the `SuppressNavigationSection` extension method
- 
+* The package also requires that you implement your own sign out action. This is expecting a controller action with the route name of `provider-signout` 
 Examples: 
 
  ```csharp
