@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Provider.Shared.UI", "SFA.DAS.Provider.Shared.UI\SFA.DAS.Provider.Shared.UI.csproj", "{17B2005D-A0EC-47D6-83C9-6F1EE137EBD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Shared.UI.Tests", "SFA.DAS.Provider.Shared.UI.Tests\SFA.DAS.Provider.Shared.UI.Tests.csproj", "{B7375FE7-5654-41E4-8973-7642015E5A5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Shared.UI.UnitTests", "SFA.DAS.Provider.Shared.UI.UnitTests\SFA.DAS.Provider.Shared.UI.UnitTests.csproj", "{B7375FE7-5654-41E4-8973-7642015E5A5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
