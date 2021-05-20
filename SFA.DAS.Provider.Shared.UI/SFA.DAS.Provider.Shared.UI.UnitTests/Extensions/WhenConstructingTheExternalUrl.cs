@@ -4,7 +4,7 @@ using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Extensions;
 using SFA.DAS.Provider.Shared.UI.Models;
 
-namespace SFA.DAS.Provider.Shared.UI.Tests.Extensions
+namespace SFA.DAS.Provider.Shared.UI.UnitTests.Extensions
 {
     [Parallelizable]
     public class WhenConstructingTheExternalUrl

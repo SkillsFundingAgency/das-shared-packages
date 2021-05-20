@@ -4,7 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Extensions;
 
-namespace SFA.DAS.Provider.Shared.UI.Tests.Extensions
+namespace SFA.DAS.Provider.Shared.UI.UnitTests.Extensions
 {
     [TestFixture]
     [Parallelizable]
