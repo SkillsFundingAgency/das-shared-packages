@@ -51,8 +51,7 @@
                     @if (!suppressed.Contains(NavigationSection.Reservations))
                     {
                         <li class="das-navigation__list-item">
-                            
-                            <a asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Reservations ? "das-navigation__link--current" : "")">Manage funding</a>
+                            <a asp-external-subdomain="securefunding" asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Reservations ? "das-navigation__link--current" : "")">Manage funding</a>
                         </li>
                     }
                     @if (!suppressed.Contains(NavigationSection.ManageApprentices))
