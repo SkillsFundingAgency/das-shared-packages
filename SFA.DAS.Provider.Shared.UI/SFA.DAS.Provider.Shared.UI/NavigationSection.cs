@@ -7,6 +7,7 @@
         Reservations,
         ManageApprentices,
         Recruit,
-        Agreements
+        Agreements,
+        EmployerDemand
     }
 }
