@@ -9,6 +9,7 @@
         PublicAccountLegalEntityId, 
         ApprenticeshipId,
         RedundancyServiceApprenticeReference,
-        RedundancyServiceEmployerReference
+        RedundancyServiceEmployerReference,
+        PledgeId
     }
 }
