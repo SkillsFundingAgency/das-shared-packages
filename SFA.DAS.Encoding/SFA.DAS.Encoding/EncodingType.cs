@@ -10,6 +10,7 @@
         ApprenticeshipId,
         RedundancyServiceApprenticeReference,
         RedundancyServiceEmployerReference,
-        PledgeId
+        PledgeId,
+        TransferRequestId
     }
 }
