@@ -50,7 +50,7 @@ steps:
     projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.UnitTests/SFA.DAS.EmployerUrlHelper.UnitTests.csproj
     arguments: '/p:Configuration=$(BuildConfiguration)'
 
-- template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
+- template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
