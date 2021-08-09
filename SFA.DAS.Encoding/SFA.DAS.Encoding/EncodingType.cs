@@ -11,6 +11,7 @@
         RedundancyServiceApprenticeReference,
         RedundancyServiceEmployerReference,
         PledgeId,
-        TransferRequestId
+        TransferRequestId,
+        PledgeApplicationId
     }
 }
