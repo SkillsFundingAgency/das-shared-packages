@@ -43,6 +43,9 @@ else
                         @Html.Raw(Model.RenderListItemLink<Feedback>(@class: "govuk-footer__inline-list-item"))
                         @Html.Raw(Model.RenderListItemLink<Privacy>(@class: "govuk-footer__inline-list-item"))
                         @Html.Raw(Model.RenderListItemLink<Cookies>(@class: "govuk-footer__inline-list-item"))
+                        
+                        @Html.Raw(Model.RenderListItemLink<TermsAndConditions>(@class: "govuk-footer__inline-list-item"))
+
                         <li class="govuk-footer__inline-list-item">
                             Built by the @Html.Raw(Model.RenderLink<BuiltBy>())
                         </li>
