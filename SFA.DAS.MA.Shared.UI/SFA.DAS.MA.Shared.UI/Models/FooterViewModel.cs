@@ -50,6 +50,9 @@ namespace SFA.DAS.MA.Shared.UI.Models
             {
                 AddOrUpdateLink(new Cookies(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "cookieConsent"), GetLinkClass()));
             }
+
+            AddOrUpdateLink(new TermsAndConditions(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), "TermsAndConditions"), GetLinkClass()));
+
             AddOrUpdateLink(new BuiltBy(BuiltByHRef, GetLinkClass()));
             AddOrUpdateLink(new OpenGovernmentLicense(OpenGovernmentLicenseHRef, GetLinkClass()));
             AddOrUpdateLink(new OpenGovernmentLicenseV3(OpenGovernmentLicenseHRef, GetLinkClass()));

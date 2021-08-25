@@ -155,5 +155,23 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
             // assert            
             _sut.Links.OfType<Cookies>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/cookieConsent")).Count().Should().Be(1);
         }
+
+        [Test]
+        public void ThenTermsAndConditionsFooterLinkIsInitialised()
+        {
+            // arrange
+            var testAuthenticationAuthorityUrl = $"http://{Guid.NewGuid()}";
+
+            _mockFooterConfiguration
+                .Setup(m => m.AuthenticationAuthorityUrl)
+                .Returns(testAuthenticationAuthorityUrl);
+
+            // act
+            _sut = new Models.FooterViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object);
+
+            // assert            
+            _sut.Links.OfType<TermsAndConditions>().Where(t => t.Href.Equals($"{testAuthenticationAuthorityUrl}/TermsAndConditions")).Count().Should().Be(1);
+        }
+
     }
 }

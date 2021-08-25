@@ -43,10 +43,12 @@ namespace SFA.DAS.MA.Shared.UI.TestSite.Framework.Helpers
         public static IFooterViewModel GetFooterViewModel(this HtmlHelper html, bool useLegacyStyles = false)
         {
             var configuration = DependencyResolver.Current.GetService<IConfiguration>();
+            var oidcConfiguration = DependencyResolver.Current.GetService<IOidcConfiguration>();
 
             return new FooterViewModel(new FooterConfiguration
             {
-                ManageApprenticeshipsBaseUrl = configuration.EmployerAccountsBaseUrl
+                ManageApprenticeshipsBaseUrl = configuration.EmployerAccountsBaseUrl,
+                AuthenticationAuthorityUrl = oidcConfiguration.BaseAddress,
             },
             new UserContext
             {
