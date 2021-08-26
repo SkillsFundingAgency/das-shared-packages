@@ -22,10 +22,10 @@ namespace SFA.DAS.MA.Shared.UI.Models
         private readonly IUrlHelper _urlHelper;
 
         public FooterViewModel(
-            IFooterConfiguration configuration, 
+            IFooterConfiguration configuration,
             IUserContext userContext,
             ILinkCollection linkCollection = null,
-            ILinkHelper linkHelper = null, 
+            ILinkHelper linkHelper = null,
             IUrlHelper urlHelper = null,
             bool useLegacyStyles = false)
         {
@@ -50,9 +50,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             {
                 AddOrUpdateLink(new Cookies(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "cookieConsent"), GetLinkClass()));
             }
-
             AddOrUpdateLink(new TermsAndConditions(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), "TermsAndConditions"), GetLinkClass()));
-
             AddOrUpdateLink(new BuiltBy(BuiltByHRef, GetLinkClass()));
             AddOrUpdateLink(new OpenGovernmentLicense(OpenGovernmentLicenseHRef, GetLinkClass()));
             AddOrUpdateLink(new OpenGovernmentLicenseV3(OpenGovernmentLicenseHRef, GetLinkClass()));
