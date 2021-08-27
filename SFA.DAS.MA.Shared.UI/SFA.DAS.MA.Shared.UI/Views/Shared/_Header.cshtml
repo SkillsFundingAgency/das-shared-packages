@@ -42,6 +42,7 @@
                                     @if (!Model.MenuIsHidden)
                                     {
                                         @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
+                                        @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>())
                                     }
 
                                 </ul>
@@ -107,12 +108,13 @@ else
                                     @Html.Raw(Model.RenderListItemLink<YourAccounts>(@class: "das-user-navigation__sub-menu-list-item"))
                                     @Html.Raw(Model.RenderListItemLink<RenameAccount>(@class: "das-user-navigation__sub-menu-list-item"))
                                 }
-                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item"))
-                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item"))
+                                @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item"))
+                                @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item"))
 
                                 @if (!Model.MenuIsHidden)
                                 {
                                     @Html.Raw(Model.RenderListItemLink<NotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
+                                    @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
                                 }
                             </ul>
                         </li>
