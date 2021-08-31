@@ -27,6 +27,7 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             var changePassLink = content.QuerySelector("a.mu-change-pass");
             var changeEmail = content.QuerySelector("a.mu-change-email");
             var notificationSettingsLink = content.QuerySelector("a.mu-not-settings");
+            var advertNotificationsLink = content.QuerySelector("a.mu-advert-notifications");
 
             // Assert
             Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/service/help", helpLink.Attributes["href"].Value, ignoreCase: true); 
@@ -34,7 +35,8 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/rename", renameAccLink.Attributes["href"].Value, ignoreCase: true); 
             Assert.Equal("https://at-login.apprenticeships.education.gov.uk/account/changepassword?clientId=easaccdev&returnurl=https%3a%2f%2faccounts.at-eas.apprenticeships.education.gov.uk%2fservice%2fpassword%2fchange", changePassLink.Attributes["href"].Value, ignoreCase: true); 
             Assert.Equal("https://at-login.apprenticeships.education.gov.uk/account/changeemail?clientId=easaccdev&returnurl=https%3a%2f%2faccounts.at-eas.apprenticeships.education.gov.uk%2fservice%2femail%2fchange", changeEmail.Attributes["href"].Value, ignoreCase: true); 
-            Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/settings/notifications", notificationSettingsLink.Attributes["href"].Value, ignoreCase: true); 
+            Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/settings/notifications", notificationSettingsLink.Attributes["href"].Value, ignoreCase: true);
+            Assert.Equal("https://recruit.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/notifications-manage", notificationSettingsLink.Attributes["href"].Value, ignoreCase: true);
         }
         
         [Fact]
