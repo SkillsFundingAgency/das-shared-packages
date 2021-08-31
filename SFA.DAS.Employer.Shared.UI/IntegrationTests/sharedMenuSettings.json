@@ -16,7 +16,6 @@
           "ChangePasswordReturn": "/service/password/change",
           "ChangeEmailReturn": "/service/email/change",
           "CookieConsent": "/accounts/{0}/cookieConsent",
-          "CookiesInAccount": "/accounts/{0}/cookieConsent",
           "PrivacyV2": "/service/{0}/privacy"
         },
         "Finance": {
@@ -33,8 +32,7 @@
         },
         "Identity": {
           "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
-          "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}",
-          "TermsAndConditions": "/TermsAndConditions"
+          "ChangeEmailAddress": "/account/changeemail?clientId={0}&returnUrl={1}"
         }
       },
       "AccountsOidcClientId": "easaccdev"
