@@ -3,5 +3,6 @@
     public class FooterConfiguration : IFooterConfiguration
     {
         public string ManageApprenticeshipsBaseUrl { get; set; }
+        public string AuthenticationAuthorityUrl { get; set; }
     }
 }
