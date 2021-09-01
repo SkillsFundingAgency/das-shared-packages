@@ -30,7 +30,7 @@
         },
         "Recruit": {
           "RecruitHome": "/accounts/{0}",
-          "Notifications-Manage": "/accounts/{0}/notifications-manage"
+          "NotificationsManage": "/accounts/{0}/notifications-manage"
         },
         "Identity": {
           "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",
