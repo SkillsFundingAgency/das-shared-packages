@@ -61,7 +61,8 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}"), UseLegacyStyles ? "sub-menu-item" : "das-user-navigation__sub-menu-link"));
 
             AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/notifications"), UseLegacyStyles ? "sub-menu-item" : "das-user-navigation__sub-menu-link"));
-            
+            AddOrUpdateLink(new AdvertNotificationSettings(_urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl, "notifications-manage"), UseLegacyStyles ? "sub-menu-item" : "das-user-navigation__sub-menu-link"));
+
             // Main navigation links
             AddOrUpdateLink(new Home(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new Finance(_urlHelper.GetPath(userContext, configuration.EmployerFinanceBaseUrl, "finance"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));

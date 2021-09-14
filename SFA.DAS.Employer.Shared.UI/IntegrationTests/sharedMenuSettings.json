@@ -15,7 +15,8 @@
           "AccountsSchemes": "/accounts/{0}/schemes",
           "ChangePasswordReturn": "/service/password/change",
           "ChangeEmailReturn": "/service/email/change",
-          "CookieConsent": "/accounts/{0}/cookieConsent",
+          "Cookies": "/cookieConsent",
+          "CookiesInAccount": "/accounts/{0}/cookieConsent",
           "PrivacyV2": "/service/{0}/privacy"
         },
         "Finance": {
@@ -28,7 +29,8 @@
           "ApprenticesHome": "/{0}"
         },
         "Recruit": {
-          "RecruitHome": "/accounts/{0}"
+          "RecruitHome": "/accounts/{0}",
+          "NotificationsManage": "/accounts/{0}/notifications-manage"
         },
         "Identity": {
           "ChangePassword": "/account/changepassword?clientId={0}&returnUrl={1}",

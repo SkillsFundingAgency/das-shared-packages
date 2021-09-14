@@ -28,6 +28,8 @@ namespace SFA.DAS.MA.Shared.UI.Models.Links
             builder.AppendLine("<image src=\"https://assets.publishing.service.gov.uk/static/gov.uk_logotype_crown_invert_trans-203e1db49d3eff430d7dc450ce723c1002542fe1d2bce661b6d8571f14c1043c.png\" class=\"govuk-header__logotype-crown-fallback-image\"></image>");
             builder.AppendLine("</svg>");
             builder.AppendLine("<span class=\"govuk-header__logotype-text\">GOV.UK</span>");
+            builder.AppendLine("</span>");
+            builder.AppendLine("</a>");
 
             return builder.ToString();
         }
