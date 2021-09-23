@@ -12,5 +12,6 @@ namespace SFA.DAS.EmployerUrlHelper
         string ReservationsLink(string path = null);
         string PublicSectorReportingLink(string path = null);
         string UsersLink(string path = null);
+        string LevyTransferMatchingLink(string path = null);
     }
 }

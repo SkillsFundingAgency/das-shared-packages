@@ -63,6 +63,11 @@ namespace SFA.DAS.EmployerUrlHelper
             return Action(_configuration.UsersBaseUrl, path);
         }
 
+        public string LevyTransferMatchingLink(string path = null)
+        {
+            return Action(_configuration.LevyTransferMatchingBaseUrl, path);
+        }
+
         private string Action(string baseUrl, string path)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))

@@ -12,5 +12,6 @@ namespace SFA.DAS.EmployerUrlHelper.Configuration
         public string ReservationsBaseUrl { get; set; }
         public string PublicSectorReportingBaseUrl { get; set; }
         public string UsersBaseUrl { get; set; }
+        public string LevyTransferMatchingBaseUrl { get; set; }
     }
 }
