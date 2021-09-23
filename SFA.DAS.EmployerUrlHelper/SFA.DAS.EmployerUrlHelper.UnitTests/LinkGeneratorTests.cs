@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 ReservationsBaseUrl = "https://reservations/",
                 PublicSectorReportingBaseUrl = "https://public-sector-reporting/",
                 UsersBaseUrl = "https://users/",
-                LevyTransferMatchingBaseUrl = "https://levy-transter-matching/"
+                LevyTransferMatchingBaseUrl = "https://levy-transfer-matching/"
             };
             
             ILinkGenerator linkGenerator = new LinkGenerator(employerUrlHelperConfiguration);
@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
             Assert.AreEqual("https://reservations/path", linkGenerator.ReservationsLink("/path/"));
             Assert.AreEqual("https://public-sector-reporting/path", linkGenerator.PublicSectorReportingLink("/path/"));
             Assert.AreEqual("https://users/path", linkGenerator.UsersLink("/path/"));
-            Assert.AreEqual("https://levy-transter-matching/path", linkGenerator.LevyTransferMatchingLink("/path/"));
+            Assert.AreEqual("https://levy-transfer-matching/path", linkGenerator.LevyTransferMatchingLink("/path/"));
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
                 ReservationsBaseUrl = "https://reservations/",
                 PublicSectorReportingBaseUrl = "https://public-sector-reporting/",
                 UsersBaseUrl = "https://users/",
-                LevyTransferMatchingBaseUrl = "https://levy-transter-matching/"
+                LevyTransferMatchingBaseUrl = "https://levy-transfer-matching/"
             };
 
             ILinkGenerator linkGenerator = new LinkGenerator(employerUrlHelperConfiguration);
@@ -69,7 +69,7 @@ namespace SFA.DAS.EmployerUrlHelper.UnitTests
             Assert.AreEqual("https://reservations", linkGenerator.ReservationsLink());
             Assert.AreEqual("https://public-sector-reporting", linkGenerator.PublicSectorReportingLink());
             Assert.AreEqual("https://users", linkGenerator.UsersLink());
-            Assert.AreEqual("https://levy-transter-matching", linkGenerator.LevyTransferMatchingLink());
+            Assert.AreEqual("https://levy-transfer-matching", linkGenerator.LevyTransferMatchingLink());
         }
     }
 }
