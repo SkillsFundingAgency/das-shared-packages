@@ -22,46 +22,49 @@
         <div class="account-information floating-menu" role="navigation">
             <div class="js-float">
                 <p class="floating-head-text">Your employer account </p>
-                <nav id="user-nav">
-                    <ul>
-                        @Html.Raw(Model.RenderListItemLink<Help>())
-                        @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
-                        {
-                            <li class="has-sub-menu">
-                                <a href="/" role="menuitem">Settings</a>
-                                <ul role="menu" class="js-hidden" id="settings-menu">
-                                    @if (!Model.MenuIsHidden)
-                                    {
-                                        @Html.Raw(Model.RenderListItemLink<YourAccounts>())
-                                        @Html.Raw(Model.RenderListItemLink<RenameAccount>())
-                                    }
+                @if (!Model.MenuIsHidden)
+                {
+                    <nav id="user-nav">
+                        <ul>
+                            @Html.Raw(Model.RenderListItemLink<Help>())
+                            @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
+                            {
+                                <li class="has-sub-menu">
+                                    <a href="/" role="menuitem">Settings</a>
+                                    <ul role="menu" class="js-hidden" id="settings-menu">
+                                        @if (!Model.MenuIsPartial)
+                                        {
+                                            @Html.Raw(Model.RenderListItemLink<YourAccounts>())
+                                            @Html.Raw(Model.RenderListItemLink<RenameAccount>())
+                                        }
 
-                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>())
-                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>())
+                                        @Html.Raw(Model.RenderListItemLink<ChangePassword>())
+                                        @Html.Raw(Model.RenderListItemLink<ChangeEmail>())
 
-                                    @if (!Model.MenuIsHidden)
-                                    {
-                                        @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
-                                        @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>())
-                                    }
+                                        @if (!Model.MenuIsPartial)
+                                        {
+                                            @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
+                                            @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>())
+                                        }
 
-                                </ul>
-                            </li>
-                            @Html.Raw(Model.RenderListItemLink<SignOut>())
-                        }
-                        else
-                        {
-                            @Html.Raw(Model.RenderListItemLink<SignIn>())
-                        }
-                    </ul>
-                </nav>
+                                    </ul>
+                                </li>
+                                @Html.Raw(Model.RenderListItemLink<SignOut>())
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.RenderListItemLink<SignIn>())
+                            }
+                        </ul>
+                    </nav>
+                }
             </div>
         </div>
     </div>
 
     if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
     {
-        if (!Model.MenuIsHidden)
+        if (!Model.NavBarIsHidden)
         {
             <div class="header-organisation" role="navigation">
                 <nav class="header-inner">
@@ -95,42 +98,46 @@ else
     <div class="das-account-header das-account-header--employer">
         <div class="govuk-width-container">
             <p class="das-account-header__title">Your employer account</p>
-            <nav class="das-user-navigation" id="das-user-navigation">
-                <ul class="das-user-navigation__list" role="menu">
-                    @Html.Raw(Model.RenderListItemLink<Help>(@class: "das-user-navigation__list-item"))
-                    @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
-                    {
-                        <li role="menuitem" class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
-                            <a href="/" class="das-user-navigation__link">Settings</a>
-                            <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
-                                @if (!Model.MenuIsHidden)
-                                {
-                                    @Html.Raw(Model.RenderListItemLink<YourAccounts>(@class: "das-user-navigation__sub-menu-list-item"))
-                                    @Html.Raw(Model.RenderListItemLink<RenameAccount>(@class: "das-user-navigation__sub-menu-list-item"))
-                                }
-                                @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item"))
-                                @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item"))
+            @if (!Model.MenuIsHidden)
+            {
+                <nav class="das-user-navigation" id="das-user-navigation">
+                    <ul class="das-user-navigation__list" role="menu">
+                        @Html.Raw(Model.RenderListItemLink<Help>(@class: "das-user-navigation__list-item"))
+                        @if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
+                        {
+                            <li role="menuitem" class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
+                                <a href="/" class="das-user-navigation__link">Settings</a>
+                                <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
+                                    @if (!Model.MenuIsPartial)
+                                    {
+                                        @Html.Raw(Model.RenderListItemLink<YourAccounts>(@class: "das-user-navigation__sub-menu-list-item"))
+                                        @Html.Raw(Model.RenderListItemLink<RenameAccount>(@class: "das-user-navigation__sub-menu-list-item"))
+                                    }
+                                    @Html.Raw(Model.RenderListItemLink<ChangePassword>(@class: "das-user-navigation__sub-menu-list-item"))
+                                    @Html.Raw(Model.RenderListItemLink<ChangeEmail>(@class: "das-user-navigation__sub-menu-list-item"))
 
-                                @if (!Model.MenuIsHidden)
-                                {
-                                    @Html.Raw(Model.RenderListItemLink<NotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
-                                    @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
-                                }
-                            </ul>
-                        </li>
-                        @Html.Raw(Model.RenderListItemLink<SignOut>(@class: "das-user-navigation__list-item"))
-                    } else {
-                        @Html.Raw(Model.RenderListItemLink<SignIn>(@class: "das-user-navigation__list-item"))
-                    }
-                </ul>
-            </nav>
+                                    @if (!Model.MenuIsPartial)
+                                    {
+                                        @Html.Raw(Model.RenderListItemLink<NotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
+                                        @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
+                                    }
+                                </ul>
+                            </li>
+                            @Html.Raw(Model.RenderListItemLink<SignOut>(@class: "das-user-navigation__list-item"))
+                        } 
+                        else 
+                        {
+                            @Html.Raw(Model.RenderListItemLink<SignIn>(@class: "das-user-navigation__list-item"))
+                        }
+                    </ul>
+                </nav>
+            }
         </div>
     </div>
 
-
     if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
     {
-        if (!Model.MenuIsHidden)
+        if (!Model.NavBarIsHidden)
         {
             <nav class="das-navigation">
                 <div class="govuk-width-container">

@@ -10,7 +10,9 @@ namespace SFA.DAS.MA.Shared.UI.Models
     {
         const string GovUkHref = "https://www.gov.uk/";
         public IUserContext UserContext { get; private set; }
+        public bool MenuIsPartial { get; private set; }
         public bool MenuIsHidden { get; private set; }
+        public bool NavBarIsHidden { get; private set; }
         public string SelectedMenu { get; private set; }
 
         public IReadOnlyList<Link> Links => _linkCollection.Links;
@@ -37,7 +39,9 @@ namespace SFA.DAS.MA.Shared.UI.Models
             _urlHelper = urlHelper ?? new UrlHelper();
             UseLegacyStyles = useLegacyStyles;
 
+            MenuIsPartial = false;
             MenuIsHidden = false;
+            NavBarIsHidden = false;
             SelectedMenu = "home";
             
             // Header links
@@ -83,9 +87,11 @@ namespace SFA.DAS.MA.Shared.UI.Models
             AddOrUpdateLink(new PayeSchemes(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "schemes"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
         }
 
-        public void HideMenu()
+        public void HideMenu(bool partial = true)
         {
-            MenuIsHidden = true;
+            MenuIsPartial = partial;
+            MenuIsHidden = !partial;
+            NavBarIsHidden = true;
         }
 
         public void SelectMenu(string menu)
