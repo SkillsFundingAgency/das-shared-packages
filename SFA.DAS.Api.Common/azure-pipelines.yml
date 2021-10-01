@@ -69,7 +69,7 @@ stages:
 - stage: NugetPublish
   displayName: 'Publish Nuget Package'
   pool:
-    name: "DAS - Continuous Deployment"
+    name: "DAS - Continuous Deployment Agents"
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ${{ parameters.PublishBranchOfNugetPackage }}))
   jobs:
   - job: 'CleanArtifacts'
