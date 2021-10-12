@@ -119,14 +119,15 @@ else
                             </ul>
                         </li>
                         @Html.Raw(Model.RenderListItemLink<SignOut>(@class: "das-user-navigation__list-item"))
-                    } else {
+                    } 
+                    else 
+                    {
                         @Html.Raw(Model.RenderListItemLink<SignIn>(@class: "das-user-navigation__list-item"))
                     }
                 </ul>
             </nav>
         </div>
     </div>
-
 
     if (Model.UserContext?.User != null && Model.UserContext.User.Identity.IsAuthenticated)
     {
