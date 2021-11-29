@@ -1,9 +1,9 @@
 name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
 
 parameters:
-  - name: PublishBranchOfNugetPackage
-    type: boolean
-    default: false
+- name: PublishBranchOfNugetPackage
+  type: boolean
+  default: false
 
 trigger:
   batch: true
@@ -40,7 +40,7 @@ stages:
     workspace:
       clean: all
     steps:
-     - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
-    parameters:
-      DotNetStandardPackagesToPack: |
-        SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService.UnitTests/EmailValidationTests.cs
+    - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+      parameters:
+        DotNetStandardPackagesToPack: |
+          SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService.UnitTests/EmailValidationTests.cs
