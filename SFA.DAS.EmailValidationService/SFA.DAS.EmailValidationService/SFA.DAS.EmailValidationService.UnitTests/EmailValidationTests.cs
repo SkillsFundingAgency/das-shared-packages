@@ -51,6 +51,7 @@ namespace SFA.DAS.EmailValidationService.UnitTests
         [TestCase("bob91 @example.com0")]
         [TestCase(" bob@example.com")]
         [TestCase("b o b@example.com")]
+        [TestCase("bob@example.com ")] // whitespace at the end of the domain
         public void EmailShouldBeInvalid(string email)
         {
             email.IsAValidEmailAddress().Should().BeFalse();
