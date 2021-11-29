@@ -1,0 +1,94 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+
+parameters:
+- name: PublishBranchOfNugetPackage
+  type: boolean
+  default: false
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - SFA.DAS.EmailValidationService
+
+pr: none
+
+variables:
+  BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '0'
+
+resources:
+    repositories:
+    - repository: self
+    - repository: das-platform-building-blocks
+      type: github
+      name: SkillsFundingAgency/das-platform-building-blocks
+      ref: refs/heads/master
+      endpoint: SkillsFundingAgency
+
+stages:
+- stage: BuildAndTest
+  displayName: Build and test
+  jobs:
+  - job: 'BuildAndTest'
+    pool:
+      name: DAS - Continuous Integration Agents
+    workspace:
+      clean: all
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: dotnet restore
+      inputs:
+        command: restore
+        projects: SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService.csproj
+
+    - task: DotNetCoreCLI@2
+      displayName: dotnet build
+      inputs:
+        projects: SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService.csproj
+        arguments: '/p:Configuration=$(BuildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: dotnet pack
+      inputs:
+        command: pack
+        packagesToPack: SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService.csproj
+        versioningScheme: byBuildNumber
+        packDirectory: $(Build.ArtifactStagingDirectory)/NugetPackages
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Artifact: NugetPackages'
+      inputs:
+        targetPath: $(Build.ArtifactStagingDirectory)/NugetPackages
+        artifactName: NugetPackages
+
+- stage: NugetPublish
+  displayName: 'Publish Nuget Package'
+  pool:
+    name: DAS - Continuous Deployment Agents
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ${{ parameters.PublishBranchOfNugetPackage }}))
+  jobs:
+  - job: CleanArtifacts
+    displayName: Clean artifacts directory
+    workspace:
+      clean: all
+  - deployment: NugetPush
+    dependsOn: CleanArtifacts
+    environment: Nuget
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: NugetPackages
+          - task: NuGetCommand@2
+            displayName: NuGet push
+            inputs:
+              command: push
+              packagesToPush: '$(Pipeline.Workspace)/NugetPackages/*.nupkg;!$(Pipeline.Workspace)/NugetPackages/*.symbols.nupkg'
+              nuGetFeedType: external
+              publishFeedCredentials: SFA NuGet
