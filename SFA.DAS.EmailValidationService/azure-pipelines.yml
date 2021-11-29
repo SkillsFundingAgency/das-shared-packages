@@ -1,0 +1,46 @@
+name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
+
+parameters:
+  - name: PublishBranchOfNugetPackage
+    type: boolean
+    default: false
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+  paths:
+    include:
+      - 'SFA.DAS.EmailValidationService'
+
+pr: none
+
+variables:
+  BuildConfiguration: 'Release'
+  Build.MajorNumber: '1'
+  Build.MinorNumber: '0'
+
+resources:
+    repositories:
+    - repository: self
+    - repository: das-platform-building-blocks
+      type: github
+      name: SkillsFundingAgency/das-platform-building-blocks
+      ref: refs/heads/master
+      endpoint: SkillsFundingAgency
+
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and test'
+  jobs:
+  - job: 'BuildAndTest'
+    pool:
+      name: 'DAS - Continuous Integration Agents'
+    workspace:
+      clean: all
+    steps:
+     - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+    parameters:
+      DotNetStandardPackagesToPack: |
+        SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService/SFA.DAS.EmailValidationService.UnitTests/EmailValidationTests.cs
