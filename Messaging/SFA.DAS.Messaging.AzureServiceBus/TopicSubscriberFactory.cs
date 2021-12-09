@@ -11,14 +11,16 @@ namespace SFA.DAS.Messaging.AzureServiceBus
         private readonly string _subscriptionName;
         private readonly ILog _logger;
         private readonly bool _keepConnectionAlive;
+        private readonly bool _useManagedIdentity;
         private readonly ExecutionPolicy _executionPolicy;
 
-        public TopicSubscriberFactory(string connectionString, string subscriptionName, ILog logger, bool keepConnectionAlive = false)
+        public TopicSubscriberFactory(string connectionString, string subscriptionName, ILog logger, bool keepConnectionAlive = false, bool useManagedIdentity=false)
         {
             _connectionString = connectionString;
             _subscriptionName = subscriptionName;
             _logger = logger;
             _keepConnectionAlive = keepConnectionAlive;
+            _useManagedIdentity = useManagedIdentity;
             _executionPolicy = new TopicSubscriberDefaultPolicy(logger);
         }
 
@@ -39,7 +41,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
             _logger.Debug($"Obtained message group name {messageGroupName} for subscriber of message type {typeof(T).FullName}");
 
-            return new TopicMessageSubscriber<T>(_connectionString, messageGroupName, _subscriptionName, _executionPolicy, _logger, _keepConnectionAlive);
+            return new TopicMessageSubscriber<T>(_connectionString, messageGroupName, _subscriptionName, _executionPolicy, _logger, _keepConnectionAlive, _useManagedIdentity);
         }
     }
 }

@@ -17,12 +17,13 @@ namespace SFA.DAS.Messaging.AzureServiceBus
         private readonly ExecutionPolicy _executionPolicy;
         private readonly ILog _logger;
         private readonly bool _keepConnectionAlive;
+        private readonly bool _useManagedIdentity;
         private SubscriptionClient _client;
         private bool _clientOpen;
 
         public TopicMessageSubscriber(string connectionString, string topicName, string subscriptionName,
             [RequiredPolicy(PollyPolicyNames.TopicMessageSubscriberPolicyName)] ExecutionPolicy executionPolicy, 
-            ILog logger, bool keepConnectionAlive = false)
+            ILog logger, bool keepConnectionAlive = false, bool useManagedIdentity=false)
         {
             _connectionString = connectionString;
             _topicName = topicName;
@@ -30,6 +31,7 @@ namespace SFA.DAS.Messaging.AzureServiceBus
             _executionPolicy = executionPolicy;
             _logger = logger;
             _keepConnectionAlive = keepConnectionAlive;
+            _useManagedIdentity = useManagedIdentity;
             _clientOpen = false;
         }
 
@@ -109,7 +111,10 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
         private void OpenClient()
         {
-            _client = SubscriptionClient.CreateFromConnectionString(_connectionString, _topicName, _subscriptionName);
+            _client = _useManagedIdentity
+                ? SubscriptionClient.CreateWithManagedIdentity(new Uri(_connectionString), _topicName, _subscriptionName)
+                : SubscriptionClient.CreateFromConnectionString(_connectionString, _topicName, _subscriptionName);
+
             _clientOpen = true;
         }
 
