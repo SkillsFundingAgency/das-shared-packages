@@ -111,11 +111,10 @@ namespace SFA.DAS.Messaging.AzureServiceBus
 
         private void OpenClient()
         {
-            //_client = _useManagedIdentity
-                //? SubscriptionClient.CreateWithManagedIdentity(new Uri(_connectionString), _topicName, _subscriptionName)
-                //: SubscriptionClient.CreateFromConnectionString(_connectionString, _topicName, _subscriptionName);
+            _client = _useManagedIdentity
+                ? SubscriptionClient.CreateWithManagedIdentity(new Uri(_connectionString), _topicName, _subscriptionName)
+                : SubscriptionClient.CreateFromConnectionString(_connectionString, _topicName, _subscriptionName);
 
-            _client = SubscriptionClient.CreateFromConnectionString(_connectionString, _topicName, _subscriptionName);
             _clientOpen = true;
         }
 
