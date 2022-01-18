@@ -12,6 +12,8 @@ namespace SFA.DAS.Sql.Client
     public abstract class BaseRepository
     {
         private readonly string _connectionString;
+        private readonly string _accessToken;
+
         private readonly ILog _logger;
         private readonly Policy _retryPolicy;
         private static IList<int> _transientErrorNumbers = new List<int>
@@ -22,10 +24,11 @@ namespace SFA.DAS.Sql.Client
                 -2, 20, 64, 233, 10053, 10054, 10060, 40143
             };
 
-        protected BaseRepository(string connectionString, ILog logger)
+        protected BaseRepository(string connectionString, ILog logger, string accessToken = null)
         {
             _connectionString = connectionString;
             _logger = logger;
+            _accessToken = accessToken;
 
             _retryPolicy = GetRetryPolicy();
         }
@@ -38,6 +41,8 @@ namespace SFA.DAS.Sql.Client
                 {
                     using (var connection = new SqlConnection(_connectionString))
                     {
+                        if (!string.IsNullOrWhiteSpace(_accessToken)) connection.AccessToken = _accessToken;
+
                         await connection.OpenAsync();
                         return await getData(connection);
                     }
@@ -71,6 +76,8 @@ namespace SFA.DAS.Sql.Client
                 {
                     using (var connection = new SqlConnection(_connectionString))
                     {
+                        if (!string.IsNullOrWhiteSpace(_accessToken)) connection.AccessToken = _accessToken;
+
                         await connection.OpenAsync();
                         using (var trans = connection.BeginTransaction())
                         {
@@ -108,6 +115,8 @@ namespace SFA.DAS.Sql.Client
                 {
                     using (var connection = new SqlConnection(_connectionString))
                     {
+                        if (!string.IsNullOrWhiteSpace(_accessToken)) connection.AccessToken = _accessToken;
+
                         await connection.OpenAsync();
                         using (var trans = connection.BeginTransaction())
                         {
