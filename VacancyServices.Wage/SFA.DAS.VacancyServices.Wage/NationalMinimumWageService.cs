@@ -145,7 +145,7 @@ namespace SFA.DAS.VacancyServices.Wage
                 new NationalMinimumWageRates
                 (
                     new DateTime(2021, 04, 1),
-                    new DateTime(2022, 04, 1),                    
+                    new DateTime(2022, 04, 1),           
                     4.30m,
                     4.62m,
                     6.56m,
