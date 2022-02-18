@@ -18,6 +18,7 @@ namespace SFA.DAS.EmailValidationService.UnitTests
             yield return new object[] { "joe@his.home.com" };
             yield return new object[] { "a@abc.org" };
             yield return new object[] { "a@abc-xyz.org" };
+            yield return new object[] { "a@abc-xyz.london" };
         }
     }
 
@@ -27,16 +28,14 @@ namespace SFA.DAS.EmailValidationService.UnitTests
         {
             yield return new object[] { "joe" };                   // should fail
             yield return new object[] { "joe@home" };              // should fail
-            yield return new object[] { "a@b.c" };                 // should fail because .c is only one character but must be 2-4 characters
             yield return new object[] { "joe-bob[at]home.com" };   // should fail because [at] is not valid
-            yield return new object[] { "joe@his.home.place" };    // should fail because place is 5 characters but must be 2-4 characters
             yield return new object[] { "joe.@bob.com" };          // should fail because there is a dot at the end of the local-part
             yield return new object[] { ".joe@bob.com" };          // should fail because there is a dot at the beginning of the local-part
             yield return new object[] { "john..doe@bob.com" };     // should fail because there are two dots in the local-part
             yield return new object[] { "john.doe@bob..com" };     // should fail because there are two dots in the domain
             yield return new object[] { "joe<>bob@bob.com" };      // should fail because <> are not valid
             yield return new object[] { "joe@his.home.com." };     // should fail because it can't end with a period
-            //yield return new object[] { "john.doe@bob-.com" };     // should fail because there is a dash at the start of a domain part
+            yield return new object[] { "john.doe@bob-.com" };     // should fail because there is a dash at the start of a domain part
             yield return new object[] { "john.doe@-bob.com" };     // should fail because there is a dash at the end of a domain part
             yield return new object[] { "a@10.1.100.1a" };         // Should fail because of the extra character
             yield return new object[] { "joe<>bob@bob.com\n" };    // should fail because it end with \n

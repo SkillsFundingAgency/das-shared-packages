@@ -6,9 +6,11 @@ namespace SFA.DAS.EmailValidationService
     public static class EmailValidationHelper
     {
         // take from https://www.rhyous.com/2010/06/15/csharp-email-regular-expression/
-        const string EmailPattern = @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
-                                 + "@"
-                                 + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
+        const string EmailPattern = @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*" // local-part
+      + "@"
+      + @"((([\w]+([-\w]*[\w]+)*\.)+[a-zA-Z]+)|" // domain
+      + @"((([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]).){3}[01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))\z";
+
         public static bool IsAValidEmailAddress(this string emailAsString)
         {
             try
