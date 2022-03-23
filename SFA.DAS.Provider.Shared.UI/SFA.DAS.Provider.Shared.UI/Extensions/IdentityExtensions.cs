@@ -17,6 +17,15 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
                 return result;
             }
 
+            const string unMappedClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/ukprn";
+            
+            var claimValueUnMapped = claimsPrincipal.FindFirst(c => c.Type == unMappedClaim)?.Value;
+
+            if (int.TryParse(claimValueUnMapped, out var resultUnMapped))
+            {
+                return resultUnMapped;
+            }
+
             throw new ArgumentException($"Unable to parse Provider Id \"{claimValue}\" from user claims");
         }
     }
