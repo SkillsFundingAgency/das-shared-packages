@@ -8,7 +8,7 @@
     var cobrowsingSnippetUrl = $"https://embed-euw1.rcrsv.io/{cobrowsingSnippetKey}?zwwi=1";
     var label = ViewBag.Title;
     var enableCsp = ViewData.EnableCsp();
-    
+
     if (!string.IsNullOrEmpty(ViewBag.ZenDeskLabel))
     {
         label = ViewBag.ZenDeskLabel;
@@ -35,4 +35,6 @@
 </script>
 <script id="ze-snippet" src="@snippetUrl"></script>
 <script id="co-snippet" src="@cobrowsingSnippetUrl"></script>
+<script type="text/javascript" nws-csp-add-nonce="@enableCsp">
 @Html.SetZenDeskLabels(new string[] { label })
+</script>
