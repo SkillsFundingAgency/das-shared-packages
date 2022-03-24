@@ -8,7 +8,7 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
     {
         public static HtmlString SetZendeskSuggestion(this IHtmlHelper html, string suggestion)
         {
-            return new HtmlString($"<script type=\"text/javascript\">zE('webWidget', 'helpCenter:setSuggestions', {{ search: '{EscapeApostrophes(suggestion)}' }});</script>");
+            return new HtmlString($"zE('webWidget', 'helpCenter:setSuggestions', {{ search: '{EscapeApostrophes(suggestion)}' }});");
         }
         
         public static IHtmlContent SetZenDeskLabels(this IHtmlHelper html, params string[] labels)
@@ -18,9 +18,9 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
                 .Select(label => $"'{EscapeApostrophes(label)}'"));
 
             // when there are no keywords default to empty string to prevent zen desk matching articles from the url
-            var apiCallString = "<script type=\"text/javascript\">zE('webWidget', 'helpCenter:setSuggestions', { labels: ["
+            var apiCallString = "zE('webWidget', 'helpCenter:setSuggestions', { labels: ["
                                 + (!string.IsNullOrEmpty(keywords) ? keywords : "''")
-                                + "] });</script>";
+                                + "] });";
 
             return new HtmlString(apiCallString);
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace SFA.DAS.Provider.Shared.UI.Startup
 {
@@ -10,7 +11,7 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
         {
             app.Use(async (context, next) =>
             {
-                var hostingEnvironment = app.ApplicationServices.GetService<IHostingEnvironment>();
+                var hostingEnvironment = app.ApplicationServices.GetService<IWebHostEnvironment>();
                 if (!hostingEnvironment.IsDevelopment())
                 {
                     context.Response.Headers["Content-Security-Policy"] =
