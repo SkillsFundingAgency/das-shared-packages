@@ -2,6 +2,7 @@
 @{
     var enableGoogleAnalytics = ViewData.EnableGoogleAnalytics();
     var enableCookieBanner = ViewData.EnableCookieBanner();
+    var enableCsp = ViewData.EnableCsp();
 
     <!DOCTYPE html>
     <html lang="en" class="govuk-template ">
@@ -42,7 +43,7 @@
             <partial name="_GoogleTagManagerProviderBodyScript" />
         }
 
-        <script>
+        <script nws-csp-add-nonce="@enableCsp">
         document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
         </script>
         <partial name="_ZenDeskWidget" />
