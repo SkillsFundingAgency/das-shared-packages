@@ -77,8 +77,8 @@ namespace SFA.DAS.Provider.Shared.UI.UnitTests.Extensions
         public Mock<IHtmlHelper> MockHtmlHelper;
         public IHtmlHelper Sut => MockHtmlHelper.Object;
 
-        private const string StartLabelSnipet = "<script type=\"text/javascript\">zE('webWidget', 'helpCenter:setSuggestions', { labels: [";
-        private const string EndLabelSnipet = "] });</script>";
+        private const string StartLabelSnipet = "zE('webWidget', 'helpCenter:setSuggestions', { labels: [";
+        private const string EndLabelSnipet = "] });";
 
         public HttpHelperZendeskExtensionsTestsFixture()
         {
@@ -87,7 +87,7 @@ namespace SFA.DAS.Provider.Shared.UI.UnitTests.Extensions
 
         public void ExpectedSuggestionJavaScriptSnippet(string suggestion, string snippet)
         {
-            Assert.AreEqual($"<script type=\"text/javascript\">zE('webWidget', 'helpCenter:setSuggestions', {{ search: '{suggestion}' }});</script>", snippet);
+            Assert.AreEqual($"zE('webWidget', 'helpCenter:setSuggestions', {{ search: '{suggestion}' }});", snippet);
         }
 
         public void ExpectedLabelJavaScriptSnippet(string labels, string snippet)
