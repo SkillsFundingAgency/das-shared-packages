@@ -21,6 +21,7 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
         <PackageReference Include="StructureMap" Version="4.5.0" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.0" />
         <PackageReference Include="WindowsAzure.Storage" Version="8.7.0" />
     </ItemGroup>
 

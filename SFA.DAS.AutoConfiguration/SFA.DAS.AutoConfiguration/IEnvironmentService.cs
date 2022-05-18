@@ -2,7 +2,7 @@
 {
     public interface IEnvironmentService
     {
-        string GetVariable(string variableName);
+        string GetVariable(string variableName, string environmentType = "");
 
         bool IsCurrent(params DasEnv[] environment);
     }
