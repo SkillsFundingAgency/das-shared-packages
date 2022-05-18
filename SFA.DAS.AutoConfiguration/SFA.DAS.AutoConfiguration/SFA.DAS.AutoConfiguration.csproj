@@ -7,7 +7,7 @@
 
         <Authors>DAS</Authors>
         <Description>Auto configuration for SFA.DAS</Description>
-        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageLicense>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicense>
         <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.AutoConfiguration</PackageProjectUrl>
 
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
@@ -21,11 +21,8 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
         <PackageReference Include="StructureMap" Version="4.5.0" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.0" />
         <PackageReference Include="WindowsAzure.Storage" Version="8.7.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-        <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
     </ItemGroup>
 
 </Project>

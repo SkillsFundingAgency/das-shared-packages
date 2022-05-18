@@ -1,7 +1,8 @@
 ﻿using System;
+
 using System.Linq;
 #if NET462
-using Microsoft.Azure;
+using System.Configuration;
 #endif
 
 namespace SFA.DAS.AutoConfiguration
@@ -14,8 +15,9 @@ namespace SFA.DAS.AutoConfiguration
 
         public string GetVariable(string variableName)
         {
+            
 #if NET462
-            return CloudConfigurationManager.GetSetting(variableName);
+            return ConfigurationManager.AppSettings[variableName];
 #else    
             return Environment.GetEnvironmentVariable(Prefix + variableName);
 #endif
