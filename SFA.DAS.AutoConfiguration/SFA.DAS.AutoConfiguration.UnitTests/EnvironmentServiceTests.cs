@@ -100,7 +100,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
 
         public DasEnv Current()
         {
-            return (DasEnv)Enum.Parse(typeof(DasEnv), EnvironmentService.GetVariable("EnvironmentName", ""));
+            return (DasEnv)Enum.Parse(typeof(DasEnv), EnvironmentService.GetVariable("EnvironmentName"));
         }
 
         public bool IsCurrent(params DasEnv[] environment)
@@ -110,7 +110,7 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
 
         public string GetVariable(string variableName)
         {
-            return EnvironmentService.GetVariable(variableName, "");
+            return EnvironmentService.GetVariable(variableName);
         }
     }
 }

@@ -112,34 +112,34 @@ namespace SFA.DAS.AutoConfiguration.UnitTests
 
         public TableStorageConfigurationServiceTestsFixture SetupEnvironmentService()
         {
-            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment, "")).Returns(ExpectedEnvironment);
-            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString, "")).Returns(ExpectedConfigurationConnectionString);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment)).Returns(ExpectedEnvironment);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString)).Returns(ExpectedConfigurationConnectionString);
 
             return this;
         }
 
         public TableStorageConfigurationServiceTestsFixture SetupEnvironmentServiceWithoutEnvironmentName()
         {
-            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString, "")).Returns(ExpectedConfigurationConnectionString);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString)).Returns(ExpectedConfigurationConnectionString);
 
             return this;
         }
 
         public TableStorageConfigurationServiceTestsFixture SetupEnvironmentServiceWithoutConnectionString()
         {
-            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment, "")).Returns(ExpectedEnvironment);
+            EnvironmentService.Setup(x => x.GetVariable(EnvironmentVariableNames.Environment)).Returns(ExpectedEnvironment);
 
             return this;
         }
 
         public void VerifyEnvironmentServiceWasCalledCorrectlyForTheEnvironment()
         {
-            EnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.Environment, ""));
+            EnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.Environment));
         }
 
         public void VerifyEnvironmentServiceWasCalledCorrectlyForTheConfigurationStorageConnectionString()
         {
-            EnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString, ""));
+            EnvironmentService.Verify(x => x.GetVariable(EnvironmentVariableNames.ConfigurationStorageConnectionString));
         }
 
         public TableStorageConfigurationServiceTestsFixture SetupAzureTableStorageConnectionAdapter()
