@@ -71,24 +71,24 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             return vacancies;
         }
 
-        public Task<List<Vacancy>> GetLiveVacanciesAsync(int pageSize, int pageNumber)
+        public Task<List<Vacancy>> GetLiveVacanciesAsync(int pageSize, int pageNumber, VacancyType vacancyType)
         {
             var skip =  (((pageNumber < 1 ? 1 : pageNumber) - 1) * pageSize);
             var collection = GetCollection();
             var vacancies = collection
                             .AsQueryable()
-                            .Where(each => each.ViewType.Equals(LiveVacancyDocumentType))
+                            .Where(each => each.ViewType.Equals(LiveVacancyDocumentType) && each.VacancyType.GetValueOrDefault() == vacancyType)
                             .Skip(skip)
                             .Take(pageSize)
                             .ToListAsync();
             return vacancies;
         }
 
-        public Task<long> GetLiveVacanciesCountAsync()
+        public Task<long> GetLiveVacanciesCountAsync(VacancyType vacancyType)
         {
             var collection = GetCollection();
             return collection
-                .CountDocumentsAsync(vacancy => vacancy.ViewType.Equals(LiveVacancyDocumentType));
+                .CountDocumentsAsync(vacancy => vacancy.ViewType.Equals(LiveVacancyDocumentType) && vacancy.VacancyType.GetValueOrDefault() == vacancyType);
         }
 
         public void SubmitApplication(Application application)

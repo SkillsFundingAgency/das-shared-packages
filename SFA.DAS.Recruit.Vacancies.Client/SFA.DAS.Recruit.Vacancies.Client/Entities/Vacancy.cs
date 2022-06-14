@@ -45,5 +45,6 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public int? EducationLevelNumber { get; set; }
         public string AccountPublicHashedId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
+        public VacancyType? VacancyType { get; set; }
     }
 }
