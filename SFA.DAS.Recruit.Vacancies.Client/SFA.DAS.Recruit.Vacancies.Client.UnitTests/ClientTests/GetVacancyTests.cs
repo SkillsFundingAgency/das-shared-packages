@@ -38,7 +38,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests.ClientTests
         {
             var sut = new Client(connectionString, "recruit", "queryStore", null);
 
-            var count = await sut.GetLiveVacanciesCountAsync(VacancyType.Apprenticeship);
+            var count = await sut.GetLiveVacanciesCountAsync();
 
             var pages = (count / 4) + 1;
             var i = 0;
@@ -46,7 +46,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests.ClientTests
             while(i < pages)
             {
                 i++;
-                var vac = await sut.GetLiveVacanciesAsync(4,i, VacancyType.Apprenticeship);
+                var vac = await sut.GetLiveVacanciesAsync(4,i);
                 retrievedCount += vac.Count;
             }
 

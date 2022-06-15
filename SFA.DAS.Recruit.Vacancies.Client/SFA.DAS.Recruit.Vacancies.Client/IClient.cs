@@ -9,8 +9,8 @@ namespace SFA.DAS.Recruit.Vacancies.Client
     {
         Vacancy GetPublishedVacancy(long vacancyReference);
         IList<Vacancy> GetLiveVacancies();
-        Task<List<Vacancy>> GetLiveVacanciesAsync(int pageSize, int pageNumber, VacancyType vacancyType);
-        Task<long> GetLiveVacanciesCountAsync(VacancyType vacancyType);
+        Task<List<Vacancy>> GetLiveVacanciesAsync(int pageSize, int pageNumber);
+        Task<long> GetLiveVacanciesCountAsync();
         void SubmitApplication(Application application);
         void WithdrawApplication(long vacancyReference, Guid candidateId);
         void DeleteCandidate(Guid candidateId);
