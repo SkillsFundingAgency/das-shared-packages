@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
+using SFA.DAS.Recruit.Vacancies.Client.Entities;
 
 namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests.ClientTests
 {

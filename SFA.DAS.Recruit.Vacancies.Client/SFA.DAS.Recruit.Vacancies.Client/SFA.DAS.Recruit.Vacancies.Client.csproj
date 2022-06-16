@@ -89,6 +89,7 @@
     <Compile Include="Entities\Qualification.cs" />
     <Compile Include="Entities\TrainingProvider.cs" />
     <Compile Include="Entities\Application.cs" />
+    <Compile Include="Entities\VacancyType.cs" />
     <Compile Include="Entities\Wage.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Messages\ApplicationSubmitMessage.cs" />
