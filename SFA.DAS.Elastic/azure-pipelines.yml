@@ -49,8 +49,6 @@ steps:
     projects: SFA.DAS.Elastic/SFA.DAS.Elastic.UnitTests/SFA.DAS.Elastic.UnitTests.csproj
     arguments: '--configuration $(BuildConfiguration) --no-build'
 
-- template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
   inputs:

@@ -43,8 +43,6 @@ steps:
     projects: SFA.DAS.Hmrc/SFA.DAS.Hmrc.sln
     arguments: '/p:Configuration=$(BuildConfiguration)'
 
-- template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
   inputs:
