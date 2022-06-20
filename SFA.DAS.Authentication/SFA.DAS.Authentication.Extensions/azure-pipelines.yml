@@ -42,8 +42,6 @@ steps:
     projects: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.sln
     arguments: '/p:Configuration=$(BuildConfiguration)'
 
-- template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
   inputs:
