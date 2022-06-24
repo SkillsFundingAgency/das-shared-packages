@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using FluentAssertions;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.LinkCollection
+namespace SFA.DAS.MA.Shared.UI.UnitTests.LinkCollection
 {
     [TestFixture]
     public class WhenAddLink

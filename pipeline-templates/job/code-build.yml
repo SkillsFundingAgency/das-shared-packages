@@ -59,4 +59,4 @@ jobs:
         ${{ if ne(parameters.DotNetStandardPackagesToPack, '') }}:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}
         ${{ elseif ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
-          DotNetFrameworkPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
+          DotNetStandardPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}

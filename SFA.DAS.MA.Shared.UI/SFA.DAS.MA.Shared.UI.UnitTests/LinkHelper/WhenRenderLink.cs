@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.MA.Shared.UI.UnitTest.LinkCollection;
+using SFA.DAS.MA.Shared.UI.UnitTests.LinkCollection;
 using System;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.LinkHelper
+namespace SFA.DAS.MA.Shared.UI.UnitTests.LinkHelper
 {
     [TestFixture]
     public class WhenRenderLink

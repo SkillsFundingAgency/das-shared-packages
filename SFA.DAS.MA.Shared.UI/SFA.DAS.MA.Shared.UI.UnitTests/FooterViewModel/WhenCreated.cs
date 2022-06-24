@@ -7,7 +7,7 @@ using SFA.DAS.MA.Shared.UI.Models.Links;
 using System;
 using System.Linq;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
+namespace SFA.DAS.MA.Shared.UI.UnitTests.FooterViewModel
 {
     [TestFixture]
     public class WhenCreated

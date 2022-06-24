@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.LinkHelper
+namespace SFA.DAS.MA.Shared.UI.UnitTests.LinkHelper
 {
     [TestFixture]
     public class WhenRenderListItemLink

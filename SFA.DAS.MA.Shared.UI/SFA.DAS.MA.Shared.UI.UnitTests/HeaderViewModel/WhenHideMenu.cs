@@ -4,7 +4,7 @@ using NUnit.Framework;
 using SFA.DAS.MA.Shared.UI.Configuration;
 using SFA.DAS.MA.Shared.UI.Models;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
+namespace SFA.DAS.MA.Shared.UI.UnitTests.HeaderViewModel
 {
     [TestFixture]
     public class WhenHideMenu
