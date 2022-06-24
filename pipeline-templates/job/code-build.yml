@@ -19,7 +19,6 @@ jobs:
       displayName: gitversion/setup
       inputs:
         versionSpec: 5.x
-
     - task: gitversion/execute@0
       displayName: gitversion/execute
       inputs:
@@ -27,6 +26,14 @@ jobs:
         configFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
         includePrerelease: false
     - ${{ if ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
+      - task: NuGetToolInstaller@0
+        displayName: 'Use NuGet 5.x'
+        inputs:
+          versionSpec: 5.x
+      - task: NuGetCommand@2
+        displayName: 'NuGet restore'
+        inputs:
+          restoreSolution: ${{ parameters.WorkingDirectory }}/**/*.sln
       - task: VSBuild@1
         displayName: 'Build Solution'
         inputs:
