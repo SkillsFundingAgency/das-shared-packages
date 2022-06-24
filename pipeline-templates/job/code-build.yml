@@ -1,0 +1,55 @@
+parameters:
+  WorkingDirectory:
+  DotNetStandardPackagesToPack: ''
+  DotNetFrameworkPackagesToPack: ''
+  SonarCloudProjectKey:
+
+jobs:
+- job: CodeBuild
+  pool:
+    name: DAS - Continuous Integration
+  variables:
+  - group: BUILD Management Resources
+  - name: buildConfiguration
+    value: Release
+  - name: buildPlatform
+    value: Any CPU
+  steps:
+    - task: gitversion/setup@0
+      displayName: gitversion/setup
+      inputs:
+        versionSpec: 5.x
+
+    - task: gitversion/execute@0
+      displayName: gitversion/execute
+      inputs:
+        useConfigFile: true
+        configFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
+        includePrerelease: false
+    - ${{ if ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
+      - task: VSBuild@1
+        displayName: 'Build Solution'
+        inputs:
+          solution: ${{ parameters.WorkingDirectory }}/**/*.sln
+          platform: '$(buildPlatform)'
+          configuration: '$(buildConfiguration)'
+          clean: true
+          vsVersion: '16.0'
+      - task: VSTest@2
+        displayName: 'Run NUnit Tests'
+        inputs:
+          testAssemblyVer2: ${{parameters.WorkingDirectory }}/**/*UnitTests.dll
+          platform: '$(buildPlatform)'
+          configuration: '$(buildConfiguration)'
+    - ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
+      - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+        parameters:
+          SonarCloudProjectKey: ${{ parameters.SonarCloudProjectKey }}
+          TargetProjects: ${{ parameters.WorkingDirectory }}/**/*.csproj
+          UnitTestProjects: ${{parameters.WorkingDirectory }}/**/*UnitTests.csproj
+    - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+      parameters:
+        ${{ if ne(parameters.DotNetStandardPackagesToPack, '') }}:
+          DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}
+        ${{ elseif ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
+          DotNetFrameworkPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}

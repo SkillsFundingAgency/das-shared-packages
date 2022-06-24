@@ -6,7 +6,7 @@ trigger:
   paths:
     include:
     - pipeline-templates
-    - SFA.DAS.MA.Shared.UI
+    - Configuration
 
 pr:
   autoCancel: true
@@ -16,7 +16,7 @@ pr:
   paths:
     include:
     - pipeline-templates
-    - SFA.DAS.MA.Shared.UI
+    - Configuration
 
 resources:
   repositories:
@@ -30,6 +30,6 @@ resources:
 jobs:
 - template: ../pipeline-templates/job/code-build.yml
   parameters:
-    WorkingDirectory: SFA.DAS.MA.Shared.UI
-    DotNetFrameworkPackagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
-    SonarCloudProjectKey: das-shared-packages-SFA.DAS.MA.Shared.UI
+    WorkingDirectory: Configuration
+    DotNetStandardPackagesToPack: Configuration/SFA.DAS.Configuration/SFA.DAS.Configuration.csproj
+    SonarCloudProjectKey: das-shared-packages-Configuration
