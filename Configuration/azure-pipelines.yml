@@ -27,9 +27,12 @@ resources:
     ref: refs/tags/0.4.62
     endpoint: SkillsFundingAgency
 
-jobs:
-- template: ../pipeline-templates/job/code-build.yml
-  parameters:
-    WorkingDirectory: Configuration
-    DotNetStandardPackagesToPack: Configuration/SFA.DAS.Configuration/SFA.DAS.Configuration.csproj
-    SonarCloudProjectKey: das-shared-packages-Configuration
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: Configuration
+      DotNetStandardPackagesToPack: Configuration/SFA.DAS.Configuration/SFA.DAS.Configuration.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_Configuration
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

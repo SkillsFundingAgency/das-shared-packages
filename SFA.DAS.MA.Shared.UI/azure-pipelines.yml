@@ -27,9 +27,12 @@ resources:
     ref: refs/tags/0.4.62
     endpoint: SkillsFundingAgency
 
-jobs:
-- template: ../pipeline-templates/job/code-build.yml
-  parameters:
-    WorkingDirectory: SFA.DAS.MA.Shared.UI
-    DotNetFrameworkPackagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
-    SonarCloudProjectKey: das-shared-packages-SFA.DAS.MA.Shared.UI
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.MA.Shared.UI
+      DotNetFrameworkPackagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.MA.Shared.UI
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
