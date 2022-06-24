@@ -7,7 +7,7 @@
 
         <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
         <Description>Configuration services integrated with Microsoft.Extensions.Configuration</Description>
-        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageLicense>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicense>
         <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
 
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
