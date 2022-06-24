@@ -45,7 +45,7 @@ jobs:
       - task: VSTest@2
         displayName: 'Run NUnit Tests'
         inputs:
-          testAssemblyVer2: ${{parameters.WorkingDirectory }}/**/*UnitTests.dll
+          testAssemblyVer2: ${{parameters.WorkingDirectory }}/**/bin/$(buildConfiguration)/*UnitTests.dll
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
     - ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
