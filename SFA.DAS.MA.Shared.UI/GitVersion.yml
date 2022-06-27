@@ -1,1 +1,2 @@
 mode: ContinuousDeployment
+tag-prefix: SFA.DAS.MA.Shared.UI/
