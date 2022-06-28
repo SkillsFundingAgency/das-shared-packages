@@ -24,7 +24,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.62
+    ref: refs/heads/nuget-conditions
     endpoint: SkillsFundingAgency
 
 stages:
