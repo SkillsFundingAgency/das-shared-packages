@@ -15,16 +15,9 @@ jobs:
   - name: buildPlatform
     value: Any CPU
   steps:
-    - task: gitversion/setup@0
-      displayName: gitversion/setup
-      inputs:
-        versionSpec: 5.x
-    - task: gitversion/execute@0
-      displayName: gitversion/execute
-      inputs:
-        useConfigFile: true
-        configFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
-        includePrerelease: false
+    - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+      parameters:
+        ConfigFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
     - ${{ if ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
       - task: NuGetToolInstaller@0
         displayName: 'Use NuGet 5.x'
