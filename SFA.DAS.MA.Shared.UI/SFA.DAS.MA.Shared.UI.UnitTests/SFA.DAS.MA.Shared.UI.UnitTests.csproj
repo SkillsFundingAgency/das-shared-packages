@@ -7,8 +7,8 @@
     <ProjectGuid>{A5C35E69-5D98-4F0A-A946-0E7B2B3AA46C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.MA.Shared.UI.UnitTest</RootNamespace>
-    <AssemblyName>SFA.DAS.MA.Shared.UI.UnitTest</AssemblyName>
+    <RootNamespace>SFA.DAS.MA.Shared.UI.UnitTests</RootNamespace>
+    <AssemblyName>SFA.DAS.MA.Shared.UI.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

@@ -5,7 +5,7 @@ using SFA.DAS.MA.Shared.UI.Configuration;
 using SFA.DAS.MA.Shared.UI.Models;
 using System;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
+namespace SFA.DAS.MA.Shared.UI.UnitTests.HeaderViewModel
 {
     [TestFixture]
     public class WhenSelectMenu

@@ -7,7 +7,7 @@ using SFA.DAS.MA.Shared.UI.Models.Links;
 using System;
 using System.Linq;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
+namespace SFA.DAS.MA.Shared.UI.UnitTests.FooterViewModel
 {
     [TestFixture]
     public class WhenCreated
@@ -160,17 +160,17 @@ namespace SFA.DAS.MA.Shared.UI.UnitTest.FooterViewModel
         public void ThenTermsAndConditionsFooterLinkIsInitialised()
         {
             // arrange
-            var testAuthenticationAuthorityUrl = $"http://{Guid.NewGuid()}";
+            var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
 
             _mockFooterConfiguration
-                .Setup(m => m.AuthenticationAuthorityUrl)
-                .Returns(testAuthenticationAuthorityUrl);
+                .Setup(m => m.ManageApprenticeshipsBaseUrl)
+                .Returns(testManageApprenticeshipsBaseUrl);
 
             // act
             _sut = new Models.FooterViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<TermsAndConditions>().Where(t => t.Href.Equals($"{testAuthenticationAuthorityUrl}/TermsAndConditions")).Count().Should().Be(1);
+            _sut.Links.OfType<TermsAndConditions>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/termsAndConditions/overview")).Count().Should().Be(1);
         }
 
     }

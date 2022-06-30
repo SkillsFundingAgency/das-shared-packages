@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.MA.Shared.UI.Models;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest
+namespace SFA.DAS.MA.Shared.UI.UnitTests
 {
     public class TestLink : Link
     {

@@ -5,7 +5,7 @@ using SFA.DAS.MA.Shared.UI.Configuration;
 using SFA.DAS.MA.Shared.UI.Models;
 using SFA.DAS.MA.Shared.UI.Services;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.CookieBannerViewModel
+namespace SFA.DAS.MA.Shared.UI.UnitTests.CookieBannerViewModel
 {
     [TestFixture]
     public class WhenCreated

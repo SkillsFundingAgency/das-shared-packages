@@ -7,7 +7,7 @@ using SFA.DAS.MA.Shared.UI.Models.Links;
 using System;
 using System.Linq;
 
-namespace SFA.DAS.MA.Shared.UI.UnitTest.HeaderViewModel
+namespace SFA.DAS.MA.Shared.UI.UnitTests.HeaderViewModel
 {
     [TestFixture]
     public class WhenCreated
