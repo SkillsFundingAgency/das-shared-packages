@@ -51,7 +51,7 @@ jobs:
           UnitTestProjects: ${{parameters.WorkingDirectory }}/**/*UnitTests.csproj
     - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
       parameters:
-        ${{ if parameters.SdkStyleFrameworkProjects }}:
+        ${{ if eq(parameters.SdkStyleFrameworkProjects, true) }}:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
         ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}
