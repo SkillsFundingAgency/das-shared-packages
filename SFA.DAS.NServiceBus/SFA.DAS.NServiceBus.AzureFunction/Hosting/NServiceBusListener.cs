@@ -49,20 +49,16 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             }
             else
             {
+                endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
+                    .ConnectionString(_attribute.Connection)
+                    .Transactions(TransportTransactionMode.ReceiveOnly)
 #if NET6_0
-                endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
-                    .ConnectionString(_attribute.Connection)
                     .CustomTokenCredential(new Azure.Identity.DefaultAzureCredential())
-                    .Transactions(TransportTransactionMode.ReceiveOnly);
 #else
-                var tokenProvider = Microsoft.Azure.ServiceBus.Primitives.TokenProvider.CreateManagedIdentityTokenProvider();
-                var nameShortener = new SFA.DAS.NServiceBus.Configuration.AzureServiceBus.RuleNameShortener();
-                endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
-                    .RuleNameShortener(nameShortener.Shorten)
-                    .CustomTokenProvider(tokenProvider)
-                    .ConnectionString(_attribute.Connection)
-                    .Transactions(TransportTransactionMode.ReceiveOnly);
+                    .RuleNameShortener(new SFA.DAS.NServiceBus.Configuration.AzureServiceBus.RuleNameShortener().Shorten)
+                    .CustomTokenProvider(Microsoft.Azure.ServiceBus.Primitives.TokenProvider.CreateManagedIdentityTokenProvider())
 #endif
+                    ;
             }
 
             if (!string.IsNullOrEmpty(EnvironmentVariables.NServiceBusLicense))
