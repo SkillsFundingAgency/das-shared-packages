@@ -2,6 +2,7 @@ parameters:
   WorkingDirectory:
   DotNetStandardPackagesToPack: ''
   DotNetFrameworkPackagesToPack: ''
+  SdkStyleFrameworkProjects: false
   SonarCloudProjectKey:
 
 jobs:
@@ -50,7 +51,9 @@ jobs:
           UnitTestProjects: ${{parameters.WorkingDirectory }}/**/*UnitTests.csproj
     - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
       parameters:
-        ${{ if ne(parameters.DotNetStandardPackagesToPack, '') }}:
+        ${{ if parameters.SdkStyleFrameworkProjects }}:
+          DotNetStandardPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
+        ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}
         ${{ elseif ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
           DotNetFrameworkPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}

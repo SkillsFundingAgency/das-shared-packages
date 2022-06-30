@@ -35,4 +35,5 @@ stages:
       WorkingDirectory: SFA.DAS.MA.Shared.UI
       DotNetFrameworkPackagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.MA.Shared.UI
+      SdkStyleFrameworkProjects: true
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
