@@ -46,13 +46,12 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         }
 
         [Test]
-        public async Task ThenPopulatesAttributeConnectionIfNull()
+        public async Task ThenFormatsAndPopulatesAttributeConnectionForNet6IfNull()
         {
             //Arrange
-            var nServiceBusConnectionString = "new connection";
+            const string nServiceBusConnectionString = "Endpoint=sb://new connection";
             Environment.SetEnvironmentVariable("NServiceBusConnectionString", nServiceBusConnectionString);
            
-            
             var paramInfo = TestClass.GetParamInfoWithTriggerAttrubuteWithoutConnection();
             var context = new TriggerBindingProviderContext(paramInfo, new CancellationToken(false));
             var provider = new NServiceBusTriggerBindingProvider();
@@ -64,7 +63,11 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             var binding = result as NServiceBusTriggerBinding;
 
             Assert.IsNotNull(binding);
+#if NET6_0
+            Assert.AreEqual("new connection", binding.Attribute.Connection);
+#else
             Assert.AreEqual(nServiceBusConnectionString, binding.Attribute.Connection);
+#endif
         }
 
         [Test]

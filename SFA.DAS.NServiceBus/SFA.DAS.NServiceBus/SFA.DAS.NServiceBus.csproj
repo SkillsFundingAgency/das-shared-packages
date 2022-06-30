@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net462;net6.0</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <Authors>DAS</Authors>
@@ -29,6 +29,11 @@
         <PackageReference Include="NServiceBus.NLog" Version="3.0.0" />
         <PackageReference Include="NServiceBus.StructureMap" Version="7.0.0" />
         <PackageReference Include="StructureMap" Version="4.6.1" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.2" />
+        <PackageReference Include="Azure.Identity" Version="1.6.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
