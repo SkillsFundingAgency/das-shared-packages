@@ -1,11 +1,6 @@
 ﻿using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-#if NET6_0
-using Azure.Identity;
-#else
-using Microsoft.Azure.ServiceBus.Primitives;
-#endif
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using NServiceBus;
@@ -14,7 +9,6 @@ using NServiceBus.Raw;
 using NServiceBus.Transport;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
-using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {
@@ -58,11 +52,11 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 #if NET6_0
                 endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
                     .ConnectionString(_attribute.Connection)
-                    .CustomTokenCredential(new DefaultAzureCredential())
+                    .CustomTokenCredential(new Azure.Identity.DefaultAzureCredential())
                     .Transactions(TransportTransactionMode.ReceiveOnly);
 #else
-                var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
-                var nameShortener = new RuleNameShortener();
+                var tokenProvider = Microsoft.Azure.ServiceBus.Primitives.TokenProvider.CreateManagedIdentityTokenProvider();
+                var nameShortener = new SFA.DAS.NServiceBus.Configuration.AzureServiceBus.RuleNameShortener();
                 endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
                     .RuleNameShortener(nameShortener.Shorten)
                     .CustomTokenProvider(tokenProvider)
