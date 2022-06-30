@@ -15,7 +15,7 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
                 return ruleName;
             }
             
-            using (var md5 = new MD5CryptoServiceProvider())
+            using (var md5 = MD5.Create())
             {
                 var bytes = Encoding.Default.GetBytes(ruleName);
                 var hash = md5.ComputeHash(bytes);

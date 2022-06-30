@@ -101,11 +101,11 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             public string Name { get; set; }
         }
 
-        private class TestClass
+        private static class TestClass
         {
             public static void TestMethod([NServiceBusTrigger] TestMessage message)
             {
-
+                // Method intentionally left empty.
             }
         }
     }

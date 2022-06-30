@@ -1,10 +1,13 @@
 ﻿using System;
 using NServiceBus;
-using NServiceBus.Transport.AzureServiceBus;
+#if NET6_0
+using Azure.Identity;
+#endif
 #if NETSTANDARD2_0
 using Microsoft.Azure.ServiceBus.Primitives;
 #elif NET462
 using Microsoft.ServiceBus;
+using NServiceBus.Transport.AzureServiceBus;
 #endif
 
 namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
@@ -13,19 +16,24 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
     {
         public static EndpointConfiguration UseAzureServiceBusTransport(this EndpointConfiguration config, string connectionString, Action<RoutingSettings> routing = null)
         {
-#if NETSTANDARD2_0
-                var transport = config.UseTransport<AzureServiceBusTransport>();
-                var ruleNameShortener = new RuleNameShortener();
+#if NET6_0
+            connectionString = connectionString.Replace("Endpoint=sb://", "");
+            var transport = config.UseTransport<AzureServiceBusTransport>();
+            transport.ConnectionString(connectionString);
+            transport.Transactions(TransportTransactionMode.ReceiveOnly);
+            transport.CustomTokenCredential(new DefaultAzureCredential());
+            routing?.Invoke(transport.Routing());
+#elif NETSTANDARD2_0
+            var transport = config.UseTransport<AzureServiceBusTransport>();
+            var ruleNameShortener = new RuleNameShortener();
 
-                var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
-                transport.CustomTokenProvider(tokenProvider);
-                transport.ConnectionString(connectionString);
-                transport.RuleNameShortener(ruleNameShortener.Shorten);
-                transport.Transactions(TransportTransactionMode.ReceiveOnly);
-
-                routing?.Invoke(transport.Routing());
+            var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
+            transport.CustomTokenProvider(tokenProvider);
+            transport.ConnectionString(connectionString);
+            transport.RuleNameShortener(ruleNameShortener.Shorten);
+            transport.Transactions(TransportTransactionMode.ReceiveOnly);
 #elif NET462
-                var transport = config.UseTransport<AzureServiceBusTransport>();
+            var transport = config.UseTransport<AzureServiceBusTransport>();
 
                 transport.BrokeredMessageBodyType(SupportedBrokeredMessageBodyTypes.Stream);
                 var managers = transport.NamespaceManagers();

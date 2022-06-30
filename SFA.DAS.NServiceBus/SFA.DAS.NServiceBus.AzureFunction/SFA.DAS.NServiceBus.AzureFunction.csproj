@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>netcoreapp2.2;netstandard2.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;netcoreapp2.2;netstandard2.0</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         
         <Authors>DAS</Authors>
@@ -21,10 +21,13 @@
         <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.1" />
         <PackageReference Include="NServiceBus" Version="7.1.7" />
         <PackageReference Include="NServiceBus.Raw" Version="3.0.1" />
-        <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.5.0" />
         <PackageReference Include="SFA.DAS.NServiceBus" Version="11.0.2" />
     </ItemGroup>
-    
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Azure.Identity" Version="1.6.0" />
+    </ItemGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.NServiceBus\SFA.DAS.NServiceBus.csproj" />
     </ItemGroup>

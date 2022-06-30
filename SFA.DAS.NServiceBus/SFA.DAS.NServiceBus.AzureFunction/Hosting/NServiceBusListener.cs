@@ -1,7 +1,11 @@
 ﻿using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+#if NET6_0
+using Azure.Identity;
+#else
 using Microsoft.Azure.ServiceBus.Primitives;
+#endif
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using NServiceBus;
@@ -14,9 +18,11 @@ using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     public class NServiceBusListener : IListener
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
-        private string _poisonMessageQueue;
+        private readonly string _poisonMessageQueue;
         private const int ImmediateRetryCount = 3;
 
         private readonly ITriggeredFunctionExecutor _executor;
@@ -41,7 +47,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var nameShortener = new RuleNameShortener();
             var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.Endpoint, OnMessage, _poisonMessageQueue);
 
             if (_nServiceBusOptions.EndpointConfiguration != null)
@@ -50,13 +55,20 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             }
             else
             {
+#if NET6_0
+                endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
+                    .ConnectionString(_attribute.Connection)
+                    .CustomTokenCredential(new DefaultAzureCredential())
+                    .Transactions(TransportTransactionMode.ReceiveOnly);
+#else
                 var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
-
+                var nameShortener = new RuleNameShortener();
                 endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
                     .RuleNameShortener(nameShortener.Shorten)
                     .CustomTokenProvider(tokenProvider)
                     .ConnectionString(_attribute.Connection)
                     .Transactions(TransportTransactionMode.ReceiveOnly);
+#endif
             }
 
             if (!string.IsNullOrEmpty(EnvironmentVariables.NServiceBusLicense))
@@ -126,6 +138,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
         public void Dispose()
         {
+            // Method intentionally left empty.
         }
     }
 }

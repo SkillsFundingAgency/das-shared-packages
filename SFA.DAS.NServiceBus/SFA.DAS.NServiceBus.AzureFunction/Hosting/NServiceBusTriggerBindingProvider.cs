@@ -27,7 +27,11 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
             if (string.IsNullOrEmpty(attribute.Connection))
             {
+#if NET6_0
+                attribute.Connection = EnvironmentVariables.NServiceBusConnectionString.Replace("Endpoint=sb://", "");
+#else
                 attribute.Connection = EnvironmentVariables.NServiceBusConnectionString;
+#endif
             }
 
             return Task.FromResult<ITriggerBinding>(new NServiceBusTriggerBinding(parameter, attribute, _nServiceBusOptions));
