@@ -1,0 +1,9 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "NServiceBusConnectionString": "UseLearningEndpoint=true",
+        "LearningTransportStorageDirectory": "c://temp//.sfa.das.nservicebus.learning-transport"
+    }
+}

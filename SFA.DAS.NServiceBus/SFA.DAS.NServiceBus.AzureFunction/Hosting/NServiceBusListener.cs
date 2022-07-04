@@ -49,16 +49,28 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             }
             else
             {
-                endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
-                    .ConnectionString(_attribute.Connection)
-                    .Transactions(TransportTransactionMode.ReceiveOnly)
+                if (!_attribute.Connection.Contains("LearningEndpoint"))
+                {
+                    endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
+                        .ConnectionString(_attribute.Connection)
+                        .Transactions(TransportTransactionMode.ReceiveOnly)
 #if NET6_0
-                    .CustomTokenCredential(new Azure.Identity.DefaultAzureCredential())
+                        .CustomTokenCredential(new Azure.Identity.DefaultAzureCredential())
 #else
-                    .RuleNameShortener(new SFA.DAS.NServiceBus.Configuration.AzureServiceBus.RuleNameShortener().Shorten)
-                    .CustomTokenProvider(Microsoft.Azure.ServiceBus.Primitives.TokenProvider.CreateManagedIdentityTokenProvider())
+                        .RuleNameShortener(new NServiceBus.Configuration.AzureServiceBus.RuleNameShortener().Shorten)
+                        .CustomTokenProvider(Microsoft.Azure.ServiceBus.Primitives.TokenProvider
+                            .CreateManagedIdentityTokenProvider())
 #endif
-                    ;
+                        ;
+                }
+                else
+                {
+                    endpointConfigurationRaw.UseTransport<LearningTransport>()
+                        .Transactions(TransportTransactionMode.ReceiveOnly)
+                        .StorageDirectory(_attribute.LearningTransportStorageDirectory)
+                        ;
+                }
+
             }
 
             if (!string.IsNullOrEmpty(EnvironmentVariables.NServiceBusLicense))
