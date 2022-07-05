@@ -33,6 +33,8 @@ stages:
   - template: ../pipeline-templates/job/code-build.yml
     parameters:
       WorkingDirectory: Configuration
-      DotNetStandardPackagesToPack: Configuration/SFA.DAS.Configuration/SFA.DAS.Configuration.csproj
+      DotNetStandardPackagesToPack: >
+        Configuration/SFA.DAS.Configuration/SFA.DAS.Configuration.csproj;
+        Configuration/SFA.DAS.Configuration.AzureTableStorage/SFA.DAS.Configuration.AzureTableStorage.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_Configuration
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
