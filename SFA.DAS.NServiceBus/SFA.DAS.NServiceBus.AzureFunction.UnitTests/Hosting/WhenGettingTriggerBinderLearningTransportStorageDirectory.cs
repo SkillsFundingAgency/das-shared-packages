@@ -14,7 +14,9 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         {
             //Arrange
             const string learningTransportStorageDirectory = "C://temp//.learning-transport";
-            Environment.SetEnvironmentVariable("LearningTransportStorageDirectory", learningTransportStorageDirectory);
+            Environment.SetEnvironmentVariable("LearningTransportStorageDirectory", learningTransportStorageDirectory, EnvironmentVariableTarget.Process);
+            const string nServiceBusConnectionString = "Endpoint=sb://new connection";
+            Environment.SetEnvironmentVariable("NServiceBusConnectionString", nServiceBusConnectionString);
 
             var paramInfo = TestClass.GetParamInfoWithTriggerAttributeWithoutLearningTransportStorageDirectory();
             var context = new TriggerBindingProviderContext(paramInfo, new CancellationToken(false));
@@ -47,6 +49,5 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             Assert.IsNotNull(binding);
             Assert.AreEqual(TestClass.LearningTransportStorageDirectory, binding.Attribute.LearningTransportStorageDirectory);
         }
-
     }
 }
