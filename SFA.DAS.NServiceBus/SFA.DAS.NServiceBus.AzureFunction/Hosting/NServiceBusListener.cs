@@ -71,13 +71,15 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             await _endpoint.SubscriptionManager.Subscribe(_parameter.ParameterType, new ContextBag());
         }
 
+        private bool IsLearningTransportEndpoint() => _attribute.Connection.Contains("LearningEndpoint");
+
         private void SetupAzureServiceBusTransportEndpoint(RawEndpointConfiguration endpointConfigurationRaw)
         {
             endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
                 .ConnectionString(_attribute.Connection)
                 .Transactions(TransportTransactionMode.ReceiveOnly)
 #if NET6_0
-                        .CustomTokenCredential(new Azure.Identity.DefaultAzureCredential())
+                .CustomTokenCredential(new Azure.Identity.DefaultAzureCredential())
 #else
                 .RuleNameShortener(new NServiceBus.Configuration.AzureServiceBus.RuleNameShortener().Shorten)
                 .CustomTokenProvider(Microsoft.Azure.ServiceBus.Primitives.TokenProvider
@@ -93,8 +95,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
                 .StorageDirectory(_attribute.LearningTransportStorageDirectory)
                 ;
         }
-
-        private bool IsLearningTransportEndpoint() => !_attribute.Connection.Contains("LearningEndpoint");
 
         protected async Task OnMessage(MessageContext context, IDispatchMessages dispatcher)
         {
