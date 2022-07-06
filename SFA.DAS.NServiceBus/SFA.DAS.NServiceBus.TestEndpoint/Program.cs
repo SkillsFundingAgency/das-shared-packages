@@ -4,18 +4,18 @@ using NServiceBus;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
-using SFA.DAS.NServiceBus.NetStandardMessages.Events;
+using SFA.DAS.NServiceBus.TestMessages.Events;
 
-namespace SFA.DAS.NServiceBus.NetFrameworkEndpoint
+namespace SFA.DAS.NServiceBus.TestEndpoint
 {
     internal static class Program
     {
         private const string AzureServiceBusConnectionString = "";
-        
+
         public static async Task Main()
         {
-            var endpointConfiguration = new EndpointConfiguration("SFA.DAS.NServiceBus.NetFrameworkEndpoint")
-                .UseErrorQueue("SFA.DAS.NServiceBus.NetFrameworkEndpoint-error")
+            var endpointConfiguration = new EndpointConfiguration(TestHarnessSettings.SampleQueueName)
+                .UseErrorQueue(TestHarnessSettings.SampleQueueName + "-error")
                 .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer()
@@ -28,16 +28,15 @@ namespace SFA.DAS.NServiceBus.NetFrameworkEndpoint
             }
             else
             {
-                const string learningTransportDirectory = "c://temp//.sfa.das.nservicebus.learning-transport";
                 endpointConfiguration
                     .UseTransport<LearningTransport>()
                     .Transactions(TransportTransactionMode.ReceiveOnly)
-                    .StorageDirectory(learningTransportDirectory);
+                    .StorageDirectory(TestHarnessSettings.LearningTransportDirectory);
             }
 
             var endpoint = await Endpoint.Start(endpointConfiguration);
 
-            Console.WriteLine("*** SFA.DAS.NServiceBus.NetFrameworkEndpoint ***");
+            Console.WriteLine("*** SFA.DAS.NServiceBus.TestEndpoint ***");
             Console.WriteLine("Press '1' to publish event");
             Console.WriteLine("Press any other key to exit");
 
@@ -49,7 +48,7 @@ namespace SFA.DAS.NServiceBus.NetFrameworkEndpoint
 
                 if (key.Key == ConsoleKey.D1)
                 {
-                    await endpoint.Publish(new NetFrameworkEvent(".NET Framework"));
+                    await endpoint.Publish(new SampleEvent("Hello world!"));
                     
                     Console.WriteLine("Published event...");
                 }

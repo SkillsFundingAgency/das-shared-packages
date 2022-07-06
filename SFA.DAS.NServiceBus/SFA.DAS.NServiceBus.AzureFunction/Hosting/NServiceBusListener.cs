@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Identity;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using NServiceBus;
@@ -78,13 +79,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
                 .ConnectionString(_attribute.Connection)
                 .Transactions(TransportTransactionMode.ReceiveOnly)
-#if NET6_0
-                .CustomTokenCredential(new Azure.Identity.DefaultAzureCredential())
-#else
-                .RuleNameShortener(new NServiceBus.Configuration.AzureServiceBus.RuleNameShortener().Shorten)
-                .CustomTokenProvider(Microsoft.Azure.ServiceBus.Primitives.TokenProvider
-                    .CreateManagedIdentityTokenProvider())
-#endif
+                .CustomTokenCredential(new DefaultAzureCredential())
                 ;
         }
 

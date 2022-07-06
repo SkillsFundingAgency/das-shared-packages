@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+        <TargetFramework>net6.0</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <Authors>DAS</Authors>
@@ -17,6 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Azure.Identity" Version="1.6.0" />
         <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.1" />
@@ -28,16 +29,8 @@
         <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
         <PackageReference Include="NServiceBus.NLog" Version="3.0.0" />
         <PackageReference Include="NServiceBus.StructureMap" Version="7.0.0" />
-        <PackageReference Include="StructureMap" Version="4.6.1" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
         <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.2" />
-        <PackageReference Include="Azure.Identity" Version="1.6.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.5.0" />
+        <PackageReference Include="StructureMap" Version="4.6.1" />
     </ItemGroup>
 
 </Project>

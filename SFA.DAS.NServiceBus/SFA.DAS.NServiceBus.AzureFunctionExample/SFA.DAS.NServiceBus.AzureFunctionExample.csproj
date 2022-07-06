@@ -9,7 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.NServiceBus.AzureFunction\SFA.DAS.NServiceBus.AzureFunction.csproj" />
-    <ProjectReference Include="..\SFA.DAS.NServiceBus.NetStandardMessages\SFA.DAS.NServiceBus.NetStandardMessages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.NServiceBus.TestMessages\SFA.DAS.NServiceBus.TestMessages.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

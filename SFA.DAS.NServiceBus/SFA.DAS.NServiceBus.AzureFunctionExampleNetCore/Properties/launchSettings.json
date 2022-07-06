@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "SFA.DAS.NServiceBus.AzureFunctionExampleNet6._0": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7180",
-      "launchBrowser": false
-    }
-  }
-}
