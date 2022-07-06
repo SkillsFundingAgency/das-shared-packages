@@ -5,10 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SFA.DAS.NServiceBus.AzureFunction.Hosting;
-using SFA.DAS.NServiceBus.AzureFunctionExampleNetCore;
+using SFA.DAS.NServiceBus.AzureFunctionExample;
 
 [assembly: FunctionsStartup(typeof(Startup))]
-namespace SFA.DAS.NServiceBus.AzureFunctionExampleNetCore
+namespace SFA.DAS.NServiceBus.AzureFunctionExample
 {
     public class Startup : FunctionsStartup
     {

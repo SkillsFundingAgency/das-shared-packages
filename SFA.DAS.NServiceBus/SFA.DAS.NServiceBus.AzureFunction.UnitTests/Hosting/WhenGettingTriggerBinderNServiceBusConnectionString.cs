@@ -59,11 +59,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             var binding = result as NServiceBusTriggerBinding;
 
             Assert.IsNotNull(binding);
-#if NET6_0
             Assert.AreEqual("new connection", binding.Attribute.Connection);
-#else
-            Assert.AreEqual(nServiceBusConnectionString, binding.Attribute.Connection);
-#endif
         }
 
         [Test]
