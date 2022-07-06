@@ -13,6 +13,7 @@ namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
             transport.CustomTokenCredential(new DefaultAzureCredential());
             transport.ConnectionString(connectionString.Replace("Endpoint=sb://", ""));
             transport.Transactions(TransportTransactionMode.ReceiveOnly);
+            transport.SubscriptionRuleNamingConvention(RuleNameShortener.Shorten);
             routing?.Invoke(transport.Routing());
 
             return config;

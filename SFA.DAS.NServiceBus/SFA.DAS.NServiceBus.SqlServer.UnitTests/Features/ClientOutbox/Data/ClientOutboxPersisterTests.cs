@@ -38,7 +38,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task BeginTransactionAsync_WhenBeginningATransaction_ThenShouldReturnAClientOutboxTransaction()
         {
-            return TestAsync(f => f.BeginTransactionAsync(), (f, r) => r.Should().NotBeNull().And.BeOfType<SqlClientOutboxTransaction>());
+            return TestAsync(f => f.BeginTransactionAsync(), (_, r) => r.Should().NotBeNull().And.BeOfType<SqlClientOutboxTransaction>());
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldThrowAnException()
         {
-            return TestExceptionAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().Throw<KeyNotFoundException>()
+            return TestExceptionAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().ThrowAsync<KeyNotFoundException>()
                 .WithMessage($"Client outbox data not found where MessageId = '{f.ClientOutboxMessage.MessageId}'"));
         }
 

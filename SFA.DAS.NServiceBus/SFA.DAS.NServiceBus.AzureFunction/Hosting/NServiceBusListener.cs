@@ -1,15 +1,18 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
+using Microsoft.Extensions.Azure;
 using NServiceBus;
 using NServiceBus.Extensibility;
 using NServiceBus.Raw;
 using NServiceBus.Transport;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
+using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {
@@ -80,6 +83,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
                 .ConnectionString(_attribute.Connection)
                 .Transactions(TransportTransactionMode.ReceiveOnly)
                 .CustomTokenCredential(new DefaultAzureCredential())
+                .SubscriptionRuleNamingConvention(RuleNameShortener.Shorten)
                 ;
         }
 
