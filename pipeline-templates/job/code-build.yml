@@ -7,7 +7,7 @@ parameters:
 
 jobs:
 - ${{ if ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
-  - job: OldCodeBuild
+  - job: VSCodeBuild
     pool:
       name: DAS - Continuous Integration
     variables:
@@ -66,7 +66,7 @@ jobs:
           ${{ else }}:
             DotNetFrameworkPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
 - ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
-  - job: NewCodeBuild
+  - job: CliCodeBuild
     pool:
       name: DAS - Continuous Integration Agents
     variables:
