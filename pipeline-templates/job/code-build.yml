@@ -6,20 +6,20 @@ parameters:
   SonarCloudProjectKey:
 
 jobs:
-- job: CodeBuild
-  pool:
-    name: DAS - Continuous Integration
-  variables:
-  - group: BUILD Management Resources
-  - name: buildConfiguration
-    value: Release
-  - name: buildPlatform
-    value: Any CPU
-  steps:
-    - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
-      parameters:
-        ConfigFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
-    - ${{ if ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
+- ${{ if ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
+  - job: VSCodeBuild
+    pool:
+      name: DAS - Continuous Integration
+    variables:
+    - group: BUILD Management Resources
+    - name: buildConfiguration
+      value: Release
+    - name: buildPlatform
+      value: Any CPU
+    steps:
+      - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+        parameters:
+          ConfigFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
       - task: SonarCloudPrepare@1
         displayName: Prepare SonarCloud analysis configuration
         condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
@@ -54,23 +54,34 @@ jobs:
       - task: SonarCloudAnalyze@1
         displayName: Run SonarCloud analysis
         condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
-
       - task: SonarCloudPublish@1
         displayName: Publish SonarCloud analysis results on build summary
         condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
         inputs:
           pollingTimeoutSec: '300'
-    - ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
+      - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+        parameters:
+          ${{ if eq(parameters.SdkStyleFrameworkProjects, true) }}:
+            DotNetStandardPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
+          ${{ else }}:
+            DotNetFrameworkPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
+- ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
+  - job: CliCodeBuild
+    pool:
+      name: DAS - Continuous Integration Agents
+    variables:
+    - group: BUILD Management Resources
+    - name: buildConfiguration
+      value: release
+    steps:
+      - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+        parameters:
+          ConfigFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
       - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
         parameters:
           SonarCloudProjectKey: ${{ parameters.SonarCloudProjectKey }}
           TargetProjects: ${{ parameters.WorkingDirectory }}/**/*.csproj
           UnitTestProjects: ${{parameters.WorkingDirectory }}/**/*UnitTests.csproj
-    - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
-      parameters:
-        ${{ if eq(parameters.SdkStyleFrameworkProjects, true) }}:
-          DotNetStandardPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
-        ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
+      - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+        parameters:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}
-        ${{ elseif ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
-          DotNetFrameworkPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
