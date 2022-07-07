@@ -20,6 +20,15 @@ jobs:
       parameters:
         ConfigFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
     - ${{ if ne(parameters.DotNetFrameworkPackagesToPack, '') }}:
+      - task: SonarCloudPrepare@1
+        displayName: Prepare SonarCloud analysis configuration
+        condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
+        inputs:
+          SonarCloud: ESFA - SonarCloud
+          organization: $(SonarCloudOrganisationKey)
+          scannerMode: MSBuild
+          projectName: "$(Build.DefinitionName)"
+          projectKey: ${{ parameters.SonarCloudProjectKey }}
       - task: NuGetToolInstaller@0
         displayName: 'Use NuGet 5.x'
         inputs:
@@ -42,10 +51,18 @@ jobs:
           testAssemblyVer2: ${{parameters.WorkingDirectory }}/**/bin/$(buildConfiguration)/*UnitTests.dll
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
+      - task: SonarCloudAnalyze@1
+        displayName: Run SonarCloud analysis
+        condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
+
+      - task: SonarCloudPublish@1
+        displayName: Publish SonarCloud analysis results on build summary
+        condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
+        inputs:
+          pollingTimeoutSec: '300'
     - ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
       - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
         parameters:
-          SonarCloud: false
           SonarCloudProjectKey: ${{ parameters.SonarCloudProjectKey }}
           TargetProjects: ${{ parameters.WorkingDirectory }}/**/*.csproj
           UnitTestProjects: ${{parameters.WorkingDirectory }}/**/*UnitTests.csproj
