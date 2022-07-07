@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -15,7 +16,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public void New_WhenCreatingASqlClientOutboxTransaction_ThenShouldCreateASqlClientOutboxTransaction()
         {
-            Test(f => f.New(), (f, r) => r.Should().NotBeNull());
+            Test(f => f.New(), (_, r) => r.Should().NotBeNull());
         }
 
         [Test]
@@ -39,13 +40,13 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public void Dispose_WhenDisposing_ThenShouldDisposeTheTransaction()
         {
-            Test(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true));
+            Test(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Transaction.Protected().Verify("Dispose", Times.Once(), true, true));
         }
 
         [Test]
         public void Dispose_WhenDisposing_ThenShouldDisposeTheConnection()
         {
-            Test(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Connection.Protected().Verify("Dispose", Times.Once(), true));
+            Test(f => f.SetSqlClientOutboxTransaction(), f => f.Dispose(), f => f.Connection.Protected().Verify("Dispose", Times.Once(), true, true));
         }
     }
 
@@ -58,7 +59,9 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         public SqlClientOutboxTransactionTestsFixture()
         {
             Connection = new Mock<DbConnection>();
+            Connection.As<IDisposable>().Setup(_ => _.Dispose());
             Transaction = new Mock<DbTransaction>();
+            Transaction.As<IDisposable>().Setup(_ => _.Dispose());
         }
 
         public SqlClientOutboxTransaction New()
