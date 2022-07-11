@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Azure.Identity;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
-using Microsoft.Extensions.Azure;
 using NServiceBus;
 using NServiceBus.Extensibility;
 using NServiceBus.Raw;
@@ -89,6 +88,9 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
         private void SetupLearningTransportEndpoint(RawEndpointConfiguration endpointConfigurationRaw)
         {
+            if (string.IsNullOrEmpty(_attribute.LearningTransportStorageDirectory))
+                throw new ArgumentException("LearningTransportStorageDirectory must be set");
+            
             endpointConfigurationRaw.UseTransport<LearningTransport>()
                 .Transactions(TransportTransactionMode.ReceiveOnly)
                 .StorageDirectory(_attribute.LearningTransportStorageDirectory)

@@ -45,7 +45,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         public async Task ThenFormatsAndPopulatesAttributeConnectionIfNull()
         {
             //Arrange
-            const string nServiceBusConnectionString = "Endpoint=sb://new connection";
+            const string nServiceBusConnectionString = "Endpoint=sb://new connection/";
             Environment.SetEnvironmentVariable("NServiceBusConnectionString", nServiceBusConnectionString);
            
             var paramInfo = TestClass.GetParamInfoWithTriggerAttributeWithoutConnection();

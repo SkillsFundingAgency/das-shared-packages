@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host.Triggers;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
+using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {
@@ -27,7 +28,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
             if (string.IsNullOrEmpty(attribute.Connection))
             {
-                attribute.Connection = EnvironmentVariables.NServiceBusConnectionString?.Replace("Endpoint=sb://", "");
+                attribute.Connection = EnvironmentVariables.NServiceBusConnectionString?.FormatConnectionString();
             }
 
             if (string.IsNullOrEmpty(attribute.LearningTransportStorageDirectory))
