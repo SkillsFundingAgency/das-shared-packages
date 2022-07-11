@@ -13,7 +13,7 @@
                         @Html.Raw(Model.RenderListItemLink<Feedback>())
                         @Html.Raw(Model.RenderListItemLink<Privacy>())
                         @Html.Raw(Model.RenderListItemLink<Cookies>())
-                        @Html.Raw(Model.RenderListItemLink<TermsAndConditions>())
+                        @Html.Raw(Model.RenderListItemLink<TermsOfUse>())
                         <li>Built by the @Html.Raw(Model.RenderLink<BuiltBy>())</li>
                     </ul>
                     <div class="open-government-licence">
@@ -45,7 +45,7 @@ else
                         @Html.Raw(Model.RenderListItemLink<Privacy>(@class: "govuk-footer__inline-list-item"))
                         @Html.Raw(Model.RenderListItemLink<Cookies>(@class: "govuk-footer__inline-list-item"))
                         
-                        @Html.Raw(Model.RenderListItemLink<TermsAndConditions>(@class: "govuk-footer__inline-list-item"))
+                        @Html.Raw(Model.RenderListItemLink<TermsOfUse>(@class: "govuk-footer__inline-list-item"))
 
                         <li class="govuk-footer__inline-list-item">
                             Built by the @Html.Raw(Model.RenderLink<BuiltBy>())

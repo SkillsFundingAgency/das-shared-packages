@@ -157,7 +157,7 @@ namespace SFA.DAS.MA.Shared.UI.UnitTests.FooterViewModel
         }
 
         [Test]
-        public void ThenTermsAndConditionsFooterLinkIsInitialised()
+        public void ThenTermsOfUseFooterLinkIsInitialised()
         {
             // arrange
             var testManageApprenticeshipsBaseUrl = $"http://{Guid.NewGuid()}";
@@ -170,7 +170,7 @@ namespace SFA.DAS.MA.Shared.UI.UnitTests.FooterViewModel
             _sut = new Models.FooterViewModel(_mockFooterConfiguration.Object, _mockUserContext.Object);
 
             // assert            
-            _sut.Links.OfType<TermsAndConditions>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/termsAndConditions/overview")).Count().Should().Be(1);
+            _sut.Links.OfType<TermsOfUse>().Where(t => t.Href.Equals($"{testManageApprenticeshipsBaseUrl}/service/termsAndConditions/overview")).Count().Should().Be(1);
         }
 
     }
