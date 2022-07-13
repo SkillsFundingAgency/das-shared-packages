@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus", "SFA.DAS.NServiceBus\SFA.DAS.NServiceBus.csproj", "{4D20A028-CBA8-4843-8977-7D8E9F869AC3}"
 EndProject
@@ -21,19 +21,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.NetCoreEndpoint", "SFA.DAS.NServiceBus.NetCoreEndpoint\SFA.DAS.NServiceBus.NetCoreEndpoint.csproj", "{B467C163-0F38-4A58-9FDB-5CD324BEE811}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.NetFrameworkEndpoint", "SFA.DAS.NServiceBus.NetFrameworkEndpoint\SFA.DAS.NServiceBus.NetFrameworkEndpoint.csproj", "{C6AE3E89-9B03-41AD-B5B6-92DCBAB2464B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.NetStandardMessages", "SFA.DAS.NServiceBus.NetStandardMessages\SFA.DAS.NServiceBus.NetStandardMessages.csproj", "{6C074748-7943-4362-899B-9BC712515299}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{016262EC-7613-46BB-BF74-23D9AA990007}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.NServiceBus.AzureFunction", "SFA.DAS.NServiceBus.AzureFunction\SFA.DAS.NServiceBus.AzureFunction.csproj", "{F586A30A-7407-47F5-B200-B3D17F4064EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.AzureFunction", "SFA.DAS.NServiceBus.AzureFunction\SFA.DAS.NServiceBus.AzureFunction.csproj", "{F586A30A-7407-47F5-B200-B3D17F4064EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.NServiceBus.AzureFunction.UnitTests", "SFA.DAS.NServiceBus.AzureFunction.UnitTests\SFA.DAS.NServiceBus.AzureFunction.UnitTests.csproj", "{CDCB819B-1458-4136-94E7-E21A1DD2D7BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.AzureFunction.UnitTests", "SFA.DAS.NServiceBus.AzureFunction.UnitTests\SFA.DAS.NServiceBus.AzureFunction.UnitTests.csproj", "{CDCB819B-1458-4136-94E7-E21A1DD2D7BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.NServiceBus.AzureFunctionExample", "SFA.DAS.NServiceBus.AzureFunctionExample\SFA.DAS.NServiceBus.AzureFunctionExample.csproj", "{EB68E392-31A3-4AB6-B3C4-7CFD613CAAD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.TestMessages", "SFA.DAS.NServiceBus.TestMessages\SFA.DAS.NServiceBus.TestMessages.csproj", "{9E1CA861-0B8F-4239-A47D-AD203DED666B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.TestEndpoint", "SFA.DAS.NServiceBus.TestEndpoint\SFA.DAS.NServiceBus.TestEndpoint.csproj", "{7A0734EF-781E-4046-8C95-AB8D0F13BD57}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.NServiceBus.AzureFunctionExample", "SFA.DAS.NServiceBus.AzureFunctionExample\SFA.DAS.NServiceBus.AzureFunctionExample.csproj", "{D8C814A9-ACFC-49BE-A6DD-70EC92F394C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,18 +59,6 @@ Global
 		{95C2A894-1700-42FB-9963-1E6026E0BBC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95C2A894-1700-42FB-9963-1E6026E0BBC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95C2A894-1700-42FB-9963-1E6026E0BBC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B467C163-0F38-4A58-9FDB-5CD324BEE811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B467C163-0F38-4A58-9FDB-5CD324BEE811}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B467C163-0F38-4A58-9FDB-5CD324BEE811}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B467C163-0F38-4A58-9FDB-5CD324BEE811}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6AE3E89-9B03-41AD-B5B6-92DCBAB2464B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6AE3E89-9B03-41AD-B5B6-92DCBAB2464B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6AE3E89-9B03-41AD-B5B6-92DCBAB2464B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6AE3E89-9B03-41AD-B5B6-92DCBAB2464B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C074748-7943-4362-899B-9BC712515299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C074748-7943-4362-899B-9BC712515299}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C074748-7943-4362-899B-9BC712515299}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C074748-7943-4362-899B-9BC712515299}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F586A30A-7407-47F5-B200-B3D17F4064EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F586A30A-7407-47F5-B200-B3D17F4064EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F586A30A-7407-47F5-B200-B3D17F4064EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,10 +67,18 @@ Global
 		{CDCB819B-1458-4136-94E7-E21A1DD2D7BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDCB819B-1458-4136-94E7-E21A1DD2D7BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDCB819B-1458-4136-94E7-E21A1DD2D7BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB68E392-31A3-4AB6-B3C4-7CFD613CAAD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB68E392-31A3-4AB6-B3C4-7CFD613CAAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB68E392-31A3-4AB6-B3C4-7CFD613CAAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB68E392-31A3-4AB6-B3C4-7CFD613CAAD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E1CA861-0B8F-4239-A47D-AD203DED666B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E1CA861-0B8F-4239-A47D-AD203DED666B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E1CA861-0B8F-4239-A47D-AD203DED666B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E1CA861-0B8F-4239-A47D-AD203DED666B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A0734EF-781E-4046-8C95-AB8D0F13BD57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A0734EF-781E-4046-8C95-AB8D0F13BD57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A0734EF-781E-4046-8C95-AB8D0F13BD57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A0734EF-781E-4046-8C95-AB8D0F13BD57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8C814A9-ACFC-49BE-A6DD-70EC92F394C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8C814A9-ACFC-49BE-A6DD-70EC92F394C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8C814A9-ACFC-49BE-A6DD-70EC92F394C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8C814A9-ACFC-49BE-A6DD-70EC92F394C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,11 +86,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CEE65D06-C21C-4EA3-8C57-F50021E0F2B9} = {D77AF6FB-0272-4EB7-98D7-8B34A50F22EF}
 		{5B9E94DA-3386-47EE-9B55-BFCCC75BE2FF} = {D77AF6FB-0272-4EB7-98D7-8B34A50F22EF}
-		{B467C163-0F38-4A58-9FDB-5CD324BEE811} = {016262EC-7613-46BB-BF74-23D9AA990007}
-		{C6AE3E89-9B03-41AD-B5B6-92DCBAB2464B} = {016262EC-7613-46BB-BF74-23D9AA990007}
-		{6C074748-7943-4362-899B-9BC712515299} = {016262EC-7613-46BB-BF74-23D9AA990007}
 		{CDCB819B-1458-4136-94E7-E21A1DD2D7BE} = {D77AF6FB-0272-4EB7-98D7-8B34A50F22EF}
-		{EB68E392-31A3-4AB6-B3C4-7CFD613CAAD4} = {016262EC-7613-46BB-BF74-23D9AA990007}
+		{9E1CA861-0B8F-4239-A47D-AD203DED666B} = {016262EC-7613-46BB-BF74-23D9AA990007}
+		{7A0734EF-781E-4046-8C95-AB8D0F13BD57} = {016262EC-7613-46BB-BF74-23D9AA990007}
+		{D8C814A9-ACFC-49BE-A6DD-70EC92F394C8} = {016262EC-7613-46BB-BF74-23D9AA990007}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {95E55177-80E2-48DE-968C-76E224510FD3}

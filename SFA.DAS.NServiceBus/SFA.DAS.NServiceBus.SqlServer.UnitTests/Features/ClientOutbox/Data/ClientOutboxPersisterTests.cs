@@ -38,7 +38,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task BeginTransactionAsync_WhenBeginningATransaction_ThenShouldReturnAClientOutboxTransaction()
         {
-            return TestAsync(f => f.BeginTransactionAsync(), (f, r) => r.Should().NotBeNull().And.BeOfType<SqlClientOutboxTransaction>());
+            return TestAsync(f => f.BeginTransactionAsync(), (_, r) => r.Should().NotBeNull().And.BeOfType<SqlClientOutboxTransaction>());
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         [Test]
         public Task GetAsync_WhenGettingAClientOutboxMessageThatDoesNotExist_ThenShouldThrowAnException()
         {
-            return TestExceptionAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().Throw<KeyNotFoundException>()
+            return TestExceptionAsync(f => f.SetupGetReaderWithNoRows(), f => f.GetAsync(), (f, a) => a.Should().ThrowAsync<KeyNotFoundException>()
                 .WithMessage($"Client outbox data not found where MessageId = '{f.ClientOutboxMessage.MessageId}'"));
         }
 
@@ -86,7 +86,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.GetAwaitingDispatchCommandText);
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "CreatedAt" && p.Value as DateTime? == f.Now.AddMinutes(-10))));
                 r.Should().BeEquivalentTo(f.OutboxMessages);
-                f.Connection.Protected().Verify("Dispose", Times.Once(), true);
+                f.Connection.As<IDisposable>().Verify(c => c.Dispose(), Times.Once());
             });
         }
 
@@ -116,7 +116,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
                 f.Command.VerifySet(c => c.CommandText = ClientOutboxPersister.RemoveEntriesOlderThanCommandText, Times.Exactly(expectedBatchCount));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "BatchSize" && p.Value as int? == ClientOutboxPersister.CleanupBatchSize)), Times.Exactly(expectedBatchCount));
                 f.Parameters.Verify(ps => ps.Add(It.Is<DbParameter>(p => p.ParameterName == "DispatchedBefore" && p.Value as DateTime? == f.Now)), Times.Exactly(expectedBatchCount));
-                f.Connection.Protected().Verify("Dispose", Times.Once(), true);
+                f.Connection.As<IDisposable>().Verify(c => c.Dispose(), Times.Once());
             });
         }
     }
@@ -149,7 +149,9 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
             DateTimeService = new Mock<IDateTimeService>();
             Settings = new Mock<ReadOnlySettings>();
             Connection = new Mock<DbConnection>();
+            Connection.As<IDisposable>().Setup(_ => _.Dispose());
             Transaction = new Mock<DbTransaction> { CallBase = true };
+            Transaction.As<IDisposable>().Setup(_ => _.Dispose());
             Command = new Mock<DbCommand>();
             Parameters = new Mock<DbParameterCollection>();
             ClientOutboxTransaction = new SqlClientOutboxTransaction(Connection.Object, Transaction.Object);
@@ -270,7 +272,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
             {
                 var rowsAffected = ClientOutboxPersister.CleanupBatchSize > count ? count : ClientOutboxPersister.CleanupBatchSize;
                 
-                count = count - ClientOutboxPersister.CleanupBatchSize;
+                count -= ClientOutboxPersister.CleanupBatchSize;
 
                 return rowsAffected;
             });

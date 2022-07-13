@@ -72,7 +72,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
         [Test]
         public Task Stop_WhenNotStarted_ThenShouldNotThrowException()
         {
-            return TestExceptionAsync(f => f.Stop(), (f, r) => r.Should().NotThrow());
+            return TestExceptionAsync(f => f.Stop(), (_, r) => r.Should().NotThrowAsync());
         }
     }
 
@@ -151,7 +151,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
         public TimerServiceTestsFixture SetCallbackSuccess()
         {
             SuccessCallback.Setup(c => c(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
-                .Returns<DateTime, CancellationToken>((d, c) =>
+                .Returns<DateTime, CancellationToken>((_, _) =>
                 {
                     CallbackTaskCompletionSource.TrySetResult(null);
 
@@ -166,7 +166,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Services
             var isSuccess = false;
             
             SuccessCallback.Setup(c => c(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
-                .Returns<DateTime, CancellationToken>((d, c) =>
+                .Returns<DateTime, CancellationToken>((_, c) =>
                 {
                     TimerServiceCancellationToken = c;
                     

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Common;
 using NServiceBus;
-using NServiceBus.Persistence.Sql;
 using SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox;
 
 namespace SFA.DAS.NServiceBus.SqlServer.Configuration

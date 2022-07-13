@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host.Triggers;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using SFA.DAS.NServiceBus.AzureFunction.Hosting;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
 {
-    public class WhenGettingTriggerBinder
+    public class WhenGettingTriggerBinderNServiceBusConnectionString
     {
         [Test]
         public async Task ThenReturnsTriggerBinding()
         {
             //Arrange
-            var paramInfo = TestClass.GetParamInfoWithTriggerAttrubuteWithConnection();
+            var paramInfo = TestClass.GetParamInfoWithTriggerAttributeWithConnection();
             var context = new TriggerBindingProviderContext(paramInfo, new CancellationToken(false));
             var provider = new NServiceBusTriggerBindingProvider();
 
@@ -34,7 +30,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         public async Task ThenReturnsNullIfNoAttributeFound()
         {
             //Arrange
-            var paramInfo = TestClass.GetParamInfoWithoutTriggerAttrubute();
+            var paramInfo = TestClass.GetParamInfoWithoutTriggerAttribute();
             var context = new TriggerBindingProviderContext(paramInfo, new CancellationToken(false));
             var provider = new NServiceBusTriggerBindingProvider();
 
@@ -46,14 +42,13 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         }
 
         [Test]
-        public async Task ThenPopulatesAttributeConnectionIfNull()
+        public async Task ThenFormatsAndPopulatesAttributeConnectionIfNull()
         {
             //Arrange
-            var nServiceBusConnectionString = "new connection";
+            const string nServiceBusConnectionString = "Endpoint=sb://new connection/";
             Environment.SetEnvironmentVariable("NServiceBusConnectionString", nServiceBusConnectionString);
            
-            
-            var paramInfo = TestClass.GetParamInfoWithTriggerAttrubuteWithoutConnection();
+            var paramInfo = TestClass.GetParamInfoWithTriggerAttributeWithoutConnection();
             var context = new TriggerBindingProviderContext(paramInfo, new CancellationToken(false));
             var provider = new NServiceBusTriggerBindingProvider();
 
@@ -64,14 +59,14 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             var binding = result as NServiceBusTriggerBinding;
 
             Assert.IsNotNull(binding);
-            Assert.AreEqual(nServiceBusConnectionString, binding.Attribute.Connection);
+            Assert.AreEqual("new connection", binding.Attribute.Connection);
         }
 
         [Test]
-        public async Task ThenDoesNotPopulatesAttributeConnectionIfPopulated()
+        public async Task ThenDoesNotPopulateAttributeConnectionIfNotNull()
         {
             //Arrange
-            var paramInfo = TestClass.GetParamInfoWithTriggerAttrubuteWithConnection();
+            var paramInfo = TestClass.GetParamInfoWithTriggerAttributeWithConnection();
             var context = new TriggerBindingProviderContext(paramInfo, new CancellationToken(false));
             var provider = new NServiceBusTriggerBindingProvider();
 
@@ -83,37 +78,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
 
             Assert.IsNotNull(binding);
             Assert.AreEqual(TestClass.ConnectionString, binding.Attribute.Connection);
-        }
-
-        private class TestClass
-        {
-            public const string ConnectionString = "test_Connection";
-
-            public static ParameterInfo GetParamInfoWithTriggerAttrubuteWithoutConnection()
-            {
-                return GetParamsInfo(nameof(PlaceholderMethod)).First();
-            }
-
-            public static ParameterInfo GetParamInfoWithTriggerAttrubuteWithConnection()
-            {
-                return GetParamsInfo(nameof(PlaceholderMethod)).Skip(1).First();
-            }
-
-            public static ParameterInfo GetParamInfoWithoutTriggerAttrubute()
-            {
-                return GetParamsInfo(nameof(PlaceholderMethod)).Last();
-            }
-
-            private static IEnumerable<ParameterInfo> GetParamsInfo(string methodName)
-            {
-                return typeof(TestClass).GetMethod(methodName).GetParameters();
-            }
-
-            //This must be public for reflection to work
-            public static void PlaceholderMethod([NServiceBusTrigger]string trigger, [NServiceBusTrigger(Connection = ConnectionString)] string triggerWithConnection, string notATrigger)
-            {
-
-            }
         }
     }
 }

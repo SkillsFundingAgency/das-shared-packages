@@ -4,25 +4,24 @@ using System.Text;
 
 namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus
 {
-    public class RuleNameShortener
+    public static class RuleNameShortener
     {
         private const int AzureServiceBusRuleNameMaxLength = 50;
         
-        public string Shorten(string ruleName)
+        public static string Shorten(Type arg)
         {
-            if (ruleName.Length <= AzureServiceBusRuleNameMaxLength)
+            var ruleName = arg.FullName;
+            if (ruleName!.Length <= AzureServiceBusRuleNameMaxLength)
             {
                 return ruleName;
             }
-            
-            using (var md5 = new MD5CryptoServiceProvider())
-            {
-                var bytes = Encoding.Default.GetBytes(ruleName);
-                var hash = md5.ComputeHash(bytes);
-                var shortenedRuleName = new Guid(hash).ToString();
 
-                return shortenedRuleName;
-            }
+            using var md5 = MD5.Create();
+            var bytes = Encoding.Default.GetBytes(ruleName);
+            var hash = md5.ComputeHash(bytes);
+            var shortenedRuleName = new Guid(hash).ToString();
+
+            return shortenedRuleName;
         }
     }
 }

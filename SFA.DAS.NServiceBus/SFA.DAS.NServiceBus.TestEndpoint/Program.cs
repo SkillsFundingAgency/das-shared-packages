@@ -4,25 +4,39 @@ using NServiceBus;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
-using SFA.DAS.NServiceBus.NetStandardMessages.Events;
+using SFA.DAS.NServiceBus.TestMessages.Events;
 
-namespace SFA.DAS.NServiceBus.NetCoreEndpoint
+namespace SFA.DAS.NServiceBus.TestEndpoint
 {
-    internal class Program
+    internal static class Program
     {
         private const string AzureServiceBusConnectionString = "";
-        
+
         public static async Task Main()
         {
-            var endpointConfiguration = new EndpointConfiguration("SFA.DAS.NServiceBus.NetCoreEndpoint")
-                .UseAzureServiceBusTransport(AzureServiceBusConnectionString, r => {})
-                .UseErrorQueue("SFA.DAS.NServiceBus.NetCoreEndpoint-error")
+            var endpointConfiguration = new EndpointConfiguration(TestHarnessSettings.SampleQueueName)
+                .UseErrorQueue(TestHarnessSettings.SampleQueueName + "-error")
                 .UseInstallers()
                 .UseMessageConventions()
-                .UseNewtonsoftJsonSerializer();
-            
+                .UseNewtonsoftJsonSerializer()
+            ;
+           
+            if (!string.IsNullOrEmpty(AzureServiceBusConnectionString))
+            {
+                endpointConfiguration
+                    .UseAzureServiceBusTransport(AzureServiceBusConnectionString, _ => { });
+            }
+            else
+            {
+                endpointConfiguration
+                    .UseTransport<LearningTransport>()
+                    .Transactions(TransportTransactionMode.ReceiveOnly)
+                    .StorageDirectory(TestHarnessSettings.LearningTransportDirectory);
+            }
+
             var endpoint = await Endpoint.Start(endpointConfiguration);
 
+            Console.WriteLine("*** SFA.DAS.NServiceBus.TestEndpoint ***");
             Console.WriteLine("Press '1' to publish event");
             Console.WriteLine("Press any other key to exit");
 
@@ -34,7 +48,7 @@ namespace SFA.DAS.NServiceBus.NetCoreEndpoint
 
                 if (key.Key == ConsoleKey.D1)
                 {
-                    await endpoint.Publish(new NetCoreEvent(".NET Core"));
+                    await endpoint.Publish(new SampleEvent("Hello world!"));
                     
                     Console.WriteLine("Published event...");
                 }

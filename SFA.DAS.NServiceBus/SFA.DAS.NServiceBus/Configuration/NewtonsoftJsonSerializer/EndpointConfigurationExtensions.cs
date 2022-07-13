@@ -6,7 +6,7 @@ namespace SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer
     {
         public static EndpointConfiguration UseNewtonsoftJsonSerializer(this EndpointConfiguration config)
         {
-            config.UseSerialization<NewtonsoftSerializer>();
+            config.UseSerialization<global::NServiceBus.NewtonsoftJsonSerializer>();
 
             return config;
         }

@@ -6,5 +6,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Configuration
     {
         public static readonly string NServiceBusConnectionString = Environment.GetEnvironmentVariable("NServiceBusConnectionString");
         public static readonly string NServiceBusLicense = Environment.GetEnvironmentVariable("NServiceBusLicense");
+        public static readonly string LearningTransportStorageDirectory = Environment.GetEnvironmentVariable("LearningTransportStorageDirectory");
     }
 }

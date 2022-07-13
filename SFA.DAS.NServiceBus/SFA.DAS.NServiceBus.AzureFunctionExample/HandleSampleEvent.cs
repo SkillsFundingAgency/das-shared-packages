@@ -2,14 +2,14 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
-using SFA.DAS.NServiceBus.NetStandardMessages.Events;
+using SFA.DAS.NServiceBus.TestMessages.Events;
 
 namespace SFA.DAS.NServiceBus.AzureFunctionExample
 {
-    public class HandleEvent
+    public static class HandleSampleEvent
     {
-        [FunctionName("HandleSignedAgreementEvent")]
-        public static Task Run([NServiceBusTrigger(Endpoint = "SFA.DAS.NServiceBus.AzureFunctionExample")] NetFrameworkEvent message, ILogger log)
+        [FunctionName(nameof(HandleSampleEvent))]
+        public static Task Run([NServiceBusTrigger(Endpoint = TestHarnessSettings.SampleQueueName)] SampleEvent message, ILogger log)
         {
             log.LogInformation($"Message '{message.GetType().Name}' received with '{nameof(message.Data)}' property value '{message.Data}'");
 
