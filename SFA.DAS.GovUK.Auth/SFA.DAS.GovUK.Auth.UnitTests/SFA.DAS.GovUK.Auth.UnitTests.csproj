@@ -18,6 +18,7 @@
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="SFA.DAS.Testing" Version="3.0.169" />
         <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
+        <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
