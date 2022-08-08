@@ -10,7 +10,7 @@ using SFA.DAS.GovUK.Auth.Models;
 [assembly: InternalsVisibleTo("SFA.DAS.GovUK.Auth.UnitTests")]
 namespace SFA.DAS.GovUK.Auth.Services;
 
-internal class OidcService 
+internal class OidcService : IOidcService
 {
     private readonly HttpClient _httpClient;
 
