@@ -11,6 +11,7 @@ public class WhenAddingServicesToTheContainer
     
     [TestCase(typeof(IOidcService))]
     [TestCase(typeof(IAzureIdentityService))]
+    [TestCase(typeof(IJwtSecurityTokenService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var serviceCollection = new ServiceCollection();

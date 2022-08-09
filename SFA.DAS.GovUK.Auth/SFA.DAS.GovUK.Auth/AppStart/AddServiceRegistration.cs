@@ -15,6 +15,7 @@ internal static class AddServiceRegistrationExtension
         services.Configure<GovUkOidcConfiguration>(configuration.GetSection(nameof(GovUkOidcConfiguration)));
         services.AddHttpClient<IOidcService, OidcService>();
         services.AddTransient<IAzureIdentityService, AzureIdentityService>();
+        services.AddTransient<IJwtSecurityTokenService, JwtSecurityTokenService>();
         
     }
 }
