@@ -3,7 +3,7 @@ using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.Auth.Interfaces;
 
-internal interface IOidcService
+public interface IOidcService
 {
     Task<Token?> GetToken(OpenIdConnectMessage openIdConnectMessage, string clientAssertion);
 }

@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Moq;
 using Moq.Protected;
 using SFA.DAS.GovUK.Auth.Configuration;
+using SFA.DAS.GovUK.Auth.Interfaces;
 using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -25,7 +26,7 @@ public class WhenGettingToken
 
         Assert.Throws<ArgumentException>(() =>
         {
-            _ = new Auth.Services.OidcService(client, config);
+            _ = new Auth.Services.OidcService(client, Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
         });
     }
     
@@ -46,7 +47,7 @@ public class WhenGettingToken
         var expectedUrl = new Uri($"{config.Value.BaseUrl}/token");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
-        var service = new Auth.Services.OidcService(client, config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
         
         //Act
         var actual = await service.GetToken(openIdConnectMessage, clientAssertion);
@@ -84,7 +85,7 @@ public class WhenGettingToken
         var expectedUrl = new Uri($"{config.Value.BaseUrl}/token");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
-        var service = new Auth.Services.OidcService(client, config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
         
         //Act
         await service.GetToken(openIdConnectMessage, clientAssertion);
