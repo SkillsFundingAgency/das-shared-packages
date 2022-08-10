@@ -34,8 +34,8 @@ public class WhenGettingToken
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
-        jwtService.Setup(x => x.CreateToken($"{config.Value.ClientId}", $"{config.Value.BaseUrl}/token", 
-                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",$"{config.Value.ClientId}") && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
+        jwtService.Setup(x => x.CreateToken(config.Value.ClientId, $"{config.Value.BaseUrl}/token", 
+                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
         var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config);
@@ -77,8 +77,8 @@ public class WhenGettingToken
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
-        jwtService.Setup(x => x.CreateToken($"{config.Value.ClientId}", $"{config.Value.BaseUrl}/token", 
-                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",$"{config.Value.ClientId}") && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
+        jwtService.Setup(x => x.CreateToken(config.Value.ClientId, $"{config.Value.BaseUrl}/token", 
+                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
         var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config);

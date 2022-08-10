@@ -6,16 +6,15 @@ namespace SFA.DAS.GovUK.Auth.Services;
 
 internal class AzureIdentityService : IAzureIdentityService
 {
-    public Task<string> AuthenticationCallback(string authority, string resource, string scope)
+    public async Task<string> AuthenticationCallback(string authority, string resource, string scope)
     {
-        var azureResource = "https://vault.azure.net/.default";
         var chainedTokenCredential = new ChainedTokenCredential(
             new ManagedIdentityCredential(),
             new AzureCliCredential());
         
-        var token = chainedTokenCredential.GetTokenAsync(
-            new TokenRequestContext(scopes: new [] { azureResource })).Result;
+        var token = await chainedTokenCredential.GetTokenAsync(
+            new TokenRequestContext(scopes: new [] {"https://vault.azure.net/.default"}));
         
-        return Task.FromResult(token.Token);
+        return token.Token;
     }
 }

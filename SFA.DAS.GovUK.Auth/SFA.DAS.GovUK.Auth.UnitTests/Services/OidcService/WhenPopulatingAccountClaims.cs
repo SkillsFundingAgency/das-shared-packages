@@ -175,6 +175,7 @@ public class WhenPopulatingAccountClaims
         tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals("email")).Value.Should()
             .Be(user.Email);
     }
+    
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Not_Populated_If_No_Value_Returned(
         string accessToken,

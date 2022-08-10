@@ -8,7 +8,6 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart;
 
 public class WhenAddingServicesToTheContainer
 {
-    
     [TestCase(typeof(IOidcService))]
     [TestCase(typeof(IAzureIdentityService))]
     [TestCase(typeof(IJwtSecurityTokenService))]
@@ -20,10 +19,10 @@ public class WhenAddingServicesToTheContainer
 
         var type = provider.GetService(toResolve);
             
-        Assert.IsNotNull(type);
+        Assert.That(type, Is.Not.Null);
     }
 
-    private void SetupServiceCollection(ServiceCollection serviceCollection)
+    private static void SetupServiceCollection(IServiceCollection serviceCollection)
     {   
         var configuration = GenerateConfiguration();
         serviceCollection.AddServiceRegistration(configuration);
