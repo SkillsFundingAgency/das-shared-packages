@@ -1,7 +1,7 @@
 using Moq;
 using Moq.Protected;
 
-namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
+namespace SFA.DAS.GovUK.Auth.UnitTests;
 
 public static class MessageHandler
 {

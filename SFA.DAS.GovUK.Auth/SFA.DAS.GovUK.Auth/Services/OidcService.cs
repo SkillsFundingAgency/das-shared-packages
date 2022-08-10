@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -39,7 +40,58 @@ internal class OidcService : IOidcService
         _httpClient.BaseAddress = new Uri(configuration.Value.BaseUrl);
     }
 
-    public string CreateJwtAssertion()
+    public async Task<Token?> GetToken(OpenIdConnectMessage? openIdConnectMessage)
+    {
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "/token")
+        {
+            Headers = 
+            {
+                Accept = { new MediaTypeWithQualityHeaderValue("*/*"), new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") },
+                UserAgent = { new ProductInfoHeaderValue("DfEApprenticeships","1") },
+            }
+        };
+        
+        httpRequestMessage.Content = new FormUrlEncodedContent (new List<KeyValuePair<string, string>>
+        {
+            new ("grant_type","authorization_code"),
+            new ("code",openIdConnectMessage.Code),
+            new ("redirect_uri",openIdConnectMessage.RedirectUri),
+            new ("client_assertion_type","urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
+            new ("client_assertion", CreateJwtAssertion()),
+        });
+
+        httpRequestMessage.Content.Headers.Clear();
+        httpRequestMessage.Content.Headers.Add("Content-Type","application/x-www-form-urlencoded");
+                            
+                        
+        var response = await _httpClient.SendAsync(httpRequestMessage);
+        var valueString = await response.Content.ReadAsStringAsync();
+        var content = JsonSerializer.Deserialize<Token>(valueString);
+
+        return content;
+    }
+
+    public async Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext)
+    {
+        var accessToken = tokenValidatedContext.TokenEndpointResponse.Parameters["access_token"];
+
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo")
+        {
+            
+            Headers = 
+            {
+                UserAgent = { new ProductInfoHeaderValue("DfEApprenticeships","1") },
+                Authorization = new AuthenticationHeaderValue("Bearer",accessToken)
+            }
+        };
+        var response = await _httpClient.SendAsync(httpRequestMessage);
+        var valueString = response.Content.ReadAsStringAsync().Result;
+        var content = JsonSerializer.Deserialize<GovUkUser>(valueString);
+        
+        tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim("email", content.Email));
+    }
+
+    private string CreateJwtAssertion()
     {
         var jti = Guid.NewGuid().ToString();
         var claimsIdentity = new ClaimsIdentity(
@@ -61,36 +113,5 @@ internal class OidcService : IOidcService
             $"{_configuration.BaseUrl}/token", claimsIdentity, signingCredentials);
         
         return value;
-    }
-    
-    public async Task<Token?> GetToken(OpenIdConnectMessage openIdConnectMessage, string clientAssertion)
-    {
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "/token")
-        {
-            Headers = 
-            {
-                Accept = { new MediaTypeWithQualityHeaderValue("*/*"), new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") },
-                UserAgent = { new ProductInfoHeaderValue("DfEApprenticeships","1") },
-            }
-        };
-        
-        httpRequestMessage.Content = new FormUrlEncodedContent (new List<KeyValuePair<string, string>>
-        {
-            new ("grant_type","authorization_code"),
-            new ("code",openIdConnectMessage.Code),
-            new ("redirect_uri",openIdConnectMessage.RedirectUri),
-            new ("client_assertion_type","urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
-            new ("client_assertion",clientAssertion),
-        });
-
-        httpRequestMessage.Content.Headers.Clear();
-        httpRequestMessage.Content.Headers.Add("Content-Type","application/x-www-form-urlencoded");
-                            
-                        
-        var response = await _httpClient.SendAsync(httpRequestMessage);
-        var valueString = await response.Content.ReadAsStringAsync();
-        var content = JsonSerializer.Deserialize<Token>(valueString);
-
-        return content;
     }
 }
