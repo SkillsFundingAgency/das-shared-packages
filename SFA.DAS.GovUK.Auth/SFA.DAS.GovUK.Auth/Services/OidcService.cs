@@ -31,12 +31,6 @@ internal class OidcService : IOidcService
         _azureIdentityService = azureIdentityService;
         _jwtSecurityTokenService = jwtSecurityTokenService;
         _configuration = configuration.Value;
-
-        if (configuration.Value.BaseUrl == null)
-        {
-            throw new ArgumentException("Value cannot be null. (Parameter 'configuration.Value.BaseUrl')", nameof(configuration.Value.BaseUrl));
-        }
-        
         _httpClient.BaseAddress = new Uri(configuration.Value.BaseUrl);
     }
 
@@ -54,8 +48,8 @@ internal class OidcService : IOidcService
         httpRequestMessage.Content = new FormUrlEncodedContent (new List<KeyValuePair<string, string>>
         {
             new ("grant_type","authorization_code"),
-            new ("code",openIdConnectMessage.Code),
-            new ("redirect_uri",openIdConnectMessage.RedirectUri),
+            new ("code",openIdConnectMessage?.Code ?? ""),
+            new ("redirect_uri",openIdConnectMessage?.RedirectUri  ?? ""),
             new ("client_assertion_type","urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
             new ("client_assertion", CreateJwtAssertion()),
         });
@@ -73,6 +67,10 @@ internal class OidcService : IOidcService
 
     public async Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext)
     {
+        if (tokenValidatedContext.TokenEndpointResponse == null || tokenValidatedContext.Principal == null)
+        {
+            return;
+        }
         var accessToken = tokenValidatedContext.TokenEndpointResponse.Parameters["access_token"];
 
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo")
@@ -87,8 +85,11 @@ internal class OidcService : IOidcService
         var response = await _httpClient.SendAsync(httpRequestMessage);
         var valueString = response.Content.ReadAsStringAsync().Result;
         var content = JsonSerializer.Deserialize<GovUkUser>(valueString);
+        if (content?.Email != null)
+        {
+            tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim("email", content.Email));    
+        }
         
-        tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim("email", content.Email));
     }
 
     private string CreateJwtAssertion()

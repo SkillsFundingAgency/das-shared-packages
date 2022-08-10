@@ -12,7 +12,7 @@ internal static class AddServiceRegistrationExtension
     {
         if(!configuration.GetSection(nameof(GovUkOidcConfiguration)).GetChildren().Any())
         {
-            throw new Exception("Cannot find GovUkOidcConfiguration in configuration. Please add a section called GovUkOidcConfiguration with BaseUrl, ClientId and KeyVaultIdentifier properties.");
+            throw new ArgumentException("Cannot find GovUkOidcConfiguration in configuration. Please add a section called GovUkOidcConfiguration with BaseUrl, ClientId and KeyVaultIdentifier properties.");
         }
         services.AddOptions();
         services.Configure<GovUkOidcConfiguration>(configuration.GetSection(nameof(GovUkOidcConfiguration)));

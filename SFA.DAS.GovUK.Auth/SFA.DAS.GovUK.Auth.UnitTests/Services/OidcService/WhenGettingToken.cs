@@ -17,22 +17,6 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
 public class WhenGettingToken
 {
     [Test, MoqAutoData]
-    public void Then_If_The_Config_Is_Not_Valid_Then_Exception_Thrown(
-        string clientAssertion,
-        Token token,
-        OpenIdConnectMessage openIdConnectMessage,
-        IOptions<GovUkOidcConfiguration> config)
-    {
-        config.Value.BaseUrl = null;
-        var client = new HttpClient(Mock.Of<HttpMessageHandler>());
-
-        Assert.Throws<ArgumentException>(() =>
-        {
-            _ = new Auth.Services.OidcService(client, Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
-        });
-    }
-    
-    [Test, MoqAutoData]
     public async Task Then_The_Endpoint_Is_Called_And_Token_Returned(
         string clientAssertion,
         Token token,
@@ -50,8 +34,8 @@ public class WhenGettingToken
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
-        jwtService.Setup(x => x.CreateToken(config.Value.ClientId, $"{config.Value.BaseUrl}/token", 
-                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
+        jwtService.Setup(x => x.CreateToken($"{config.Value.ClientId}", $"{config.Value.BaseUrl}/token", 
+                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",$"{config.Value.ClientId}") && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
         var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config);
@@ -93,8 +77,8 @@ public class WhenGettingToken
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
-        jwtService.Setup(x => x.CreateToken(config.Value.ClientId, $"{config.Value.BaseUrl}/token", 
-                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
+        jwtService.Setup(x => x.CreateToken($"{config.Value.ClientId}", $"{config.Value.BaseUrl}/token", 
+                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",$"{config.Value.ClientId}") && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
         var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config);

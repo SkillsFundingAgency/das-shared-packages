@@ -45,7 +45,7 @@ internal static class ConfigureGovUkAuthenticationExtension
                 
                 options.Events.OnRemoteFailure = c =>
                 {
-                    if (c.Failure.Message.Contains("Correlation failed"))
+                    if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
                     {
                         c.Response.Redirect("/");
                         c.HandleResponse();
