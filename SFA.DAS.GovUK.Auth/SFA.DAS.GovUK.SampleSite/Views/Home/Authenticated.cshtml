@@ -1,0 +1,9 @@
+@{
+    Layout = "_Layout";
+}
+
+<h1 class="govuk-heading-xl">POC Auth - You've signed in</h1>
+
+<p>@Context.User.Identity?.Name</p>
+<p>@Context.User.Claims.FirstOrDefault(c=>c.Type.Equals("email"))?.Value</p>
+<a asp-action="SigningOut" asp-controller="Home" class="govuk-button">Sign Out</a>
