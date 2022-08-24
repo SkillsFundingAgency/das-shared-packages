@@ -1,94 +1,38 @@
-name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
-
-parameters:
-  - name: PublishBranchOfNugetPackage
-    type: boolean
-    default: false
-
 trigger:
   batch: true
   branches:
     include:
-      - "*"
+      - "master"
   paths:
     include:
-      - 'SFA.DAS.Api.Common'
+    - pipeline-templates
+    - SFA.DAS.Api.Common
 
-pr: none
-
-variables:
-  BuildConfiguration: 'Release'
-  Build.MajorNumber: '1'
-  Build.MinorNumber: '0'
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.Api.Common
 
 resources:
-    repositories:
-    - repository: self
-    - repository: das-platform-building-blocks
-      type: github
-      name: SkillsFundingAgency/das-platform-building-blocks
-      ref: refs/heads/master
-      endpoint: 'SkillsFundingAgency'
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/1.0.2
+    endpoint: SkillsFundingAgency
 
 stages:
-- stage: BuildAndTest
-  displayName: 'Build and test'
+- stage: Build
   jobs:
-  - job: 'BuildAndTest'
-    pool:
-      name: 'DAS - Continuous Integration Agents'
-    workspace:
-      clean: all
-    steps:
-    - task: DotNetCoreCLI@2
-      displayName: 'dotnet restore'
-      inputs:
-        command: restore
-        projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
-
-    - task: DotNetCoreCLI@2
-      displayName: 'dotnet build'
-      inputs:
-        projects: SFA.DAS.Api.Common/SFA.DAS.Api.Common.sln
-        arguments: '/p:Configuration=$(BuildConfiguration)'
-
-    - task: DotNetCoreCLI@2
-      displayName: 'dotnet pack'
-      inputs:
-        command: pack
-        packagesToPack: SFA.DAS.Api.Common/SFA.DAS.Api.Common/SFA.DAS.Api.Common.csproj
-        versioningScheme: byBuildNumber
-        packDirectory: $(Build.ArtifactStagingDirectory)/NugetPackages
-
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish Artifact: NugetPackages'
-      inputs:
-        targetPath: $(Build.ArtifactStagingDirectory)/NugetPackages
-        artifactName: NugetPackages
-
-- stage: NugetPublish
-  displayName: 'Publish Nuget Package'
-  pool:
-    name: "DAS - Continuous Deployment Agents"
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ${{ parameters.PublishBranchOfNugetPackage }}))
-  jobs:
-  - job: 'CleanArtifacts'
-    displayName: Clean artifacts directory
-    workspace:
-      clean: all
-  - deployment: 'NugetPush'
-    dependsOn: 'CleanArtifacts'
-    environment: 'Nuget'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: NugetPackages
-          - task: NuGetCommand@2
-            displayName: 'NuGet push'
-            inputs:
-              command: push
-              packagesToPush: '$(Pipeline.Workspace)/NugetPackages/*.nupkg;!$(Pipeline.Workspace)/NugetPackages/*.symbols.nupkg'
-              nuGetFeedType: external
-              publishFeedCredentials: 'SFA NuGet'
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.Api.Common
+      DotNetStandardPackagesToPack: SFA.DAS.Api.Common/SFA.DAS.Api.Common/SFA.DAS.Api.Common.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Api.Common
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

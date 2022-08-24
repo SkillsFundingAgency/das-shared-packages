@@ -6,7 +6,7 @@ trigger:
   paths:
     include:
     - pipeline-templates
-    - SFA.DAS.Caches
+    - SFA.DAS.Authentication/SFA.DAS.Authentication
 
 pr:
   autoCancel: true
@@ -16,7 +16,7 @@ pr:
   paths:
     include:
     - pipeline-templates
-    - SFA.DAS.Caches
+    - SFA.DAS.Authentication/SFA.DAS.Authentication
 
 resources:
   repositories:
@@ -30,9 +30,9 @@ resources:
 stages:
 - stage: Build
   jobs:
-  - template: ../pipeline-templates/job/code-build.yml
+  - template: ../../pipeline-templates/job/code-build.yml
     parameters:
-      WorkingDirectory: SFA.DAS.Caches
-      DotNetStandardPackagesToPack: SFA.DAS.Caches/SFA.DAS.Caches/SFA.DAS.Caches.csproj
-      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Caches
+      WorkingDirectory: SFA.DAS.Authentication/SFA.DAS.Authentication
+      DotNetStandardPackagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication/SFA.DAS.Authentication.csproj;
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Authentication
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

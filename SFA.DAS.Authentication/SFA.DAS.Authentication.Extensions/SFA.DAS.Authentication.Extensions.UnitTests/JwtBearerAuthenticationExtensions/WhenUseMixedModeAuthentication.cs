@@ -6,7 +6,7 @@ using Moq;
 using SFA.DAS.NLog.Logger;
 using Microsoft.Owin.Testing;
 
-namespace SFA.DAS.Authentication.Extensions.UnitTest.JwtBearerAuthenticationExtensions
+namespace SFA.DAS.Authentication.Extensions.UnitTests.JwtBearerAuthenticationExtensions
 {
     [TestFixture]
     public class WhenUseMixedModeAuthentication
