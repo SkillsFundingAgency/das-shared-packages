@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Security.Claims;
 
-namespace SFA.DAS.Authentication.Extensions.UnitTest.DasJwtSecurityTokenHandler
+namespace SFA.DAS.Authentication.Extensions.UnitTests.DasJwtSecurityTokenHandler
 {
     [TestFixture]
     public class WhenValidateToken
