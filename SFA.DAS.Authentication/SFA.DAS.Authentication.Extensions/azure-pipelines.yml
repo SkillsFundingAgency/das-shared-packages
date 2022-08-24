@@ -15,7 +15,7 @@ workspace:
 
 pool:
  vmImage: 'vs2017-win2016'
-   
+
 variables:
   BuildConfiguration: 'Release'
   Build.MajorNumber: '1'
@@ -27,7 +27,7 @@ resources:
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/heads/master
-    endpoint: "GitHub (SFA)"
+    endpoint: "SkillsFundingAgency"
 
 steps:
 - task: DotNetCoreCLI@2
@@ -48,7 +48,7 @@ steps:
     command: pack
     packagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.csproj
     versioningScheme: byBuildNumber
-    
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
   inputs:
