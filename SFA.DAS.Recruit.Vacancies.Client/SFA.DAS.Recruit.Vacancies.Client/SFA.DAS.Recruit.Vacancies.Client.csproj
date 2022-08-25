@@ -85,6 +85,10 @@
     <Compile Include="Entities\ApplicationQualification.cs" />
     <Compile Include="Entities\ApplicationTrainingCourse.cs" />
     <Compile Include="Entities\ApplicationWorkExperience.cs" />
+    <Compile Include="Entities\ApprenticeshipLevel.cs" />
+    <Compile Include="Entities\ApprenticeshipProgramme.cs" />
+    <Compile Include="Entities\ApprenticeshipProgrammesReferenceData.cs" />
+    <Compile Include="Entities\TrainingType.cs" />
     <Compile Include="Entities\Vacancy.cs" />
     <Compile Include="Entities\Qualification.cs" />
     <Compile Include="Entities\TrainingProvider.cs" />

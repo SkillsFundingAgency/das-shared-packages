@@ -27,6 +27,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public int NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
         public string ProgrammeId { get; set; }
+        public string ProgrammeTitle { get; set; }
         public string ProgrammeLevel { get; set; }
         public string ProgrammeType { get; set; }
         public string ProviderContactEmail { get; set; }

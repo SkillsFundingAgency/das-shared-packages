@@ -51,6 +51,7 @@
     <Compile Include="ApplicationSubmitTests.cs" />
     <Compile Include="CandidateDeleteTests.cs" />
     <Compile Include="ApplicationWithdrawTests.cs" />
+    <Compile Include="ClientTests\GetApprenticeshipProgrammesTests.cs" />
     <Compile Include="ClientTests\GetVacancyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VacancyVersionHelperTests.cs" />
