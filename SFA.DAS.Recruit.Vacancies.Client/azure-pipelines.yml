@@ -1,0 +1,38 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.Recruit.Vacancies.Client
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.Recruit.Vacancies.Client
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/1.0.2
+    endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.Recruit.Vacancies.Client
+      DotNetFrameworkPackagesToPack: SFA.DAS.Recruit.Vacancies.Client/SFA.DAS.Recruit.Vacancies.Client/SFA.DAS.Recruit.Vacancies.Client.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Recruit.Vacancies.Client
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

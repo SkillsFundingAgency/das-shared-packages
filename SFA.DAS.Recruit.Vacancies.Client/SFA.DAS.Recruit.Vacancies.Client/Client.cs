@@ -22,6 +22,9 @@ namespace SFA.DAS.Recruit.Vacancies.Client
         private const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
         private const string CandidateDeleteQueueName = "candidate-delete-queue";
 
+        private const string ReferenceDataCollectionName = "referenceData";
+        private const string ApprenticeshipProgrammesId = "ApprenticeshipProgrammes";
+
         private readonly string _connectionString;
         private readonly string _databaseName;
         private readonly string _collectionName;
@@ -40,7 +43,9 @@ namespace SFA.DAS.Recruit.Vacancies.Client
                                                                           t == typeof(Vacancy) ||
                                                                           t == typeof(Qualification) ||
                                                                           t == typeof(TrainingProvider) ||
-                                                                          t == typeof(Wage));
+                                                                          t == typeof(Wage) ||
+                                                                          t == typeof(ApprenticeshipProgrammesReferenceData) ||
+                                                                          t == typeof(ApprenticeshipProgramme));
         }
         
         public Client(string connectionString, string databaseName, string collectionName, string storageConnection)
@@ -146,6 +151,17 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             return result;
         }
 
+        public async Task<List<ApprenticeshipProgramme>> GetApprenticeshipProgrammes()
+        {
+            var collection = GetApprenticeshipProgrammesReferenceDataCollection();
+
+            var apprenticeshipProgrammesReferenceData = await collection
+                .Find(refData => refData.Id.Equals(ApprenticeshipProgrammesId))
+                .SingleAsync();
+
+            return apprenticeshipProgrammesReferenceData.Data;
+        }
+
         private IMongoCollection<Vacancy> GetCollection()
         {
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_connectionString));
@@ -154,6 +170,18 @@ namespace SFA.DAS.Recruit.Vacancies.Client
             var client = new MongoClient(settings);
             var database = client.GetDatabase(_databaseName);
             var collection = database.GetCollection<Vacancy>(_collectionName);
+
+            return collection;
+        }
+
+        private IMongoCollection<ApprenticeshipProgrammesReferenceData> GetApprenticeshipProgrammesReferenceDataCollection()
+        {
+            var settings = MongoClientSettings.FromUrl(new MongoUrl(_connectionString));
+            settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
+
+            var client = new MongoClient(settings);
+            var database = client.GetDatabase(_databaseName);
+            var collection = database.GetCollection<ApprenticeshipProgrammesReferenceData>(ReferenceDataCollectionName);
 
             return collection;
         }
