@@ -109,7 +109,10 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             {
                 await _listener.CallOnMessage(_messageContext, Mock.Of<IDispatchMessages>());
             }
-            catch { }
+            catch
+            {
+                // blank
+            }
 
             //Assert
             onMessageErroredCalled.Should().Be(true);

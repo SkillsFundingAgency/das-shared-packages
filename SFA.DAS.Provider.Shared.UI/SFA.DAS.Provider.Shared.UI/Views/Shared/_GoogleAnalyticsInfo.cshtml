@@ -1,8 +1,12 @@
 ﻿@using System.Web
 @using Microsoft.AspNetCore.Http
 @using SFA.DAS.Provider.Shared.UI.Models
+@using SFA.DAS.Provider.Shared.UI.Extensions
+@{
+    var enableCsp = ViewData.EnableCsp();
+}
 
-<script>
+<script nws-csp-add-nonce="@enableCsp">
     @if (ViewBag.GaData == null)
     {
         ViewBag.GaData = new GaData();

@@ -1,0 +1,38 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.OidcMiddleware
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.OidcMiddleware
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.64
+    endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.OidcMiddleware
+      DotNetFrameworkPackagesToPack: SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.OidcMiddleware
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

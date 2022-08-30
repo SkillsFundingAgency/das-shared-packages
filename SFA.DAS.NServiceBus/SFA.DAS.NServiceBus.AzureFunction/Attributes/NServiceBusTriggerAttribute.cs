@@ -9,5 +9,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Attributes
     {
         public string Endpoint { get; set; }
         public string Connection { get; set; }
+        public string LearningTransportStorageDirectory { get; set; }
     }
 }

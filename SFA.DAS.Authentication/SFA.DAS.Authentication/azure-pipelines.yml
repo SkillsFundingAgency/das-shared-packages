@@ -1,0 +1,38 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.Authentication/SFA.DAS.Authentication
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.Authentication/SFA.DAS.Authentication
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/1.0.2
+    endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.Authentication/SFA.DAS.Authentication
+      DotNetStandardPackagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication/SFA.DAS.Authentication.csproj;
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Authentication
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

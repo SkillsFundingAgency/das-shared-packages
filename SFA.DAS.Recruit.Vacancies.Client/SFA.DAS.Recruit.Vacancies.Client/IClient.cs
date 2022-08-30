@@ -15,5 +15,6 @@ namespace SFA.DAS.Recruit.Vacancies.Client
         void WithdrawApplication(long vacancyReference, Guid candidateId);
         void DeleteCandidate(Guid candidateId);
         Vacancy GetLiveVacancy(long vacancyReference);
+        Task<List<ApprenticeshipProgramme>> GetApprenticeshipProgrammes();
     }
 }

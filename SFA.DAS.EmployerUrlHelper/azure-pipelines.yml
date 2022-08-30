@@ -28,7 +28,7 @@ resources:
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/heads/master
-    endpoint: "GitHub (SFA)"
+    endpoint: "SkillsFundingAgency"
 
 steps:
 - task: DotNetCoreCLI@2
@@ -49,8 +49,6 @@ steps:
     command: test
     projects: SFA.DAS.EmployerUrlHelper/SFA.DAS.EmployerUrlHelper.UnitTests/SFA.DAS.EmployerUrlHelper.UnitTests.csproj
     arguments: '/p:Configuration=$(BuildConfiguration)'
-
-- template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'

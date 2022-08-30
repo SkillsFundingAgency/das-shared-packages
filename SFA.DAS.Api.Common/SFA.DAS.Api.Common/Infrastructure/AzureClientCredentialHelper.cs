@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Azure.Services.AppAuthentication;
+using Azure.Core;
+using Azure.Identity;
 using SFA.DAS.Api.Common.Interfaces;
 
 namespace SFA.DAS.Api.Common.Infrastructure
@@ -8,10 +9,12 @@ namespace SFA.DAS.Api.Common.Infrastructure
     {
         public async Task<string> GetAccessTokenAsync(string identifier)
         {
-            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(identifier);
+            var azureServiceTokenProvider = new ChainedTokenCredential(
+                new ManagedIdentityCredential(),
+                new AzureCliCredential());
+            var accessToken = await azureServiceTokenProvider.GetTokenAsync(new TokenRequestContext(scopes:new[]{identifier}));
          
-            return accessToken;
+            return accessToken.Token;
         }
     }
 }

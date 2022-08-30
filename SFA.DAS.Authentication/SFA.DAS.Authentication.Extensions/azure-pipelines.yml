@@ -1,70 +1,41 @@
-name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
 trigger:
   batch: true
   branches:
     include:
-      - "*"
+      - "master"
   paths:
     include:
-      - 'SFA.DAS.Authentication'
+    - pipeline-templates
+    - SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions
 
-pr: none
-
-workspace:
-    clean: all
-
-pool:
- vmImage: 'vs2017-win2016'
-   
-variables:
-  BuildConfiguration: 'Release'
-  Build.MajorNumber: '1'
-  Build.MinorNumber: '0'
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions
 
 resources:
   repositories:
+  - repository: self
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/heads/master
-    endpoint: "GitHub (SFA)"
+    ref: refs/tags/1.0.2
+    endpoint: SkillsFundingAgency
 
-steps:
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet restore'
-  inputs:
-    command: restore
-    projects: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.sln
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    projects: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.sln
-    arguments: '/p:Configuration=$(BuildConfiguration)'
-
-- template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack'
-  inputs:
-    command: pack
-    packagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.csproj
-    versioningScheme: byBuildNumber
-    
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack'
-  inputs:
-    command: pack
-    packagesToPack: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.Legacy/SFA.DAS.Authentication.Extensions.Legacy.csproj
-    versioningScheme: byBuildNumber
-
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    SourceFolder: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions
-    Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-
+stages:
+- stage: Build
+  jobs:
+  - template: ../../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions
+      DotNetFrameworkPackagesToPack: >
+        SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.csproj;
+        SFA.DAS.Authentication/SFA.DAS.Authentication.Extensions/SFA.DAS.Authentication.Extensions.Legacy/SFA.DAS.Authentication.Extensions.Legacy.csproj;
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Authentication.Extensions
+      SdkStyleFrameworkProjects: true
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

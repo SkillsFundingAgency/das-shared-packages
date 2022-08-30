@@ -1,7 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus.Primitives;
+using Azure.Identity;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using NServiceBus;
@@ -14,9 +15,11 @@ using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 {
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
     public class NServiceBusListener : IListener
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {
-        private string _poisonMessageQueue;
+        private readonly string _poisonMessageQueue;
         private const int ImmediateRetryCount = 3;
 
         private readonly ITriggeredFunctionExecutor _executor;
@@ -41,7 +44,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var nameShortener = new RuleNameShortener();
             var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.Endpoint, OnMessage, _poisonMessageQueue);
 
             if (_nServiceBusOptions.EndpointConfiguration != null)
@@ -50,19 +52,15 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             }
             else
             {
-                var tokenProvider = TokenProvider.CreateManagedIdentityTokenProvider();
-
-                endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
-                    .RuleNameShortener(nameShortener.Shorten)
-                    .CustomTokenProvider(tokenProvider)
-                    .ConnectionString(_attribute.Connection)
-                    .Transactions(TransportTransactionMode.ReceiveOnly);
+                if (IsLearningTransportEndpoint()) SetupLearningTransportEndpoint(endpointConfigurationRaw);
+                else SetupAzureServiceBusTransportEndpoint(endpointConfigurationRaw);
             }
 
             if (!string.IsNullOrEmpty(EnvironmentVariables.NServiceBusLicense))
             {
                 endpointConfigurationRaw.UseLicense(EnvironmentVariables.NServiceBusLicense);
             }
+
             endpointConfigurationRaw.DefaultErrorHandlingPolicy(_poisonMessageQueue, ImmediateRetryCount);
             endpointConfigurationRaw.AutoCreateQueue();
 
@@ -74,6 +72,29 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             }
 
             await _endpoint.SubscriptionManager.Subscribe(_parameter.ParameterType, new ContextBag());
+        }
+
+        private bool IsLearningTransportEndpoint() => _attribute.Connection.Contains("LearningEndpoint");
+
+        private void SetupAzureServiceBusTransportEndpoint(RawEndpointConfiguration endpointConfigurationRaw)
+        {
+            endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
+                .ConnectionString(_attribute.Connection)
+                .Transactions(TransportTransactionMode.ReceiveOnly)
+                .CustomTokenCredential(new DefaultAzureCredential())
+                .SubscriptionRuleNamingConvention(RuleNameShortener.Shorten)
+                ;
+        }
+
+        private void SetupLearningTransportEndpoint(RawEndpointConfiguration endpointConfigurationRaw)
+        {
+            if (string.IsNullOrEmpty(_attribute.LearningTransportStorageDirectory))
+                throw new ArgumentException("LearningTransportStorageDirectory must be set");
+            
+            endpointConfigurationRaw.UseTransport<LearningTransport>()
+                .Transactions(TransportTransactionMode.ReceiveOnly)
+                .StorageDirectory(_attribute.LearningTransportStorageDirectory)
+                ;
         }
 
         protected async Task OnMessage(MessageContext context, IDispatchMessages dispatcher)
@@ -126,6 +147,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
         public void Dispose()
         {
+            // Method intentionally left empty.
         }
     }
 }

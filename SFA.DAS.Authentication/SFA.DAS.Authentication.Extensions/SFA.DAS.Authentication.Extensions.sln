@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Authentication.Extensions", "SFA.DAS.Authentication.Extensions\SFA.DAS.Authentication.Extensions.csproj", "{A1F55289-7977-4232-97D6-AC5C73EDC747}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Authentication.Extensions.UnitTest", "SFA.DAS.Authentication.Extensions.UnitTest\SFA.DAS.Authentication.Extensions.UnitTest.csproj", "{659EDA35-284B-4DCD-8401-8D51B036A9DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Authentication.Extensions.UnitTests", "SFA.DAS.Authentication.Extensions.UnitTests\SFA.DAS.Authentication.Extensions.UnitTests.csproj", "{659EDA35-284B-4DCD-8401-8D51B036A9DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Authentication.Extensions.Legacy", "SFA.DAS.Authentication.Extensions.Legacy\SFA.DAS.Authentication.Extensions.Legacy.csproj", "{3469D2CD-F14D-4FA3-B4C7-6C9210C5C246}"
 EndProject

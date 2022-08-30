@@ -1,55 +1,39 @@
-name: $(Build.MajorNumber).$(Build.MinorNumber)$(Rev:.r)
 trigger:
   batch: true
   branches:
     include:
-      - "*"
+      - "master"
   paths:
     include:
-      - 'SFA.DAS.MA.Shared.UI'
+    - pipeline-templates
+    - SFA.DAS.MA.Shared.UI
 
-pr: none
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.MA.Shared.UI
 
-workspace:
-    clean: all
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.64
+    endpoint: SkillsFundingAgency
 
-pool:
-  name: 'DAS - Continuous Integration'
-  demands: 
-  - Agent.OS -equals Windows_NT
-
-variables:
-  BuildConfiguration: 'Release'
-  Build.MajorNumber: '1'
-  Build.MinorNumber: '1'
-  BuildPlatform: 'any cpu'
-
-steps:    
-- task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 4.3.0'
-  inputs:
-    versionSpec: 4.x
-
-- task: NuGetCommand@2
-  displayName: 'NuGet restore'
-  inputs:
-    restoreSolution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    
-- task: VSBuild@1
-  displayName: 'VS Build'
-  inputs:
-    solution: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.sln
-    vsVersion: 15.0
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
-    platform: '$(BuildPlatform)'
-    Configuration: '$(BuildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack'
-  inputs:
-    command: pack
-    packagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
-    versioningScheme: byBuildNumber
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.MA.Shared.UI
+      DotNetFrameworkPackagesToPack: SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI/SFA.DAS.MA.Shared.UI.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.MA.Shared.UI
+      SdkStyleFrameworkProjects: true
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks

@@ -76,5 +76,10 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
 
             return null;
         }
+
+        public static bool EnableCsp(this ViewDataDictionary viewData)
+        {
+            return viewData.ContainsKey(ViewDataKeys.EnableCsp);
+        }
     }
 }

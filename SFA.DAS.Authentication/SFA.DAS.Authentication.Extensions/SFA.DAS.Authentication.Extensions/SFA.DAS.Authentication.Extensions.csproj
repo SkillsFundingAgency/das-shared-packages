@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>SFA.DAS.Authentication.Extensions.UnitTest</_Parameter1>
+      <_Parameter1>SFA.DAS.Authentication.Extensions.UnitTests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
