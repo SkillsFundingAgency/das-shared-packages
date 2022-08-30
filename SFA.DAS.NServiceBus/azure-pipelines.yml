@@ -1,0 +1,42 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.NServiceBus
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.NServiceBus
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/1.0.4
+    endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.NServiceBus
+      DotNetStandardPackagesToPack: <
+        SFA.DAS.NServiceBus/SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.csproj;
+        SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.SqlServer/SFA.DAS.NServiceBus.SqlServer.csproj;
+        SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.Testing/SFA.DAS.NServiceBus.Testing.csproj;
+        SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.AzureFunction/SFA.DAS.NServiceBus.AzureFunction.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.NServiceBus
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
