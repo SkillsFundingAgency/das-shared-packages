@@ -1,0 +1,44 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - Messaging
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - Messaging
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/1.0.5
+    endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: Messaging
+      DotNetFrameworkPackagesToPack: >
+        Messaging/SFA.DAS.Messaging/SFA.DAS.Messaging.csproj;
+        Messaging/SFA.DAS.Messaging.AzureServiceBus/SFA.DAS.Messaging.AzureServiceBus.csproj;
+        Messaging/SFA.DAS.Messaging.Syndication/SFA.DAS.Messaging.Syndication.csproj;
+        Messaging/SFA.DAS.Messaging.AzureStorageQueue/SFA.DAS.Messaging.AzureStorageQueue.csproj;
+        Messaging/SFA.DAS.Messaging.Syndication.SqlServer/SFA.DAS.Messaging.Syndication.SqlServer.csproj;
+        Messaging/SFA.DAS.Messaging.AzureServiceBus.StructureMap/SFA.DAS.Messaging.AzureServiceBus.StructureMap.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Messaging
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
