@@ -38,8 +38,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             var expectedUrl = new Uri($"{config.BaseUrl}/token");
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
             var client = new HttpClient(httpMessageHandler.Object);
-            var jwtService = new Mock<IJwtSecurityTokenService>(config.ClientId, $"{config.BaseUrl}/token");
-            //config.ClientId, $"{config.BaseUrl}/token",
+            var jwtService = new Mock<IJwtSecurityTokenService>();
             jwtService.Setup(x => x.CreateToken(
                     It.Is<ClaimsIdentity>(c => c.HasClaim("sub", config.ClientId) && c.Claims.FirstOrDefault(f => f.Type.Equals("jti")) != null),
                     It.Is<SigningCredentials>(c => c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
@@ -83,8 +82,8 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             var expectedUrl = new Uri($"{config.BaseUrl}/token");
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
             var client = new HttpClient(httpMessageHandler.Object);
-            var jwtService = new Mock<IJwtSecurityTokenService>(config.ClientId, $"{config.BaseUrl}/token");
-            //config.ClientId, $"{config.BaseUrl}/token",
+            var jwtService = new Mock<IJwtSecurityTokenService>();
+            
             jwtService.Setup(x => x.CreateToken(
                     It.Is<ClaimsIdentity>(c => c.HasClaim("sub", config.ClientId) && c.Claims.FirstOrDefault(f => f.Type.Equals("jti")) != null),
                     It.Is<SigningCredentials>(c => c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
