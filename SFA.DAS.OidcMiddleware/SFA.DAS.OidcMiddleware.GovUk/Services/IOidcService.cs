@@ -6,7 +6,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
 {
     public interface IOidcService
     {
-        Task<Token> GetToken(string code, string redirectUri);
-        Task PopulateAccountClaims(ClaimsIdentity claimsIdentity, string accessToken);
+        Token GetToken(string code, string redirectUri);
+        void PopulateAccountClaims(ClaimsIdentity claimsIdentity, string accessToken);
     }
 }

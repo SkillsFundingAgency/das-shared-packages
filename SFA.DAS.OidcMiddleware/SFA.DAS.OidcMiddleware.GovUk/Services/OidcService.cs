@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.OidcMiddleware.GovUk.Configuration;
@@ -32,7 +31,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
             _httpClient.BaseAddress = new Uri(configuration.BaseUrl);
         }
 
-        public async Task<Token> GetToken(string code, string redirectUri)
+        public Token GetToken(string code, string redirectUri)
         {
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "/token")
             {
@@ -60,14 +59,14 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
             httpRequestMessage.Content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
 
-            var response = await _httpClient.SendAsync(httpRequestMessage);
-            var valueString = await response.Content.ReadAsStringAsync();
+            var response = _httpClient.SendAsync(httpRequestMessage).Result;
+            var valueString = response.Content.ReadAsStringAsync().Result;
             var content = JsonSerializer.Deserialize<Token>(valueString);
 
             return content;
         }
 
-        public async Task PopulateAccountClaims(ClaimsIdentity claimsIdentity, string accessToken)
+        public void PopulateAccountClaims(ClaimsIdentity claimsIdentity, string accessToken)
         {
             if (string.IsNullOrEmpty(accessToken) || claimsIdentity == null)
             {
@@ -83,14 +82,13 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
                     Authorization = new AuthenticationHeaderValue("Bearer", accessToken)
                 }
             };
-            var response = await _httpClient.SendAsync(httpRequestMessage);
+            var response = _httpClient.SendAsync(httpRequestMessage).Result;
             var valueString = response.Content.ReadAsStringAsync().Result;
             var content = JsonSerializer.Deserialize<GovUkUser>(valueString);
             if (content?.Email != null)
             {
                 claimsIdentity.AddClaim(new Claim("email", content.Email));
             }
-
         }
 
         private string CreateJwtAssertion()
@@ -112,10 +110,10 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
                     CustomCryptoProvider = new KeyVaultCryptoProvider()
                 }
             };
-            var value = _jwtSecurityTokenService.CreateToken(_configuration.ClientId,
-                $"{_configuration.BaseUrl}/token", claimsIdentity, signingCredentials);
+            var value = _jwtSecurityTokenService.CreateToken(claimsIdentity, signingCredentials);
 
             return value;
         }
+
     }
 }

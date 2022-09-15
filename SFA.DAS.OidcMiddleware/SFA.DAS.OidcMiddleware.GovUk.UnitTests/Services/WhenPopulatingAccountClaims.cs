@@ -21,7 +21,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
     public class WhenPopulatingAccountClaims
     {
         [Test, MoqAutoData]
-        public async Task If_Token_TokenEndpointPrincipal_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config, string accessToken)
+        public void If_Token_TokenEndpointPrincipal_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config, string accessToken)
         {
             //Arrange
             config.BaseUrl = $"https://{config.BaseUrl}";
@@ -37,7 +37,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             var service = new OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
 
             //Act
-            await service.PopulateAccountClaims(null, accessToken);
+            service.PopulateAccountClaims(null, accessToken);
         
             //Assert
             httpMessageHandler.Protected()
@@ -49,7 +49,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
         }
     
         [Test, MoqAutoData]
-        public async Task If_Token_TokenEndpointResponse_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config)
+        public void If_Token_TokenEndpointResponse_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config)
         {
             //Arrange
             config.BaseUrl = $"https://{config.BaseUrl}";
@@ -63,7 +63,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             var service = new OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
 
             //Act
-            await service.PopulateAccountClaims(new ClaimsIdentity(), "");
+            service.PopulateAccountClaims(new ClaimsIdentity(), "");
         
             //Assert
             httpMessageHandler.Protected()
@@ -75,7 +75,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
         }
     
         [Test, RecursiveMoqAutoData]
-        public async Task Then_The_User_Endpoint_Is_Called_Using_AccessToken_From_TokenValidatedContext(
+        public void Then_The_User_Endpoint_Is_Called_Using_AccessToken_From_TokenValidatedContext(
             GovUkUser user,
             string accessToken,
             List<ClaimsIdentity> claimsIdentity,
@@ -98,7 +98,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             var service = new OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
 
             //Act
-            await service.PopulateAccountClaims(new ClaimsIdentity(), accessToken);
+            service.PopulateAccountClaims(new ClaimsIdentity(), accessToken);
         
             //Assert
             httpMessageHandler.Protected()
@@ -117,7 +117,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
         }
     
         [Test, RecursiveMoqAutoData]
-        public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Populated(
+        public void Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Populated(
             GovUkUser user,
             string accessToken,
             List<ClaimsIdentity> claimsIdentity,
@@ -141,7 +141,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
 
             //Act
             var identity = new ClaimsIdentity();
-            await service.PopulateAccountClaims(identity, accessToken);
+            service.PopulateAccountClaims(identity, accessToken);
         
             //Assert
             identity.Claims.First(c => c.Type.Equals("email")).Value.Should()
@@ -149,7 +149,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
         }
     
         [Test, RecursiveMoqAutoData]
-        public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Not_Populated_If_No_Value_Returned(
+        public void Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Not_Populated_If_No_Value_Returned(
             string accessToken,
             List<ClaimsIdentity> claimsIdentity,
             GovUkOidcConfiguration config)
@@ -171,7 +171,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
 
             //Act
             var identity = new ClaimsIdentity();
-            await service.PopulateAccountClaims(identity, accessToken);
+            service.PopulateAccountClaims(identity, accessToken);
         
             //Assert
             identity.Claims.FirstOrDefault(c => c.Type.Equals("email")).Should().BeNull();
