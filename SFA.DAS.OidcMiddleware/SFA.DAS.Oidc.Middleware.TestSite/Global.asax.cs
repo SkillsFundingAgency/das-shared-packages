@@ -19,7 +19,7 @@ namespace SFA.DAS.Oidc.Middleware.TestSite
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
+            AntiForgeryConfig.UniqueClaimTypeIdentifier = "email";
         }
     }
 }
