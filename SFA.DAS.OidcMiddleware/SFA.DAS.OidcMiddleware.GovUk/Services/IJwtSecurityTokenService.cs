@@ -5,7 +5,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
 {
     public interface IJwtSecurityTokenService
     {
-        string CreateToken(string clientId, string audience, ClaimsIdentity claimsIdentity,
+        string CreateToken(ClaimsIdentity claimsIdentity,
             SigningCredentials signingCredentials);
     }
 }
