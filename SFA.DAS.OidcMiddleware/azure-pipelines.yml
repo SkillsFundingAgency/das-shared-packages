@@ -33,6 +33,6 @@ stages:
   - template: ../pipeline-templates/job/code-build.yml
     parameters:
       WorkingDirectory: SFA.DAS.OidcMiddleware
-      DotNetFrameworkPackagesToPack: SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware.csproj
+      DotNetFrameworkPackagesToPack: SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware.csproj;SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware.GovUk/SFA.DAS.OidcMiddleware.GovUk.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.OidcMiddleware
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
