@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Owin;
+using Microsoft.Owin.Infrastructure;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
-using SFA.DAS.OidcMiddleware;
+using SFA.DAS.OidcMiddleware.GovUk.Configuration;
+using SFA.DAS.OidcMiddleware.GovUk.Services;
 
 [assembly: OwinStartup(typeof(SFA.DAS.Oidc.Middleware.TestSite.Startup))]
 
@@ -15,8 +23,9 @@ namespace SFA.DAS.Oidc.Middleware.TestSite
     {
         public void Configuration(IAppBuilder app)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap= new Dictionary<string, string>();
-
+            app.SetDefaultSignInAsAuthenticationType(OpenIdConnectAuthenticationDefaults.AuthenticationType);
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = "Cookies"
@@ -28,42 +37,73 @@ namespace SFA.DAS.Oidc.Middleware.TestSite
                 AuthenticationMode = AuthenticationMode.Passive
             });
 
-            app.UseCodeFlowAuthentication(new OidcMiddlewareOptions
+            var govUkOidcConfiguration = new GovUkOidcConfiguration
             {
-                BaseUrl = Constants.BaseAddress,
-                ClientId = "[CLIENT_ID]",
-                ClientSecret = "[CLIENT_SECRET]",
-                Scopes = "openid",
-                AuthorizeEndpoint = Constants.AuthorizeEndpoint,
-                TokenEndpoint = Constants.TokenEndpoint,
-                UserInfoEndpoint = Constants.UserInfoEndpoint,
-                AuthenticatedCallback = identity =>
-                {
-                    identity.AddClaim(new Claim("CustomClaim", "new claim added"));
+                ClientId = "{CLIENT_ID}",
+                BaseUrl = "https://{BASE_URL}/",
+                KeyVaultIdentifier = "{KEY_VAULT_IDENTIFIER}"
+            };
+            var handler = new JwtSecurityTokenService(govUkOidcConfiguration);
 
-                    // This can be used to translate claims to known identifiers for the OTB ASP.NET MVC Template
-                    /*identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, identity.Claims.First(c => c.Type == "user_id").Value));
-                    identity.AddClaim(new Claim(ClaimTypes.Name, identity.Claims.First(c => c.Type == "display_name").Value));*/
-                },
-                TokenValidationMethod = TokenValidationMethod.BinarySecret,
-
-                // Implement this if TokenValidationMethod = TokenValidationMethod.SigningKey
-                /*TokenSigningCertificateLoader = () =>
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions("code")
+            {
+                ClientId = govUkOidcConfiguration.ClientId,
+                Scope = "openid email phone",
+                Authority = govUkOidcConfiguration.BaseUrl,
+                MetadataAddress = $"{govUkOidcConfiguration.BaseUrl}.well-known/openid-configuration",
+                ResponseType = OpenIdConnectResponseType.Code,
+                ResponseMode = "",
+                SaveTokens = true,
+                RedeemCode = true,
+                RedirectUri = "https://localhost:44363/sign-in",
+                UsePkce = false,
+                CookieManager = new ChunkingCookieManager(),
+                SignInAsAuthenticationType = "Cookies",
+                SecurityTokenValidator = handler,
+                Notifications = new OpenIdConnectAuthenticationNotifications
                 {
-                    return new X509Certificate2(@"[PATH_TO_YOUR_PFX]", "[YOUR_PFX_PASSWORD]");
-                }*/
+                    AuthorizationCodeReceived = notification =>
+                    {
+                        var code = notification.Code;
+
+                        var redirectUri = notification.RedirectUri;
+
+                        var oidcService = new OidcService(new HttpClient(), new AzureIdentityService(), handler, govUkOidcConfiguration);
+
+                        var result = oidcService.GetToken(code, redirectUri);
+                        var claims = new List<Claim>
+                        {
+                            new Claim("id_token", result.IdToken),
+                            new Claim("access_token", result.AccessToken)
+                        };
+                        var claimsIdentity = new ClaimsIdentity(claims, notification.Options.SignInAsAuthenticationType);
+                        
+                        notification.HandleCodeRedemption(result.AccessToken, result.IdToken);
+
+                        var properties =
+                            notification.Options.StateDataFormat.Unprotect(notification.ProtocolMessage.State.Split('=')[1]);
+                        
+
+                        notification.AuthenticationTicket = new AuthenticationTicket(claimsIdentity, properties);
+                        
+                        
+                        return Task.CompletedTask;
+                    },
+                    SecurityTokenValidated = notification =>
+                    {
+                        var oidcService = new OidcService(new HttpClient(), new AzureIdentityService(),
+                            handler, govUkOidcConfiguration);
+                        
+                        oidcService.PopulateAccountClaims(notification.AuthenticationTicket.Identity, notification.ProtocolMessage.AccessToken);
+
+                        
+
+                        return Task.CompletedTask;
+                    }
+                    
+                }
             });
-        }
-    }
 
-    public static class Constants
-    {
-        public const string AuthorizeEndpoint = BaseAddress + "/Login/dialog/appl/oidctest/wflow/authorize";
-        public const string BaseAddress = "[END_POINT_FOR_IDENTITY_URL]";
-        public const string IdentityTokenValidationEndpoint = BaseAddress + "/connect/identitytokenvalidation";
-        public const string LogoutEndpoint = BaseAddress + "/connect/endsession";
-        public const string TokenEndpoint = BaseAddress + "/Login/rest/appl/oidctest/wflow/token";
-        public const string TokenRevocationEndpoint = BaseAddress + "/connect/revocation";
-        public const string UserInfoEndpoint = BaseAddress + "/Login/rest/appl/oidctest/wflow/userinfo";
+        }
     }
 }
