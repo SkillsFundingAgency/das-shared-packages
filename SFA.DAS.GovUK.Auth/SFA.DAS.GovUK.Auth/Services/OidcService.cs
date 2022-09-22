@@ -87,7 +87,7 @@ internal class OidcService : IOidcService
         var content = JsonSerializer.Deserialize<GovUkUser>(valueString);
         if (content?.Email != null)
         {
-            tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim("email", content.Email));    
+            tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));    
         }
         
     }
