@@ -88,6 +88,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
             if (content?.Email != null)
             {
                 claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, content.Email));
+                claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, content.Sub));
             }
         }
 

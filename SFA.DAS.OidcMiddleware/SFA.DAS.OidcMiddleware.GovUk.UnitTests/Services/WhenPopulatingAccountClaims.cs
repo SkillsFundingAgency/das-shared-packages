@@ -144,8 +144,8 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             service.PopulateAccountClaims(identity, accessToken);
         
             //Assert
-            identity.Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
-                .Be(user.Email);
+            identity.Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should().Be(user.Email);
+            identity.Claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier)).Value.Should().Be(user.Sub);
         }
     
         [Test, RecursiveMoqAutoData]
@@ -175,6 +175,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
         
             //Assert
             identity.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email)).Should().BeNull();
+            identity.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier)).Should().BeNull();
         }
         
     }
