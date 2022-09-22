@@ -87,7 +87,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
             var content = JsonSerializer.Deserialize<GovUkUser>(valueString);
             if (content?.Email != null)
             {
-                claimsIdentity.AddClaim(new Claim("email", content.Email));
+                claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, content.Email));
             }
         }
 

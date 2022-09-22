@@ -144,7 +144,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             service.PopulateAccountClaims(identity, accessToken);
         
             //Assert
-            identity.Claims.First(c => c.Type.Equals("email")).Value.Should()
+            identity.Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
                 .Be(user.Email);
         }
     
@@ -174,7 +174,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.UnitTests.Services
             service.PopulateAccountClaims(identity, accessToken);
         
             //Assert
-            identity.Claims.FirstOrDefault(c => c.Type.Equals("email")).Should().BeNull();
+            identity.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email)).Should().BeNull();
         }
         
     }
