@@ -31,9 +31,6 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
                 options, linkGenerator);
             
             Assert.Equal("RouteLink", urlBuilder.AccountsLink()); 
-            //Assert.Equal("RouteLink", urlBuilder.AccountsLink("Routename", "")); 
-            //Assert.Equal("RouteLink", urlBuilder.AccountsLink("Routename")); 
-            //Assert.Equal("RouteLink", urlBuilder.AccountsLink("Routename", null)); 
 
             Assert.Equal("ProperLink", urlBuilder.AccountsLink("Routename", "ABC123")); 
         }

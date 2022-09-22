@@ -1,13 +1,8 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using DfE.Example.Web;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -15,7 +10,7 @@ namespace DfE.Example.Web.Security
 {
     public static class SecurityServicesCollectionExtensions
     {
-        public static void AddAuthenticationService(this IServiceCollection services, OidcConfiguration authConfiguration, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, OidcConfiguration authConfiguration, IWebHostEnvironment hostingEnvironment)
         {
             var authConfig = authConfiguration;
 
