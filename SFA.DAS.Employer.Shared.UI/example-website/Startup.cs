@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SFA.DAS.Employer.Shared.UI;
 
 namespace DfE.Example.Web
@@ -14,10 +15,10 @@ namespace DfE.Example.Web
     public partial class Startup
     {
         public IConfiguration Configuration { get; }
-        private IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly OidcConfiguration _authConfig;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             _hostingEnvironment = env;
@@ -32,14 +33,15 @@ namespace DfE.Example.Web
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                
             });
 
             services.AddMvc(options =>
             {
                 //options.Filters.Add(new AuthorizeFilter("EmployerAccountPolicy"));
                 options.Filters.Add(new AuthorizeFilter());
-
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                options.EnableEndpointRouting = false;
+            });
 
             services.AddMaMenuConfiguration(Configuration, RouteNames.Logout_Get, _authConfig.ClientId);
 
@@ -48,7 +50,7 @@ namespace DfE.Example.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
