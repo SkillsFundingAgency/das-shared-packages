@@ -172,7 +172,7 @@ public class WhenPopulatingAccountClaims
         await service.PopulateAccountClaims(tokenValidatedContext);
         
         //Assert
-        tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals("email")).Value.Should()
+        tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
             .Be(user.Email);
     }
     
@@ -210,7 +210,7 @@ public class WhenPopulatingAccountClaims
         await service.PopulateAccountClaims(tokenValidatedContext);
         
         //Assert
-        tokenValidatedContext.Principal.Identities.First().Claims.FirstOrDefault(c => c.Type.Equals("email")).Should().BeNull();
+        tokenValidatedContext.Principal.Identities.First().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email)).Should().BeNull();
     }
     private class TestAuthHandler : IAuthenticationHandler
     {
