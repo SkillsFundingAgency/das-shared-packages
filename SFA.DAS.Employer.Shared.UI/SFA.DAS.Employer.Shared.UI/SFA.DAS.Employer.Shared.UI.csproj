@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <RootNamespace>SFA.DAS.Employer.Shared.UI</RootNamespace>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Version>2.0.21</Version>
