@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
-using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
+using SFA.DAS.NServiceBus.Configuration.SystemJsonSerializer;
 using SFA.DAS.NServiceBus.TestMessages.Events;
 
 namespace SFA.DAS.NServiceBus.TestEndpoint
@@ -18,7 +18,7 @@ namespace SFA.DAS.NServiceBus.TestEndpoint
                 .UseErrorQueue(TestHarnessSettings.SampleQueueName + "-error")
                 .UseInstallers()
                 .UseMessageConventions()
-                .UseNewtonsoftJsonSerializer()
+                .UseSystemJsonSerializer()
             ;
            
             if (!string.IsNullOrEmpty(AzureServiceBusConnectionString))

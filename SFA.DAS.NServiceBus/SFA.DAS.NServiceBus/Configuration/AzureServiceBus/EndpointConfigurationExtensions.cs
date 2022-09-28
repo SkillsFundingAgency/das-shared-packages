@@ -13,6 +13,8 @@ public static class EndpointConfigurationExtensions
     {
         var transport = config.UseTransport<AzureServiceBusTransport>();
         transport.CustomTokenCredential(new DefaultAzureCredential());
+        transport.CustomTokenCredential(new DefaultAzureCredential());
+
         transport.ConnectionString(connectionString.FormatConnectionString());
         transport.Transactions(TransportTransactionMode.ReceiveOnly);
         transport.SubscriptionRuleNamingConvention(RuleNameShortener.Shorten);
