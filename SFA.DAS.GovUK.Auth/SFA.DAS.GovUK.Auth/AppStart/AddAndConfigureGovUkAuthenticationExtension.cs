@@ -5,9 +5,17 @@ namespace SFA.DAS.GovUK.Auth.AppStart;
 
 public static class AddAndConfigureGovUkAuthenticationExtension
 {
-    public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName)
+    public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName, bool useStub = false)
     {
         services.AddServiceRegistration(configuration);
-        services.ConfigureGovUkAuthentication(configuration, authenticationCookieName);
+        if (useStub)
+        {
+            services.AddEmployerStubAuthentication();
+        }
+        else
+        {
+            services.ConfigureGovUkAuthentication(configuration, authenticationCookieName);    
+        }
+        
     }
 }

@@ -11,6 +11,6 @@ public static class AddServiceRegistrationExtension
         services.AddHttpContextAccessor();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
-        services.AddAndConfigureGovUkAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth");
+        services.AddAndConfigureGovUkAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", true);
     }
 }
