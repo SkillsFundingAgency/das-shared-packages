@@ -10,7 +10,7 @@ public static class AddAndConfigureGovUkAuthenticationExtension
         services.AddServiceRegistration(configuration);
         if (useStub)
         {
-            services.AddEmployerStubAuthentication();
+            services.AddEmployerStubAuthentication(configuration, authenticationCookieName);
         }
         else
         {

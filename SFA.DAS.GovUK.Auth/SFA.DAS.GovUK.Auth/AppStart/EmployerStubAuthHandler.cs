@@ -20,7 +20,9 @@ internal class EmployerStubAuthHandler : AuthenticationHandler<AuthenticationSch
         var claims = new[]
         {
             //TODO add claims that would come back as part of GOV.UK flow
-            new Claim(ClaimTypes.Email, _configuration["NoAuthEmail"])
+            new Claim(ClaimTypes.Email, _configuration["NoAuthEmail"]),
+            new Claim(ClaimTypes.NameIdentifier, Guid.Empty.ToString()),
+            new Claim("sub", Guid.Empty.ToString())
         };
         var identity = new ClaimsIdentity(claims, "Employer-stub");
         var principal = new ClaimsPrincipal(identity);
