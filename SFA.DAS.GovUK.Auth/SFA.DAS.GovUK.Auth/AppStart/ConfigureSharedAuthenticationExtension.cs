@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,10 +8,11 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 {
     public static class ConfigureSharedAuthenticationExtension
     {
-        public static void AddAuthenticationCookie(this IServiceCollection services,
+        public static void AddAuthenticationCookie(this AuthenticationBuilder services,
             string cookieName)
         {
-            services.AddAuthentication().AddCookie(options =>
+            
+            services.AddCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/error/403");
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);

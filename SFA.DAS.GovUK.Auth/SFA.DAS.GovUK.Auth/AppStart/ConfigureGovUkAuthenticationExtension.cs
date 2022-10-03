@@ -63,8 +63,7 @@ internal static class ConfigureGovUkAuthenticationExtension
                 };
 
 
-            });
-        services.AddAuthenticationCookie(authenticationCookieName);
+            }).AddAuthenticationCookie(authenticationCookieName);
         services
             .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
             .Configure<IOidcService, IAzureIdentityService>((options, oidcService, azureIdentityService) =>

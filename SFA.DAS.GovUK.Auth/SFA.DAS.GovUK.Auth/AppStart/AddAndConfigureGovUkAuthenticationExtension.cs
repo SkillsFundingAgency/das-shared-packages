@@ -10,7 +10,7 @@ public static class AddAndConfigureGovUkAuthenticationExtension
         services.AddServiceRegistration(configuration);
         if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
         {
-            services.AddEmployerStubAuthentication(configuration, authenticationCookieName);
+            services.AddEmployerStubAuthentication(authenticationCookieName);
         }
         else
         {
