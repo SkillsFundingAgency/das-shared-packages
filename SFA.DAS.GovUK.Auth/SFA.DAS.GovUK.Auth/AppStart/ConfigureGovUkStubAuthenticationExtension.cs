@@ -16,8 +16,8 @@ internal static class ConfigureGovUkStubAuthenticationExtension
     public static void AddEmployerStubAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName)
     {
         services.AddAuthentication("Employer-stub").AddScheme<AuthenticationSchemeOptions, EmployerStubAuthHandler>(
-        "Employer-stub",
-        options => { })
+                "Employer-stub",
+                options => { })
             .AddOpenIdConnect(options =>
             {
                 var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
@@ -58,19 +58,8 @@ internal static class ConfigureGovUkStubAuthenticationExtension
                     c.HandleResponse();
                     return Task.CompletedTask;
                 };
-
-            })
-            .AddCookie(options =>
-            {
-                options.AccessDeniedPath = new PathString("/error/403");
-                options.ExpireTimeSpan = TimeSpan.FromHours(1);
-                options.Cookie.Name = authenticationCookieName;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.SlidingExpiration = true;
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
-                options.LogoutPath = "/home/signed-out";
-            }); 
+            });
+            services.AddAuthenticationCookie(authenticationCookieName);
     }
     
 }
