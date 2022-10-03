@@ -8,6 +8,14 @@ public static class AddAndConfigureGovUkAuthenticationExtension
     public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName)
     {
         services.AddServiceRegistration(configuration);
-        services.ConfigureGovUkAuthentication(configuration, authenticationCookieName);
+        if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
+        {
+            services.AddEmployerStubAuthentication(authenticationCookieName);
+        }
+        else
+        {
+            services.ConfigureGovUkAuthentication(configuration, authenticationCookieName);    
+        }
+        
     }
 }
