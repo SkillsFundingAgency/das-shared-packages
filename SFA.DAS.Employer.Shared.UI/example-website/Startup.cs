@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Employer.Shared.UI;
+using SFA.DAS.Employer.Shared.UI.Configuration;
 
 namespace DfE.Example.Web
 {
@@ -16,13 +17,13 @@ namespace DfE.Example.Web
     {
         public IConfiguration Configuration { get; }
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly OidcConfiguration _authConfig;
+        private readonly string _oidcClient;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             _hostingEnvironment = env;
-            _authConfig = Configuration.GetSection("Oidc").Get<OidcConfiguration>();
+            _oidcClient = Configuration["SFA.DAS.Employer.Shared.UI:MaPageConfiguration:AccountsOidcClientId"];
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -43,9 +44,9 @@ namespace DfE.Example.Web
                 options.EnableEndpointRouting = false;
             });
 
-            services.AddMaMenuConfiguration(Configuration, RouteNames.Logout_Get, _authConfig.ClientId);
+            services.AddMaMenuConfiguration(RouteNames.Logout_Get, _oidcClient, "at");
 
-            services.AddAuthenticationService(_authConfig, _hostingEnvironment);
+            services.AddAuthenticationService("employer-test-site");
             //services.AddAuthorizationService();
         }
 

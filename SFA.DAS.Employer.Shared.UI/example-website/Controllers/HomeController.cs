@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using DfE.Example.Web.Configuration;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Employer.Shared.UI;
@@ -27,9 +29,12 @@ namespace DfE.Example.Web.Controllers
         [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
         public async Task Logout()
         {
-            await HttpContext.SignOutAsync("Cookies");
+            var idToken = await HttpContext.GetTokenAsync("id_token");
 
-            await HttpContext.SignOutAsync("oidc");
+            var authenticationProperties = new AuthenticationProperties();
+            authenticationProperties.Parameters.Clear();
+            authenticationProperties.Parameters.Add("id_token",idToken);
+            SignOut(authenticationProperties, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
         }
     }
 }
