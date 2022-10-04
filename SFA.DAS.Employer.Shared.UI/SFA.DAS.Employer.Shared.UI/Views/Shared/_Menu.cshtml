@@ -43,12 +43,12 @@
 
     private string BuildNavigationLinkClass(NavigationSection section, NavigationSection selectedSection)
     {
-        var @class = "das-navigation__link";
+        var cssClass = "das-navigation__link";
         if (selectedSection == section)
         {
-            @class += " das-navigation__link--current";
+            cssClass += " das-navigation__link--current";
         }
-        return @class;
+        return cssClass;
     }
 }
 

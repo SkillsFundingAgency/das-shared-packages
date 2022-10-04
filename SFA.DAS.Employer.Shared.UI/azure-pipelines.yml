@@ -6,7 +6,7 @@ trigger:
   paths:
     include:
     - pipeline-templates
-    - SFA.DAS.OidcMiddleware
+    - SFA.DAS.Employer.Shared.UI
 
 pr:
   autoCancel: true
@@ -16,7 +16,7 @@ pr:
   paths:
     include:
     - pipeline-templates
-    - SFA.DAS.OidcMiddleware
+    - SFA.DAS.Employer.Shared.UI
 
 resources:
   repositories:
@@ -24,7 +24,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.64
+    ref: refs/tags/1.0.4
     endpoint: SkillsFundingAgency
 
 stages:
@@ -32,7 +32,7 @@ stages:
   jobs:
   - template: ../pipeline-templates/job/code-build.yml
     parameters:
-      WorkingDirectory: SFA.DAS.OidcMiddleware
-      DotNetFrameworkPackagesToPack: SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware.csproj;SFA.DAS.OidcMiddleware/SFA.DAS.OidcMiddleware.GovUk/SFA.DAS.OidcMiddleware.GovUk.csproj
-      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.OidcMiddleware
+      WorkingDirectory: SFA.DAS.Employer.Shared.UI
+      DotNetStandardPackagesToPack: SFA.DAS.Employer.Shared.UI/SFA.DAS.Employer.Shared.UI/SFA.DAS.Employer.Shared.UI.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Employer.Shared.UI
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
