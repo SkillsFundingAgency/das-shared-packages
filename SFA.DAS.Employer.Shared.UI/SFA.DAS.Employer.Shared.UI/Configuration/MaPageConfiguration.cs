@@ -4,7 +4,12 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
 {
     public class MaPageConfiguration
     {
-        public string AccountsOidcClientId { get; set; }
-        public string LocalLogoutRouteName { get; set; }
+        public MaPageConfiguration(string accountsOidcClientId, string localLogoutRouteName)
+        {
+            LocalLogoutRouteName = localLogoutRouteName;
+            AccountsOidcClientId = accountsOidcClientId;
+        }
+        public string AccountsOidcClientId { get; }
+        public string LocalLogoutRouteName { get; }
     }
 }
