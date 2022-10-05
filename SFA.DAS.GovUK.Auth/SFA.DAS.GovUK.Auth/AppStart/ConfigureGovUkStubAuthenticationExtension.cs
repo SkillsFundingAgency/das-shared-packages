@@ -1,24 +1,24 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace SFA.DAS.GovUK.Auth.AppStart;
 
 internal static class ConfigureGovUkStubAuthenticationExtension
 {
-    
-    public static void AddEmployerStubAuthentication(this IServiceCollection services, string authenticationCookieName)
+
+    public static void AddEmployerStubAuthentication(this IServiceCollection services, string authenticationCookieName,
+        Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null)
     {
         services
             .AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddScheme<AuthenticationSchemeOptions, EmployerStubAuthHandler>(
-            authenticationCookieName,
-            _ =>
-            {
-            }).AddCookie(OpenIdConnectDefaults.AuthenticationScheme, options =>
+            .AddScheme<AuthenticationSchemeOptions, EmployerStubAuthHandler>(authenticationCookieName, _ => { })
+            .AddCookie(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
                 options.Events.OnSigningOut = c =>
                 {
@@ -27,8 +27,13 @@ internal static class ConfigureGovUkStubAuthenticationExtension
                     return Task.CompletedTask;
                 };
             });
-            
-            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName);
+
+        if (populateAdditionalClaims != null)
+        {
+            services.AddSingleton(populateAdditionalClaims);
+        }
+
+        services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName);
     }
     
 }

@@ -1,6 +1,6 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.KeyVaultExtensions;
@@ -12,7 +12,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart;
 
 internal static class ConfigureGovUkAuthenticationExtension
 {
-    internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName)
+    internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName, Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null)
     {
         services
             .AddAuthentication(sharedOptions =>
@@ -23,10 +23,10 @@ internal static class ConfigureGovUkAuthenticationExtension
                 sharedOptions.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
             }).AddOpenIdConnect(options =>
             {
-                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
+                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
 
-                options.ClientId = govUkConfiguration["ClientId"];
-                options.MetadataAddress = $"{govUkConfiguration["BaseUrl"]}/.well-known/openid-configuration";
+                options.ClientId = govUkConfiguration.ClientId;
+                options.MetadataAddress = $"{govUkConfiguration.BaseUrl}/.well-known/openid-configuration";
                 options.ResponseType = "code";
                 options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                 options.SignedOutRedirectUri = "/";
@@ -68,17 +68,17 @@ internal static class ConfigureGovUkAuthenticationExtension
             .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
             .Configure<IOidcService, IAzureIdentityService>((options, oidcService, azureIdentityService) =>
             {
-                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
+                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     AuthenticationType = "private_key_jwt",
-                    IssuerSigningKey = new KeyVaultSecurityKey(govUkConfiguration["KeyVaultIdentifier"] ,azureIdentityService.AuthenticationCallback),
+                    IssuerSigningKey = new KeyVaultSecurityKey(govUkConfiguration.KeyVaultIdentifier ,azureIdentityService.AuthenticationCallback),
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     SaveSigninToken = true
                 };
-                options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx);
+                options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx, populateAdditionalClaims);
                 options.Events.OnAuthorizationCodeReceived = async (ctx) =>
                 {
                     var token = await oidcService.GetToken(ctx.TokenEndpointRequest);
