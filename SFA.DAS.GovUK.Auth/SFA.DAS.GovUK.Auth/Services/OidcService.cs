@@ -65,7 +65,7 @@ internal class OidcService : IOidcService
         return content;
     }
 
-    public async Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext)
+    public async Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext, Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null)
     {
         if (tokenValidatedContext.TokenEndpointResponse == null || tokenValidatedContext.Principal == null)
         {
@@ -89,7 +89,12 @@ internal class OidcService : IOidcService
         {
             tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));    
         }
-        
+
+        if (populateAdditionalClaims != null)
+        {
+            tokenValidatedContext.Principal.Identities.First().AddClaims(await populateAdditionalClaims(tokenValidatedContext));    
+        }
+
     }
 
     private string CreateJwtAssertion()

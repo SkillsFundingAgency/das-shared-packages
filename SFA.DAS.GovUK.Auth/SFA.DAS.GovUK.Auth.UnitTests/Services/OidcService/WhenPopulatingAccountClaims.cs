@@ -177,6 +177,48 @@ public class WhenPopulatingAccountClaims
     }
     
     [Test, RecursiveMoqAutoData]
+    public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Populated_And_Additional_Claims_From_Function(
+        GovUkUser user,
+        string accessToken,
+        string customClaimValue,
+        List<ClaimsIdentity> claimsIdentity,
+        IOptions<GovUkOidcConfiguration> config)
+    {
+        //Arrange
+        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        var mockPrincipal = new Mock<ClaimsPrincipal>();
+        mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
+        var response = new HttpResponseMessage
+        {
+            Content = new StringContent(JsonSerializer.Serialize(user)),
+            StatusCode = HttpStatusCode.Accepted
+        };
+        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
+        var client = new HttpClient(httpMessageHandler.Object);
+        var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),
+            new OpenIdConnectOptions(), mockPrincipal.Object, new AuthenticationProperties())
+        {
+            TokenEndpointResponse = new OpenIdConnectMessage
+            {
+                Parameters = { {"access_token",accessToken} }
+            },
+            Principal = mockPrincipal.Object
+        };
+        
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+
+        //Act
+        await service.PopulateAccountClaims(tokenValidatedContext, (_) => { return Task.FromResult(new List<Claim>{new Claim("CustomClaim",customClaimValue)}); });
+        
+        //Assert
+        tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
+            .Be(user.Email);
+        tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals("CustomClaim")).Value.Should()
+            .Be(customClaimValue);
+    }
+    
+    [Test, RecursiveMoqAutoData]
     public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Not_Populated_If_No_Value_Returned(
         string accessToken,
         List<ClaimsIdentity> claimsIdentity,
