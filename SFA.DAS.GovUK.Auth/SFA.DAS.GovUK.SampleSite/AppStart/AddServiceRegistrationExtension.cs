@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.GovUK.Auth.AppStart;
@@ -11,6 +12,12 @@ public static class AddServiceRegistrationExtension
         services.AddHttpContextAccessor();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
-        services.AddAndConfigureGovUkAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth");
+        services.AddAndConfigureGovUkAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth",
+            (ctx) =>
+            {
+                var value = ctx?.Principal?.Identities.First().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+                    ?.Value;
+                return Task.FromResult(new List<Claim>{new Claim("EmployerAccountId",$"ABC123-{value}")});
+            });
     }
 }
