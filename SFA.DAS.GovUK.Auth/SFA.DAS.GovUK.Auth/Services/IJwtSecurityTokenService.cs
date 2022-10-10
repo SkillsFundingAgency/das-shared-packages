@@ -1,8 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SFA.DAS.GovUK.Auth.Interfaces;
+namespace SFA.DAS.GovUK.Auth.Services;
 
 public interface IJwtSecurityTokenService
 {

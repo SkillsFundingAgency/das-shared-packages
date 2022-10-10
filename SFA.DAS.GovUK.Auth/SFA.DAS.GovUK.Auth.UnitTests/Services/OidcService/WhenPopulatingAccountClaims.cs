@@ -10,8 +10,8 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Moq;
 using Moq.Protected;
 using SFA.DAS.GovUK.Auth.Configuration;
-using SFA.DAS.GovUK.Auth.Interfaces;
 using SFA.DAS.GovUK.Auth.Models;
+using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
@@ -41,7 +41,7 @@ public class WhenPopulatingAccountClaims
             },
             Principal = null
         };
-        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -73,7 +73,7 @@ public class WhenPopulatingAccountClaims
         {
             Principal = mockPrincipal.Object
         };
-        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -116,7 +116,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -166,7 +166,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -205,11 +205,14 @@ public class WhenPopulatingAccountClaims
             },
             Principal = mockPrincipal.Object
         };
+        var customClaims = new Mock<ICustomClaims>();
+        customClaims.Setup(x => x.GetClaims(tokenValidatedContext))
+            .ReturnsAsync(new List<Claim> {new Claim("CustomClaim", customClaimValue)});
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, customClaims.Object);
 
         //Act
-        await service.PopulateAccountClaims(tokenValidatedContext, (_) => { return Task.FromResult(new List<Claim>{new Claim("CustomClaim",customClaimValue)}); });
+        await service.PopulateAccountClaims(tokenValidatedContext);
         
         //Assert
         tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
@@ -246,7 +249,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);

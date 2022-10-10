@@ -8,8 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Moq.Protected;
 using SFA.DAS.GovUK.Auth.Configuration;
-using SFA.DAS.GovUK.Auth.Interfaces;
 using SFA.DAS.GovUK.Auth.Models;
+using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
@@ -38,7 +38,7 @@ public class WhenGettingToken
                 It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config, Mock.Of<ICustomClaims>());
         
         //Act
         var actual = await service.GetToken(openIdConnectMessage);
@@ -81,7 +81,7 @@ public class WhenGettingToken
                 It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config, Mock.Of<ICustomClaims>());
         
         //Act
         await service.GetToken(openIdConnectMessage);

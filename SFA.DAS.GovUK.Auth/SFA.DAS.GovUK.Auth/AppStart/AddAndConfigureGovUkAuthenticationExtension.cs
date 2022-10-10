@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,16 +5,16 @@ namespace SFA.DAS.GovUK.Auth.AppStart;
 
 public static class AddAndConfigureGovUkAuthenticationExtension
 {
-    public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName, Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null)
+    public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName, Type customClaims) 
     {
-        services.AddServiceRegistration(configuration);
+        services.AddServiceRegistration(configuration, customClaims);
         if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
         {
-            services.AddEmployerStubAuthentication($"{authenticationCookieName}.stub", populateAdditionalClaims);
+            services.AddEmployerStubAuthentication($"{authenticationCookieName}.stub");
         }
         else
         {
-            services.ConfigureGovUkAuthentication(configuration, authenticationCookieName, populateAdditionalClaims);    
+            services.ConfigureGovUkAuthentication(configuration, authenticationCookieName);    
         }
         
     }

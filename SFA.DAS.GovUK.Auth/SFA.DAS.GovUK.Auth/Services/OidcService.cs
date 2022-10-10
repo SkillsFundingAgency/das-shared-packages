@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
-using SFA.DAS.GovUK.Auth.Interfaces;
 using SFA.DAS.GovUK.Auth.Models;
 
 [assembly: InternalsVisibleTo("SFA.DAS.GovUK.Auth.UnitTests")]
@@ -19,19 +18,23 @@ internal class OidcService : IOidcService
     private readonly HttpClient _httpClient;
     private readonly IAzureIdentityService _azureIdentityService;
     private readonly IJwtSecurityTokenService _jwtSecurityTokenService;
+    private readonly ICustomClaims _customClaims;
     private readonly GovUkOidcConfiguration _configuration;
 
     public OidcService(
         HttpClient httpClient, 
         IAzureIdentityService azureIdentityService,
         IJwtSecurityTokenService jwtSecurityTokenService,
-        IOptions<GovUkOidcConfiguration> configuration)
+        IOptions<GovUkOidcConfiguration> configuration,
+        ICustomClaims customClaims)
     {
         _httpClient = httpClient;
         _azureIdentityService = azureIdentityService;
         _jwtSecurityTokenService = jwtSecurityTokenService;
+        _customClaims = customClaims;
         _configuration = configuration.Value;
         _httpClient.BaseAddress = new Uri(configuration.Value.BaseUrl);
+        
     }
 
     public async Task<Token?> GetToken(OpenIdConnectMessage? openIdConnectMessage)
@@ -65,7 +68,7 @@ internal class OidcService : IOidcService
         return content;
     }
 
-    public async Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext, Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null)
+    public async Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext)
     {
         if (tokenValidatedContext.TokenEndpointResponse == null || tokenValidatedContext.Principal == null)
         {
@@ -90,11 +93,8 @@ internal class OidcService : IOidcService
             tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));    
         }
 
-        if (populateAdditionalClaims != null)
-        {
-            tokenValidatedContext.Principal.Identities.First().AddClaims(await populateAdditionalClaims(tokenValidatedContext));    
-        }
-
+        tokenValidatedContext.Principal.Identities.First().AddClaims(await _customClaims.GetClaims(tokenValidatedContext));    
+        
     }
 
     private string CreateJwtAssertion()

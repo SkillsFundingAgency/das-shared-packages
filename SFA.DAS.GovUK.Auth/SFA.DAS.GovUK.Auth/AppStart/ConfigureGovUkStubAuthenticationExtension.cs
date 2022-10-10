@@ -9,8 +9,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart;
 internal static class ConfigureGovUkStubAuthenticationExtension
 {
 
-    public static void AddEmployerStubAuthentication(this IServiceCollection services, string authenticationCookieName,
-        Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null)
+    public static void AddEmployerStubAuthentication(this IServiceCollection services, string authenticationCookieName)
     {
         services
             .AddAuthentication(sharedOptions =>
@@ -27,11 +26,6 @@ internal static class ConfigureGovUkStubAuthenticationExtension
                     return Task.CompletedTask;
                 };
             });
-
-        if (populateAdditionalClaims != null)
-        {
-            services.AddSingleton(populateAdditionalClaims);
-        }
 
         services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName);
     }

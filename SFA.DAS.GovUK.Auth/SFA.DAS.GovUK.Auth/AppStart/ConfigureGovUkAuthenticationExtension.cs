@@ -6,13 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
-using SFA.DAS.GovUK.Auth.Interfaces;
+using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.AppStart;
 
 internal static class ConfigureGovUkAuthenticationExtension
 {
-    internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName, Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null)
+    internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName)
     {
         services
             .AddAuthentication(sharedOptions =>
@@ -66,7 +66,7 @@ internal static class ConfigureGovUkAuthenticationExtension
             }).AddAuthenticationCookie(authenticationCookieName);
         services
             .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-            .Configure<IOidcService, IAzureIdentityService>((options, oidcService, azureIdentityService) =>
+            .Configure<IOidcService, IAzureIdentityService, ICustomClaims>((options, oidcService, azureIdentityService, customClaims) =>
             {
                 var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -78,7 +78,6 @@ internal static class ConfigureGovUkAuthenticationExtension
                     ValidateAudience = true,
                     SaveSigninToken = true
                 };
-                options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx, populateAdditionalClaims);
                 options.Events.OnAuthorizationCodeReceived = async (ctx) =>
                 {
                     var token = await oidcService.GetToken(ctx.TokenEndpointRequest);
@@ -87,6 +86,8 @@ internal static class ConfigureGovUkAuthenticationExtension
                         ctx.HandleCodeRedemption(token.AccessToken, token.IdToken);    
                     }
                 };
+                options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx);
+                
             });
     }
 }

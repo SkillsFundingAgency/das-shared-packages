@@ -1,4 +1,4 @@
-namespace SFA.DAS.GovUK.Auth.Interfaces;
+namespace SFA.DAS.GovUK.Auth.Services;
 
 public interface IAzureIdentityService
 {

@@ -5,18 +5,19 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.AppStart;
 
 internal class EmployerStubAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     private readonly IConfiguration _configuration;
-    private readonly Func<TokenValidatedContext, Task<List<Claim>>>? _populateAdditionalClaims;
+    private readonly ICustomClaims? _customClaims;
 
-    public EmployerStubAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IConfiguration configuration, Func<TokenValidatedContext, Task<List<Claim>>>? populateAdditionalClaims = null) : base(options, logger, encoder, clock)
+    public EmployerStubAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IConfiguration configuration, ICustomClaims? customClaims) : base(options, logger, encoder, clock)
     {
         _configuration = configuration;
-        _populateAdditionalClaims = populateAdditionalClaims;
+        _customClaims = customClaims;
     }
     
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -28,10 +29,10 @@ internal class EmployerStubAuthHandler : AuthenticationHandler<AuthenticationSch
             new Claim("sub", Guid.Empty.ToString())
         };
 
-        if (_populateAdditionalClaims != null)
+        if (_customClaims != null)
         {
-            var additionalClaims = await _populateAdditionalClaims(null!);
-            claims.AddRange(additionalClaims);
+            var additionalClaims = await _customClaims.GetClaims(null!);
+            claims.AddRange(additionalClaims!);
         }
         
         var identity = new ClaimsIdentity(claims, "Employer-stub");
