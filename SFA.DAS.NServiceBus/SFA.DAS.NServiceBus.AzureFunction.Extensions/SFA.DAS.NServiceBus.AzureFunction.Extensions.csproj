@@ -19,7 +19,7 @@
 
   </PropertyGroup>
 
-    <!--<ItemGroup>
+    <ItemGroup>
         <Content Include="contentFiles/**/*.*" copyToOutput="true">
             <IncludeInPackage>true</IncludeInPackage>
             <CopyToOutput>true</CopyToOutput>
@@ -27,7 +27,7 @@
             <copyToOutput>true</copyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>-->
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.0" />
