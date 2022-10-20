@@ -18,6 +18,7 @@ public class WhenAddingServicesToTheContainer
     {
         var serviceCollection = new ServiceCollection();
         SetupServiceCollection(serviceCollection);
+        
         var provider = serviceCollection.BuildServiceProvider();
 
         var type = provider.GetService(toResolve);
@@ -37,7 +38,9 @@ public class WhenAddingServicesToTheContainer
         {
             InitialData = new List<KeyValuePair<string, string>>
             {
-                new("GovUkOidcConfiguration:BaseUrl", "https://test.com/")
+                new("GovUkOidcConfiguration:BaseUrl", "https://test.com/"),
+                new("GovUkOidcConfiguration:ClientId", "1234567"),
+                new("GovUkOidcConfiguration:KeyVaultIdentifier", "https://test.com/")
             }
         };
 

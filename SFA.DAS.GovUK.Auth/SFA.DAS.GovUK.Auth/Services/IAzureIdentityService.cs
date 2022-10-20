@@ -1,6 +1,9 @@
-namespace SFA.DAS.GovUK.Auth.Services;
+using System.Threading.Tasks;
 
-public interface IAzureIdentityService
+namespace SFA.DAS.GovUK.Auth.Services
 {
-    Task<string> AuthenticationCallback(string authority, string resource, string scope);
+    public interface IAzureIdentityService
+    {
+        Task<string> AuthenticationCallback(string authority, string resource, string scope);
+    }
 }

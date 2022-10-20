@@ -1,21 +1,24 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SFA.DAS.GovUK.Auth.AppStart;
-
-public static class AddAndConfigureGovUkAuthenticationExtension
+namespace SFA.DAS.GovUK.Auth.AppStart
 {
-    public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName, Type customClaims) 
+    public static class AddAndConfigureGovUkAuthenticationExtension
     {
-        services.AddServiceRegistration(configuration, customClaims);
-        if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
+        public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services,
+            IConfiguration configuration, string authenticationCookieName, Type customClaims)
         {
-            services.AddEmployerStubAuthentication($"{authenticationCookieName}.stub");
+            services.AddServiceRegistration(configuration, customClaims);
+            if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
+            {
+                services.AddEmployerStubAuthentication($"{authenticationCookieName}.stub");
+            }
+            else
+            {
+                services.ConfigureGovUkAuthentication(configuration, authenticationCookieName);
+            }
+
         }
-        else
-        {
-            services.ConfigureGovUkAuthentication(configuration, authenticationCookieName);    
-        }
-        
     }
 }

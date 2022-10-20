@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SFA.DAS.GovUK.Auth.Services;
-
-public interface IJwtSecurityTokenService
+namespace SFA.DAS.GovUK.Auth.Services
 {
-    string CreateToken(string clientId, string audience, ClaimsIdentity claimsIdentity, SigningCredentials signingCredentials);
+    public interface IJwtSecurityTokenService
+    {
+        string CreateToken(string clientId, string audience, ClaimsIdentity claimsIdentity,
+            SigningCredentials signingCredentials);
+    }
 }
