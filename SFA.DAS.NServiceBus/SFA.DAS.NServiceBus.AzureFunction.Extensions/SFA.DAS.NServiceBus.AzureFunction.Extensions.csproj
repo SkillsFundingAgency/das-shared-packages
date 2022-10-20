@@ -15,18 +15,20 @@
       <IncludeSymbols>true</IncludeSymbols>
       <PublishRepositoryUrl>true</PublishRepositoryUrl>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
-
   </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="contentFiles/**/*.*" copyToOutput="true">
+        <Content Include="AutoSubscribe/**/*.*" copyToOutput="true">
             <IncludeInPackage>true</IncludeInPackage>
             <CopyToOutput>true</CopyToOutput>
             <BuildAction>Content</BuildAction>
             <copyToOutput>true</copyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="AutoSubscribe\ForceAutoEventSubscription.cs" />
     </ItemGroup>
 
   <ItemGroup>
