@@ -36,6 +36,6 @@ stages:
       DotNetStandardPackagesToPack: <
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.csproj;
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.Extensions/SFA.DAS.NServiceBus.Extensions.csproj;
-        SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.AzureFunction.Extensions/SFA.DAS.NServiceBus.AzureFunction.Extensions.csprog
+        SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.AzureFunction.Extensions/SFA.DAS.NServiceBus.AzureFunction.Extensions.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.NServiceBus
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
