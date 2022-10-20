@@ -26,5 +26,7 @@ public class WhenLoggingOutgoingBehaviour
             .ConfigureAwait(false);
 
         logger.LogInformationCallCount.Should().Be(1);
+        logger.InformationMessages.First().Should().StartWith("Sending message");
+
     }
 }

@@ -29,5 +29,6 @@ public class WhenLoggingIncomingBehaviour
             .ConfigureAwait(false);
 
         logger.LogInformationCallCount.Should().Be(1);
+        logger.InformationMessages.First().Should().StartWith("Received message");
     }
 }
