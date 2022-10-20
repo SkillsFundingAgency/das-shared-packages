@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
+using IdentityModel.Client;
 using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Infrastructure;
@@ -57,8 +59,9 @@ namespace SFA.DAS.OidcMiddleware
             {
                 return null;
             }
-
-            var tokenResponse = await _tokenClient.RequestAuthorizationCodeAsync(Options.TokenEndpoint, Options.ClientId, Options.ClientSecret, code, Request.Uri);
+            
+            var httpClient = new HttpClient();
+            var tokenResponse = await _tokenClient.RequestAuthorizationCodeAsync(httpClient, Options.TokenEndpoint, Options.ClientId, Options.ClientSecret, code, Request.Uri);
 
             if (tokenResponse.IsError)
             {
@@ -73,7 +76,7 @@ namespace SFA.DAS.OidcMiddleware
 
             if (!string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
             {
-                identity.AddClaims(await _userInfoClient.GetUserClaims(Options, tokenResponse.AccessToken));
+                identity.AddClaims(await _userInfoClient.GetUserClaims(httpClient, Options, tokenResponse.AccessToken));
                 identity.AddClaim(new Claim("access_token", tokenResponse.AccessToken));
                 identity.AddClaim(new Claim("expires_at", (DateTime.UtcNow.ToEpochTime() + tokenResponse.ExpiresIn).ToDateTimeFromEpoch().ToString()));
             }

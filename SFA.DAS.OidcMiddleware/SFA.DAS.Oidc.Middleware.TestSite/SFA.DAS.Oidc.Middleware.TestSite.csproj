@@ -425,10 +425,6 @@
       <Project>{13153B30-35D0-4DB4-AD3D-00F0DFA40CC8}</Project>
       <Name>SFA.DAS.OidcMiddleware.GovUk</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.OidcMiddleware\SFA.DAS.OidcMiddleware.csproj">
-      <Project>{ea5ad9e8-1db7-4490-bba6-eef5c65aa647}</Project>
-      <Name>SFA.DAS.OidcMiddleware</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -144,12 +145,20 @@ namespace SFA.DAS.OidcMiddleware.UnitTests
                 _nonceCache.Setup(c => c.GetNonceAsync(It.IsAny<IAuthenticationManager>()))
                     .ReturnsAsync(Nonce);
 
-                _tokenClient.Setup(c => c.RequestAuthorizationCodeAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Uri>()))
-                    .ReturnsAsync(new TokenResponse("{\"id_token\": \"" + IdentityToken + "\",\"access_token\": \"" + AccessToken + "\",\"refresh_token\": \"" + RefreshToken + "\"}"));
+                var msg = new HttpResponseMessage(HttpStatusCode.Accepted);
+                var content = new StringContent("{\"id_token\": \"" + IdentityToken + "\",\"access_token\": \"" +
+                                              AccessToken + "\",\"refresh_token\": \"" + RefreshToken + "\"}");
+                msg.Content = content;
+
+                var tokenResponse = ProtocolResponse.FromHttpResponseAsync<TokenResponse>(msg); 
+                
+                _tokenClient
+                    .Setup(c => c.RequestAuthorizationCodeAsync(It.IsAny<HttpMessageInvoker>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Uri>()))
+                    .Returns(tokenResponse);
 
                 _tokenValidator.Setup(v => v.ValidateToken(It.IsAny<OidcMiddlewareOptions>(), It.IsAny<string>(), It.IsAny<string>()));
 
-                _userInfoClient.Setup(c => c.GetUserClaims(It.IsAny<OidcMiddlewareOptions>(), It.IsAny<string>()))
+                _userInfoClient.Setup(c => c.GetUserClaims(It.IsAny<HttpClient>(), It.IsAny<OidcMiddlewareOptions>(), It.IsAny<string>()))
                     .ReturnsAsync(new List<Claim> { new Claim("name", LoggedInName) });
 
                 _server = CreateServer(app => app.UseCodeFlowAuthentication(_options));
@@ -166,7 +175,7 @@ namespace SFA.DAS.OidcMiddleware.UnitTests
             [Test]
             public void ThenShouldRequestToken()
             {
-                _tokenClient.Verify(c => c.RequestAuthorizationCodeAsync(TokenEndpoint, ClientId, ClientSecret, Code, new Uri(_url)), Times.Once);
+                _tokenClient.Verify(c => c.RequestAuthorizationCodeAsync(It.IsAny<HttpMessageInvoker>(), TokenEndpoint, ClientId, ClientSecret, Code, new Uri(_url)), Times.Once);
             }
 
             [Test]
@@ -186,7 +195,7 @@ namespace SFA.DAS.OidcMiddleware.UnitTests
             [Test]
             public void ThenShouldAddUserClaims()
             {
-                _userInfoClient.Verify(c => c.GetUserClaims(_options, AccessToken), Times.Once);
+                _userInfoClient.Verify(c => c.GetUserClaims(It.IsAny<HttpClient>(), _options, AccessToken), Times.Once);
 
                 Assert.That(_identity.Claims.Single(c => c.Type == "name").Value, Is.EqualTo(LoggedInName));
             }

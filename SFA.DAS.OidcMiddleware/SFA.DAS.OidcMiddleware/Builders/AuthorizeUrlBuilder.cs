@@ -7,7 +7,7 @@ namespace SFA.DAS.OidcMiddleware.Builders
     {
         public string BuildAuthorizeUrl(string authorizeEndpoint, string clientId, string scopes, Uri requestUri, string state, string nonce)
         {
-            var request = new AuthorizeRequest(authorizeEndpoint);
+            var request = new RequestUrl(authorizeEndpoint);
             
             return request.CreateAuthorizeUrl(
                 clientId: clientId,
