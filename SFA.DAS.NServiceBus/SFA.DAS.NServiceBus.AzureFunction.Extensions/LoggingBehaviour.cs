@@ -13,6 +13,11 @@ public class LogIncomingBehaviour : IBehavior<IIncomingLogicalMessageContext, II
         _logger = LoggerFactory.Create(b => b.Services.AddLogging(c=>c.AddConsole())).CreateLogger<LogIncomingBehaviour>();
     }
 
+    public LogIncomingBehaviour(ILoggerFactory loggerFactory)
+    {
+        _logger = loggerFactory.CreateLogger("IncomingBehaviour");
+    }
+
     public async Task Invoke(IIncomingLogicalMessageContext context, Func<IIncomingLogicalMessageContext, Task> next)
     {
         context.MessageHeaders.TryGetValue("NServiceBus.MessageIntent", out var intent);
@@ -30,6 +35,11 @@ public class LogOutgoingBehaviour : IBehavior<IOutgoingLogicalMessageContext, IO
     public LogOutgoingBehaviour()
     {
         _logger = LoggerFactory.Create(b => b.Services.AddLogging(c => c.AddConsole())).CreateLogger<LogOutgoingBehaviour>();
+    }
+
+    public LogOutgoingBehaviour(ILoggerFactory loggerFactory)
+    {
+        _logger = loggerFactory.CreateLogger("OutgoingBehaviour");
     }
 
     public async Task Invoke(IOutgoingLogicalMessageContext context, Func<IOutgoingLogicalMessageContext, Task> next)
