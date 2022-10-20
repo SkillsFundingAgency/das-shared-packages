@@ -38,5 +38,4 @@ public static class EndpointConfigurationExtensions
         => t.Namespace != null &&
                t.Namespace.StartsWith("SFA.DAS") &&
                t.Namespace.EndsWith(namespaceSuffix);
-    
 }
