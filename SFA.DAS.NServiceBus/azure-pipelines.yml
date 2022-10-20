@@ -34,7 +34,6 @@ stages:
     parameters:
       WorkingDirectory: SFA.DAS.NServiceBus
       DotNetStandardPackagesToPack: <
-        SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.AzureFunction.Extensions/SFA.DAS.NServiceBus.AzureFunction.Extensions.csproj;
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.csproj;
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.Extensions/SFA.DAS.NServiceBus.Extensions.csproj;
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.AzureFunction.Extensions/SFA.DAS.NServiceBus.AzureFunction.Extensions.csproj
