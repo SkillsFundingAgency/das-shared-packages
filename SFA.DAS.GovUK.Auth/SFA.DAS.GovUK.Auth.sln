@@ -8,9 +8,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUK.Auth.UnitTest
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0FC1A393-51E5-4BD9-9576-B2436B1EA214}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUK.SampleSite", "SFA.DAS.GovUK.SampleSite\SFA.DAS.GovUK.SampleSite.csproj", "{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUK.SampleSite", "..\SFA.DAS.GovUk.Auth.Samples\SFA.DAS.GovUK.SampleSite\SFA.DAS.GovUK.SampleSite.csproj", "{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUk.SampleSite.Legacy", "SFA.DAS.GovUk.SampleSite.Legacy\SFA.DAS.GovUk.SampleSite.Legacy.csproj", "{EAB6A659-8373-41BA-9E4D-F14829E18B5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUk.SampleSite.Legacy", "..\SFA.DAS.GovUk.Auth.Samples\SFA.DAS.GovUk.SampleSite.Legacy\SFA.DAS.GovUk.SampleSite.Legacy.csproj", "{EAB6A659-8373-41BA-9E4D-F14829E18B5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

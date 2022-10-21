@@ -18,6 +18,6 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.6" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth.csproj" />
+      <ProjectReference Include="..\..\SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth.csproj" />
     </ItemGroup>
 </Project>
