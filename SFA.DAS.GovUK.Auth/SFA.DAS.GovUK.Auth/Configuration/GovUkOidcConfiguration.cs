@@ -1,8 +1,9 @@
-namespace SFA.DAS.GovUK.Auth.Configuration;
-
-public class GovUkOidcConfiguration
+namespace SFA.DAS.GovUK.Auth.Configuration
 {
-    public string BaseUrl { get; set; } = null!;
-    public string ClientId { get; set; } = null!;
-    public string KeyVaultIdentifier { get; set; } = null!;
+    public class GovUkOidcConfiguration
+    {
+        public string BaseUrl { get; set; }
+        public string ClientId { get; set; }
+        public string KeyVaultIdentifier { get; set; }
+    }
 }

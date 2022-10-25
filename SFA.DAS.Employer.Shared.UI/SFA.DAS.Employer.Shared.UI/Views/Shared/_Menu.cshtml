@@ -1,20 +1,18 @@
-﻿@model string
-@using Microsoft.Extensions.Options
+@model string
 @using System.Net
 @using SFA.DAS.Employer.Shared.UI
-@inject SFA.DAS.Employer.Shared.UI.UrlBuilder linkGenerator
-@inject IOptionsMonitor<MaPageConfiguration> OptionsAccessor
+@inject UrlBuilder LinkGenerator
+@inject MaPageConfiguration OptionsAccessor
 
 @{
     var accountId = Model;
-    var clientId = OptionsAccessor.CurrentValue.AccountsOidcClientId;
     var selectedSection = ViewData.SelectedNavigationSection();
-    var logoutRoute = OptionsAccessor.CurrentValue.LocalLogoutRouteName;
-    var externalLinks = OptionsAccessor.CurrentValue.Routes;
+    var logoutRoute = OptionsAccessor.LocalLogoutRouteName;
+    var clientId = OptionsAccessor.AccountsOidcClientId;
 }
 
-@functions {
-    private bool IsErrorPage()
+@{
+    bool IsErrorPage()
     {
         if (ViewBag.IsErrorPage is bool)
         {
@@ -24,7 +22,7 @@
         return false;
     }
 
-    private bool ParseHideNavFromViewBag()
+    bool ParseHideNavFromViewBag()
     {
         if (ViewBag.ShowNav is bool)
         {
@@ -34,17 +32,17 @@
         return true;
     }
 
-    private static string GetEncodedReturnUrl(string url)
+    string GetEncodedReturnUrl(string url)
     {
         var encodedReturnUrl = WebUtility.UrlEncode(url);
 
         return encodedReturnUrl;
     }
 
-    private string BuildNavigationLinkClass(NavigationSection section, NavigationSection selectedSection)
+    string BuildNavigationLinkClass(NavigationSection section, NavigationSection sectionSelected)
     {
         var cssClass = "das-navigation__link";
-        if (selectedSection == section)
+        if (sectionSelected == section)
         {
             cssClass += " das-navigation__link--current";
         }
@@ -58,7 +56,7 @@
         <nav class="das-user-navigation" id="das-user-navigation">
             <ul class="das-user-navigation__list" role="menu">
                 <li role="menuitem" class="das-user-navigation__list-item">
-                    <a href="@linkGenerator.AccountsLink("Help")" class="das-user-navigation__link mu-help" target="_blank">Help</a>
+                    <a href="@LinkGenerator.AccountsLink("Help")" class="das-user-navigation__link mu-help" target="_blank">Help</a>
                 </li>
                 @if (Context.User.Identity.IsAuthenticated)
                 {
@@ -66,27 +64,27 @@
                         <a href="/" role="menuitem" class="das-user-navigation__link">Settings</a>
                         <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                <a href="@linkGenerator.AccountsLink("Accounts")" role="menuitem" class="das-user-navigation__sub-menu-link mu-accounts">Your accounts</a>
+                                <a href="@LinkGenerator.AccountsLink("Accounts")" role="menuitem" class="das-user-navigation__sub-menu-link mu-accounts">Your accounts</a>
                             </li>
                             @if (!IsErrorPage())
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href="@linkGenerator.AccountsLink("RenameAccount", accountId)" class="das-user-navigation__sub-menu-link mu-rename-acc">Rename account</a>
+                                    <a href="@LinkGenerator.AccountsLink("RenameAccount", accountId)" class="das-user-navigation__sub-menu-link mu-rename-acc">Rename account</a>
                                 </li>
                             }
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                <a href="@linkGenerator.UsersLink("ChangePassword", clientId, GetEncodedReturnUrl(linkGenerator.AccountsLink("ChangePasswordReturn")))" class="das-user-navigation__sub-menu-link mu-change-pass">Change your password</a>
+                                <a href="@LinkGenerator.UsersLink("ChangePassword", clientId, GetEncodedReturnUrl(LinkGenerator.AccountsLink("ChangePasswordReturn")))" class="das-user-navigation__sub-menu-link mu-change-pass">Change your password</a>
                             </li>
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                <a href="@linkGenerator.UsersLink("ChangeEmailAddress", clientId, GetEncodedReturnUrl(linkGenerator.AccountsLink("ChangeEmailReturn")))" class="das-user-navigation__sub-menu-link mu-change-email">Change your email address</a>
+                                <a href="@LinkGenerator.UsersLink("ChangeEmailAddress", clientId, GetEncodedReturnUrl(LinkGenerator.AccountsLink("ChangeEmailReturn")))" class="das-user-navigation__sub-menu-link mu-change-email">Change your email address</a>
                             </li>
                             @if (!IsErrorPage())
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href="@linkGenerator.AccountsLink("Notifications")" class="das-user-navigation__sub-menu-link mu-not-settings">Notifications settings</a>
+                                    <a href="@LinkGenerator.AccountsLink("Notifications")" class="das-user-navigation__sub-menu-link mu-not-settings">Notifications settings</a>
                                 </li>
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href="@linkGenerator.RecruitLink("NotificationsManage", accountId)" class="das-user-navigation__sub-menu-link mu-advert-notifications">Manage your advert notifications</a>
+                                    <a href="@LinkGenerator.RecruitLink("NotificationsManage", accountId)" class="das-user-navigation__sub-menu-link mu-advert-notifications">Manage your advert notifications</a>
                                 </li>
                             }
                         </ul>
@@ -98,7 +96,7 @@
                 else
                 {
                     <li role="menuitem" class="das-user-navigation__list-item">
-                        <a href="@linkGenerator.AccountsLink()" role="menuitem" class="das-user-navigation__link mu-signout mu-signin">Sign in / Register</a>
+                        <a href="@LinkGenerator.AccountsLink()" role="menuitem" class="das-user-navigation__link mu-signout mu-signin">Sign in / Register</a>
                     </li>
                 }
             </ul>
@@ -114,27 +112,27 @@
             <div class="govuk-width-container">
                 <ul class="das-navigation__list" id="navigation" role="menu">
                     <li class="das-navigation__list-item">
-                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection) mu-home" href="@linkGenerator.AccountsLink("AccountsHome", accountId)">Home</a>
+                        <a class="@BuildNavigationLinkClass(NavigationSection.AccountsHome, selectedSection) mu-home" href="@LinkGenerator.AccountsLink("AccountsHome", accountId)">Home</a>
                     </li>
                     @if (selectedSection != NavigationSection.None)
                     { 
                         <li class="das-navigation__list-item">
-                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsFinance, selectedSection) mu-finance" href="@linkGenerator.FinanceLink("AccountsFinance", accountId)">Finance</a>
+                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsFinance, selectedSection) mu-finance" href="@LinkGenerator.FinanceLink("AccountsFinance", accountId)">Finance</a>
                         </li>
                         <li class="das-navigation__list-item">
-                            <a class="@BuildNavigationLinkClass(NavigationSection.RecruitHome, selectedSection) mu-recruit" href="@linkGenerator.RecruitLink("RecruitHome", accountId)">Adverts</a>
+                            <a class="@BuildNavigationLinkClass(NavigationSection.RecruitHome, selectedSection) mu-recruit" href="@LinkGenerator.RecruitLink("RecruitHome", accountId)">Adverts</a>
                         </li>
                         <li class="das-navigation__list-item">
-                            <a class="@BuildNavigationLinkClass(NavigationSection.ApprenticesHome, selectedSection) mu-apprentices" href="@linkGenerator.CommitmentsV2Link("ApprenticesHome", accountId)">Apprentices</a>
+                            <a class="@BuildNavigationLinkClass(NavigationSection.ApprenticesHome, selectedSection) mu-apprentices" href="@LinkGenerator.CommitmentsV2Link("ApprenticesHome", accountId)">Apprentices</a>
                         </li>
                         <li class="das-navigation__list-item">
-                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsTeamsView, selectedSection) mu-team" href="@linkGenerator.AccountsLink("AccountsTeamsView", accountId)">Your team</a>
+                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsTeamsView, selectedSection) mu-team" href="@LinkGenerator.AccountsLink("AccountsTeamsView", accountId)">Your team</a>
                         </li>
                         <li class="das-navigation__list-item">
-                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsAgreements, selectedSection) mu-orgs" href="@linkGenerator.AccountsLink("AccountsAgreements", accountId)">Your organisations and agreements</a>
+                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsAgreements, selectedSection) mu-orgs" href="@LinkGenerator.AccountsLink("AccountsAgreements", accountId)">Your organisations and agreements</a>
                         </li>
                         <li class="das-navigation__list-item">
-                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsSchemes, selectedSection) mu-paye" href="@linkGenerator.AccountsLink("AccountsSchemes", accountId)">PAYE schemes</a>
+                            <a class="@BuildNavigationLinkClass(NavigationSection.AccountsSchemes, selectedSection) mu-paye" href="@LinkGenerator.AccountsLink("AccountsSchemes", accountId)">PAYE schemes</a>
                         </li>
                     }
                 </ul>

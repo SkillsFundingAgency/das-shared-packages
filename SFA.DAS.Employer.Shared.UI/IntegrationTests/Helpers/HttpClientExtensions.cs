@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp.Html.Dom;
-using Xunit;
+using NUnit.Framework;
 
 namespace SFA.DAS.Employer.Shared.UI.IntegrationTests.Helpers
 {
@@ -22,10 +22,11 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests.Helpers
             IHtmlFormElement form,
             IEnumerable<KeyValuePair<string, string>> formValues)
         {
-            var submitElement = Assert.Single(form.QuerySelectorAll("[type=submit]"));
-            var submitButton = Assert.IsAssignableFrom<IHtmlElement>(submitElement);
-
-            return client.SendAsync(form, submitButton, formValues);
+            
+            Assert.AreEqual(1,form.QuerySelectorAll("[type=submit]").Length);
+            Assert.IsAssignableFrom<IHtmlElement>(form.QuerySelectorAll("[type=submit]")[0]);
+            var submitElement = form.QuerySelectorAll("[type=submit]")[0] as IHtmlElement;
+            return client.SendAsync(form, submitElement, formValues);
         }
 
         public static Task<HttpResponseMessage> SendAsync(
@@ -36,8 +37,8 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests.Helpers
         {
             foreach (var kvp in formValues)
             {
-                var element = Assert.IsAssignableFrom<IHtmlInputElement>(form[kvp.Key]);
-                element.Value = kvp.Value;
+                Assert.IsAssignableFrom<IHtmlInputElement>(form[kvp.Key]);
+                //element.Value = kvp.Value;
             }
 
             var submit = form.GetSubmission(submitButton);

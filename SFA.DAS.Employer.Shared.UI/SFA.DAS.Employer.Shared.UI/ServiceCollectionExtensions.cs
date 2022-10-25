@@ -1,29 +1,18 @@
 using System;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Employer.Shared.UI.Configuration;
-using SFA.DAS.EmployerUrlHelper;
-using SFA.DAS.EmployerUrlHelper.DependencyResolution;
 
 namespace SFA.DAS.Employer.Shared.UI
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddMaMenuConfiguration(this IServiceCollection services, IConfiguration configuration, string logoutRouteName, string identityClientId)
+        public static void AddMaMenuConfiguration(this IServiceCollection services, string logoutRouteName, string identityClientId, string environment)
         {
             ValidateArguments(logoutRouteName, identityClientId);
-
-            services.AddEmployerUrlHelper(configuration);
-            services.AddSingleton<UrlBuilder>();
-
-            var linkGenerator = services.BuildServiceProvider().GetService<ILinkGenerator>();
-
-            // TODO: Validate configuration values?
-            services.Configure<MaPageConfiguration>(configuration.GetSection("SFA.DAS.Employer.Shared.UI:MaPageConfiguration"));
-            services.PostConfigure<MaPageConfiguration>(options =>
-            {
-                options.LocalLogoutRouteName = logoutRouteName;
-            });
+            
+            services.AddSingleton(new UrlBuilder(environment.ToLower()));
+            
+            services.AddSingleton(new MaPageConfiguration(identityClientId, logoutRouteName));
         }
 
         private static void ValidateArguments(string logoutRouteName, string identityClientId)

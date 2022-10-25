@@ -4,27 +4,29 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 using DfE.Example.Web;
+using NUnit.Framework;
 
 namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
 {
-    public abstract class TestBase : IClassFixture<WebApplicationFactory<Startup>>
+    public abstract class TestBase 
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private WebApplicationFactory<Startup> _factory;
 
-        protected TestBase(WebApplicationFactory<Startup> factory)
+        [SetUp]
+        public void SetUp()
         {
+            WebApplicationFactory<Startup> factory = new WebApplicationFactory<Startup>();
+            
             _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.Sources.Clear();
-
+            
                     config.SetBasePath(Directory.GetCurrentDirectory());
                     config.AddJsonFile("appSettings.json", optional: false, reloadOnChange: false);
                     config.AddJsonFile("sharedMenuSettings.json", optional: false, reloadOnChange: false);
-                    config.AddJsonFile("linkGeneratorSettings.json", optional: false, reloadOnChange: false);
                 });
             });
         }
@@ -32,8 +34,16 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
         protected System.Net.Http.HttpClient BuildClient(bool authenticated = true)
         {
             return _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
+                {
+                    builder.ConfigureAppConfiguration((hostingContext, config) =>
+                        {
+                            config.Sources.Clear();
+
+                            config.SetBasePath(Directory.GetCurrentDirectory());
+                            config.AddJsonFile("appSettings.json", optional: false, reloadOnChange: false);
+                            config.AddJsonFile("sharedMenuSettings.json", optional: false, reloadOnChange: false);
+                        })
+                .ConfigureTestServices(services =>
                 {
                     services.AddMvc(options =>
                     {

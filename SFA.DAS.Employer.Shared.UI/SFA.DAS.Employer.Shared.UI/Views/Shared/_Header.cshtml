@@ -1,10 +1,7 @@
-@using Microsoft.Extensions.Options
-@inject SFA.DAS.EmployerUrlHelper.ILinkGenerator linkGenerator
-@inject IOptionsMonitor<MaPageConfiguration> OptionsAccessor
+@inject SFA.DAS.Employer.Shared.UI.UrlBuilder LinkGenerator
 
-@functions {
-
-    private bool ParseHideHeaderBorder()
+@{
+    bool ParseHideHeaderBorder()
     {
         if (ViewBag.HideHeaderBorder is bool)
         {
@@ -31,7 +28,7 @@
             </a>
         </div>
         <div class="govuk-header__content">
-            <a href="@linkGenerator.AccountsLink()" class="govuk-header__link govuk-header__link--service-name mu-header">
+            <a href="@LinkGenerator.AccountsLink()" class="govuk-header__link govuk-header__link--service-name mu-header">
             Manage apprenticeships
             </a>
         </div>
