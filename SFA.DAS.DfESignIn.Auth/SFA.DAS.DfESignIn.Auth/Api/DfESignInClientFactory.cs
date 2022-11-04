@@ -18,11 +18,13 @@ namespace SFA.DAS.DfESignIn.Auth.Api
         {
             var dsiConfiguration = _config.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>();
 
-            var dfeSignInClient = new DfESignInClient(new HttpClient());
-            dfeSignInClient.ServiceId = dsiConfiguration.ClientId;
-            dfeSignInClient.ServiceUrl = dsiConfiguration.APIServiceUrl;
-            dfeSignInClient.UserId = userId;
-            dfeSignInClient.OrganisationId = organizationId;
+            var dfeSignInClient = new DfESignInClient(new HttpClient())
+            {
+                ServiceId = dsiConfiguration.APIServiceId,
+                ServiceUrl = dsiConfiguration.APIServiceUrl,
+                UserId = userId,
+                OrganisationId = organizationId
+            };
 
             var tokenData = new TokenData();
             tokenData.Header.Add("typ", "JWT");

@@ -2,25 +2,19 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using SFA.DAS.DfESignIn.Auth.Api;
+using SFA.DAS.DfESignIn.Auth.Api.Models;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Models;
-using SFA.DAS.DfESignIn.Auth.Services;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
-using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
-using SFA.DAS.DfESignIn.Auth.Api;
-using SFA.DAS.DfESignIn.Auth.Api.Models;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -96,23 +90,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     };
 
                 }).AddAuthenticationCookie(authenticationCookieName);
-            services
-                .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-                .Configure<IOidcService, IAzureIdentityService, ICustomClaims, IOptions<DfEOidcConfiguration>>(
-                    (options, oidcService, azureIdentityService, customClaims, config) =>
-                    {
-                        var dsiConfiguration = config.Value;
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            AuthenticationType = "private_key_jwt",
-                            IssuerSigningKey = new KeyVaultSecurityKey(dsiConfiguration.KeyVaultIdentifier,
-                                azureIdentityService.AuthenticationCallback),
-                            ValidateIssuerSigningKey = true,
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            SaveSigninToken = true
-                        };
-                    });
         }
 
         private static async Task PopulateAccountsClaim(TokenValidatedContext ctx, IConfiguration config)
@@ -121,39 +98,48 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 
             string userId = ctx.Principal.Claims.Where(c => c.Type.Contains("sub")).Select(c => c.Value).SingleOrDefault();
 
-            var organisationClaim = ctx.Principal.Claims
-                .First(c => c.Type.Equals("organisation"))
-                .Value;
-
-            var userOrganization = JsonConvert.DeserializeObject<Organisation>
+            var userOrganisation = JsonConvert.DeserializeObject<Organisation>
             (
                 ctx.Principal.Claims.Where(c => c.Type == "organisation")
                 .Select(c => c.Value)
                 .FirstOrDefault()
             );
+            
+            var ukPrn = userOrganisation.UkPrn ?? 10000531;
 
-            var value = JsonConvert.DeserializeObject<DfESignInUser>(organisationClaim);
-            var ukPrn = value.Ukprn ?? 10000531;
-
-            // Create DfE Signin Client
             var clientFactory = new DfESignInClientFactory(config);
-            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrganization.Id.ToString());
+            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrganisation.Id.ToString());
+            HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
 
-            // Call the API
-            HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(new Uri(string.Format("{0}/users/{1}/organisations", dsiConfiguration.APIServiceUrl, userId)));
+            string stream = "";
             if (response.IsSuccessStatusCode)
             {
-                //Read result
-                string stuff = await response.Content.ReadAsStringAsync();
+                stream = await response.Content.ReadAsStringAsync();
+
+                var apiServiceResponse = JsonConvert.DeserializeObject<ApiServiceResponse>(stream);
+                var roleClaims = new List<Claim>();
+                foreach (var role in apiServiceResponse.Roles)
+                {
+                    if (role.Status.Id.Equals(1))
+                    {
+                        roleClaims.Add(new Claim("rolecode", role.Code, ClaimTypes.Role, ctx.Options.ClientId));
+                        roleClaims.Add(new Claim("roleId", role.Id.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
+                        roleClaims.Add(new Claim("roleName", role.Name, ClaimTypes.Role, ctx.Options.ClientId));
+                        roleClaims.Add(new Claim("rolenumericid", role.NumericId.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
+                    }
+                }
+
+                var roleIdentity = new ClaimsIdentity(roleClaims);
+                ctx.Principal.AddIdentity(roleIdentity);
             }
 
-            // TODO 
             var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
             ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn);
             ctx.HttpContext.Items.Add("http://schemas.portal.com/displayname", displayName);
             ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
+            ctx.Principal.Identities.First().AddClaim(new Claim("Public API", stream));
         }
     }
 }

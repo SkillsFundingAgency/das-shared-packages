@@ -1,4 +1,4 @@
-namespace SFA.DAS.DfESignIn.Auth.Configuration
+namespace SFA.DAS.DfESignIn.SampleSite.Classic
 {
     public interface IDfEOidcConfiguration
     {
