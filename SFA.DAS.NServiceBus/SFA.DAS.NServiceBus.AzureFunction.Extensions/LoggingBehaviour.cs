@@ -10,7 +10,7 @@ public class LogIncomingBehaviour : IBehavior<IIncomingLogicalMessageContext, II
 
     public LogIncomingBehaviour()
     {
-        _logger = LoggerFactory.Create(b => b.Services.AddLogging(c=>c.AddConsole())).CreateLogger<LogIncomingBehaviour>();
+        _logger = LoggerFactory.Create(b => b.Services.AddLogging()).CreateLogger<LogIncomingBehaviour>();
     }
 
     public LogIncomingBehaviour(ILoggerFactory loggerFactory)
@@ -34,7 +34,7 @@ public class LogOutgoingBehaviour : IBehavior<IOutgoingLogicalMessageContext, IO
 
     public LogOutgoingBehaviour()
     {
-        _logger = LoggerFactory.Create(b => b.Services.AddLogging(c => c.AddConsole())).CreateLogger<LogOutgoingBehaviour>();
+        _logger = LoggerFactory.Create(b => b.Services.AddLogging()).CreateLogger<LogOutgoingBehaviour>();
     }
 
     public LogOutgoingBehaviour(ILoggerFactory loggerFactory)

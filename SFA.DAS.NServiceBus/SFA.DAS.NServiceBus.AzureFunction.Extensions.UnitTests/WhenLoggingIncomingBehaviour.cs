@@ -13,7 +13,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Extensions.UnitTests;
 public class WhenLoggingIncomingBehaviour
 {
     [Test]
-    public async Task Should_not_log_the_information()
+    public async Task Should_log_the_information()
     {
         var logger = new FakeLogger();
         var loggerFactorMock = new Mock<ILoggerFactory>();
