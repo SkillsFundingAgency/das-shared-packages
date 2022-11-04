@@ -41,4 +41,22 @@ public class WhenGettingConfigurationValues
 
         ConfigurationExtensions.NServiceBusLicense(config.Object).Should().BeNull();
     }
+
+    [Test, AutoData]
+    public void Then_NServiceBusFullNamespace_should_return_connection(string connectionString)
+    {
+        var config = new Mock<IConfiguration>();
+        config.Setup(x => x["AzureWebJobsServiceBus:fullyQualifiedNamespace"]).Returns(connectionString);
+
+        ConfigurationExtensions.NServiceBusFullNamespace(config.Object).Should().Be(connectionString);
+    }
+
+    [Test, AutoData]
+    public void Then_NServiceBusSASConnectionString_should_return_connection(string connectionString)
+    {
+        var config = new Mock<IConfiguration>();
+        config.Setup(x => x["AzureWebJobsServiceBus"]).Returns(connectionString);
+
+        ConfigurationExtensions.NServiceBusSASConnectionString(config.Object).Should().Be(connectionString);
+    }
 }
