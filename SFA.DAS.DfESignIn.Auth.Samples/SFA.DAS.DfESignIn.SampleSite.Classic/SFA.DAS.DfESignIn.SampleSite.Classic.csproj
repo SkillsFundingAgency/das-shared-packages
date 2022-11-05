@@ -204,6 +204,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\DfESignInClientFactory.cs" />
+    <Compile Include="Api\IJsonWebAlgorithm.cs" />
+    <Compile Include="Api\ITokenData.cs" />
+    <Compile Include="Api\ITokenDataSerializer.cs" />
+    <Compile Include="Api\ITokenEncoder.cs" />
+    <Compile Include="Api\JsonWebAlgorithm.cs" />
+    <Compile Include="Api\Models\ApiServiceResponse.cs" />
+    <Compile Include="Api\Models\DfESignInClient.cs" />
+    <Compile Include="Api\Models\Identifier.cs" />
+    <Compile Include="Api\Models\Organisation.cs" />
+    <Compile Include="Api\Models\Role.cs" />
+    <Compile Include="Api\Models\Status.cs" />
+    <Compile Include="Api\TokenBuilder.cs" />
+    <Compile Include="Api\TokenBuilderExtensions.cs" />
+    <Compile Include="Api\TokenData.cs" />
+    <Compile Include="Api\TokenDataSerializer.cs" />
+    <Compile Include="Api\TokenEncoder.cs" />
     <Compile Include="App_Start\ConfigurationBuilderExtension.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
