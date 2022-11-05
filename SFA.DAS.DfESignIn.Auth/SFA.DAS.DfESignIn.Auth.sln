@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0FC1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.DfESignIn.SampleSite", "..\SFA.DAS.DfESignIn.Auth.Samples\SFA.DAS.DfESignIn.SampleSite\SFA.DAS.DfESignIn.SampleSite.csproj", "{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.DfESignIn.SampleSite.Legacy", "..\SFA.DAS.DfESignIn.Auth.Samples\SFA.DAS.DfESignIn.SampleSite.Legacy\SFA.DAS.DfESignIn.SampleSite.Legacy.csproj", "{EAB6A659-8373-41BA-9E4D-F14829E18B5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.DfESignIn.SampleSite.Standard", "..\SFA.DAS.DfESignIn.Auth.Samples\SFA.DAS.DfESignIn.SampleSite.Standard\SFA.DAS.DfESignIn.SampleSite.Standard.csproj", "{EAB6A659-8373-41BA-9E4D-F14829E18B5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DfESignIn.SampleSite.Classic", "..\SFA.DAS.DfESignIn.Auth.Samples\SFA.DAS.DfESignIn.SampleSite.Classic\SFA.DAS.DfESignIn.SampleSite.Classic.csproj", "{1B22F969-0729-4DF9-8B69-952B3CC83EA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DfESignIn.SampleSite.Framework", "..\SFA.DAS.DfESignIn.Auth.Samples\SFA.DAS.DfESignIn.SampleSite.Framework\SFA.DAS.DfESignIn.SampleSite.Framework.csproj", "{1B22F969-0729-4DF9-8B69-952B3CC83EA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

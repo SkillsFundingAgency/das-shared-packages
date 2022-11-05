@@ -4,15 +4,13 @@ using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.DfESignIn.SampleSite.AppStart;
 using System.Security.Claims;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
 public class WhenAddingServicesToTheContainer
 {
-    [TestCase(typeof(IOidcService))]
-    [TestCase(typeof(IAzureIdentityService))]
-    [TestCase(typeof(IJwtSecurityTokenService))]
     [TestCase(typeof(ICustomClaims))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
@@ -29,7 +27,7 @@ public class WhenAddingServicesToTheContainer
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
     {   
         var configuration = GenerateConfiguration();
-        serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims));
+        //serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims));
     }
 
     private static IConfigurationRoot GenerateConfiguration()
@@ -40,7 +38,6 @@ public class WhenAddingServicesToTheContainer
             {
                 new("DfEOidcConfiguration:BaseUrl", "https://test.com/"),
                 new("DfEOidcConfiguration:ClientId", "1234567"),
-                new("DfEOidcConfiguration:KeyVaultIdentifier", "https://test.com/")
             }
         };
 
