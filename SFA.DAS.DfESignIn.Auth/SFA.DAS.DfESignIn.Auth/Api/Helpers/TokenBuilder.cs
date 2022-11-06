@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SFA.DAS.DfESignIn.Auth.Api
+namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
     public sealed class TokenBuilder
     {
@@ -15,7 +15,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api
 
         private readonly ITokenEncoder _tokenEncoder;
         private readonly ITokenDataSerializer _tokenDataSerializer;
-        
+
 
         public TokenBuilder(ITokenDataSerializer tokenDataSerializer, ITokenData tokenData, ITokenEncoder tokenEncoder, IJsonWebAlgorithm jsonWebAlgorithm)
         {
@@ -46,7 +46,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api
         {
             using (var algorithm = HMAC.Create(Algorithm))
             {
-                if(algorithm == null)
+                if (algorithm == null)
                 {
                     throw new Exception("Crytography Creation");
                 }

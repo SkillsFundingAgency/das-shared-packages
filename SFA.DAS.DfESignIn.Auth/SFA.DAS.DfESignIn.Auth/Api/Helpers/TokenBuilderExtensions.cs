@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace SFA.DAS.DfESignIn.Auth.Api
+namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
     public static class TokenBuilderExtensions
     {

@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-namespace SFA.DAS.DfESignIn.Auth.Api
+namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
     /// <summary>
     /// Currently supports variants of HMAC Algorithm 
@@ -13,7 +13,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api
         public JsonWebAlgorithm()
         {
             Algorithm = new Dictionary<string, string>();
-            
+
             Algorithm.Add("HMACSHA1", "HS1");
             Algorithm.Add("HMACSHA256", "HS256");
             Algorithm.Add("HMACSHA384", "HS384");

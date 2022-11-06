@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.DfESignIn.Auth.Api
+﻿namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
     public interface ITokenEncoder
     {

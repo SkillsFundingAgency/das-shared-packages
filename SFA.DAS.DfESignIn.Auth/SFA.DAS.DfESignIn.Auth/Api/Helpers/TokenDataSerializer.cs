@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 
-namespace SFA.DAS.DfESignIn.Auth.Api
+namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
     public sealed class TokenDataSerializer : ITokenDataSerializer
     {

@@ -2,7 +2,7 @@
 using System;
 using System.Net.Http;
 
-namespace SFA.DAS.DfESignIn.Auth.Models
+namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
     public class DfESignInClient
     {

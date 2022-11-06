@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.DfESignIn.Auth.Api
+namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
     public class TokenData : ITokenData
     {

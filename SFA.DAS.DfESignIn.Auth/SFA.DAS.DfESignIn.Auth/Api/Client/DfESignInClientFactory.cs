@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Configuration;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Configuration;
-using SFA.DAS.DfESignIn.Auth.Models;
 using System.Net.Http;
 
-namespace SFA.DAS.DfESignIn.Auth.Api
+namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
     public class DfESignInClientFactory
     {
