@@ -107,8 +107,21 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             
             var ukPrn = userOrganisation.UkPrn ?? 10000531;
 
+            await DfEPublicApi(ctx, userId, userOrganisation.Id.ToString(), config);
+
+            var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
+            ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn);
+            ctx.HttpContext.Items.Add("http://schemas.portal.com/displayname", displayName);
+            ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
+            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
+            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
+        }
+
+
+        private static async Task DfEPublicApi(TokenValidatedContext ctx, string userId, string userOrgId, IConfiguration config)
+        {
             var clientFactory = new DfESignInClientFactory(config);
-            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrganisation.Id.ToString());
+            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
             HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
 
             string stream = "";
@@ -132,14 +145,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 var roleIdentity = new ClaimsIdentity(roleClaims);
                 ctx.Principal.AddIdentity(roleIdentity);
             }
-
-            var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
-            ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn);
-            ctx.HttpContext.Items.Add("http://schemas.portal.com/displayname", displayName);
-            ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
-            ctx.Principal.Identities.First().AddClaim(new Claim("Public API", stream));
         }
     }
 }

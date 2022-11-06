@@ -29,11 +29,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 
             services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
-
-           // services.AddHttpClient<IOidcService, OidcService>();
-
-            //services.AddTransient<IAzureIdentityService, AzureIdentityService>();
-            //services.AddTransient<IJwtSecurityTokenService, JwtSecurityTokenService>();
         }
     }
 }
