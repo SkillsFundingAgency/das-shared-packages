@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Notifications;
@@ -37,7 +38,8 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
                 Scope = "openid email profile organisation organisationid",
                 Notifications = new OpenIdConnectAuthenticationNotifications()
                 {
-                    SecurityTokenValidated = async n => {
+                    SecurityTokenValidated = async n =>
+                    {
 
                         await PopulateAccountsClaim(n);
                     }
@@ -61,39 +63,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
 
             var ukPrn = userOrganisation.UkPrn ?? 10000531;
 
-            var clientFactory = new DfESignInClientFactory(ConfigurationBuilderExtension.GetConfigurationRoot());
-            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrganisation.Id.ToString());
-            HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
-            
-            string stream = "";
-            if (response.IsSuccessStatusCode)
-            {
-                stream = await response.Content.ReadAsStringAsync();
-
-                var apiServiceResponse = JsonConvert.DeserializeObject<ApiServiceResponse>(stream);
-                var roleClaims = new List<Claim>();
-                foreach (var role in apiServiceResponse.Roles)
-                {
-                    if (role.Status.Id.Equals(1))
-                    {
-                        roleClaims.Add(new Claim("rolecode", role.Code, ClaimTypes.Role, n.Options.ClientId));
-                        roleClaims.Add(new Claim("roleId", role.Id.ToString(), ClaimTypes.Role, n.Options.ClientId));
-                        roleClaims.Add(new Claim("roleName", role.Name, ClaimTypes.Role, n.Options.ClientId));
-                        roleClaims.Add(new Claim("rolenumericid", role.NumericId.ToString(), ClaimTypes.Role, n.Options.ClientId));
-
-                        // add to current identity because you cannot have multiple identities
-                        n.AuthenticationTicket.Identity.AddClaim(new Claim("rolecode", role.Code, ClaimTypes.Role, n.Options.ClientId));
-                        n.AuthenticationTicket.Identity.AddClaim(new Claim("roleId", role.Id.ToString(), ClaimTypes.Role, n.Options.ClientId));
-                        n.AuthenticationTicket.Identity.AddClaim(new Claim("roleName", role.Name, ClaimTypes.Role, n.Options.ClientId));
-                        n.AuthenticationTicket.Identity.AddClaim(new Claim("rolenumericid", role.NumericId.ToString(), ClaimTypes.Role, n.Options.ClientId));
-                    }
-                }
-                var roleIdentity = new ClaimsIdentity(roleClaims);
-
-                //ClaimsPrincipal principal = System.Security.Claims.ClaimsPrincipal.Current;
-                //principal.AddIdentity(roleIdentity);
-                //n.OwinContext.Authentication.User.AddIdentity(roleIdentity);
-            }
+            await DfEPublicApi(n, userId, userOrganisation.Id.ToString());
 
             var displayName = n.AuthenticationTicket.Identity.Claims.FirstOrDefault(c => c.Type.Contains("givenname")).Value + " " + n.AuthenticationTicket.Identity.Claims.FirstOrDefault(c => c.Type.Contains("surname")).Value;
             System.Web.HttpContext.Current.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn);
@@ -101,6 +71,32 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
             n.AuthenticationTicket.Identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
             n.AuthenticationTicket.Identity.AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
             n.AuthenticationTicket.Identity.AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
+        }
+
+        private static async Task DfEPublicApi(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> n, string userId, string userOrgId)
+        {
+            var clientFactory = new DfESignInClientFactory(ConfigurationBuilderExtension.GetConfigurationRoot());
+            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
+            HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+
+                var apiServiceResponse = JsonConvert.DeserializeObject<ApiServiceResponse>(stream);
+                var roleClaims = new List<Claim>();
+                foreach (var role in apiServiceResponse.Roles)
+                {
+                    if (role.Status.Id.Equals(1))
+                    {
+                        // add to current identity because you cannot have multiple identities
+                        n.AuthenticationTicket.Identity.AddClaim(new Claim("rolecode", role.Code, ClaimTypes.Role, n.Options.ClientId));
+                        n.AuthenticationTicket.Identity.AddClaim(new Claim("roleId", role.Id.ToString(), ClaimTypes.Role, n.Options.ClientId));
+                        n.AuthenticationTicket.Identity.AddClaim(new Claim("roleName", role.Name, ClaimTypes.Role, n.Options.ClientId));
+                        n.AuthenticationTicket.Identity.AddClaim(new Claim("rolenumericid", role.NumericId.ToString(), ClaimTypes.Role, n.Options.ClientId));
+                    }
+                }
+            }
         }
     }
 }
