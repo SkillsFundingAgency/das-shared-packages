@@ -14,7 +14,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             _config = config;
         }
 
-        public DfESignInClient CreateDfESignInClient(string userId = "", string organizationId = "")
+        public DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "")
         {
             var dsiConfiguration = _config.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>();
 
@@ -23,7 +23,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 ServiceId = dsiConfiguration.APIServiceId,
                 ServiceUrl = dsiConfiguration.APIServiceUrl,
                 UserId = userId,
-                OrganisationId = organizationId
+                OrganisationId = organisationId
             };
 
             var tokenData = new TokenData();

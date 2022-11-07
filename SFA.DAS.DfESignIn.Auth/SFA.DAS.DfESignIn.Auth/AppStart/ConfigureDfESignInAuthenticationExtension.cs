@@ -94,8 +94,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 
         private static async Task PopulateAccountsClaim(TokenValidatedContext ctx, IConfiguration config)
         {
-            var dsiConfiguration = config.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>();
-
             string userId = ctx.Principal.Claims.Where(c => c.Type.Contains("sub")).Select(c => c.Value).SingleOrDefault();
 
             var userOrganisation = JsonConvert.DeserializeObject<Organisation>
@@ -117,17 +115,15 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
         }
 
-
         private static async Task DfEPublicApi(TokenValidatedContext ctx, string userId, string userOrgId, IConfiguration config)
         {
             var clientFactory = new DfESignInClientFactory(config);
             DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
             HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
 
-            string stream = "";
             if (response.IsSuccessStatusCode)
             {
-                stream = await response.Content.ReadAsStringAsync();
+                var stream = await response.Content.ReadAsStringAsync();
 
                 var apiServiceResponse = JsonConvert.DeserializeObject<ApiServiceResponse>(stream);
                 var roleClaims = new List<Claim>();
