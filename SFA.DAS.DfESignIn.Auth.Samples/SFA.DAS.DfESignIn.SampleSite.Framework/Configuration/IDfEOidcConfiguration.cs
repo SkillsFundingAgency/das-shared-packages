@@ -5,11 +5,8 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
         string BaseUrl { get; set; }
         string ClientId { get; set; }
         string Secret { get; set; }
-        string ResponseType { get; set; }
-        string Scopes { get; set; }
         string APIServiceUrl { get; set; }
         string APIServiceId { get; set; }
-        string APIServiceAudience { get; set; }
         string APIServiceSecret { get; set; }
     }
 }

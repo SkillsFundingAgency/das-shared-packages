@@ -33,8 +33,8 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
                 GetClaimsFromUserInfoEndpoint = true,
                 PostLogoutRedirectUri = oidcRedirectUrl,
                 RedirectUri = oidcRedirectUrl,
-                ResponseType = OpenIdConnectResponseType.Code,
-                Scope = ConfigurationManager.AppSettings["Scopes"],
+                ResponseType = "code",
+                Scope = "openid email profile organisation organisationid",
                 Notifications = new OpenIdConnectAuthenticationNotifications()
                 {
                     SecurityTokenValidated = async n => {
@@ -101,7 +101,6 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
             n.AuthenticationTicket.Identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
             n.AuthenticationTicket.Identity.AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
             n.AuthenticationTicket.Identity.AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
-            n.AuthenticationTicket.Identity.AddClaim(new Claim("Public API", stream));
         }
     }
 }

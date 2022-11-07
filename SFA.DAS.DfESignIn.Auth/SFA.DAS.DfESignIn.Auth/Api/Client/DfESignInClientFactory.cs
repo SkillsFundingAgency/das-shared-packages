@@ -30,7 +30,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             tokenData.Header.Add("typ", "JWT");
             var token = new TokenBuilder(new TokenDataSerializer(), tokenData, new TokenEncoder(), new JsonWebAlgorithm())
                 .UseAlgorithm("HMACSHA256")
-                .ForAudience(dsiConfiguration.APIServiceAudience)
+                .ForAudience("signin.education.gov.uk")
                 .WithSecretKey(dsiConfiguration.APIServiceSecret)
                 .Issuer(dsiConfiguration.ClientId)
                 .CreateToken();

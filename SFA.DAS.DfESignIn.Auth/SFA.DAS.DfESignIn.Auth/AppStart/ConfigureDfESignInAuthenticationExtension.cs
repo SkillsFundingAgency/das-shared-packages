@@ -37,7 +37,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.ClientId = dsiConfiguration.ClientId;
                     options.ClientSecret = dsiConfiguration.Secret;
                     options.MetadataAddress = $"{dsiConfiguration.BaseUrl}/.well-known/openid-configuration";
-                    options.ResponseType = dsiConfiguration.ResponseType;
+                    options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                     options.SignedOutRedirectUri = "/";
                     options.SignedOutCallbackPath = "/signed-out";
@@ -45,7 +45,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
 
-                    var scopes = dsiConfiguration.Scopes.Split(' ');
+                    var scopes = "openid email profile organisation organisationid".Split(' ');
                     options.Scope.Clear();
                     foreach (var scope in scopes)
                     {

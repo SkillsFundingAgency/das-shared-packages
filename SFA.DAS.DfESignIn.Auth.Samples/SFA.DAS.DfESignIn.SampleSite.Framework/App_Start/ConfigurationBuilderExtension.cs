@@ -37,11 +37,8 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
             ConfigurationManager.AppSettings["BaseUrl"] = configuration.BaseUrl;
             ConfigurationManager.AppSettings["ClientId"] = configuration.ClientId;
             ConfigurationManager.AppSettings["Secret"] = configuration.Secret;
-            ConfigurationManager.AppSettings["ResponseType"] = configuration.ResponseType;
-            ConfigurationManager.AppSettings["Scopes"] = configuration.Scopes;
             ConfigurationManager.AppSettings["APIServiceUrl"] = configuration.APIServiceUrl;
             ConfigurationManager.AppSettings["APIServiceId"] = configuration.APIServiceId;
-            ConfigurationManager.AppSettings["APIServiceAudience"] = configuration.APIServiceAudience;
             ConfigurationManager.AppSettings["APIServiceSecret"] = configuration.APIServiceSecret;
         }
     }
