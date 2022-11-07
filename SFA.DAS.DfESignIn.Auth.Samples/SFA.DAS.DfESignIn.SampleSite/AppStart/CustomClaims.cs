@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Newtonsoft.Json;
-using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.SampleSite.AppStart;
 

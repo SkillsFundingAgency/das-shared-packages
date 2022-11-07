@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.DfESignIn.Auth.AppStart;
-using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.SampleSite.AppStart;
 using System.Security.Claims;
 

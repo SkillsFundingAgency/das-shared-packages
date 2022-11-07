@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.SampleSite.Standard.AppStart
 {
