@@ -19,4 +19,9 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework.Api
             return Convert.ToBase64String(stringInput).Split(separator)[0].Replace('+', '-').Replace('/', '_');
         }
     }
+
+    public interface ITokenEncoder
+    {
+        string Base64Encode(byte[] stringInput);
+    }
 }

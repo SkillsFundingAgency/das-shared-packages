@@ -23,4 +23,9 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework.Api
         public string Serialize(object obj) =>
             JObject.FromObject(obj, _serializer).ToString(_serializer.Formatting, _serializer.Converters.ToArray());
     }
+
+    public interface ITokenDataSerializer
+    {
+        string Serialize(object obj);
+    }
 }
