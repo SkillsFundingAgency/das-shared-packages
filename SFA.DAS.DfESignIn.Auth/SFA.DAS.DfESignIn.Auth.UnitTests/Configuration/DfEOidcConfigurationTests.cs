@@ -30,6 +30,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Configuration
 
             // Assert
             this.mockRepository.VerifyAll();
+            Assert.That(dfEOidcConfiguration, Is.Not.Null);
         }
     }
 }

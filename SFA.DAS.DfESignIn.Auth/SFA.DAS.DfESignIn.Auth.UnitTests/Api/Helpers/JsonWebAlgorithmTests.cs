@@ -26,14 +26,14 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         {
             // Arrange
             var jsonWebAlgorithm = this.CreateJsonWebAlgorithm();
-            string algorithm = null;
+            string algorithm = "HMACSHA512";
 
             // Act
-            var result = jsonWebAlgorithm.GetAlgorithm(
-                "HMACSHA512");
+            var result = jsonWebAlgorithm.GetAlgorithm(algorithm);
 
             // Assert
             this.mockRepository.VerifyAll();
+            Assert.That(result, Is.Not.Null);
         }
     }
 }

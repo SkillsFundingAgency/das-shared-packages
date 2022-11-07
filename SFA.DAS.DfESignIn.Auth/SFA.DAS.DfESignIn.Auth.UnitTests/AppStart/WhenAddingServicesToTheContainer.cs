@@ -40,7 +40,7 @@ public class WhenAddingServicesToTheContainer
                 new("DfEOidcConfiguration:BaseUrl", "https://test.com/"),
                 new("DfEOidcConfiguration:ClientId", "1234567"),
                 new("ProviderSharedUIConfiguration:DashboardUrl", "https://localhost:7136")
-    }
+            }
         };
 
         var provider = new MemoryConfigurationProvider(configSource);

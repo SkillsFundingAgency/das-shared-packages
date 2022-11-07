@@ -31,6 +31,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
 
             // Assert
             this.mockRepository.VerifyAll();
+            Assert.That(dfESignInClient, Is.Not.Null);
+
         }
     }
 }
