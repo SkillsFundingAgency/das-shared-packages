@@ -17,4 +17,10 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
             Payload = payload ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
     }
+
+    public interface ITokenData
+    {
+        IDictionary<string, object> Header { get; set; }
+        IDictionary<string, object> Payload { get; set; }
+    }
 }

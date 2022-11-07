@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.DfESignIn.Auth.Configuration;
-using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Linq;
 

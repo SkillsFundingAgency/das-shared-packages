@@ -26,4 +26,9 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
             return Algorithm[algorithm];
         }
     }
+
+    public interface IJsonWebAlgorithm
+    {
+        string GetAlgorithm(string algorithm);
+    }
 }

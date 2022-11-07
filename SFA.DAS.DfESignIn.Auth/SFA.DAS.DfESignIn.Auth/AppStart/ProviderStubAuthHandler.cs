@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
