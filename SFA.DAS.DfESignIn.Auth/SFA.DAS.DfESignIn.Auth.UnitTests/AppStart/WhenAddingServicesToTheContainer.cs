@@ -1,3 +1,4 @@
+using FluentAssertions.Common;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
@@ -20,14 +21,14 @@ public class WhenAddingServicesToTheContainer
         var provider = serviceCollection.BuildServiceProvider();
 
         var type = provider.GetService(toResolve);
-            
+
         Assert.That(type, Is.Not.Null);
     }
 
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
     {   
         var configuration = GenerateConfiguration();
-        //serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims));
+        serviceCollection.AddServiceRegistration(configuration);
     }
 
     private static IConfigurationRoot GenerateConfiguration()
@@ -38,7 +39,8 @@ public class WhenAddingServicesToTheContainer
             {
                 new("DfEOidcConfiguration:BaseUrl", "https://test.com/"),
                 new("DfEOidcConfiguration:ClientId", "1234567"),
-            }
+                new("ProviderSharedUIConfiguration:DashboardUrl", "https://localhost:7136")
+    }
         };
 
         var provider = new MemoryConfigurationProvider(configSource);
