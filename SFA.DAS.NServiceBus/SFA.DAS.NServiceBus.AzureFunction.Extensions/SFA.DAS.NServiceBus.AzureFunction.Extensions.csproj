@@ -21,7 +21,7 @@
         <Content Include="AutoSubscribe/**/*.*" copyToOutput="true">
             <IncludeInPackage>true</IncludeInPackage>
             <CopyToOutput>true</CopyToOutput>
-            <BuildAction>Content</BuildAction>
+            <BuildAction>C# compiler</BuildAction>
             <copyToOutput>true</copyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
