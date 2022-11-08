@@ -25,7 +25,6 @@ public static class ServiceBusEndpointFactory
         }
 
         configuration.Transport.SubscriptionRuleNamingConvention(AzureRuleNameShortener.Shorten);
-        configuration.LogDiagnostics();
 
         var persistence = configuration.AdvancedConfiguration.UsePersistence<AzureTablePersistence>();
         persistence.ConnectionString(appConfiguration.GetConnectionStringOrSetting("AzureWebJobsStorage"));
