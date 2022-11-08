@@ -1,18 +1,13 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
-using DfE.Example.Web;
+using NUnit.Framework;
 using SFA.DAS.Employer.Shared.UI.IntegrationTests.Helpers;
 
 namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
 {
     public class FooterTests : TestBase
     {
-        public FooterTests(WebApplicationFactory<Startup> factory) : base(factory)
-        {
-        }
 
-        [Fact]
+        [Test]
         public async Task Footer_Links()
         {
             // Arrange
@@ -27,10 +22,10 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             var termsOfUse = content.QuerySelector(".mu-foot-termsofuse");
 
             // Assert
-            Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/service/help", helpLink.Attributes["href"].Value); 
-            Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/service/ABC123/privacy", privacyLink.Attributes["href"].Value);
-            Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/cookieConsent", cookieConsent.Attributes["href"].Value);
-            Assert.Equal("https://accounts.at-eas.apprenticeships.education.gov.uk/service/termsAndConditions/overview", termsOfUse.Attributes["href"].Value);
+            Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/service/help", helpLink.Attributes["href"].Value); 
+            Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/service/ABC123/privacy", privacyLink.Attributes["href"].Value);
+            Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/cookieConsent", cookieConsent.Attributes["href"].Value);
+            Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/service/termsAndConditions/overview", termsOfUse.Attributes["href"].Value);
         }
     }
 }
