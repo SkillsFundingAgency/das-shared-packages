@@ -89,7 +89,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         await PopulateAccountsClaim(c, configuration);
                     };
 
-                }).AddAuthenticationCookie(authenticationCookieName);
+                });
+                //.AddAuthenticationCookie(authenticationCookieName);
         }
 
         private static async Task PopulateAccountsClaim(TokenValidatedContext ctx, IConfiguration config)
