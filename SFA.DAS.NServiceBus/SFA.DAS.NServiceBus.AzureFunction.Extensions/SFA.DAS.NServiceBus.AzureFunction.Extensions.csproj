@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
       <LangVersion>latest</LangVersion>
@@ -21,14 +21,14 @@
         <Content Include="AutoSubscribe/**/*.*" copyToOutput="true">
             <IncludeInPackage>true</IncludeInPackage>
             <CopyToOutput>true</CopyToOutput>
-            <BuildAction>C# compiler</BuildAction>
+            <BuildAction>Content</BuildAction>
             <copyToOutput>true</copyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="AutoSubscribe\ForceAutoEventSubscription.cs" />
+      <None Remove="AutoSubscribe\ForceAutoEventSubscription.cs.pp" />
     </ItemGroup>
 
   <ItemGroup>
