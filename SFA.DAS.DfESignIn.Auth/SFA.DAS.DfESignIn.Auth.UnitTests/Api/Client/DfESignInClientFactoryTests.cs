@@ -7,30 +7,26 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
     [TestFixture]
     public class DfESignInClientFactoryTests
     {
-        private MockRepository mockRepository;
+        private MockRepository _mockRepository;
 
-        private Mock<IConfiguration> mockConfiguration;
+        private Mock<IConfiguration> _mockConfiguration;
 
         [SetUp]
         public void SetUp()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
+            _mockRepository = new MockRepository(MockBehavior.Strict);
 
-            this.mockConfiguration = this.mockRepository.Create<IConfiguration>();
+            _mockConfiguration = _mockRepository.Create<IConfiguration>();
 
-        }
-
-        private DfESignInClientFactory CreateFactory()
-        {
-            return new DfESignInClientFactory(
-                this.mockConfiguration.Object);
         }
 
         [Test]
         public void CreateDfESignInClient_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            var factory = this.CreateFactory();
+            var factory = new DfESignInClientFactory(
+                _mockConfiguration.Object);
+
             string userId = null;
             string organizationId = null;
 
@@ -38,7 +34,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             mockIConfigurationSection.Setup(x => x.GetSection("DfEOidcConfiguration")).Returns(mockIConfigurationSection.Object);
 
             // Assert
-            this.mockRepository.VerifyAll();
+            _mockRepository.VerifyAll();
             Assert.That(factory, Is.Not.Null);
         }
     }

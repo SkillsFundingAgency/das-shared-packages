@@ -20,7 +20,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             }
 
             services.AddOptions();
-            services.AddTransient(typeof(ICustomClaims), customClaims);
 #if NETSTANDARD2_0
             services.Configure<DfEOidcConfiguration>(_=>configuration.GetSection(nameof(DfEOidcConfiguration)));
 #else 

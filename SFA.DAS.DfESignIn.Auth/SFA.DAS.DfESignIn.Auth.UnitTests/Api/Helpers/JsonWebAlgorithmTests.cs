@@ -8,31 +8,26 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
     [TestFixture]
     public class JsonWebAlgorithmTests
     {
-        private MockRepository mockRepository;
+        private MockRepository _mockRepository;
 
         [SetUp]
         public void SetUp()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-        }
-
-        private JsonWebAlgorithm CreateJsonWebAlgorithm()
-        {
-            return new JsonWebAlgorithm();
+            _mockRepository = new MockRepository(MockBehavior.Strict);
         }
 
         [Test]
         public void GetAlgorithm_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            var jsonWebAlgorithm = this.CreateJsonWebAlgorithm();
+            var jsonWebAlgorithm = CreateJsonWebAlgorithm();
             string algorithm = "HMACSHA512";
 
             // Act
-            var result = jsonWebAlgorithm.GetAlgorithm(algorithm);
+            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
 
             // Assert
-            this.mockRepository.VerifyAll();
+            _mockRepository.VerifyAll();
             Assert.That(result, Is.Not.Null);
         }
     }

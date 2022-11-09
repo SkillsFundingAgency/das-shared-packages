@@ -1,6 +1,6 @@
 namespace SFA.DAS.DfESignIn.SampleSite.Framework
 {
-    public class DfEOidcConfiguration : IDfEOidcConfiguration
+    public class DfEOidcConfiguration
     {
         public string BaseUrl { get; set; }
         public string ClientId { get; set; }

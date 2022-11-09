@@ -6,31 +6,31 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
     [TestFixture]
     public class DfESignInClientTests
     {
-        private MockRepository mockRepository;
+        private MockRepository _mockRepository;
 
-        private Mock<HttpClient> mockHttpClient;
+        private Mock<HttpClient> _mockHttpClient;
 
         [SetUp]
         public void SetUp()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mockHttpClient = this.mockRepository.Create<HttpClient>();
+            _mockRepository = new MockRepository(MockBehavior.Strict);
+            _mockHttpClient = _mockRepository.Create<HttpClient>();
         }
 
         private DfESignInClient CreateDfESignInClient()
         {
             return new DfESignInClient(
-                this.mockHttpClient.Object);
+                _mockHttpClient.Object);
         }
 
         [Test]
         public void TestDfeSignInClient()
         {
             // Arrange
-            var dfESignInClient = this.CreateDfESignInClient();
+            var dfESignInClient = CreateDfESignInClient();
 
             // Assert
-            this.mockRepository.VerifyAll();
+            _mockRepository.VerifyAll();
             Assert.That(dfESignInClient, Is.Not.Null);
 
         }

@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
@@ -35,7 +37,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 .Issuer(dsiConfiguration.ClientId)
                 .CreateToken();
 
-            dfeSignInClient.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            dfeSignInClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             return dfeSignInClient;
         }
