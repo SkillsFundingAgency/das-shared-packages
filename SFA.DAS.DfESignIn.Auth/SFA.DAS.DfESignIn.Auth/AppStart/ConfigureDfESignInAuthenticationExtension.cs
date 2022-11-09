@@ -31,13 +31,12 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                     sharedOptions.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                }).AddOpenIdConnect(options =>
+                })
+                .AddOpenIdConnect(options =>
                 {
-                    var dsiConfiguration = configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>();
-
-                    options.ClientId = dsiConfiguration.ClientId;
-                    options.ClientSecret = dsiConfiguration.Secret;
-                    options.MetadataAddress = $"{dsiConfiguration.BaseUrl}/.well-known/openid-configuration";
+                    options.ClientId = configuration["DfEOidcConfiguration:ClientId"];
+                    options.ClientSecret = configuration["DfEOidcConfiguration:Secret"];
+                    options.MetadataAddress = $"{configuration["DfEOidcConfiguration:BaseUrl"]}/.well-known/openid-configuration";
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                     options.SignedOutRedirectUri = "/";

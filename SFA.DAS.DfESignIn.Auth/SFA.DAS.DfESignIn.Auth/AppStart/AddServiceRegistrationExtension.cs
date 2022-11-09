@@ -25,6 +25,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 #else 
             services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
 #endif
+
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
         }
     }

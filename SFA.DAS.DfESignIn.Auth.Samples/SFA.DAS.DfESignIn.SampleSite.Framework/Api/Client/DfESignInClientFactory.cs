@@ -3,6 +3,7 @@ using SFA.DAS.DfESignIn.SampleSite.Framework;
 using SFA.DAS.DfESignIn.SampleSite.Framework.Api.Models;
 
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace SFA.DAS.DfESignIn.SampleSite.Framework.Api
 {
@@ -17,12 +18,10 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework.Api
 
         public DfESignInClient CreateDfESignInClient(string userId = "", string organizationId = "")
         {
-            var dsiConfiguration = _config.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>();
-
             var dfeSignInClient = new DfESignInClient(new HttpClient())
             {
-                ServiceId = dsiConfiguration.APIServiceId,
-                ServiceUrl = dsiConfiguration.APIServiceUrl,
+                ServiceId = _config["DfEOidcConfiguration:APIServiceId"],
+                ServiceUrl = _config["DfEOidcConfiguration:APIServiceUrl"],
                 UserId = userId,
                 OrganisationId = organizationId
             };
@@ -32,11 +31,11 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework.Api
             var token = new TokenBuilder(new TokenDataSerializer(), tokenData, new TokenEncoder(), new JsonWebAlgorithm())
                 .UseAlgorithm("HMACSHA256")
                 .ForAudience("signin.education.gov.uk")
-                .WithSecretKey(dsiConfiguration.APIServiceSecret)
-                .Issuer(dsiConfiguration.ClientId)
+                .WithSecretKey(_config["DfEOidcConfiguration:APIServiceSecret"])
+                .Issuer(_config["DfEOidcConfiguration:ClientId"])
                 .CreateToken();
 
-            dfeSignInClient.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            dfeSignInClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             return dfeSignInClient;
         }
