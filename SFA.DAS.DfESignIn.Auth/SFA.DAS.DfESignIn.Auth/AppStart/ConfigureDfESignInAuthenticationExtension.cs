@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -104,16 +105,17 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 .FirstOrDefault()
             );
             
-            var ukPrn = userOrganisation.UkPrn ?? 10000531;
+            var ukPrn = userOrganisation.UkPrn ?? 10000001;
 
             await DfEPublicApi(ctx, userId, userOrganisation.Id.ToString(), config);
 
             var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
-            ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn);
+            ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString());
             ctx.HttpContext.Items.Add("http://schemas.portal.com/displayname", displayName);
             ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
+            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/service", "DAA"));
         }
 
         private static async Task DfEPublicApi(TokenValidatedContext ctx, string userId, string userOrgId, IConfiguration config)
