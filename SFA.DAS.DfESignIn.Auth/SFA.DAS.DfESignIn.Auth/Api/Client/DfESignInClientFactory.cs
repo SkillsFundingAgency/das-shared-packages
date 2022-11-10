@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,6 +11,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
     public class DfESignInClientFactory
     {
         private readonly IConfiguration _config;
+        private readonly HttpClient _client = new HttpClient();
 
         public DfESignInClientFactory(IConfiguration config)
         {
@@ -18,7 +20,8 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
 
         public DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "")
         {
-            var dfeSignInClient = new DfESignInClient(new HttpClient())
+
+            var dfeSignInClient = new DfESignInClient(_client)
             {
                 ServiceId = _config["DfEOidcConfiguration:APIServiceId"],
                 ServiceUrl = _config["DfEOidcConfiguration:APIServiceUrl"],

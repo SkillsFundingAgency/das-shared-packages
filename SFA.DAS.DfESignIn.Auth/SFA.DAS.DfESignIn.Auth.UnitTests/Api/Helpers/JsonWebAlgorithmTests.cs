@@ -30,5 +30,10 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
             _mockRepository.VerifyAll();
             Assert.That(result, Is.Not.Null);
         }
+
+        private object CreateJsonWebAlgorithm()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -2,10 +2,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.DfESignIn.Auth.Api.Client;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Linq;
+using System.Net.Http;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -28,6 +30,10 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 #endif
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
+           
+            services.AddHttpClient();
+
+
         }
     }
 }
