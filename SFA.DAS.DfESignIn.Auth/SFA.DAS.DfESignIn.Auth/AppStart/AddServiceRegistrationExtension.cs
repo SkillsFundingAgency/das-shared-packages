@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SFA.DAS.DfESignIn.Auth.Api.Client;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;

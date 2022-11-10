@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Newtonsoft.Json;
 using SFA.DAS.DfESignIn.Auth.Api;
 using SFA.DAS.DfESignIn.Auth.Api.Client;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,6 +24,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class ConfigureDfESignInAuthenticationExtension
     {
+        private static readonly IDfEClaims _dfeClaims = new DfEClaims();
+
         internal static void ConfigureDfESignInAuthentication(this IServiceCollection services,
             IConfiguration configuration, string authenticationCookieName)
         {
@@ -87,6 +92,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.Events.OnTokenValidated = async c =>
                     {
                         await PopulateAccountsClaim(c, configuration);
+
                     };
 
                 })
@@ -106,7 +112,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             
             var ukPrn = userOrganisation.UkPrn ?? 10000001;
 
-            await DfEPublicApi(ctx, userId, userOrganisation.Id.ToString(), config);
+            await _dfeClaims.GetClaims(ctx, userId, userOrganisation.Id.ToString(), config);
 
             var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
             ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString());
@@ -115,34 +121,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/service", "DAA"));
-        }
-
-        private static async Task DfEPublicApi(TokenValidatedContext ctx, string userId, string userOrgId, IConfiguration config)
-        {
-            var clientFactory = new DfESignInClientFactory(config);
-            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
-            HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var stream = await response.Content.ReadAsStringAsync();
-
-                var apiServiceResponse = JsonConvert.DeserializeObject<ApiServiceResponse>(stream);
-                var roleClaims = new List<Claim>();
-                foreach (var role in apiServiceResponse.Roles)
-                {
-                    if (role.Status.Id.Equals(1))
-                    {
-                        roleClaims.Add(new Claim("rolecode", role.Code, ClaimTypes.Role, ctx.Options.ClientId));
-                        roleClaims.Add(new Claim("roleId", role.Id.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
-                        roleClaims.Add(new Claim("roleName", role.Name, ClaimTypes.Role, ctx.Options.ClientId));
-                        roleClaims.Add(new Claim("rolenumericid", role.NumericId.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
-                    }
-                }
-
-                var roleIdentity = new ClaimsIdentity(roleClaims);
-                ctx.Principal.AddIdentity(roleIdentity);
-            }
         }
     }
 }
