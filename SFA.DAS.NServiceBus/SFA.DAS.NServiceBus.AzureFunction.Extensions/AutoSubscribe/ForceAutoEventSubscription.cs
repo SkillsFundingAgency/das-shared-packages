@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 
@@ -24,7 +23,7 @@ public class ForceAutoEventSubscriptionFunction
     [FunctionName("ForceAutoSubscriptionFunction")]
     public async Task Run(
         [TimerTrigger("* * * 1 1 *", RunOnStartup = true)] TimerInfo myTimer,
-        ILogger logger, ExecutionContext executionContext)
+        ILogger logger, Microsoft.Azure.WebJobs.ExecutionContext executionContext)
     {
         var sendOptions = SendLocally.Options;
         sendOptions.SetHeader(Headers.ControlMessageHeader, bool.TrueString);
