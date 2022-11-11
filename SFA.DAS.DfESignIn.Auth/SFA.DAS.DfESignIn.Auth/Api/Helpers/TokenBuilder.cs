@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
-    public sealed class TokenBuilder
+    public class TokenBuilder
     {
         public string Issuer { get; set; }
         public string Audience { get; set; }
@@ -12,7 +12,6 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
         public string Algorithm { get; set; }
         public ITokenData TokenData { get; set; }
         public readonly IJsonWebAlgorithm JsonWebAlgorithm;
-
         private readonly ITokenEncoder _tokenEncoder;
         private readonly ITokenDataSerializer _tokenDataSerializer;
 

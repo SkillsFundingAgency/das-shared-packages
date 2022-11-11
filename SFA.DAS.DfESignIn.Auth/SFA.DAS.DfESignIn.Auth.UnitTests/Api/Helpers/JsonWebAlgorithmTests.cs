@@ -1,7 +1,5 @@
 ﻿using Moq;
-using NUnit.Framework;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
-using System;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
 {
@@ -17,23 +15,55 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void GetAlgorithm_StateUnderTest_ExpectedBehavior()
+        public void GetAlgorithmTypeExpectedResultHS1()
         {
             // Arrange
-            var jsonWebAlgorithm = CreateJsonWebAlgorithm();
+            string algorithm = "HMACSHA1";
+
+            // Act
+            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
+
+            // Assert
+            Assert.That(result, Is.EqualTo("HS1"));
+        }
+
+        [Test]
+        public void GetAlgorithmTypeExpectedResultHS256()
+        {
+            // Arrange
+            string algorithm = "HMACSHA256";
+
+            // Act
+            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
+
+            // Assert
+            Assert.That(result, Is.EqualTo("HS256"));
+        }
+
+        [Test]
+        public void GetAlgorithmTypeExpectedResultHMACSHA384()
+        {
+            // Arrange
+            string algorithm = "HMACSHA384";
+
+            // Act
+            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
+
+            // Assert
+            Assert.That(result, Is.EqualTo("HS384"));
+        }
+
+        [Test]
+        public void GetAlgorithmTypeExpectedResultHMACSHA512()
+        {
+            // Arrange
             string algorithm = "HMACSHA512";
 
             // Act
             var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
 
             // Assert
-            _mockRepository.VerifyAll();
-            Assert.That(result, Is.Not.Null);
-        }
-
-        private object CreateJsonWebAlgorithm()
-        {
-            throw new NotImplementedException();
+            Assert.That(result, Is.EqualTo("HS512"));
         }
     }
 }
