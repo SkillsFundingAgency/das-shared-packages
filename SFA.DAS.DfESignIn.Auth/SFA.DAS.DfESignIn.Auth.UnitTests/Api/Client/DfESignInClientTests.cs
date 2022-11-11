@@ -24,7 +24,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         }
 
         [Test]
-        public void CreateDfESignInClient_ThrowsException_When_NoSecretKey()
+        public void ThrowsException_When_NoSecretKey()
         {
             var fixture = new Fixture();
 
@@ -41,8 +41,21 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             Assert.Throws<Exception>(() => factory.CreateDfESignInClient(userId, organizationId));
         }
 
+
         [Test]
-        public void CreateDfESignInClient_TargetAddressThrowsException_MissingServiceUrl()
+        public void User_And_Org_Not_Supplied_Throws_Exception()
+        {
+            var fixture = new Fixture();
+
+            var factory = new DfESignInClientFactory(
+                _mockConfiguration.Object);
+
+            _mockRepository.VerifyAll();
+            Assert.Throws<Exception>(() => factory.CreateDfESignInClient());
+        }
+
+        [Test]
+        public void TargetAddressThrowsException_Missing_ServiceUrl()
         {
             var fixture = new Fixture();
             fixture.Inject(new UriScheme("http"));
@@ -62,7 +75,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
 
 
         [Test]
-        public void CreateDfESignInClient_TargetAddressThrowsException_MissingOrganisationId()
+        public void TargetAddressThrowsException_Missing_OrganisationId()
         {
             var fixture = new Fixture();
             fixture.Inject(new UriScheme("http"));
@@ -82,7 +95,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
 
 
         [Test]
-        public void CreateDfESignInClient_TargetAddressThrowsException_MissingServiceId()
+        public void TargetAddressThrowsException_Missing_ServiceId()
         {
             var fixture = new Fixture();
             fixture.Inject(new UriScheme("http"));
@@ -90,7 +103,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var client = new DfESignInClient(
                 _mockHttpClient.Object);
 
-             client.OrganisationId = fixture.Create<string>().Substring(0, 5);
+            client.OrganisationId = fixture.Create<string>().Substring(0, 5);
             client.ServiceUrl = fixture.Create<Uri>().ToString();
             client.UserId = fixture.Create<string>().Substring(0, 5);
 
@@ -101,7 +114,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         }
 
         [Test]
-        public void CreateDfESignInClient_TargetAddressThrowsException_MissingUserId()
+        public void TargetAddressThrowsException_Missing_UserId()
         {
             var fixture = new Fixture();
             fixture.Inject(new UriScheme("http"));
@@ -120,7 +133,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         }
 
         [Test]
-        public void CreateDfESignInClient_TargetAddressThrowsException_UrlFormatWrong()
+        public void TargetAddressThrowsException_NoUrlSupplied()
         {
             var fixture = new Fixture();
             fixture.Inject(new UriScheme("http"));
