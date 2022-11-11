@@ -24,25 +24,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         }
 
         [Test]
-        public void CreateDfESignInClient_ThrowsExceptionWhenNoSecretKey()
-        {
-            var fixture = new Fixture();
-
-            var factory = new DfESignInClientFactory(
-                _mockConfiguration.Object);
-
-            var mockIConfigurationSection = new Mock<IConfigurationSection>();
-            mockIConfigurationSection.Setup(x => x.GetSection("DfEOidcConfiguration")).Returns(mockIConfigurationSection.Object);
-
-            string userId = fixture.Create<string>();
-            string organizationId = fixture.Create<string>();
-
-            _mockRepository.VerifyAll();
-            Assert.Throws<Exception>(() => factory.CreateDfESignInClient(userId, organizationId));
-        }
-
-        [Test]
-        public void CreateDfESignInClient_ThrowsExceptionWhenNoSecretKeysdfsdfsdfs()
+        public void CreateDfESignInClient_ThrowsException_When_NoSecretKey()
         {
             var fixture = new Fixture();
 

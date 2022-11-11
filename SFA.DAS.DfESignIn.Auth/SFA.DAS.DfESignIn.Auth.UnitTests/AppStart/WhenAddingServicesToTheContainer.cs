@@ -7,11 +7,14 @@ using SFA.DAS.DfESignIn.SampleSite.AppStart;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using Moq;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
+
 public class WhenAddingServicesToTheContainer
 {
+    [TestCase(typeof(DfEOidcConfiguration))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var serviceCollection = new ServiceCollection();
@@ -36,9 +39,10 @@ public class WhenAddingServicesToTheContainer
         {
             InitialData = new List<KeyValuePair<string, string>>
             {
-                new("GovUkOidcConfiguration:BaseUrl", "https://test.com/"),
-                new("GovUkOidcConfiguration:ClientId", "1234567"),
-                new("GovUkOidcConfiguration:KeyVaultIdentifier", "https://test.com/")
+                new("DfEOidcConfiguration:BaseUrl", "https://test.com/"),
+                new("DfEOidcConfiguration:ClientId", "1234567"),
+                new("DfEOidcConfiguration:KeyVaultIdentifier", "https://test.com/"),
+                new("ProviderSharedUIConfiguration:DashboardUrl", "https://test.com/")
             }
         };
 
