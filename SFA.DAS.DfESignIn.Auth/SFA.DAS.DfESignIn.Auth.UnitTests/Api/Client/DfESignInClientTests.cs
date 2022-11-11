@@ -24,7 +24,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         }
 
         [Test]
-        public void CreateDfESignInClientThrowsExceptionWhenNoSecretKey()
+        public void CreateDfESignInClient_ThrowsExceptionWhenNoSecretKey()
         {
             var fixture = new Fixture();
 
@@ -42,7 +42,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         }
 
         [Test]
-        public void CreateDfESignInClientThrowsExceptionWhenNoSecretKeysdfsdfsdfs()
+        public void CreateDfESignInClient_ThrowsExceptionWhenNoSecretKeysdfsdfsdfs()
         {
             var fixture = new Fixture();
 

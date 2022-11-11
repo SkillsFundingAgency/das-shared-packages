@@ -24,7 +24,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void NoAlgorithmDefinedExceptionThrown()
+        public void NoAlgorithmDefined_ExceptionThrown()
         {
             var fixture = new Fixture();
 
@@ -44,7 +44,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void NoIssuerDefinedExceptionThrown()
+        public void NoIssuerDefined_ExceptionThrown()
         {
             var fixture = new Fixture();
 
@@ -64,7 +64,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void NoAudienceDefinedExceptionThrown()
+        public void NoAudienceDefined_ExceptionThrown()
         {
             var fixture = new Fixture();
 
@@ -84,7 +84,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void NoSecretKeyDefinedExceptionThrown()
+        public void NoSecretKeyDefined_ExceptionThrown()
         {
             var fixture = new Fixture();
 

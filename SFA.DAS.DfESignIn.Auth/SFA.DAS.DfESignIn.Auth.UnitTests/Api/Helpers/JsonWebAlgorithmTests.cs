@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using AutoFixture;
+using Moq;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
@@ -15,7 +16,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void GetAlgorithmTypeExpectedResultHS1()
+        public void GetAlgorithm_TypeExpectedResult_HS1()
         {
             // Arrange
             string algorithm = "HMACSHA1";
@@ -28,7 +29,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void GetAlgorithmTypeExpectedResultHS256()
+        public void GetAlgorithm_TypeExpectedResult_HS256()
         {
             // Arrange
             string algorithm = "HMACSHA256";
@@ -41,7 +42,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void GetAlgorithmTypeExpectedResultHMACSHA384()
+        public void GetAlgorithm_TypeExpectedResult_HMACSHA384()
         {
             // Arrange
             string algorithm = "HMACSHA384";
@@ -54,7 +55,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         }
 
         [Test]
-        public void GetAlgorithmTypeExpectedResultHMACSHA512()
+        public void GetAlgorithm_TypeExpectedResult_HMACSHA512()
         {
             // Arrange
             string algorithm = "HMACSHA512";
