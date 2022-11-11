@@ -30,10 +30,9 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 #endif
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
-           
-            services.AddHttpClient();
 
-
+            services.AddHttpClient<IDfESignInService, DfESignInService>();
+            services.AddHttpClient<IDfESignInClient, DfESignInClient>();
         }
     }
 }

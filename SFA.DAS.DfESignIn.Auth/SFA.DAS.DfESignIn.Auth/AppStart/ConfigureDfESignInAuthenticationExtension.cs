@@ -2,10 +2,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SFA.DAS.DfESignIn.Auth.Api.Client;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
+using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,12 +17,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static Microsoft.Azure.KeyVault.WebKey.JsonWebKeyVerifier;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class ConfigureDfESignInAuthenticationExtension
     {
-        private static readonly IDfEClaims _dfeClaims = new DfEClaims();
+       // private static readonly IDfEClaims _dfeClaims = new DfEClaims();
 
         internal static void ConfigureDfESignInAuthentication(this IServiceCollection services,
             IConfiguration configuration, string authenticationCookieName)
@@ -82,39 +87,16 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         c.HandleResponse();
                         return Task.CompletedTask;
                     };
-
-                    options.Events.OnTokenValidated = async c =>
-                    {
-                        await PopulateAccountsClaim(c, configuration);
-
-                    };
-
                 })
                 .AddAuthenticationCookie(authenticationCookieName);
+            services
+                .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
+                .Configure<IDfESignInService, IOptions<DfEOidcConfiguration>>(
+                    (options, dfeSignInService, config) =>
+                    {
+                        options.Events.OnTokenValidated = async ctx => await dfeSignInService.PopulateAccountClaims(ctx);
+                    });
         }
 
-        private static async Task PopulateAccountsClaim(TokenValidatedContext ctx, IConfiguration config)
-        {
-            string userId = ctx.Principal.Claims.Where(c => c.Type.Contains("sub")).Select(c => c.Value).SingleOrDefault();
-
-            var userOrganisation = JsonConvert.DeserializeObject<Organisation>
-            (
-                ctx.Principal.Claims.Where(c => c.Type == "organisation")
-                .Select(c => c.Value)
-                .FirstOrDefault()
-            );
-            
-            var ukPrn = userOrganisation.UkPrn ?? 10000001;
-
-            await _dfeClaims.GetClaims(ctx, userId, userOrganisation.Id.ToString(), config);
-
-            var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
-            ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString());
-            ctx.HttpContext.Items.Add("http://schemas.portal.com/displayname", displayName);
-            ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/service", "DAA"));
-        }
     }
 }

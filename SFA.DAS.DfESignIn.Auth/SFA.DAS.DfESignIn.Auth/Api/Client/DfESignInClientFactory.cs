@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -8,23 +10,22 @@ using System.Net.Http.Headers;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
-    public class DfESignInClientFactory
+    public class DfESignInClientFactory : IDfESignInClientFactory
     {
-        private readonly IConfiguration _config;
+        private readonly DfEOidcConfiguration _config;
         private readonly HttpClient _client = new HttpClient();
 
-        public DfESignInClientFactory(IConfiguration config)
+        public DfESignInClientFactory(DfEOidcConfiguration config)
         {
             _config = config;
         }
 
         public DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "")
         {
-
             var dfeSignInClient = new DfESignInClient(_client)
             {
-                ServiceId = _config["DfEOidcConfiguration:APIServiceId"],
-                ServiceUrl = _config["DfEOidcConfiguration:APIServiceUrl"],
+                ServiceId = _config.APIServiceId,
+                ServiceUrl = _config.APIServiceUrl,
                 UserId = userId,
                 OrganisationId = organisationId
             };
@@ -34,8 +35,8 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             var token = new TokenBuilder(new TokenDataSerializer(), tokenData, new TokenEncoder(), new JsonWebAlgorithm())
                 .UseAlgorithm("HMACSHA256")
                 .ForAudience("signin.education.gov.uk")
-                .WithSecretKey(_config["DfEOidcConfiguration:APIServiceSecret"])
-                .Issuer(_config["DfEOidcConfiguration:ClientId"])
+                .WithSecretKey(_config.APIServiceSecret)
+                .Issuer(_config.ClientId)
                 .CreateToken();
 
             dfeSignInClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

@@ -1,10 +1,11 @@
 
 using System;
 using System.Net.Http;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
-    public class DfESignInClient
+    public class DfESignInClient : IDfESignInClient
     {
         public DfESignInClient(HttpClient httpClient)
         {

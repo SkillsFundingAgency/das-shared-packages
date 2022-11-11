@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using SFA.DAS.DfESignIn.Auth.Api.Client;
+using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.Testing.Builders;
 using System.Reflection;
 
@@ -12,14 +13,14 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
     public class DfESignInClientTests
     {
         private MockRepository _mockRepository;
-        private Mock<IConfiguration> _mockConfiguration;
+        private Mock<DfEOidcConfiguration> _mockConfiguration;
         private Mock<HttpClient> _mockHttpClient;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new MockRepository(MockBehavior.Default);
-            _mockConfiguration = _mockRepository.Create<IConfiguration>();
+            _mockConfiguration = _mockRepository.Create<DfEOidcConfiguration>();
             _mockHttpClient = _mockRepository.Create<HttpClient>();
         }
 
