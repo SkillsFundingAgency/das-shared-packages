@@ -18,7 +18,11 @@
   </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="IncludedFile.cs" />
+        <Compile Remove="AutoSubscribe\ForceAutoEventSubscription.cs" />
+        <Content Include="AutoSubscribe\ForceAutoEventSubscription.cs" BuildAction="Compile" />
+    </ItemGroup>
+
+    <!--<ItemGroup>
         <Content Include="AutoSubscribe/**/*.*" copyToOutput="true">
             <IncludeInPackage>true</IncludeInPackage>
             <CopyToOutput>true</CopyToOutput>
@@ -26,7 +30,7 @@
             <copyToOutput>true</copyToOutput>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
+    </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.0" />
