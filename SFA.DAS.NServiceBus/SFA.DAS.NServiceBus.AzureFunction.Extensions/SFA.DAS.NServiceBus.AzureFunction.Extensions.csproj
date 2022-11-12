@@ -17,10 +17,10 @@
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-    <ItemGroup>
-        <None Remove="AutoSubscribe\ForceAutoEventSubscription.cs.pp" />
-        <Content Include="AutoSubscribe\ForceAutoEventSubscription.cs.pp" BuildAction="Compile" />
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="AutoSubscribe\ForceAutoEventSubscription.cs" />
+    <Content Include="AutoSubscribe\ForceAutoEventSubscription.cs" BuildAction="Compile" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.0" />
