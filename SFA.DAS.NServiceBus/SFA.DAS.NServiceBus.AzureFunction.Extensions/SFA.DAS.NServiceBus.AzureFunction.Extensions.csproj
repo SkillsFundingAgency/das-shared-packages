@@ -18,19 +18,9 @@
   </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="AutoSubscribe\ForceAutoEventSubscription.cs" />
-        <Content Include="AutoSubscribe\ForceAutoEventSubscription.cs" BuildAction="Compile" />
+        <None Remove="AutoSubscribe\ForceAutoEventSubscription.cs.pp" />
+        <Content Include="AutoSubscribe\ForceAutoEventSubscription.cs.pp" BuildAction="Compile" />
     </ItemGroup>
-
-    <!--<ItemGroup>
-        <Content Include="AutoSubscribe/**/*.*" copyToOutput="true">
-            <IncludeInPackage>true</IncludeInPackage>
-            <CopyToOutput>true</CopyToOutput>
-            <BuildAction>Content</BuildAction>
-            <copyToOutput>true</copyToOutput>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.0" />
