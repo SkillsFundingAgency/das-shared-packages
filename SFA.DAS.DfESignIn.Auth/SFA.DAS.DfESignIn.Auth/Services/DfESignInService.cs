@@ -7,13 +7,11 @@ using SFA.DAS.DfESignIn.Auth.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("SFA.DAS.DfESignIn.Auth.UnitTests")]
-
-namespace SFA.DAS.DfESignIn.Auth.Interfaces
+namespace SFA.DAS.DfESignIn.Auth.Services
 {
     internal class DfESignInService : IDfESignInService
     {
@@ -40,8 +38,9 @@ namespace SFA.DAS.DfESignIn.Auth.Interfaces
                 .FirstOrDefault()
             );
             var ukPrn = userOrganisation.UkPrn ?? 10000001;
-
-            await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
+            
+            if (!string.IsNullOrEmpty(userId) && userOrganisation?.Id != null)
+                await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
 
             var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
             ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString());

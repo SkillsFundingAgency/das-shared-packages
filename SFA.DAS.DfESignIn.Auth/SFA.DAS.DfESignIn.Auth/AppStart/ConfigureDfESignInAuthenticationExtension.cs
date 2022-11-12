@@ -3,28 +3,18 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using SFA.DAS.DfESignIn.Auth.Api.Client;
-using SFA.DAS.DfESignIn.Auth.Api.Models;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using static Microsoft.Azure.KeyVault.WebKey.JsonWebKeyVerifier;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class ConfigureDfESignInAuthenticationExtension
     {
-       // private static readonly IDfEClaims _dfeClaims = new DfEClaims();
-
         internal static void ConfigureDfESignInAuthentication(this IServiceCollection services,
             IConfiguration configuration, string authenticationCookieName)
         {
