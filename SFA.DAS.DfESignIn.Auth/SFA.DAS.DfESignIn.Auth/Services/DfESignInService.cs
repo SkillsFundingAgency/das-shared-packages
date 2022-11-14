@@ -10,6 +10,7 @@ using System.Net.Http;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 
 namespace SFA.DAS.DfESignIn.Auth.Services
 {

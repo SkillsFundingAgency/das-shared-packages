@@ -13,11 +13,21 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
     public class DfESignInClientFactory : IDfESignInClientFactory
     {
         private readonly DfEOidcConfiguration _config;
-        private readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _client;
+
+        private readonly ITokenDataSerializer _tokenDataSerializer;
+        private readonly ITokenEncoder _tokenEncoder;
+        private readonly IJsonWebAlgorithm _jsonWebAlgorithm;
+        private readonly ITokenData _tokenData;
 
         public DfESignInClientFactory(DfEOidcConfiguration config)
         {
             _config = config;
+            _tokenDataSerializer = new TokenDataSerializer();
+            _tokenEncoder = new TokenEncoder();
+            _jsonWebAlgorithm = new JsonWebAlgorithm();
+            _tokenData = new TokenData();
+            _client = new HttpClient();
         }
 
         public DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "")
@@ -30,9 +40,8 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 OrganisationId = organisationId
             };
 
-            var tokenData = new TokenData();
-            tokenData.Header.Add("typ", "JWT");
-            var token = new TokenBuilder(new TokenDataSerializer(), tokenData, new TokenEncoder(), new JsonWebAlgorithm())
+            _tokenData.Header.Add("typ", "JWT");
+            var token = new TokenBuilder(_tokenDataSerializer, _tokenData, _tokenEncoder, _jsonWebAlgorithm)
                 .UseAlgorithm("HMACSHA256")
                 .ForAudience("signin.education.gov.uk")
                 .WithSecretKey(_config.APIServiceSecret)
