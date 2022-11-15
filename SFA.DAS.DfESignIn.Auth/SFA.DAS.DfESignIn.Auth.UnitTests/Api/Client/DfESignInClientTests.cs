@@ -38,7 +38,6 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             string userId = fixture.Create<string>();
             string organizationId = fixture.Create<string>();
 
-            _mockRepository.VerifyAll();
             Assert.Throws<Exception>(() => factory.CreateDfESignInClient(userId, organizationId));
         }
 
@@ -51,7 +50,6 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var factory = new DfESignInClientFactory(
                 _mockConfiguration.Object);
 
-            _mockRepository.VerifyAll();
             Assert.Throws<Exception>(() => factory.CreateDfESignInClient());
         }
 

@@ -60,7 +60,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.Framework
                 .FirstOrDefault()
             );
 
-            var ukPrn = userOrganisation.UkPrn ?? 10000531;
+            var ukPrn = userOrganisation.UkPrn;
 
             await DfEPublicApi(n, userId, userOrganisation.Id.ToString());
 

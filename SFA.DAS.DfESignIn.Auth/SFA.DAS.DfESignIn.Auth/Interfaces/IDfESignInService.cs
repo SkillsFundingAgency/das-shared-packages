@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.DfESignIn.Auth.Interfaces
 {
-    internal interface IDfESignInService
+    public interface IDfESignInService
     {
         Task PopulateAccountClaims(TokenValidatedContext ctx);
         Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId);

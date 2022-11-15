@@ -11,6 +11,10 @@ using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("SFA.DAS.DfESignIn.Auth.UnitTests")]
+
 
 namespace SFA.DAS.DfESignIn.Auth.Services
 {
@@ -30,7 +34,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 
         public async Task PopulateAccountClaims(TokenValidatedContext ctx)
         {
-            string userId = ctx.Principal.Claims.Where(c => c.Type.Contains("sub")).Select(c => c.Value).SingleOrDefault();
+            var userId = ctx.Principal.Claims.Where(c => c.Type.Contains("sub")).Select(c => c.Value).SingleOrDefault();
 
             var userOrganisation = JsonConvert.DeserializeObject<Organisation>
             (
@@ -38,9 +42,9 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                 .Select(c => c.Value)
                 .FirstOrDefault()
             );
-            var ukPrn = userOrganisation.UkPrn ?? 10000001;
+            var ukPrn = userOrganisation.UkPrn;
             
-            if (!string.IsNullOrEmpty(userId) && userOrganisation?.Id != null)
+            if (userId != null && userOrganisation?.Id != null)
                 await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
 
             var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
@@ -54,7 +58,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 
         public async Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId)
         {
-            var clientFactory = new DfESignInClientFactory(_configuration);
+            var clientFactory = new DfESignInClientFactory(_configuration, _httpClient);
             DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
             HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
 

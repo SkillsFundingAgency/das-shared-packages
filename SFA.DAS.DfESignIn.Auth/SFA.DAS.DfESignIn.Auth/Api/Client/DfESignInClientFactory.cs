@@ -13,26 +13,26 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
     public class DfESignInClientFactory : IDfESignInClientFactory
     {
         private readonly DfEOidcConfiguration _config;
-        private readonly HttpClient _client;
+        private readonly HttpClient _httpClient;
 
         private readonly ITokenDataSerializer _tokenDataSerializer;
         private readonly ITokenEncoder _tokenEncoder;
         private readonly IJsonWebAlgorithm _jsonWebAlgorithm;
         private readonly ITokenData _tokenData;
 
-        public DfESignInClientFactory(DfEOidcConfiguration config)
+        public DfESignInClientFactory(DfEOidcConfiguration config, HttpClient httpClient)
         {
             _config = config;
             _tokenDataSerializer = new TokenDataSerializer();
             _tokenEncoder = new TokenEncoder();
             _jsonWebAlgorithm = new JsonWebAlgorithm();
             _tokenData = new TokenData();
-            _client = new HttpClient();
+            _httpClient = httpClient;
         }
 
         public DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "")
         {
-            var dfeSignInClient = new DfESignInClient(_client)
+            var dfeSignInClient = new DfESignInClient(_httpClient)
             {
                 ServiceId = _config.APIServiceId,
                 ServiceUrl = _config.APIServiceUrl,
