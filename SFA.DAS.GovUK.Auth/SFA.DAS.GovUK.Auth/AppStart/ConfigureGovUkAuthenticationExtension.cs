@@ -1,12 +1,12 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
-using SFA.DAS.GovUK.Auth.Interfaces;
+using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.AppStart;
 
@@ -23,26 +23,26 @@ internal static class ConfigureGovUkAuthenticationExtension
                 sharedOptions.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
             }).AddOpenIdConnect(options =>
             {
-                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
-                
-                options.ClientId = govUkConfiguration["ClientId"];
-                options.MetadataAddress = $"{govUkConfiguration["BaseUrl"]}/.well-known/openid-configuration";
+                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
+
+                options.ClientId = govUkConfiguration.ClientId;
+                options.MetadataAddress = $"{govUkConfiguration.BaseUrl}/.well-known/openid-configuration";
                 options.ResponseType = "code";
                 options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                 options.SignedOutRedirectUri = "/";
-                options.SignedOutCallbackPath= "/signed-out";
+                options.SignedOutCallbackPath = "/signed-out";
                 options.CallbackPath = "/sign-in";
                 options.ResponseMode = string.Empty;
-                
+
                 options.SaveTokens = true;
-                
+
                 var scopes = "openid email phone".Split(' ');
                 options.Scope.Clear();
                 foreach (var scope in scopes)
                 {
                     options.Scope.Add(scope);
                 }
-                
+
                 options.Events.OnRemoteFailure = c =>
                 {
                     if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
@@ -53,7 +53,7 @@ internal static class ConfigureGovUkAuthenticationExtension
 
                     return Task.CompletedTask;
                 };
-                
+
                 options.Events.OnSignedOutCallbackRedirect = c =>
                 {
                     c.Response.Cookies.Delete(authenticationCookieName);
@@ -61,34 +61,23 @@ internal static class ConfigureGovUkAuthenticationExtension
                     c.HandleResponse();
                     return Task.CompletedTask;
                 };
-                
 
-            }).AddCookie(options =>
-            {
-                options.AccessDeniedPath = new PathString("/error/403");
-                options.ExpireTimeSpan = TimeSpan.FromHours(1);
-                options.Cookie.Name = authenticationCookieName;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.SlidingExpiration = true;
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
-                options.LogoutPath = "/home/signed-out";
-            });
+
+            }).AddAuthenticationCookie(authenticationCookieName);
         services
             .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-            .Configure<IOidcService, IAzureIdentityService>((options, oidcService, azureIdentityService) =>
+            .Configure<IOidcService, IAzureIdentityService, ICustomClaims>((options, oidcService, azureIdentityService, customClaims) =>
             {
-                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
+                var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     AuthenticationType = "private_key_jwt",
-                    IssuerSigningKey = new KeyVaultSecurityKey(govUkConfiguration["KeyVaultIdentifier"] ,azureIdentityService.AuthenticationCallback),
+                    IssuerSigningKey = new KeyVaultSecurityKey(govUkConfiguration.KeyVaultIdentifier ,azureIdentityService.AuthenticationCallback),
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     SaveSigninToken = true
                 };
-                options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx);
                 options.Events.OnAuthorizationCodeReceived = async (ctx) =>
                 {
                     var token = await oidcService.GetToken(ctx.TokenEndpointRequest);
@@ -97,6 +86,8 @@ internal static class ConfigureGovUkAuthenticationExtension
                         ctx.HandleCodeRedemption(token.AccessToken, token.IdToken);    
                     }
                 };
+                options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx);
+                
             });
     }
 }

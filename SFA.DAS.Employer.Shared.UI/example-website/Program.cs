@@ -24,12 +24,6 @@ namespace DfE.Example.Web
                     config.SetBasePath(Directory.GetCurrentDirectory());
                     config.AddJsonFile("appSettings.json", optional: false, reloadOnChange: false);
                     config.AddJsonFile($"appSettings.{environmentName}.json", optional: false, reloadOnChange: false);
-                    config.AddAzureTableStorage(options => {
-                        options.ConfigurationKeys = new [] { "SFA.DAS.Employer.Shared.UI" };
-                        options.EnvironmentNameEnvironmentVariableName = "APPSETTING_EnvironmentName";
-                        options.StorageConnectionStringEnvironmentVariableName = "APPSETTING_ConfigurationStorageConnectionString";
-                    });
-                    config.AddAzureTableStorage("SFA.DAS.EmployerUrlHelper");
                     config.AddUserSecrets<Startup>();
                     config.AddEnvironmentVariables();
                 })

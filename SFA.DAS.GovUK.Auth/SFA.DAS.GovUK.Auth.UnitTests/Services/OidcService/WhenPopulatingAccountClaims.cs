@@ -10,8 +10,8 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Moq;
 using Moq.Protected;
 using SFA.DAS.GovUK.Auth.Configuration;
-using SFA.DAS.GovUK.Auth.Interfaces;
 using SFA.DAS.GovUK.Auth.Models;
+using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
@@ -41,7 +41,7 @@ public class WhenPopulatingAccountClaims
             },
             Principal = null
         };
-        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -73,7 +73,7 @@ public class WhenPopulatingAccountClaims
         {
             Principal = mockPrincipal.Object
         };
-        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -116,7 +116,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -166,7 +166,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -174,6 +174,51 @@ public class WhenPopulatingAccountClaims
         //Assert
         tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
             .Be(user.Email);
+    }
+    
+    [Test, RecursiveMoqAutoData]
+    public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Populated_And_Additional_Claims_From_Function(
+        GovUkUser user,
+        string accessToken,
+        string customClaimValue,
+        List<ClaimsIdentity> claimsIdentity,
+        IOptions<GovUkOidcConfiguration> config)
+    {
+        //Arrange
+        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        var mockPrincipal = new Mock<ClaimsPrincipal>();
+        mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
+        var response = new HttpResponseMessage
+        {
+            Content = new StringContent(JsonSerializer.Serialize(user)),
+            StatusCode = HttpStatusCode.Accepted
+        };
+        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
+        var client = new HttpClient(httpMessageHandler.Object);
+        var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),
+            new OpenIdConnectOptions(), mockPrincipal.Object, new AuthenticationProperties())
+        {
+            TokenEndpointResponse = new OpenIdConnectMessage
+            {
+                Parameters = { {"access_token",accessToken} }
+            },
+            Principal = mockPrincipal.Object
+        };
+        var customClaims = new Mock<ICustomClaims>();
+        customClaims.Setup(x => x.GetClaims(tokenValidatedContext))
+            .ReturnsAsync(new List<Claim> {new Claim("CustomClaim", customClaimValue)});
+        
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, customClaims.Object);
+
+        //Act
+        await service.PopulateAccountClaims(tokenValidatedContext);
+        
+        //Assert
+        tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
+            .Be(user.Email);
+        tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals("CustomClaim")).Value.Should()
+            .Be(customClaimValue);
     }
     
     [Test, RecursiveMoqAutoData]
@@ -204,7 +249,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config);
+        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);

@@ -1,6 +1,5 @@
 using Azure.Core;
 using Azure.Identity;
-using SFA.DAS.GovUK.Auth.Interfaces;
 
 namespace SFA.DAS.GovUK.Auth.Services;
 

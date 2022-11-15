@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using NWebsec.AspNetCore.Mvc.Csp;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.Provider.Shared.UI.Models;
 

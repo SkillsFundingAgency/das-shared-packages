@@ -1,55 +1,80 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using DfE.Example.Web;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace DfE.Example.Web.Security
 {
     public static class SecurityServicesCollectionExtensions
     {
-        public static void AddAuthenticationService(this IServiceCollection services, OidcConfiguration authConfiguration, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, string authenticationCookieName)
         {
-            var authConfig = authConfiguration;
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-            .AddCookie("Cookies", options =>
-            {
-                options.Cookie.Name = "example-auth";
-
-                if (!hostingEnvironment.IsDevelopment())
+            services
+                .AddAuthentication(sharedOptions =>
                 {
-                    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                    options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(OidcConfiguration.SessionTimeoutMinutes);
-                }
-
-                options.AccessDeniedPath = "/Error/403";
-            })
-            .AddOpenIdConnect("oidc", options =>
+                    sharedOptions.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                })
+                .AddScheme<AuthenticationSchemeOptions, EmployerStubAuthHandler>(
+                    authenticationCookieName,
+                    _ =>
+                    {
+                    }).AddCookie(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
+                    options.Events.OnSigningOut = c =>
+                    {
+                        c.Response.Cookies.Delete(authenticationCookieName);
+                        c.Response.Redirect("/");
+                        return Task.CompletedTask;
+                    };
+                });
+            
+            services.AddAuthentication(authenticationCookieName).AddCookie(options =>
             {
-                options.SignInScheme = "Cookies";
-                options.Authority = authConfig.Authority;
-                options.MetadataAddress = authConfig.MetaDataAddress;
-                options.RequireHttpsMetadata = false;
-                options.ResponseType = "code";
-                options.ClientId = authConfig.ClientId;
-                options.ClientSecret = authConfig.ClientSecret;
-                options.Scope.Add("profile");
+                options.AccessDeniedPath = new PathString("/error/403");
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.Cookie.Name = authenticationCookieName;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.SlidingExpiration = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
+                options.LogoutPath = "/home/signed-out";
             });
+            
+        }
+    }
+    internal class EmployerStubAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    {
+        public EmployerStubAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        {
+        }
+
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email, "test@test.com"),
+                new Claim(ClaimTypes.NameIdentifier, Guid.Empty.ToString()),
+                new Claim("sub", Guid.Empty.ToString())
+            };
+            var identity = new ClaimsIdentity(claims, "Employer-stub");
+            var principal = new ClaimsPrincipal(identity);
+            var ticket = new AuthenticationTicket(principal, "Employer-stub");
+ 
+            var result = AuthenticateResult.Success(ticket);
+ 
+            return Task.FromResult(result);
         }
     }
 }

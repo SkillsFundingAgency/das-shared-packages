@@ -44,14 +44,16 @@
             <div class="govuk-width-container app-account-header">
                 @RenderSection("BodyHeader", required: false)
             </div>
-
-            <div class="das-section--dashboard">
-                <div class="govuk-width-container">
-                    <main class="govuk-main-wrapper" id="main-content" role="main">
-                        @RenderBody()
-                    </main>
-                </div>
+        </partial>
+    </partial>
+        <div class="das-section--dashboard">
+            <div class="govuk-width-container">
+                <main class="govuk-main-wrapper" id="main-content" role="main">
+                    @RenderBody()
+                </main>
             </div>
+        </div>
+        
             <partial name="_Footer" model="@footerModel">
                 <script src="/libs/govuk-frontend/all.js"></script>
                 <script src="/libs/jquery/jquery.min.js"></script>
@@ -61,5 +63,6 @@
                     window.GOVUKFrontend.initAll();
                     window.DASFrontend.initAll();
                 </script>
+            </partial>
 </body>
 </html>
