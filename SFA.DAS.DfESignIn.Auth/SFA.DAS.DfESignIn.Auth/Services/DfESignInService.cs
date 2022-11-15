@@ -15,21 +15,32 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("SFA.DAS.DfESignIn.Auth.UnitTests")]
 
-
 namespace SFA.DAS.DfESignIn.Auth.Services
 {
     internal class DfESignInService : IDfESignInService
     {
         private readonly HttpClient _httpClient;
         private readonly DfEOidcConfiguration _configuration;
+        private readonly ITokenDataSerializer _tokenDataSerializer;
+        private readonly ITokenEncoder _tokenEncoder;
+        private readonly IJsonWebAlgorithm _jsonWebAlgorithm;
+        private readonly ITokenData _tokenData;
 
         public DfESignInService(
             HttpClient httpClient,
-            IOptions<DfEOidcConfiguration> configuration
+            IOptions<DfEOidcConfiguration> configuration,
+            ITokenDataSerializer tokenDataSerializer,
+            ITokenEncoder tokenEncoder,
+            IJsonWebAlgorithm jsonWebAlgorithm,
+            ITokenData tokenData
             )
         {
             _httpClient = httpClient;
             _configuration = configuration.Value;
+            _tokenDataSerializer = tokenDataSerializer;
+            _tokenEncoder = tokenEncoder;
+            _jsonWebAlgorithm = jsonWebAlgorithm;
+            _tokenData = tokenData;
         }
 
         public async Task PopulateAccountClaims(TokenValidatedContext ctx)
@@ -58,7 +69,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 
         public async Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId)
         {
-            var clientFactory = new DfESignInClientFactory(_configuration, _httpClient);
+            var clientFactory = new DfESignInClientFactory(_configuration, _httpClient, _tokenDataSerializer, _tokenEncoder, _jsonWebAlgorithm, _tokenData);
             DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
             HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
 

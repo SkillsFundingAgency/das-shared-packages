@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using SFA.DAS.DfESignIn.Auth.Api.Client;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.Testing.Builders;
 using System.Reflection;
@@ -16,12 +17,21 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         private Mock<DfEOidcConfiguration> _mockConfiguration;
         private Mock<HttpClient> _mockHttpClient;
 
+        private Mock<ITokenDataSerializer> _mockTokenDataSerializer;
+        private Mock<ITokenEncoder> _mockTokenEncoder;
+        private Mock<IJsonWebAlgorithm> _mockJsonWebAlgorithm;
+        private Mock<ITokenData> _mockTokenData;
+
         [SetUp]
         public void SetUp()
         {
             _mockRepository = new MockRepository(MockBehavior.Default);
             _mockConfiguration = _mockRepository.Create<DfEOidcConfiguration>();
             _mockHttpClient = _mockRepository.Create<HttpClient>();
+            _mockTokenDataSerializer = _mockRepository.Create<ITokenDataSerializer>();
+            _mockTokenEncoder = _mockRepository.Create<ITokenEncoder>();
+            _mockJsonWebAlgorithm = _mockRepository.Create<IJsonWebAlgorithm>();
+            _mockTokenData = _mockRepository.Create<ITokenData>();
         }
 
         [Test]
@@ -30,7 +40,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var fixture = new Fixture();
 
             var factory = new DfESignInClientFactory(
-                _mockConfiguration.Object);
+                _mockConfiguration.Object, _mockHttpClient.Object, _mockTokenDataSerializer.Object, _mockTokenEncoder.Object, _mockJsonWebAlgorithm.Object, _mockTokenData.Object);
 
             var mockIConfigurationSection = new Mock<IConfigurationSection>();
             mockIConfigurationSection.Setup(x => x.GetSection("DfEOidcConfiguration")).Returns(mockIConfigurationSection.Object);
@@ -48,7 +58,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var fixture = new Fixture();
 
             var factory = new DfESignInClientFactory(
-                _mockConfiguration.Object);
+                _mockConfiguration.Object, _mockHttpClient.Object, _mockTokenDataSerializer.Object, _mockTokenEncoder.Object, _mockJsonWebAlgorithm.Object, _mockTokenData.Object);
 
             Assert.Throws<Exception>(() => factory.CreateDfESignInClient());
         }

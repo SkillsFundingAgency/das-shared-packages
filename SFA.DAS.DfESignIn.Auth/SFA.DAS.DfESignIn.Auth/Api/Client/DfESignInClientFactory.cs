@@ -20,13 +20,13 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
         private readonly IJsonWebAlgorithm _jsonWebAlgorithm;
         private readonly ITokenData _tokenData;
 
-        public DfESignInClientFactory(DfEOidcConfiguration config, HttpClient httpClient)
+        public DfESignInClientFactory(DfEOidcConfiguration config, HttpClient httpClient, ITokenDataSerializer tokenDataSerializer, ITokenEncoder tokenEncoder, IJsonWebAlgorithm jsonWebAlgorithm, ITokenData tokenData)
         {
             _config = config;
-            _tokenDataSerializer = new TokenDataSerializer();
-            _tokenEncoder = new TokenEncoder();
-            _jsonWebAlgorithm = new JsonWebAlgorithm();
-            _tokenData = new TokenData();
+            _tokenDataSerializer = tokenDataSerializer;
+            _tokenEncoder = tokenEncoder;
+            _jsonWebAlgorithm = jsonWebAlgorithm;
+            _tokenData = tokenData;
             _httpClient = httpClient;
         }
 

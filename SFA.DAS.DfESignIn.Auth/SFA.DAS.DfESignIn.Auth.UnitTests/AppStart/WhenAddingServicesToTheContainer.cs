@@ -8,6 +8,8 @@ using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using Moq;
+using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
@@ -15,6 +17,11 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 public class WhenAddingServicesToTheContainer
 {
     [TestCase(typeof(DfEOidcConfiguration))]
+    [TestCase(typeof(IDfESignInService))]
+    [TestCase(typeof(ITokenDataSerializer))]
+    [TestCase(typeof(ITokenEncoder))]
+    [TestCase(typeof(IJsonWebAlgorithm))]
+    [TestCase(typeof(ITokenData))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var serviceCollection = new ServiceCollection();
