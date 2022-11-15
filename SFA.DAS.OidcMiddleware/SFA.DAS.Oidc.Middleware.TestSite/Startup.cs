@@ -50,7 +50,7 @@ namespace SFA.DAS.Oidc.Middleware.TestSite
                 ClientId = govUkOidcConfiguration.ClientId,
                 Scope = "openid email phone",
                 Authority = govUkOidcConfiguration.BaseUrl,
-                MetadataAddress = $"{govUkOidcConfiguration.BaseUrl}.well-known/openid-configuration",
+                MetadataAddress = $"{govUkOidcConfiguration.BaseUrl}/.well-known/openid-configuration",
                 ResponseType = OpenIdConnectResponseType.Code,
                 ResponseMode = "",
                 SaveTokens = true,
