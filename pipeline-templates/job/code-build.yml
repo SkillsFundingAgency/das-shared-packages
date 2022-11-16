@@ -85,3 +85,8 @@ jobs:
       - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
         parameters:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}
+          
+      - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+        parameters:
+          DotNetStandardPackagesToPack: |
+            src/SFA.DAS.DfESignIn.Auth/SFA.DAS.DfESignIn.Auth/SFA.DAS.DfESignIn.Auth.csproj
