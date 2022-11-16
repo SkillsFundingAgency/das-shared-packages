@@ -2,8 +2,9 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.NServiceBus.AzureFunction.Extensions;
 
-namespace SFA.DAS.NServiceBus.AzureFunction.Extensions.AutoSubscribe;
+namespace SFA.DAS.NServiceBus.AzureFunctions.Extensions.Example.AutoSubscribe;
 
 /*
  * 
