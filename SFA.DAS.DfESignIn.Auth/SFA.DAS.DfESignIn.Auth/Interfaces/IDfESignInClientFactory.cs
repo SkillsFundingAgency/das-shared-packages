@@ -1,10 +1,13 @@
 ﻿using SFA.DAS.DfESignIn.Auth.Api.Client;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.DfESignIn.Auth.Interfaces
 {
     public interface IDfESignInClientFactory
     {
-        DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "");
+        Task<HttpResponseMessage> Request(string userId = "", string organisationId = "");
+        string CreateDfEToken();
         void Dispose();
     }
 }

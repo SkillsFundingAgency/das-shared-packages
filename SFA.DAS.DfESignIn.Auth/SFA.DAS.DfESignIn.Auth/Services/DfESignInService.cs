@@ -74,9 +74,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
         public async Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId)
         {
             var clientFactory = new DfESignInClientFactory(_configuration, _httpClient, _tokenDataSerializer, _tokenEncoder, _jsonWebAlgorithm, _tokenData);
-            DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
-            var response = await clientFactory.DfERequest();
-
+            var response = await clientFactory.Request(userId, userOrgId);
 
             if (response.IsSuccessStatusCode)
             {

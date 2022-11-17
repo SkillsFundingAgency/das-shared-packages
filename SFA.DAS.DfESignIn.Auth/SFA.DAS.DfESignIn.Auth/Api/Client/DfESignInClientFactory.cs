@@ -30,19 +30,6 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             _httpClient = httpClient;
         }
 
-        public DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "")
-        {
-            _dfEClient = new DfESignInClient(_httpClient)
-            {
-                ServiceId = _config.APIServiceId,
-                ServiceUrl = _config.APIServiceUrl,
-                UserId = userId,
-                OrganisationId = organisationId
-            };
-
-            return _dfEClient;
-        }
-
         public string CreateDfEToken()
         {
             _tokenData.Header.Add("typ", "JWT");
@@ -57,8 +44,16 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             return token;
         }
 
-        public async Task<HttpResponseMessage> DfERequest()
+        public async Task<HttpResponseMessage> Request(string userId = "", string organisationId = "")
         {
+            _dfEClient = new DfESignInClient(_httpClient)
+            {
+                ServiceId = _config.APIServiceId,
+                ServiceUrl = _config.APIServiceUrl,
+                UserId = userId,
+                OrganisationId = organisationId
+            };
+
             var dfeApiResponse = new HttpResponseMessage();
             using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, _dfEClient.TargetAddress))
             {
