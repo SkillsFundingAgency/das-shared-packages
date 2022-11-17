@@ -56,7 +56,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                 .Select(c => c.Value)
                 .FirstOrDefault()
             );
-             var ukPrn = userOrganisation.UkPrn;
+            var ukPrn = userOrganisation.UkPrn;
 
             if (userId != null && userOrganisation?.Id != null)
                 await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
@@ -75,7 +75,8 @@ namespace SFA.DAS.DfESignIn.Auth.Services
         {
             var clientFactory = new DfESignInClientFactory(_configuration, _httpClient, _tokenDataSerializer, _tokenEncoder, _jsonWebAlgorithm, _tokenData);
             DfESignInClient dfeSignInClient = clientFactory.CreateDfESignInClient(userId, userOrgId);
-            HttpResponseMessage response = await dfeSignInClient.HttpClient.GetAsync(dfeSignInClient.TargetAddress);
+            var response = await clientFactory.DfERequest();
+
 
             if (response.IsSuccessStatusCode)
             {

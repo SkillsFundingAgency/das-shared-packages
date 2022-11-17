@@ -4,6 +4,7 @@ using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
@@ -39,7 +40,13 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 OrganisationId = organisationId
             };
 
+            return _dfEClient;
+        }
+
+        public string CreateDfEToken()
+        {
             _tokenData.Header.Add("typ", "JWT");
+
             var token = new TokenBuilder(_tokenDataSerializer, _tokenData, _tokenEncoder, _jsonWebAlgorithm)
                 .UseAlgorithm("HMACSHA256")
                 .ForAudience("signin.education.gov.uk")
@@ -47,9 +54,19 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 .Issuer(_config.ClientId)
                 .CreateToken();
 
-            _dfEClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    
-            return _dfEClient;
+            return token;
+        }
+
+        public async Task<HttpResponseMessage> DfERequest()
+        {
+            var dfeApiResponse = new HttpResponseMessage();
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, _dfEClient.TargetAddress))
+            {
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", CreateDfEToken());
+                dfeApiResponse = await _dfEClient.HttpClient.SendAsync(requestMessage);
+            }
+
+            return dfeApiResponse;
         }
 
         public void Dispose()
