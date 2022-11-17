@@ -5,7 +5,7 @@ using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
-    public class DfESignInClient : IDfESignInClient
+    public class DfESignInClient
     {
         public DfESignInClient(HttpClient httpClient)
         {
