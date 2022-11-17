@@ -1,11 +1,10 @@
 
 using System;
 using System.Net.Http;
-using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
-    public class DfESignInClient
+    public class DfESignInClient : IDisposable
     {
         public DfESignInClient(HttpClient httpClient)
         {
@@ -32,6 +31,11 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 }
                 return new Uri($"{ServiceUrl}/services/{ServiceId}/organisations/{OrganisationId}/users/{UserId}");
             }
+        }
+
+        public void Dispose()
+        {
+            HttpClient.DefaultRequestHeaders.Clear();
         }
     }
 }

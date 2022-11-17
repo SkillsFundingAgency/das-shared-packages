@@ -12,6 +12,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using System.Runtime.CompilerServices;
+using Azure.Core;
+using System.Net.Http.Headers;
+using System;
 
 [assembly: InternalsVisibleTo("SFA.DAS.DfESignIn.Auth.UnitTests")]
 
@@ -53,8 +56,8 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                 .Select(c => c.Value)
                 .FirstOrDefault()
             );
-            var ukPrn = userOrganisation.UkPrn;
-            
+             var ukPrn = userOrganisation.UkPrn;
+
             if (userId != null && userOrganisation?.Id != null)
                 await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
 
@@ -65,6 +68,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
             ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/service", "DAA"));
+
         }
 
         public async Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId)
@@ -87,12 +91,16 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                         roleClaims.Add(new Claim("roleId", role.Id.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
                         roleClaims.Add(new Claim("roleName", role.Name, ClaimTypes.Role, ctx.Options.ClientId));
                         roleClaims.Add(new Claim("rolenumericid", role.NumericId.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
+
+                        // Add to initial identity
+                        ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/service", role.Name));
                     }
                 }
-
                 var roleIdentity = new ClaimsIdentity(roleClaims);
                 ctx.Principal.AddIdentity(roleIdentity);
             }
+
+            clientFactory.Dispose();
         }
     }
 }

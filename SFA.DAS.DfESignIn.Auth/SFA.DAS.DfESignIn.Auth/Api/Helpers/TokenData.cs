@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
-    public class TokenData : ITokenData
+    public class TokenData : ITokenData, IDisposable
     {
         public IDictionary<string, object> Header { get; set; }
 
@@ -16,11 +16,18 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
             Header = header ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             Payload = payload ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
+
+        public void Dispose()
+        {
+            Header.Clear();
+            Payload.Clear();
+        }
     }
 
     public interface ITokenData
     {
         IDictionary<string, object> Header { get; set; }
         IDictionary<string, object> Payload { get; set; }
+        void Dispose();
     }
 }

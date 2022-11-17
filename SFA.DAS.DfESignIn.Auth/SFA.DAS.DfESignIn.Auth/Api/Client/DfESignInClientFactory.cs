@@ -1,16 +1,13 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
-    public class DfESignInClientFactory : IDfESignInClientFactory
+    public class DfESignInClientFactory : IDfESignInClientFactory, IDisposable
     {
         private readonly DfEOidcConfiguration _config;
         private readonly HttpClient _httpClient;
@@ -19,6 +16,8 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
         private readonly ITokenEncoder _tokenEncoder;
         private readonly IJsonWebAlgorithm _jsonWebAlgorithm;
         private readonly ITokenData _tokenData;
+
+        private DfESignInClient _dfEClient;
 
         public DfESignInClientFactory(DfEOidcConfiguration config, HttpClient httpClient, ITokenDataSerializer tokenDataSerializer, ITokenEncoder tokenEncoder, IJsonWebAlgorithm jsonWebAlgorithm, ITokenData tokenData)
         {
@@ -32,7 +31,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
 
         public DfESignInClient CreateDfESignInClient(string userId = "", string organisationId = "")
         {
-            var dfeSignInClient = new DfESignInClient(_httpClient)
+            _dfEClient = new DfESignInClient(_httpClient)
             {
                 ServiceId = _config.APIServiceId,
                 ServiceUrl = _config.APIServiceUrl,
@@ -48,9 +47,15 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 .Issuer(_config.ClientId)
                 .CreateToken();
 
-            dfeSignInClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _dfEClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    
+            return _dfEClient;
+        }
 
-            return dfeSignInClient;
+        public void Dispose()
+        {
+            _dfEClient.Dispose();
+            _tokenData.Dispose();
         }
     }
 }
