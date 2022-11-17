@@ -35,46 +35,18 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         }
 
         [Test]
-        public void ThrowsException_When_NoSecretKey()
-        {
-            var fixture = new Fixture();
-
-            var factory = new DfESignInClientFactory(
-                _mockConfiguration.Object, _mockHttpClient.Object, _mockTokenDataSerializer.Object, _mockTokenEncoder.Object, _mockJsonWebAlgorithm.Object, _mockTokenData.Object);
-
-            var mockIConfigurationSection = new Mock<IConfigurationSection>();
-            mockIConfigurationSection.Setup(x => x.GetSection("DfEOidcConfiguration")).Returns(mockIConfigurationSection.Object);
-
-            string userId = fixture.Create<string>();
-            string organizationId = fixture.Create<string>();
-
-            Assert.Throws<Exception>(() => factory.CreateDfESignInClient(userId, organizationId));
-        }
-
-
-        [Test]
-        public void User_And_Org_Not_Supplied_Throws_Exception()
-        {
-            var fixture = new Fixture();
-
-            var factory = new DfESignInClientFactory(
-                _mockConfiguration.Object, _mockHttpClient.Object, _mockTokenDataSerializer.Object, _mockTokenEncoder.Object, _mockJsonWebAlgorithm.Object, _mockTokenData.Object);
-
-            Assert.Throws<Exception>(() => factory.CreateDfESignInClient());
-        }
-
-        [Test]
         public void TargetAddressThrowsException_Missing_ServiceUrl()
         {
             var fixture = new Fixture();
             fixture.Inject(new UriScheme("http"));
 
             var client = new DfESignInClient(
-                _mockHttpClient.Object);
-
-            client.OrganisationId = fixture.Create<string>().Substring(0, 5);
-            client.ServiceId = fixture.Create<string>().Substring(0, 5);
-            client.UserId = fixture.Create<string>().Substring(0, 5);
+                _mockHttpClient.Object)
+            {
+                OrganisationId = fixture.Create<string>().Substring(0, 5),
+                ServiceId = fixture.Create<string>().Substring(0, 5),
+                UserId = fixture.Create<string>().Substring(0, 5)
+            };
 
             Assert.Throws<MemberAccessException>(delegate
             {
