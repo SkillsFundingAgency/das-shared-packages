@@ -30,18 +30,16 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             _httpClient = httpClient;
         }
 
-        public string CreateDfEToken()
+        protected string CreateDfEToken()
         {
             _tokenData.Header.Add("typ", "JWT");
 
-            var token = new TokenBuilder(_tokenDataSerializer, _tokenData, _tokenEncoder, _jsonWebAlgorithm)
+            return new TokenBuilder(_tokenDataSerializer, _tokenData, _tokenEncoder, _jsonWebAlgorithm)
                 .UseAlgorithm("HMACSHA256")
                 .ForAudience("signin.education.gov.uk")
                 .WithSecretKey(_config.APIServiceSecret)
                 .Issuer(_config.ClientId)
                 .CreateToken();
-
-            return token;
         }
 
         public async Task<HttpResponseMessage> Request(string userId = "", string organisationId = "")
@@ -54,14 +52,11 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
                 OrganisationId = organisationId
             };
 
-            var dfeApiResponse = new HttpResponseMessage();
             using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, _dfEClient.TargetAddress))
             {
                 requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", CreateDfEToken());
-                dfeApiResponse = await _dfEClient.HttpClient.SendAsync(requestMessage);
+                return await _dfEClient.HttpClient.SendAsync(requestMessage);
             }
-
-            return dfeApiResponse;
         }
 
         public void Dispose()

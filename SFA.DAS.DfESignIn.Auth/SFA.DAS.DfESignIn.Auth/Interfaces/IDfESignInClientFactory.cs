@@ -7,7 +7,6 @@ namespace SFA.DAS.DfESignIn.Auth.Interfaces
     public interface IDfESignInClientFactory
     {
         Task<HttpResponseMessage> Request(string userId = "", string organisationId = "");
-        string CreateDfEToken();
         void Dispose();
     }
 }
