@@ -1,0 +1,10 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "AzureWebJobsServiceBus__fullyQualifiedNamespace": "<yournamespace>.servicebus.windows.net",
+        "AzureWebJobsServiceBus": "Endpoint=sb://<yournamespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=<yourtoken>",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "EnvironmentName": "DEV"
+    }
+}

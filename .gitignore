@@ -252,6 +252,7 @@ Messaging/SFA.DAS.Messaging.v3.ncrunchsolution
 # NServiceBus
 .learningtransport/
 SFA.DAS.GovUK.Auth/SFA.DAS.GovUK.SampleSite/appsettings.Development.json
+*.ncrunchproject
 
 SFA.DAS.GovUK.Auth/SFA.DAS.GovUk.SampleSite.Legacy/appsettings.Development.json
 
