@@ -8,9 +8,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 {
     public class GovUkStructureMap : Registry
     {
-        public GovUkStructureMap()
+        public GovUkStructureMap(string configKey)
         {
-            AddConfiguration<GovUkOidcConfiguration>(nameof(GovUkOidcConfiguration));
+            AddConfiguration<GovUkOidcConfiguration>(configKey);
             For<IOidcService>().Use<OidcService>().Ctor<HttpClient>().Is(new HttpClient());
             For<IAzureIdentityService>().Use<AzureIdentityService>();
             For<IJwtSecurityTokenService>().Use<JwtSecurityTokenService>();
