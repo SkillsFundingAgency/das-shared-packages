@@ -21,22 +21,22 @@ public class WhenGettingToken
         string clientAssertion,
         Token token,
         OpenIdConnectMessage openIdConnectMessage,
-        IOptions<GovUkOidcConfiguration> config)
+        GovUkOidcConfiguration config)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var response = new HttpResponseMessage
         {
             Content = new StringContent(JsonSerializer.Serialize(token)),
             StatusCode = HttpStatusCode.Accepted
         };
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/token");
+        var expectedUrl = new Uri($"{config.BaseUrl}/token");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
-        jwtService.Setup(x => x.CreateToken(config.Value.ClientId, $"{config.Value.BaseUrl}/token", 
-                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
-                It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
+        jwtService.Setup(x => x.CreateToken(config.ClientId, $"{config.BaseUrl}/token", 
+                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
+                It.Is<SigningCredentials>(c=>c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
         var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config, Mock.Of<ICustomClaims>());
         
@@ -63,23 +63,23 @@ public class WhenGettingToken
         string clientAssertion,
         Token token,
         OpenIdConnectMessage openIdConnectMessage,
-        IOptions<GovUkOidcConfiguration> config)
+        GovUkOidcConfiguration config)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var response = new HttpResponseMessage
         {
             Content = new StringContent(JsonSerializer.Serialize(token)),
             StatusCode = HttpStatusCode.Accepted
         };
         
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/token");
+        var expectedUrl = new Uri($"{config.BaseUrl}/token");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
-        jwtService.Setup(x => x.CreateToken(config.Value.ClientId, $"{config.Value.BaseUrl}/token", 
-                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.Value.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
-                It.Is<SigningCredentials>(c=>c.Kid.Equals(config.Value.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
+        jwtService.Setup(x => x.CreateToken(config.ClientId, $"{config.BaseUrl}/token", 
+                It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
+                It.Is<SigningCredentials>(c=>c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
         var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config, Mock.Of<ICustomClaims>());
         
