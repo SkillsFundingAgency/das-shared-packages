@@ -69,10 +69,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 }).AddAuthenticationCookie(authenticationCookieName);
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-                .Configure<IOidcService, IAzureIdentityService, ICustomClaims, IOptions<GovUkOidcConfiguration>>(
+                .Configure<IOidcService, IAzureIdentityService, ICustomClaims, GovUkOidcConfiguration>(
                     (options, oidcService, azureIdentityService, customClaims, config) =>
                     {
-                        var govUkConfiguration =config.Value;
+                        var govUkConfiguration =config;
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             AuthenticationType = "private_key_jwt",

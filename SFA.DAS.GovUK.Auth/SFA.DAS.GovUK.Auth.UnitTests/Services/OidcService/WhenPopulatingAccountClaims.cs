@@ -19,10 +19,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
 public class WhenPopulatingAccountClaims
 {
     [Test, MoqAutoData]
-    public async Task If_Token_TokenEndpointPrincipal_Is_Null_Then_Not_Updated(GovUkUser user, IOptions<GovUkOidcConfiguration> config, string accessToken)
+    public async Task If_Token_TokenEndpointPrincipal_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config, string accessToken)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var response = new HttpResponseMessage
         {
             Content = new StringContent(JsonSerializer.Serialize(user)),
@@ -30,7 +30,7 @@ public class WhenPopulatingAccountClaims
         };
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(new List<ClaimsIdentity>());
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
         var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),
             new OpenIdConnectOptions(), mockPrincipal.Object, new AuthenticationProperties())
@@ -56,17 +56,17 @@ public class WhenPopulatingAccountClaims
     }
     
     [Test, MoqAutoData]
-    public async Task If_Token_TokenEndpointResponse_Is_Null_Then_Not_Updated(GovUkUser user, IOptions<GovUkOidcConfiguration> config)
+    public async Task If_Token_TokenEndpointResponse_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var response = new HttpResponseMessage
         {
             Content = new StringContent(JsonSerializer.Serialize(user)),
             StatusCode = HttpStatusCode.Accepted
         };
         var mockPrincipal = new Mock<ClaimsPrincipal>();
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
         var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),
             new OpenIdConnectOptions(), Mock.Of<ClaimsPrincipal>(), new AuthenticationProperties())
@@ -92,10 +92,10 @@ public class WhenPopulatingAccountClaims
         GovUkUser user,
         string accessToken,
         List<ClaimsIdentity> claimsIdentity,
-        IOptions<GovUkOidcConfiguration> config)
+        GovUkOidcConfiguration config)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
         var response = new HttpResponseMessage
@@ -103,7 +103,7 @@ public class WhenPopulatingAccountClaims
             Content = new StringContent(JsonSerializer.Serialize(user)),
             StatusCode = HttpStatusCode.Accepted
         };
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
         var client = new HttpClient(httpMessageHandler.Object);
         var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),
@@ -142,10 +142,10 @@ public class WhenPopulatingAccountClaims
         GovUkUser user,
         string accessToken,
         List<ClaimsIdentity> claimsIdentity,
-        IOptions<GovUkOidcConfiguration> config)
+        GovUkOidcConfiguration config)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
         var response = new HttpResponseMessage
@@ -153,7 +153,7 @@ public class WhenPopulatingAccountClaims
             Content = new StringContent(JsonSerializer.Serialize(user)),
             StatusCode = HttpStatusCode.Accepted
         };
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
         var client = new HttpClient(httpMessageHandler.Object);
         var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),
@@ -182,10 +182,10 @@ public class WhenPopulatingAccountClaims
         string accessToken,
         string customClaimValue,
         List<ClaimsIdentity> claimsIdentity,
-        IOptions<GovUkOidcConfiguration> config)
+        GovUkOidcConfiguration config)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
         var response = new HttpResponseMessage
@@ -193,7 +193,7 @@ public class WhenPopulatingAccountClaims
             Content = new StringContent(JsonSerializer.Serialize(user)),
             StatusCode = HttpStatusCode.Accepted
         };
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
         var client = new HttpClient(httpMessageHandler.Object);
         var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),
@@ -225,10 +225,10 @@ public class WhenPopulatingAccountClaims
     public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Not_Populated_If_No_Value_Returned(
         string accessToken,
         List<ClaimsIdentity> claimsIdentity,
-        IOptions<GovUkOidcConfiguration> config)
+        GovUkOidcConfiguration config)
     {
         //Arrange
-        config.Value.BaseUrl = $"https://{config.Value.BaseUrl}";
+        config.BaseUrl = $"https://{config.BaseUrl}";
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
         var response = new HttpResponseMessage
@@ -236,7 +236,7 @@ public class WhenPopulatingAccountClaims
             Content = new StringContent(JsonSerializer.Serialize((GovUkUser)null!)),
             StatusCode = HttpStatusCode.Accepted
         };
-        var expectedUrl = new Uri($"{config.Value.BaseUrl}/userinfo");
+        var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Get);
         var client = new HttpClient(httpMessageHandler.Object);
         var tokenValidatedContext = new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","",typeof(TestAuthHandler)),

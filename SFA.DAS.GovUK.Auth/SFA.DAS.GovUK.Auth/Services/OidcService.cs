@@ -31,15 +31,15 @@ namespace SFA.DAS.GovUK.Auth.Services
             HttpClient httpClient,
             IAzureIdentityService azureIdentityService,
             IJwtSecurityTokenService jwtSecurityTokenService,
-            IOptions<GovUkOidcConfiguration> configuration,
+            GovUkOidcConfiguration configuration,
             ICustomClaims customClaims)
         {
             _httpClient = httpClient;
             _azureIdentityService = azureIdentityService;
             _jwtSecurityTokenService = jwtSecurityTokenService;
             _customClaims = customClaims;
-            _configuration = configuration.Value;
-            _httpClient.BaseAddress = new Uri(configuration.Value.BaseUrl);
+            _configuration = configuration;
+            _httpClient.BaseAddress = new Uri(configuration.BaseUrl);
 
         }
 
