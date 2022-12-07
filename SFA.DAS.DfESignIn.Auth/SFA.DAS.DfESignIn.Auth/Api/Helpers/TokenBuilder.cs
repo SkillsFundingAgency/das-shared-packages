@@ -26,29 +26,29 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 
         public string CreateToken()
         {
-            if (string.IsNullOrWhiteSpace(Algorithm)) throw new Exception("Algorithm");
-            if (string.IsNullOrWhiteSpace(Issuer)) throw new Exception("Issuer");
-            if (string.IsNullOrWhiteSpace(Audience)) throw new Exception("Audience");
-            if (SecretKey == null || SecretKey.Length < 1) throw new Exception("SecretKey");
+            #region Check Arguments 
+            if (string.IsNullOrWhiteSpace(Algorithm)) throw new ArgumentNullException(nameof(Algorithm));
+            if (string.IsNullOrWhiteSpace(Issuer)) throw new ArgumentNullException(nameof(Issuer));
+            if (string.IsNullOrWhiteSpace(Audience)) throw new ArgumentNullException(nameof(Audience));
+            if (SecretKey == null || SecretKey.Length < 1) throw new ArgumentNullException(nameof(SecretKey));
+            #endregion
 
-            byte[] headerBytes = Encoding.UTF8.GetBytes(_tokenDataSerializer.Serialize(TokenData.Header));
-            byte[] payloadBytes = Encoding.UTF8.GetBytes(_tokenDataSerializer.Serialize(TokenData.Payload));
-            byte[] bytesToSign = Encoding.UTF8.GetBytes($"{_tokenEncoder.Base64Encode(headerBytes)}.{_tokenEncoder.Base64Encode(payloadBytes)}");
-            byte[] signedBytes = SignToken(SecretKey, bytesToSign);
+            var headerBytes = Encoding.UTF8.GetBytes(_tokenDataSerializer.Serialize(TokenData.Header));
+            var payloadBytes = Encoding.UTF8.GetBytes(_tokenDataSerializer.Serialize(TokenData.Payload));
+            var bytesToSign = Encoding.UTF8.GetBytes($"{_tokenEncoder.Base64Encode(headerBytes)}.{_tokenEncoder.Base64Encode(payloadBytes)}");
+            var signedBytes = SignToken(SecretKey, bytesToSign);
 
-            string token = $"{_tokenEncoder.Base64Encode(headerBytes)}.{_tokenEncoder.Base64Encode(payloadBytes)}.{_tokenEncoder.Base64Encode(signedBytes)}";
-
-            return token;
+            return $"{_tokenEncoder.Base64Encode(headerBytes)}.{_tokenEncoder.Base64Encode(payloadBytes)}.{_tokenEncoder.Base64Encode(signedBytes)}";
         }
 
         private byte[] SignToken(byte[] key, byte[] bytesToSign)
         {
             using (var algorithm = HMAC.Create(Algorithm))
             {
-                if (algorithm == null)
-                {
-                    throw new Exception("Crytography Creation");
-                }
+                #region Check Null Exceptions
+                if (algorithm is null) throw new ArgumentNullException(nameof(algorithm));
+                #endregion
+
                 algorithm.Key = key;
                 return algorithm.ComputeHash(bytesToSign);
             }

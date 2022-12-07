@@ -8,6 +8,9 @@ using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.Auth.Services;
 using System;
 using System.Linq;
+using System.Net.Http;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -30,11 +33,26 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 #endif
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
-            services.AddHttpClient<IDfESignInService, DfESignInService>();
+            services.AddTransient<IDfESignInService, DfESignInService>();
+            services.AddHttpClient<IApiHelper, DfeSignInApiHelper>
+                (
+                    options => options.Timeout = TimeSpan.FromMinutes(30)
+                )
+                .SetHandlerLifetime(TimeSpan.FromMinutes(10))
+                .AddPolicyHandler(HttpClientRetryPolicy());
             services.AddTransient<ITokenDataSerializer, TokenDataSerializer>();
             services.AddTransient<ITokenEncoder, TokenEncoder>();
             services.AddTransient<IJsonWebAlgorithm, JsonWebAlgorithm>();
             services.AddTransient<ITokenData, TokenData>();
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> HttpClientRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
+                    retryAttempt)));
         }
     }
 }

@@ -32,15 +32,16 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
                 _mockTokenDataSerializer.Object,
                 _mockTokenData.Object,
                 _mockTokenEncoder.Object,
-                _mockJsonWebAlgorithm.Object);
+                _mockJsonWebAlgorithm.Object)
+            {
+                Algorithm = null,
+                Issuer = fixture.Create<string>(),
+                Audience = fixture.Create<string>(),
+                SecretKey = fixture.Create<byte[]>()
+            };
 
-            _tokenBuilder.Algorithm = null;
-            _tokenBuilder.Issuer = fixture.Create<string>();
-            _tokenBuilder.Audience = fixture.Create<string>();
-            _tokenBuilder.SecretKey = fixture.Create<byte[]>();
-
-            var ex = Assert.Throws<Exception>(() => _tokenBuilder.CreateToken());
-            Assert.That(ex.Message, Is.EqualTo("Algorithm"));
+            var ex = Assert.Throws<ArgumentNullException>(() => _tokenBuilder.CreateToken());
+            Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'Algorithm')"));
         }
 
         [Test]
@@ -52,15 +53,16 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
                 _mockTokenDataSerializer.Object,
                 _mockTokenData.Object,
                 _mockTokenEncoder.Object,
-                _mockJsonWebAlgorithm.Object);
+                _mockJsonWebAlgorithm.Object)
+            {
+                Algorithm = fixture.Create<string>(),
+                Issuer = null,
+                Audience = fixture.Create<string>(),
+                SecretKey = fixture.Create<byte[]>()
+            };
 
-            _tokenBuilder.Algorithm = fixture.Create<string>();
-            _tokenBuilder.Issuer = null;
-            _tokenBuilder.Audience = fixture.Create<string>();
-            _tokenBuilder.SecretKey = fixture.Create<byte[]>();
-
-            var ex = Assert.Throws<Exception>(() => _tokenBuilder.CreateToken());
-            Assert.That(ex.Message, Is.EqualTo("Issuer"));
+            var ex = Assert.Throws<ArgumentNullException>(() => _tokenBuilder.CreateToken());
+            Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'Issuer')"));
         }
 
         [Test]
@@ -72,15 +74,16 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
                 _mockTokenDataSerializer.Object,
                 _mockTokenData.Object,
                 _mockTokenEncoder.Object,
-                _mockJsonWebAlgorithm.Object);
+                _mockJsonWebAlgorithm.Object)
+            {
+                Algorithm = fixture.Create<string>(),
+                Issuer = fixture.Create<string>(),
+                Audience = null,
+                SecretKey = fixture.Create<byte[]>()
+            };
 
-            _tokenBuilder.Algorithm = fixture.Create<string>();
-            _tokenBuilder.Issuer = fixture.Create<string>();
-            _tokenBuilder.Audience = null;
-            _tokenBuilder.SecretKey = fixture.Create<byte[]>();
-
-            var ex = Assert.Throws<Exception>(() => _tokenBuilder.CreateToken());
-            Assert.That(ex.Message, Is.EqualTo("Audience"));
+            var ex = Assert.Throws<ArgumentNullException>(() => _tokenBuilder.CreateToken());
+            Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'Audience')"));
         }
 
         [Test]
@@ -92,15 +95,16 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
                 _mockTokenDataSerializer.Object,
                 _mockTokenData.Object,
                 _mockTokenEncoder.Object,
-                _mockJsonWebAlgorithm.Object);
+                _mockJsonWebAlgorithm.Object)
+            {
+                Algorithm = fixture.Create<string>(),
+                Issuer = fixture.Create<string>(),
+                Audience = fixture.Create<string>(),
+                SecretKey = null
+            };
 
-            _tokenBuilder.Algorithm = fixture.Create<string>();
-            _tokenBuilder.Issuer = fixture.Create<string>();
-            _tokenBuilder.Audience = fixture.Create<string>();
-            _tokenBuilder.SecretKey = null;
-
-            var ex = Assert.Throws<Exception>(() => _tokenBuilder.CreateToken());
-            Assert.That(ex.Message, Is.EqualTo("SecretKey"));
+            var ex = Assert.Throws<ArgumentNullException>(() => _tokenBuilder.CreateToken());
+            Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'SecretKey')"));
         }
     }
 }

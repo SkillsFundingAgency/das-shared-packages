@@ -13,11 +13,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 
         public TokenDataSerializer(JsonSerializer serializer)
         {
-            if (serializer == null)
-            {
-                throw new ArgumentNullException("serializer");
-            }
-            _serializer = serializer;
+            _serializer = serializer ?? throw new ArgumentNullException("serializer");
         }
 
         public string Serialize(object obj) =>

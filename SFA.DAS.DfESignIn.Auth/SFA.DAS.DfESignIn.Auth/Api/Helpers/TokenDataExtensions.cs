@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Text;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Helpers

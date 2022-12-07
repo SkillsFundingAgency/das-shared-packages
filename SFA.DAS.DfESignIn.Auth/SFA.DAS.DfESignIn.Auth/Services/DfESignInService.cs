@@ -1,20 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SFA.DAS.DfESignIn.Auth.Api.Client;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using SFA.DAS.DfESignIn.Auth.Constants;
+using SFA.DAS.DfESignIn.Auth.Extensions;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using SFA.DAS.DfESignIn.Auth.Interfaces;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using SFA.DAS.DfESignIn.Auth.Api.Helpers;
-using System.Runtime.CompilerServices;
-using Azure.Core;
-using System.Net.Http.Headers;
-using System;
 
 [assembly: InternalsVisibleTo("SFA.DAS.DfESignIn.Auth.UnitTests")]
 
@@ -22,84 +20,107 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 {
     internal class DfESignInService : IDfESignInService
     {
-        private readonly HttpClient _httpClient;
         private readonly DfEOidcConfiguration _configuration;
         private readonly ITokenDataSerializer _tokenDataSerializer;
         private readonly ITokenEncoder _tokenEncoder;
         private readonly IJsonWebAlgorithm _jsonWebAlgorithm;
         private readonly ITokenData _tokenData;
+        private readonly IApiHelper _apiHelper;
 
         public DfESignInService(
-            HttpClient httpClient,
             IOptions<DfEOidcConfiguration> configuration,
             ITokenDataSerializer tokenDataSerializer,
             ITokenEncoder tokenEncoder,
             IJsonWebAlgorithm jsonWebAlgorithm,
-            ITokenData tokenData
-            )
+            ITokenData tokenData, IApiHelper apiHelper)
         {
-            _httpClient = httpClient;
             _configuration = configuration.Value;
             _tokenDataSerializer = tokenDataSerializer;
             _tokenEncoder = tokenEncoder;
             _jsonWebAlgorithm = jsonWebAlgorithm;
             _tokenData = tokenData;
+            _apiHelper = apiHelper;
         }
 
         public async Task PopulateAccountClaims(TokenValidatedContext ctx)
         {
-            var userId = ctx.Principal.Claims.Where(c => c.Type.Contains("sub")).Select(c => c.Value).SingleOrDefault();
+            #region Argument Validation
+            if(ctx is null) throw new ArgumentNullException(nameof(ctx));
+            #endregion
 
             var userOrganisation = JsonConvert.DeserializeObject<Organisation>
             (
-                ctx.Principal.Claims.Where(c => c.Type == "organisation")
-                .Select(c => c.Value)
-                .FirstOrDefault()
+                ctx.Principal.GetClaimValue(ClaimName.Organisation)
             );
-            var ukPrn = userOrganisation.UkPrn;
 
-            if (userId != null && userOrganisation?.Id != null)
-                await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
+            if (userOrganisation != null && ctx.Principal != null)
+            {
+                var userId = ctx.Principal.GetClaimValue(ClaimName.Sub);
+                var ukPrn = Convert.ToString(userOrganisation.UkPrn) ?? string.Empty;
 
-            var displayName = ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("given_name")).Value + " " + ctx.Principal.Claims.FirstOrDefault(c => c.Type.Equals("family_name")).Value;
-            ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString());
-            ctx.HttpContext.Items.Add("http://schemas.portal.com/displayname", displayName);
-            ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn.ToString()));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/displayname", displayName));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/ukprn", ukPrn.ToString()));
-            ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/service", "DAA"));
+#if DEBUG
+                ukPrn = "10000001";
+#endif
 
+                if (userId != null)
+                    await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
+
+                var displayName = $"{ctx.Principal.GetClaimValue(ClaimName.GivenName)} {ctx.Principal.GetClaimValue(ClaimName.FamilyName)}";
+                ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn);
+                ctx.HttpContext.Items.Add(CustomClaimsIdentity.DisplayName, displayName);
+                ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn));
+                ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.DisplayName, displayName));
+                ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.UkPrn, ukPrn));
+                ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.Service, "DAA"));
+            }
         }
 
         public async Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId)
         {
-            var clientFactory = new DfESignInClientFactory(_configuration, _httpClient, _tokenDataSerializer, _tokenEncoder, _jsonWebAlgorithm, _tokenData);
-            var response = await clientFactory.Request(userId, userOrgId);
+            _apiHelper.AccessToken = CreateToken();
+            var response = await _apiHelper.Get<ApiServiceResponse>(DestinationUrl(userId, userOrgId));
 
-            if (response.IsSuccessStatusCode)
+            if (response != null)
             {
-                var stream = await response.Content.ReadAsStringAsync();
-
-                var apiServiceResponse = JsonConvert.DeserializeObject<ApiServiceResponse>(stream);
                 var roleClaims = new List<Claim>();
-                foreach (var role in apiServiceResponse.Roles)
+                foreach (var role in response.Roles.Where(role => role.Status.Id.Equals(1)))
                 {
-                    if (role.Status.Id.Equals(1))
-                    {
-                        roleClaims.Add(new Claim("rolecode", role.Code, ClaimTypes.Role, ctx.Options.ClientId));
-                        roleClaims.Add(new Claim("roleId", role.Id.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
-                        roleClaims.Add(new Claim("roleName", role.Name, ClaimTypes.Role, ctx.Options.ClientId));
-                        roleClaims.Add(new Claim("rolenumericid", role.NumericId.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
+                    roleClaims.Add(new Claim(ClaimName.RoleCode, role.Code, ClaimTypes.Role, ctx.Options.ClientId));
+                    roleClaims.Add(new Claim(ClaimName.RoleId, role.Id.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
+                    roleClaims.Add(new Claim(ClaimName.RoleName, role.Name, ClaimTypes.Role, ctx.Options.ClientId));
+                    roleClaims.Add(new Claim(ClaimName.RoleNumericId, role.NumericId.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
 
-                        // Add to initial identity
-                        ctx.Principal.Identities.First().AddClaim(new Claim("http://schemas.portal.com/service", role.Name));
-                    }
+                    // Add to initial identity
+                    ctx.Principal?.Identities.First()
+                        .AddClaim(new Claim(CustomClaimsIdentity.Service, role.Name));
                 }
-                var roleIdentity = new ClaimsIdentity(roleClaims);
-                ctx.Principal.AddIdentity(roleIdentity);
-            }
 
-            clientFactory.Dispose();
+                ctx?.Principal?.AddIdentity(new ClaimsIdentity(roleClaims));
+            }
+        }
+
+        private string CreateToken()
+        {
+            _tokenData.Header.Add("typ", AuthConfig.TokenType);
+
+            return new TokenBuilder(_tokenDataSerializer, _tokenData, _tokenEncoder, _jsonWebAlgorithm)
+                .UseAlgorithm(AuthConfig.Algorithm)
+                .ForAudience(AuthConfig.Aud)
+                .WithSecretKey(_configuration.APIServiceSecret)
+                .Issuer(_configuration.ClientId)
+                .CreateToken();
+        }
+
+        private string DestinationUrl(string userId, string orgId)
+        {
+            #region Check Members
+            if(string.IsNullOrEmpty(_configuration.APIServiceId)) throw new MemberAccessException(nameof(_configuration.APIServiceId));
+            if(string.IsNullOrEmpty(_configuration.APIServiceUrl)) throw new MemberAccessException(nameof(_configuration.APIServiceUrl));
+            if(string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
+            if(string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
+            #endregion
+
+            return $"{_configuration.APIServiceUrl}/services/{_configuration.APIServiceId}/organisations/{orgId}/users/{userId}";
         }
     }
 }
