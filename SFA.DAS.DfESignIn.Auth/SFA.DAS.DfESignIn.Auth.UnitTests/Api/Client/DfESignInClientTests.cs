@@ -43,9 +43,9 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var client = new DfESignInClient(
                 _mockHttpClient.Object)
             {
-                OrganisationId = fixture.Create<string>().Substring(0, 5),
-                ServiceId = fixture.Create<string>().Substring(0, 5),
-                UserId = fixture.Create<string>().Substring(0, 5)
+                OrganisationId = fixture.Create<string>()[..5],
+                ServiceId = fixture.Create<string>()[..5],
+                UserId = fixture.Create<string>()[..5]
             };
 
             Assert.Throws<MemberAccessException>(delegate
@@ -64,9 +64,9 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var client = new DfESignInClient(
                 _mockHttpClient.Object);
 
-            client.ServiceId = fixture.Create<string>().Substring(0, 5);
+            client.ServiceId = fixture.Create<string>()[..5];
             client.ServiceUrl = fixture.Create<Uri>().ToString();
-            client.UserId = fixture.Create<string>().Substring(0, 5);
+            client.UserId = fixture.Create<string>()[..5];
 
             Assert.Throws<MemberAccessException>(delegate
             {
@@ -84,9 +84,9 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var client = new DfESignInClient(
                 _mockHttpClient.Object);
 
-            client.OrganisationId = fixture.Create<string>().Substring(0, 5);
+            client.OrganisationId = fixture.Create<string>()[..5];
             client.ServiceUrl = fixture.Create<Uri>().ToString();
-            client.UserId = fixture.Create<string>().Substring(0, 5);
+            client.UserId = fixture.Create<string>()[..5];
 
             Assert.Throws<MemberAccessException>(delegate
             {
@@ -103,8 +103,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var client = new DfESignInClient(
                 _mockHttpClient.Object);
 
-            client.OrganisationId = fixture.Create<string>().Substring(0, 5);
-            client.ServiceId = fixture.Create<string>().Substring(0, 5);
+            client.OrganisationId = fixture.Create<string>()[..5];
+            client.ServiceId = fixture.Create<string>()[..5];
             client.ServiceUrl = fixture.Create<Uri>().ToString();
 
             Assert.Throws<MemberAccessException>(delegate
@@ -122,9 +122,9 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var client = new DfESignInClient(
                 _mockHttpClient.Object);
 
-            client.OrganisationId = fixture.Create<string>().Substring(0, 5);
-            client.ServiceId = fixture.Create<string>().Substring(0, 5);
-            client.UserId = fixture.Create<string>().Substring(0, 5);
+            client.OrganisationId = fixture.Create<string>()[..5];
+            client.ServiceId = fixture.Create<string>()[..5];
+            client.UserId = fixture.Create<string>()[..5];
             client.ServiceUrl = "";
 
             Assert.Throws<MemberAccessException>(delegate
@@ -132,7 +132,5 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
                 object result = client.TargetAddress;
             });
         }
-
-
     }
 }
