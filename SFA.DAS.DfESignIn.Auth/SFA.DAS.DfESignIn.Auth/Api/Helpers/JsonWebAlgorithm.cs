@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
@@ -8,22 +7,23 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
     /// </summary>
     public class JsonWebAlgorithm : IJsonWebAlgorithm
     {
-        public readonly Dictionary<string, string> Algorithm;
+        private readonly Dictionary<string, string> _algorithm;
 
         public JsonWebAlgorithm()
         {
-            Algorithm = new Dictionary<string, string>();
-
-            Algorithm.Add("HMACSHA1", "HS1");
-            Algorithm.Add("HMACSHA256", "HS256");
-            Algorithm.Add("HMACSHA384", "HS384");
-            Algorithm.Add("HMACSHA512", "HS512");
+            _algorithm = new Dictionary<string, string>
+            {
+                {"HMACSHA1", "HS1"},
+                {"HMACSHA256", "HS256"},
+                {"HMACSHA384", "HS384"},
+                {"HMACSHA512", "HS512"}
+            };
         }
 
         public string GetAlgorithm(string algorithm)
         {
-            if (!Algorithm.ContainsKey(algorithm)) throw new KeyNotFoundException("Cannot find equivalent JSON Web Algorithm");
-            return Algorithm[algorithm];
+            if (!_algorithm.ContainsKey(algorithm)) throw new KeyNotFoundException("Cannot find equivalent JSON Web Algorithm");
+            return _algorithm[algorithm];
         }
     }
 

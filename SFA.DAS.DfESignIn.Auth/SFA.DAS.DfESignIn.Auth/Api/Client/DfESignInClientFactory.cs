@@ -59,10 +59,15 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             }
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             _dfEClient.Dispose();
             _tokenData.Dispose();
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

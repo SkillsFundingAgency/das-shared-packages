@@ -33,6 +33,14 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             return getResponse.IsSuccessStatusCode ? JsonConvert.DeserializeObject<T>(await getResponse.Content.ReadAsStringAsync()) : default;
         }
 
-        public void Dispose() => _httpClient.Dispose();
+        protected virtual void Dispose(bool disposing)
+        {
+            _httpClient.Dispose();
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

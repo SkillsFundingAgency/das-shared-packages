@@ -25,7 +25,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
         {
             get
             {
-                if (string.IsNullOrEmpty(ServiceUrl) | string.IsNullOrEmpty(ServiceId) | string.IsNullOrEmpty(OrganisationId) | string.IsNullOrEmpty(UserId))
+                if (string.IsNullOrEmpty(ServiceUrl) || string.IsNullOrEmpty(ServiceId) || string.IsNullOrEmpty(OrganisationId) || string.IsNullOrEmpty(UserId))
                 {
                     throw new MemberAccessException("Required Member(s) not set");
                 }

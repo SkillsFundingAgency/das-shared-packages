@@ -17,10 +17,15 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
             Payload = payload ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             Header.Clear();
             Payload.Clear();
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 
