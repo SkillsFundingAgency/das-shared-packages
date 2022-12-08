@@ -60,7 +60,7 @@ public class WhenAddingServicesToTheContainer
 
     public class TestCustomClaims : ICustomClaims
     {
-        public Task<IEnumerable<Claim?>> GetClaims(TokenValidatedContext tokenValidatedContext)
+        public IEnumerable<Claim?> GetClaims(TokenValidatedContext tokenValidatedContext)
         {
             throw new NotImplementedException();
         }

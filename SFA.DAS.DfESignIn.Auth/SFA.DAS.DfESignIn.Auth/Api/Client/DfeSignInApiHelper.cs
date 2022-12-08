@@ -10,6 +10,8 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
     public class DfeSignInApiHelper : IApiHelper, IDisposable
     {
         private readonly HttpClient _httpClient;
+
+        // <inheritdoc />
         public string AccessToken { get; set; }
 
         public DfeSignInApiHelper(HttpClient httpClient)
@@ -17,13 +19,7 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             _httpClient = httpClient;
         }
 
-        /// <summary>
-        /// Method to make GET call for a HttpClient.
-        /// </summary>
-        /// <typeparam name="T">TResult.</typeparam>
-        /// <param name="endpoint">Destination endpoint.</param>
-        /// <returns>TResult.</returns>
-        /// <exception cref="MemberAccessException"></exception>
+        /// <inheritdoc />
         public async Task<T> Get<T>(string endpoint)
         {
             #region Check Arguments & Members
@@ -37,9 +33,6 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Client
             return getResponse.IsSuccessStatusCode ? JsonConvert.DeserializeObject<T>(await getResponse.Content.ReadAsStringAsync()) : default;
         }
 
-        public void Dispose()
-        {
-            _httpClient.Dispose();
-        }
+        public void Dispose() => _httpClient.Dispose();
     }
 }

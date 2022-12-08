@@ -32,7 +32,8 @@ namespace SFA.DAS.DfESignIn.Auth.Services
             ITokenDataSerializer tokenDataSerializer,
             ITokenEncoder tokenEncoder,
             IJsonWebAlgorithm jsonWebAlgorithm,
-            ITokenData tokenData, IApiHelper apiHelper)
+            ITokenData tokenData,
+            IApiHelper apiHelper)
         {
             _configuration = configuration.Value;
             _tokenDataSerializer = tokenDataSerializer;
@@ -59,15 +60,20 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                 var ukPrn = Convert.ToString(userOrganisation.UkPrn) ?? string.Empty;
 
 #if DEBUG
-                ukPrn = "10000001";
+                // strictly only for development purpose
+                // populating the UkPrn with dummy value. Make sure this line is commented out before commiting the changes.
+
+                //ukPrn = string.IsNullOrEmpty(ukPrn) ? "10000001" : ukPrn; 
 #endif
 
                 if (userId != null)
-                    await PopulateDfEClaims(ctx, userId, userOrganisation.Id.ToString());
+                    await PopulateDfEClaims(ctx, userId, Convert.ToString(userOrganisation.Id));
 
                 var displayName = $"{ctx.Principal.GetClaimValue(ClaimName.GivenName)} {ctx.Principal.GetClaimValue(ClaimName.FamilyName)}";
+
                 ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, ukPrn);
                 ctx.HttpContext.Items.Add(CustomClaimsIdentity.DisplayName, displayName);
+
                 ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, ukPrn));
                 ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.DisplayName, displayName));
                 ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.UkPrn, ukPrn));
@@ -78,7 +84,8 @@ namespace SFA.DAS.DfESignIn.Auth.Services
         public async Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId)
         {
             _apiHelper.AccessToken = CreateToken();
-            var response = await _apiHelper.Get<ApiServiceResponse>(DestinationUrl(userId, userOrgId));
+            var destinationUrl = GetDestinationUrl(userId, userOrgId);
+            var response = await _apiHelper.Get<ApiServiceResponse>(destinationUrl);
 
             if (response != null)
             {
@@ -99,6 +106,10 @@ namespace SFA.DAS.DfESignIn.Auth.Services
             }
         }
 
+        /// <summary>
+        /// Method to generate the bearer token.
+        /// </summary>
+        /// <returns>string.</returns>
         private string CreateToken()
         {
             _tokenData.Header.Add("typ", AuthConfig.TokenType);
@@ -111,13 +122,21 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                 .CreateToken();
         }
 
-        private string DestinationUrl(string userId, string orgId)
+        /// <summary>
+        /// Method to generate the destination/endpoint url.
+        /// </summary>
+        /// <param name="userId">User Identifier.</param>
+        /// <param name="orgId">Organisation Identifier.</param>
+        /// <returns>string.</returns>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        internal string GetDestinationUrl(string userId, string orgId)
         {
             #region Check Members
             if(string.IsNullOrEmpty(_configuration.APIServiceId)) throw new MemberAccessException(nameof(_configuration.APIServiceId));
             if(string.IsNullOrEmpty(_configuration.APIServiceUrl)) throw new MemberAccessException(nameof(_configuration.APIServiceUrl));
             if(string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
-            if(string.IsNullOrEmpty(userId)) throw new ArgumentNullException(nameof(userId));
+            if(string.IsNullOrEmpty(orgId)) throw new ArgumentNullException(nameof(orgId));
             #endregion
 
             return $"{_configuration.APIServiceUrl}/services/{_configuration.APIServiceId}/organisations/{orgId}/users/{userId}";

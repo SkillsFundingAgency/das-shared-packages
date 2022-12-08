@@ -37,7 +37,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 
             if (_customClaims != null)
             {
-                var additionalClaims = await _customClaims.GetClaims(null);
+                var additionalClaims = _customClaims.GetClaims(null);
                 claims.AddRange(additionalClaims);
             }
 

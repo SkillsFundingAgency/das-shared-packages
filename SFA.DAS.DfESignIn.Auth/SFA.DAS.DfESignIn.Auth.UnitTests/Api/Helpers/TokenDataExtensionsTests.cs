@@ -12,7 +12,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
         private Mock<ITokenData> _mockTokenData;
         private Mock<ITokenEncoder> _mockTokenEncoder;
         private Mock<IJsonWebAlgorithm> _mockJsonWebAlgorithm;
-        private TokenBuilder _tokenBuilder;
+        private TokenBuilder? _tokenBuilder;
 
         [SetUp]
         public void Arrange()
