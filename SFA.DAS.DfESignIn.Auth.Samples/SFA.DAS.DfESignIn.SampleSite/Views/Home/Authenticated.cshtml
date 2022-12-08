@@ -6,18 +6,18 @@
 
 <h1 class="govuk-heading-xl">DfE Sign-in - You've signed in</h1>
 
-<table class="govuk-table">
+<table summary="Claims details" class="govuk-table">
     <tbody>
         <tr>
-            <th align="left" class="govuk-table__caption govuk-table__caption--m">Claims</th>
+            <th scope="col" align="left" class="govuk-table__caption govuk-table__caption--m">Claims</th>
         </tr>
         <tr>
-            <th class="govuk-table__header">Name</th>
-            <th class="govuk-table__header">Value</th>
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header">Value</th>
         </tr>
         @foreach (var claim in Context.User.Claims.ToList())
         {
-            <tr class="govuk-table__row">
+            <tr scope="row" class="govuk-table__row">
                 <td class="govuk-table__cell">@claim.Type</td>
                 <td class="govuk-table__cell">@claim.Value</td>
             </tr>

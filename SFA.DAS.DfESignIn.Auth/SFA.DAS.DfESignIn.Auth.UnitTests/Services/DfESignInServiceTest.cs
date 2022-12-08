@@ -43,8 +43,12 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             // arrange
             _dfESignInService = GetDfESignInService();
 
-            _configuration.Value.APIServiceId = fixture.Create<string>()[.. 5];
-            _configuration.Value.APIServiceUrl = fixture.Create<string>()[..5];
+            if (_configuration != null)
+            {
+                _configuration.Value.APIServiceId = fixture.Create<string>()[.. 5];
+                _configuration.Value.APIServiceUrl = fixture.Create<string>()[..5];
+            }
+
             var orgId = fixture.Create<string>()[..5];
 
             //sut
@@ -60,8 +64,12 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             // arrange
             _dfESignInService = GetDfESignInService();
 
-            _configuration.Value.APIServiceId = fixture.Create<string>()[..5];
-            _configuration.Value.APIServiceUrl = fixture.Create<string>()[..5];
+            if (_configuration != null)
+            {
+                _configuration.Value.APIServiceId = fixture.Create<string>()[..5];
+                _configuration.Value.APIServiceUrl = fixture.Create<string>()[..5];
+            }
+
             var userId = fixture.Create<string>()[..5];
 
             // sut
@@ -77,8 +85,12 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             // arrange
             _dfESignInService = GetDfESignInService();
 
-            _configuration.Value.APIServiceId = serviceId;
-            _configuration.Value.APIServiceUrl = fixture.Create<string>()[..5];
+            if (_configuration != null)
+            {
+                _configuration.Value.APIServiceId = serviceId;
+                _configuration.Value.APIServiceUrl = fixture.Create<string>()[..5];
+            }
+
             var userId = fixture.Create<string>()[..5];
             var orgId = fixture.Create<string>()[..5];
 
@@ -95,8 +107,12 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             // arrange
             _dfESignInService = GetDfESignInService();
 
-            _configuration.Value.APIServiceId = fixture.Create<string>()[..5];
-            _configuration.Value.APIServiceUrl = serviceUrl;
+            if (_configuration != null)
+            {
+                _configuration.Value.APIServiceId = fixture.Create<string>()[..5];
+                _configuration.Value.APIServiceUrl = serviceUrl;
+            }
+
             var userId = fixture.Create<string>()[..5];
             var orgId = fixture.Create<string>()[..5];
 
