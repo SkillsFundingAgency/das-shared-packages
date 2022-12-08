@@ -1,9 +1,9 @@
 ﻿using System.Net;
-using AutoFixture;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using SFA.DAS.DfESignIn.Auth.Api.Client;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
@@ -11,55 +11,20 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
     [TestFixture]
     public class DfeSignInApiHelperTest
     {
-        private MockRepository _mockRepository;
-        private Mock<HttpClient> _mockHttpClient;
         private Mock<HttpMessageHandler> _mockHttpMessageHandler;
+        private Mock<ITokenBuilder> _tokenBuilder;
 
         [SetUp]
         public void SetUp()
         {
-            _mockRepository = new MockRepository(MockBehavior.Default);
-            _mockHttpClient = _mockRepository.Create<HttpClient>();
             _mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-        }
-
-        [TestCase("")]
-        [TestCase(null)]
-        public void Get_ThrowsException_Missing_AccessToken(string accessToken)
-        {
-            var fixture = new Fixture();
-            fixture.Inject(new UriScheme("http"));
-
-            var client = new DfeSignInApiHelper(
-                _mockHttpClient.Object)
-            {
-                AccessToken = accessToken
-            };
-
-            Assert.ThrowsAsync<MemberAccessException>(async () => await client.Get<ApiServiceResponse>(fixture.Create<string>()[..5]));
-        }
-
-        [TestCase("")]
-        [TestCase(null)]
-        public void Get_ThrowsException_Missing_Endpoint(string endpoint)
-        {
-            var fixture = new Fixture();
-            fixture.Inject(new UriScheme("http"));
-
-            var client = new DfeSignInApiHelper(
-                _mockHttpClient.Object)
-            {
-                AccessToken = fixture.Create<string>()[..5],
-            };
-
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await client.Get<ApiServiceResponse>(endpoint));
+            _tokenBuilder = new Mock<ITokenBuilder>();
         }
 
         [Test]
         public async Task Get_Return_Expected_When_HttpResponse_IsValid()
         {
             // ARRANGE
-            var fixture = new Fixture();
             var userId = Guid.NewGuid();
             var serviceId = Guid.NewGuid();
             var orgId = Guid.NewGuid();
@@ -84,10 +49,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
                 BaseAddress = new Uri("http://test.com/"),
             };
 
-            var subjectUnderTest = new DfeSignInApiHelper(httpClient)
-            {
-                AccessToken = fixture.Create<string>()[..5]
-            };
+            var subjectUnderTest = new DfeSignInApiHelper(httpClient, _tokenBuilder.Object);
 
             // ACT
             var result = await subjectUnderTest.Get<ApiServiceResponse>("api/test/whatever");
@@ -118,7 +80,6 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
         public async Task Get_Return_Default_When_HttpResponse_IsInValid()
         {
             // ARRANGE
-            var fixture = new Fixture();
             _mockHttpMessageHandler
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -138,11 +99,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             {
                 BaseAddress = new Uri("http://test.com/"),
             };
-
-            var subjectUnderTest = new DfeSignInApiHelper(httpClient)
-            {
-                AccessToken = fixture.Create<string>()[..5]
-            };
+            
+            var subjectUnderTest = new DfeSignInApiHelper(httpClient, _tokenBuilder.Object);
 
             // ACT
             var result = await subjectUnderTest.Get<ApiServiceResponse>("api/test/whatever");

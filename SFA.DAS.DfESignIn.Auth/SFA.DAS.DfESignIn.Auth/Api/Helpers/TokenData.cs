@@ -3,36 +3,15 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 {
-    public class TokenData : ITokenData, IDisposable
+    public class TokenData
     {
-        public IDictionary<string, object> Header { get; set; }
-
-        public IDictionary<string, object> Payload { get; set; }
-
-        public TokenData() : this(null, null) { }
-
-        public TokenData(IDictionary<string, object> header, IDictionary<string, object> payload)
+        public Dictionary<string, object> Header { get; set; }
+        public Dictionary<string, object> Payload { get; set; }
+        public TokenData()
         {
-            Header = header ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            Payload = payload ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            Header.Clear();
-            Payload.Clear();
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            Header = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            Payload = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
     }
 
-    public interface ITokenData
-    {
-        IDictionary<string, object> Header { get; set; }
-        IDictionary<string, object> Payload { get; set; }
-        void Dispose();
-    }
 }

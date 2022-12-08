@@ -16,8 +16,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class AddServiceRegistrationExtension
     {
-        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration,
-            Type customClaims)
+        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
             {
@@ -41,9 +40,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 .SetHandlerLifetime(TimeSpan.FromMinutes(10))
                 .AddPolicyHandler(HttpClientRetryPolicy());
             services.AddTransient<ITokenDataSerializer, TokenDataSerializer>();
-            services.AddTransient<ITokenEncoder, TokenEncoder>();
-            services.AddTransient<IJsonWebAlgorithm, JsonWebAlgorithm>();
-            services.AddTransient<ITokenData, TokenData>();
+            services.AddTransient<ITokenBuilder, TokenBuilder>();
         }
 
         private static IAsyncPolicy<HttpResponseMessage> HttpClientRetryPolicy()

@@ -1,69 +1,20 @@
-﻿using Moq;
-using SFA.DAS.DfESignIn.Auth.Api.Helpers;
+﻿using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Helpers
 {
-    [TestFixture]
     public class JsonWebAlgorithmTests
     {
-        private MockRepository _mockRepository;
-
-        [SetUp]
-        public void SetUp()
+        [TestCase("HMACSHA1","HS1")]
+        [TestCase("HMACSHA256","HS256")]
+        [TestCase("HMACSHA384","HS384")]
+        [TestCase("HMACSHA512","HS512")]
+        public void Then_Algorithm_Is_Correctly_Mapped(string algorithm, string expected)
         {
-            _mockRepository = new MockRepository(MockBehavior.Strict);
-        }
-
-        [Test]
-        public void TypeExpectedResult_HS1()
-        {
-            // Arrange
-            string algorithm = "HMACSHA1";
-
-            // Act
-            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
+               // Act
+            var result = JsonWebAlgorithm.GetAlgorithm(algorithm);
 
             // Assert
-            Assert.That(result, Is.EqualTo("HS1"));
-        }
-
-        [Test]
-        public void TypeExpectedResult_HS256()
-        {
-            // Arrange
-            string algorithm = "HMACSHA256";
-
-            // Act
-            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
-
-            // Assert
-            Assert.That(result, Is.EqualTo("HS256"));
-        }
-
-        [Test]
-        public void TypeExpectedResult_HMACSHA384()
-        {
-            // Arrange
-            string algorithm = "HMACSHA384";
-
-            // Act
-            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
-
-            // Assert
-            Assert.That(result, Is.EqualTo("HS384"));
-        }
-
-        [Test]
-        public void TypeExpectedResult_HMACSHA512()
-        {
-            // Arrange
-            string algorithm = "HMACSHA512";
-
-            // Act
-            var result = new JsonWebAlgorithm().GetAlgorithm(algorithm);
-
-            // Assert
-            Assert.That(result, Is.EqualTo("HS512"));
+            Assert.That(result, Is.EqualTo(expected));
         }
     }
 }

@@ -4,43 +4,28 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {
-    public class DfeSignInApiHelper : IApiHelper, IDisposable
+    public class DfeSignInApiHelper : IApiHelper
     {
         private readonly HttpClient _httpClient;
+        private readonly ITokenBuilder _tokenBuilder;
 
-        // <inheritdoc />
-        public string AccessToken { get; set; }
 
-        public DfeSignInApiHelper(HttpClient httpClient)
+        public DfeSignInApiHelper(HttpClient httpClient, ITokenBuilder tokenBuilder)
         {
             _httpClient = httpClient;
+            _tokenBuilder = tokenBuilder;
         }
 
-        /// <inheritdoc />
         public async Task<T> Get<T>(string endpoint)
         {
-            #region Check Arguments & Members
-            if (string.IsNullOrEmpty(endpoint)) throw new ArgumentNullException(nameof(endpoint));
-            if (string.IsNullOrEmpty(AccessToken)) throw new MemberAccessException(nameof(AccessToken));
-            #endregion
-
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-            var getResponse = await _httpClient.GetAsync(endpoint);
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Authorization =  new AuthenticationHeaderValue("Bearer", _tokenBuilder.CreateToken());
+            var getResponse = await _httpClient.SendAsync(request);
             return getResponse.IsSuccessStatusCode ? JsonConvert.DeserializeObject<T>(await getResponse.Content.ReadAsStringAsync()) : default;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            _httpClient.Dispose();
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

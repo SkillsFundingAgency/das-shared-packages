@@ -6,10 +6,9 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     public static class AddAndConfigureDfESignInAuthenticationExtension
     {
-        public static void AddAndConfigureDfESignInAuthentication(this IServiceCollection services,
-            IConfiguration configuration, string authenticationCookieName, Type customClaims)
+        public static void AddAndConfigureDfESignInAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName)
         {
-            services.AddServiceRegistration(configuration, customClaims);
+            services.AddServiceRegistration(configuration);
             if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
             {
                 services.AddProviderStubAuthentication($"{authenticationCookieName}.stub");
@@ -18,7 +17,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             {
                 services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName);
             }
-
         }
     }
 }
