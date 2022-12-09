@@ -37,6 +37,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             var actualClaims = tokenValidatedContext.Principal?.Identities.First().Claims.ToList();
             actualClaims?.First(c => c.Type.Equals(CustomClaimsIdentity.UkPrn)).Value.Should().Be(organisation.UkPrn.ToString());
             actualClaims?.First(c => c.Type.Equals(ClaimsIdentity.DefaultNameClaimType)).Value.Should().Be(userId);
+            actualClaims?.First(c => c.Type.Equals(ClaimName.Sub)).Value.Should().Be(userId);
+            actualClaims?.First(c => c.Type.Equals(CustomClaimsIdentity.DisplayName)).Value.Should().Be("Test Tester");
         }
         
         [Test, MoqAutoData]
@@ -78,7 +80,9 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             {
                 new Claim(ClaimName.Sub, userId),
                 new Claim(ClaimTypes.Email, emailAddress),
-                new Claim(ClaimName.Organisation, JsonConvert.SerializeObject(organisation))
+                new Claim(ClaimName.Organisation, JsonConvert.SerializeObject(organisation)),
+                new Claim(ClaimName.FamilyName, "Tester"),
+                new Claim(ClaimName.GivenName, "Test")
             });
         
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(identity));
