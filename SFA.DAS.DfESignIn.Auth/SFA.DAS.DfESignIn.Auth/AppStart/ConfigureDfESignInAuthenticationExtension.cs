@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
@@ -38,6 +39,10 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.CallbackPath = "/sign-in";
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        AuthenticationType = OpenIdConnectDefaults.AuthenticationScheme
+                    };
 
                     var scopes = "openid email profile organisation organisationid".Split(' ');
                     options.Scope.Clear();
