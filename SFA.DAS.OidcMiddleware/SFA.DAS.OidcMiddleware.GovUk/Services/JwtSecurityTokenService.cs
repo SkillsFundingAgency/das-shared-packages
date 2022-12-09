@@ -16,7 +16,7 @@ namespace SFA.DAS.OidcMiddleware.GovUk.Services
         public JwtSecurityTokenService(GovUkOidcConfiguration configuration)
         {
             _clientId = configuration.ClientId;
-            _audience = $"{configuration.BaseUrl}token";
+            _audience = $"{configuration.BaseUrl}/token";
         }
         public string CreateToken(ClaimsIdentity claimsIdentity,
             SigningCredentials signingCredentials)
