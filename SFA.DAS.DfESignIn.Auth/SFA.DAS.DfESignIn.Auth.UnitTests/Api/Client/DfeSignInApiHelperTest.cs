@@ -28,6 +28,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var userId = Guid.NewGuid();
             var serviceId = Guid.NewGuid();
             var orgId = Guid.NewGuid();
+            var authToken = Guid.NewGuid();
 
             _mockHttpMessageHandler
                 .Protected()
@@ -50,6 +51,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             };
 
             var subjectUnderTest = new DfeSignInApiHelper(httpClient, _tokenBuilder.Object);
+            _tokenBuilder.Setup(x => x.CreateToken()).Returns(authToken.ToString);
 
             // ACT
             var result = await subjectUnderTest.Get<ApiServiceResponse>("api/test/whatever");
@@ -69,7 +71,9 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
                 Times.Exactly(1), // we expected a single external request
                 ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Get  // we expected a GET request
-                        && req.RequestUri == expectedUri // to this uri
+                        && req.RequestUri == expectedUri
+                    && req.Headers.Authorization.Scheme == "Bearer"
+                    && req.Headers.Authorization.Parameter == authToken.ToString()
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
