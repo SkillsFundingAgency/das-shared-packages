@@ -70,5 +70,24 @@ namespace SFA.DAS.Employer.Shared.UI
 
             return _generator.RecruitLink(route);
         }
+
+        public string ActiveSection(NavigationSection section, string routeName, params string[] args)
+        {
+            switch (section)
+            {
+                case NavigationSection.RecruitHome:
+                    return RecruitLink("RecruitHome", args);
+                case NavigationSection.ApprenticesHome:
+                    return CommitmentsV2Link("ApprenticesHome", args);
+                case NavigationSection.AccountsTeamsView:
+                case NavigationSection.AccountsAgreements:
+                case NavigationSection.AccountsSchemes:
+                case NavigationSection.None:
+                case NavigationSection.AccountsFinance:
+                case NavigationSection.AccountsHome:
+                default:
+                    return AccountsLink(routeName, args);
+            }
+        }
     }
 }
