@@ -48,5 +48,7 @@ namespace SFA.DAS.Recruit.Vacancies.Client.Entities
         public string WorkExperience { get; set; }
         public int? RouteId { get; set; }
         public VacancyType? VacancyType { get; set; }
+        public string AdditionalQuestions1 { get; set; }
+        public string AdditionalQuestions2 { get; set; }
     }
 }
