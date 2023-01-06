@@ -16,7 +16,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class AddServiceRegistrationExtension
     {
-        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
+        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration, Type customServiceRole)
         {
             if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
             {
@@ -32,6 +32,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 #endif
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
+            services.AddTransient(typeof(ICustomServiceRole), customServiceRole);
             services.AddTransient<IDfESignInService, DfESignInService>();
             services.AddHttpClient<IApiHelper, DfeSignInApiHelper>
                 (
