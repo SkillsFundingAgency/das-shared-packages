@@ -21,15 +21,17 @@ namespace SFA.DAS.DfESignIn.Auth.Services
     internal class DfESignInService : IDfESignInService
     {
         private readonly DfEOidcConfiguration _configuration;
-        
         private readonly IApiHelper _apiHelper;
+        private readonly ICustomServiceRole _customServiceRole;
 
         public DfESignInService(
             IOptions<DfEOidcConfiguration> configuration,
-            IApiHelper apiHelper)
+            IApiHelper apiHelper,
+            ICustomServiceRole customServiceRole)
         {
             _configuration = configuration.Value;
             _apiHelper = apiHelper;
+            _customServiceRole = customServiceRole;
         }
 
         public async Task PopulateAccountClaims(TokenValidatedContext ctx)
@@ -74,8 +76,9 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                     roleClaims.Add(new Claim(ClaimName.RoleNumericId, role.NumericId.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
 
                     // Add to initial identity
+                    // Check if the custom service role type is set in client side if not use the default CustomClaimsIdentity.Service
                     ctx.Principal?.Identities.First()
-                        .AddClaim(new Claim(CustomClaimsIdentity.Service, role.Name));
+                        .AddClaim(new Claim(_customServiceRole.RoleClaimType ?? CustomClaimsIdentity.Service, role.Name));
                 }
 
                 ctx?.Principal?.Identities.First().AddClaims(roleClaims);
