@@ -25,12 +25,14 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             DfEOidcConfiguration config,
             ApiServiceResponse response,
             [Frozen] Mock<IApiHelper> apiHelper,
-            [Frozen] Mock<IOptions<DfEOidcConfiguration>> configuration)
+            [Frozen] Mock<IOptions<DfEOidcConfiguration>> configuration,
+            [Frozen] Mock<ICustomServiceRole> customServiceRole)
         {
             var tokenValidatedContext = ArrangeTokenValidatedContext(userId, organisation, string.Empty);
             apiHelper.Setup(x => x.Get<ApiServiceResponse>($"{config.APIServiceUrl}/services/{config.APIServiceId}/organisations/{organisation.Id}/users/{userId}")).ReturnsAsync(response);
             configuration.Setup(c => c.Value).Returns(config);
-            var service = new DfESignInService(configuration.Object, apiHelper.Object);
+            customServiceRole.Setup(role => role.RoleClaimType).Returns(CustomClaimsIdentity.Service);
+            var service = new DfESignInService(configuration.Object, apiHelper.Object, customServiceRole.Object);
                 
             await service.PopulateAccountClaims(tokenValidatedContext);
 
@@ -48,14 +50,16 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             DfEOidcConfiguration config,
             ApiServiceResponse response,
             [Frozen] Mock<IApiHelper> apiHelper,
-            [Frozen] Mock<IOptions<DfEOidcConfiguration>> configuration)
+            [Frozen] Mock<IOptions<DfEOidcConfiguration>> configuration,
+            [Frozen] Mock<ICustomServiceRole> customServiceRole)
         {
             var tokenValidatedContext = ArrangeTokenValidatedContext(userId, organisation, string.Empty);
             response.Roles = response.Roles.Select(c => {c.Status.Id = 1; return c;}).ToList();
             apiHelper.Setup(x => x.Get<ApiServiceResponse>($"{config.APIServiceUrl}/services/{config.APIServiceId}/organisations/{organisation.Id}/users/{userId}")).ReturnsAsync(response);
             configuration.Setup(c => c.Value).Returns(config);
-            var service = new DfESignInService(configuration.Object, apiHelper.Object);
-                
+            customServiceRole.Setup(role => role.RoleClaimType).Returns(CustomClaimsIdentity.Service);
+            var service = new DfESignInService(configuration.Object, apiHelper.Object, customServiceRole.Object);
+
             await service.PopulateAccountClaims(tokenValidatedContext);
 
             var claims = tokenValidatedContext.Principal?.Identities.Last().Claims.ToList();
@@ -70,6 +74,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
                     .BeEquivalentTo(response.Roles.Select(c => c.Name).ToList());
                 claims.Where(x => x.Type.Equals(ClaimName.RoleNumericId)).Select(c => c.Value).Should()
                     .BeEquivalentTo(response.Roles.Select(c => c.NumericId.ToString()).ToList());
+                claims.Where(x => x.Type.Equals(CustomClaimsIdentity.Service)).Select(c => c.Value).Should()
+                    .BeEquivalentTo(response.Roles.Select(c => c.Name).ToList());
             }
                 
         }

@@ -7,6 +7,7 @@ using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
+using SFA.DAS.DfESignIn.Auth.Constants;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
@@ -33,7 +34,7 @@ public class WhenAddingServicesToTheContainer
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
     {
         var configuration = GenerateConfiguration();
-        serviceCollection.AddServiceRegistration(configuration);
+        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole));
     }
 
     private static IConfigurationRoot GenerateConfiguration()
@@ -61,5 +62,10 @@ public class WhenAddingServicesToTheContainer
         {
             throw new NotImplementedException();
         }
+    }
+
+    public class TestCustomServiceRole : ICustomServiceRole
+    {
+        public string RoleClaimType => throw new NotImplementedException();
     }
 }
