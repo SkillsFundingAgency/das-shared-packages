@@ -1,4 +1,4 @@
-#if NETCOREAPP2_0
+#if NET6_0
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;

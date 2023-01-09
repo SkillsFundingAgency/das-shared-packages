@@ -1,4 +1,4 @@
-#if NETCOREAPP2_0
+#if NET6_0
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

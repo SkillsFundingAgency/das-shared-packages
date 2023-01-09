@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_0
+﻿#if NET6_0
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;

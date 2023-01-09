@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_0
+﻿#if NET6_0
 using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;

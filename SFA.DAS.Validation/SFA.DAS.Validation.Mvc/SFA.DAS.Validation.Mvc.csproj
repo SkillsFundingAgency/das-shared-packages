@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
+        <TargetFrameworks>net6.0;net462</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <Authors>DAS</Authors>
@@ -20,8 +20,8 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.0" />
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
