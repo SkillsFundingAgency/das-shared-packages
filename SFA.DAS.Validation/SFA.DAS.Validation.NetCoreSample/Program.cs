@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using SFA.DAS.Validation.NetCoreSample.Startup;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.Validation.Mvc.Extensions;
 
 namespace SFA.DAS.Validation.NetCoreSample
 {
@@ -8,11 +8,20 @@ namespace SFA.DAS.Validation.NetCoreSample
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services
+                .AddControllersWithViews(options => options.AddValidation())
+                .AddRazorRuntimeCompilation();
+            
+            var app = builder.Build();
+            
+            app.UseRouting();
+            
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+                
+            app.Run();
         }
-
-        private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<AspNetStartup>();
     }
 }

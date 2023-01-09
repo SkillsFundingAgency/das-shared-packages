@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_0
+﻿#if NET6_0
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
