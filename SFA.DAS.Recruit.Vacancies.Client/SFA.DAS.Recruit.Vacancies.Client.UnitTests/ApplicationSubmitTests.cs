@@ -64,6 +64,8 @@ namespace SFA.DAS.Recruit.Vacancies.Client.UnitTests
                 Skills = new List<string> { "skill 1", "skill 2" },
                 Strengths = "strengths",
                 Support = "support",
+                AdditionalQuestion1 = "Additional Question 1",
+                AdditionalQuestion2 = "Additional Question 2",
                 TrainingCourses = new List<ApplicationTrainingCourse>
                 {
                     new ApplicationTrainingCourse
