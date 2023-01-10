@@ -10,16 +10,6 @@ Automatic model validation for MVC applications that are using the OMIOMO (One M
 services.AddMvc(o => o.AddValidation());
 ```
 
-### MVC
-
-```c#
-filters.AddValidationFilter();
-```
-
-### WebApi
-
-Coming soon...
-
 ## Usage
 
 Please see the samples:

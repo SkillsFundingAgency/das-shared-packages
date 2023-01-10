@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <LangVersion>latest</LangVersion>
         <TargetFramework>net6.0</TargetFramework>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
         <Authors>DAS</Authors>
         <Description>MVC integration for SFA.DAS.Validation</Description>
-        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
         <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Validation</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
         <IncludeSymbols>true</IncludeSymbols>
