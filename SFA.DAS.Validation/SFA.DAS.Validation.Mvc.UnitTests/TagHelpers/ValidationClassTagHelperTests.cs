@@ -1,4 +1,3 @@
-#if NET6_0
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -78,4 +77,3 @@ namespace SFA.DAS.Validation.Mvc.UnitTests.TagHelpers
         }
     }
 }
-#endif

@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-        <TargetFramework>net462</TargetFramework>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TargetFramework>net6.0</TargetFramework>
         
         <Authors>DAS</Authors>
         <Description>WebApi integration for SFA.DAS.Validation</Description>

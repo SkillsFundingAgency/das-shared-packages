@@ -1,4 +1,3 @@
-#if NET6_0
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Validation.Mvc.Filters;
 
@@ -12,4 +11,3 @@ namespace SFA.DAS.Validation.Mvc.Extensions
         }
     }
 }
-#endif

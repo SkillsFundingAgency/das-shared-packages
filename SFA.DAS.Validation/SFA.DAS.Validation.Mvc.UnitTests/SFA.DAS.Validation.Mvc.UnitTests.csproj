@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-        <TargetFrameworks>net6.0;net462</TargetFrameworks>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,10 +15,6 @@
     <ItemGroup>
         <ProjectReference Include="..\SFA.DAS.Validation.Mvc\SFA.DAS.Validation.Mvc.csproj" />
         <ProjectReference Include="..\SFA.DAS.Validation\SFA.DAS.Validation.csproj" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-        <Reference Include="System.Web" />
     </ItemGroup>
 
     <ItemGroup>
