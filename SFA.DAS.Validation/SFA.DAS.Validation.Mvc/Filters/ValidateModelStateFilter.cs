@@ -1,5 +1,4 @@
-﻿#if NET6_0
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,68 +71,3 @@ namespace SFA.DAS.Validation.Mvc.Filters
         }
     }
 }
-#elif NET462
-using System.Net;
-using System.Web.Mvc;
-using SFA.DAS.Validation.Exceptions;
-using SFA.DAS.Validation.Mvc.Extensions;
-using SFA.DAS.Validation.Mvc.ModelBinding;
-
-namespace SFA.DAS.Validation.Mvc.Filters
-{
-    public class ValidateModelStateFilter : ActionFilterAttribute
-    {
-        private static readonly string ModelStateKey = typeof(SerializableModelStateDictionary).FullName;
-
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            if (filterContext.HttpContext.Request.HttpMethod == "GET")
-            {
-                if (!filterContext.Controller.ViewData.ModelState.IsValid)
-                {
-                    filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                else
-                {
-                    var serializableModelState = filterContext.Controller.TempData.Get<SerializableModelStateDictionary>();
-                    var modelState = serializableModelState?.ToModelState();
-
-                    filterContext.Controller.ViewData.ModelState.Merge(modelState);
-                }
-            }
-            else if (!filterContext.Controller.ViewData.ModelState.IsValid)
-            {
-                var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                
-                filterContext.Controller.TempData.Set(serializableModelState);
-                filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
-                filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
-            }
-        }
-
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            if (filterContext.HttpContext.Request.HttpMethod != "GET")
-            {
-                if (filterContext.Exception is ValidationException validationException)
-                {
-                    filterContext.Controller.ViewData.ModelState.AddModelError(validationException);
-                    
-                    var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                    
-                    filterContext.Controller.TempData.Set(serializableModelState);
-                    filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.QueryString);
-                    filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
-                    filterContext.ExceptionHandled = true;
-                }
-                else if (!filterContext.Controller.ViewData.ModelState.IsValid)
-                {
-                    var serializableModelState = filterContext.Controller.ViewData.ModelState.ToSerializable();
-                    
-                    filterContext.Controller.TempData.Set(serializableModelState);
-                }
-            }
-        }
-    }
-}
-#endif

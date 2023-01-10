@@ -1,4 +1,3 @@
-#if NET6_0
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -32,4 +31,3 @@ namespace SFA.DAS.Validation.Mvc.TagHelpers
         }
     }
 }
-#endif
