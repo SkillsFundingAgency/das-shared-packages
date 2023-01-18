@@ -47,17 +47,17 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             Assert.AreEqual("https://test-login.apprenticeships.education.gov.uk/account/changepassword?clientId=ABC123&returnUrl=return-address", urlBuilder.UsersLink("ChangePassword", new [] {"ABC123", "return-address"})); 
         }
 
-        [TestCase("at","at-eas.apprenticeships")]
-        [TestCase("test","test-eas.apprenticeships")]
-        [TestCase("test2","test2-eas.apprenticeships")]
-        [TestCase("pp", "pp-eas.apprenticeships")]
-        [TestCase("Mo", "mo-eas.apprenticeships")]
-        [TestCase("Demo", "demo-eas.apprenticeships")]
-        [TestCase("prd","manage-apprenticeships")]
+        [TestCase("at","at-eas.apprenticeships.education")]
+        [TestCase("test","test-eas.apprenticeships.education")]
+        [TestCase("test2","test2-eas.apprenticeships.education")]
+        [TestCase("pp", "pp-eas.apprenticeships.education")]
+        [TestCase("Mo", "mo-eas.apprenticeships.education")]
+        [TestCase("Demo", "demo-eas.apprenticeships.education")]
+        [TestCase("prd","manage-apprenticeships.service")]
         public void Then_The_Url_Is_Built_Correctly_For_Each_Environment(string environment, string expectedUrlPart)
         {
             var urlBuilder = new UrlBuilder(environment);
-            Assert.AreEqual($"https://recruit.{expectedUrlPart}.education.gov.uk/accounts/ABC123", urlBuilder.RecruitLink("RecruitHome", "ABC123"));
+            Assert.AreEqual($"https://recruit.{expectedUrlPart}.gov.uk/accounts/ABC123", urlBuilder.RecruitLink("RecruitHome", "ABC123"));
         }
         
         [TestCase("at","at")]
