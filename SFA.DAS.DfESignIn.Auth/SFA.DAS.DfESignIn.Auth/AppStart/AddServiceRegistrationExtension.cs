@@ -26,7 +26,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 
             services.AddOptions();
 #if NETSTANDARD2_0
-            services.Configure<DfEOidcConfiguration>(_=>configuration.GetSection(nameof(DfEOidcConfiguration)));
+            services.Configure<DfEOidcConfiguration>(options => configuration.GetSection(nameof(DfEOidcConfiguration)).Bind(options));
 #else 
             services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
 #endif
