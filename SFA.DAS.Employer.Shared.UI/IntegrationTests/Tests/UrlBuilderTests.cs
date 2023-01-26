@@ -44,9 +44,9 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
         {
             var urlBuilder = new UrlBuilder("pp");
 
-            Assert.AreEqual("https://employerprofiles.pp-eas.apprenticeships.education.gov.uk/", urlBuilder.EmployerProfiles("ChangeLoginDetails", "ABC123"));
+            Assert.AreEqual("https://employerprofiles.pp-eas.apprenticeships.education.gov.uk/accounts/ABC123/employer/change-sign-in-details", urlBuilder.EmployerProfiles("ChangeLoginDetails", "ABC123"));
         }
-
+        
         [Test]
         public void Then_The_User_Links_Are_Built()
         {

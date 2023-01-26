@@ -78,7 +78,7 @@ namespace SFA.DAS.Employer.Shared.UI
             if (args != null && args.Length > 0)
                 route = string.Format(route, args);
 
-            return _generator.RecruitLink(route);
+            return _generator.EmployersProfiles(route);
         }
 
         public string ActiveSection(NavigationSection section, string routeName, params string[] args)
