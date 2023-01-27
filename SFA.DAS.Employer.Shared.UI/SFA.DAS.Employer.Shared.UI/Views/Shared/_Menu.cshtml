@@ -72,7 +72,7 @@
                                     <a href="@LinkGenerator.AccountsLink("RenameAccount", accountId)" class="das-user-navigation__sub-menu-link mu-rename-acc">Rename account</a>
                                 </li>
                             }
-                            @if (string.IsNullOrEmpty(clientId))
+                            @if (!string.IsNullOrEmpty(clientId))
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
                                     <a href="@LinkGenerator.UsersLink("ChangePassword", clientId, GetEncodedReturnUrl(LinkGenerator.ActiveSection(selectedSection, "ChangePasswordReturn")))" class="das-user-navigation__sub-menu-link mu-change-pass">Change your password</a>

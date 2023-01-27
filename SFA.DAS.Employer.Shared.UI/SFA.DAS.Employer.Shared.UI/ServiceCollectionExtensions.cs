@@ -15,6 +15,18 @@ namespace SFA.DAS.Employer.Shared.UI
             services.AddSingleton(new MaPageConfiguration(identityClientId, logoutRouteName));
         }
 
+        public static void AddMaMenuConfiguration(this IServiceCollection services, string logoutRouteName, string environment)
+        {
+            if (string.IsNullOrWhiteSpace(logoutRouteName))
+            {
+                throw new ArgumentException("Needs a valid value", nameof(logoutRouteName));
+            }
+
+            services.AddSingleton(new UrlBuilder(environment.ToLower()));
+
+            services.AddSingleton(new MaPageConfiguration("", logoutRouteName));
+        }
+
         private static void ValidateArguments(string logoutRouteName, string identityClientId)
         {
             if (string.IsNullOrWhiteSpace(logoutRouteName))
