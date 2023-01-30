@@ -33,7 +33,7 @@ stages:
   - template: ../pipeline-templates/job/code-build.yml
     parameters:
       WorkingDirectory: SFA.DAS.NServiceBus
-      DotNetStandardPackagesToPack: <
+      DotNetStandardPackagesToPack: >
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.csproj;
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.AzureFunction.Extensions/SFA.DAS.NServiceBus.AzureFunction.Extensions.csproj;
         SFA.DAS.NServiceBus/SFA.DAS.NServiceBus.Extensions/SFA.DAS.NServiceBus.Extensions.csproj;
