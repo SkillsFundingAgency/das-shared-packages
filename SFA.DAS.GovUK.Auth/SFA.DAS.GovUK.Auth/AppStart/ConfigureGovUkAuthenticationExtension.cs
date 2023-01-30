@@ -15,7 +15,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     internal static class ConfigureGovUkAuthenticationExtension
     {
         internal static void ConfigureGovUkAuthentication(this IServiceCollection services,
-            IConfiguration configuration, string authenticationCookieName)
+            IConfiguration configuration, string authenticationCookieName, string redirectUrl)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -60,7 +60,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.Events.OnSignedOutCallbackRedirect = c =>
                     {
                         c.Response.Cookies.Delete(authenticationCookieName);
-                        c.Response.Redirect("/");
+                        c.Response.Redirect(redirectUrl);
                         c.HandleResponse();
                         return Task.CompletedTask;
                     };
