@@ -1,9 +1,7 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
@@ -11,7 +9,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     {
 
         public static void AddEmployerStubAuthentication(this IServiceCollection services,
-            string authenticationCookieName)
+            string authenticationCookieName, string redirectUrl)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -24,7 +22,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.Events.OnSigningOut = c =>
                     {
                         c.Response.Cookies.Delete(authenticationCookieName);
-                        c.Response.Redirect("/");
+                        c.Response.Redirect(redirectUrl);
                         return Task.CompletedTask;
                     };
                 });
