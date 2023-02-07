@@ -60,6 +60,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             returnUrl = configuration.ChangeEmailReturnUrl?.AbsoluteUri ?? _urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "service/email/change");
             AddOrUpdateLink(new ChangeEmail(_urlHelper.GetPath(configuration.AuthenticationAuthorityUrl?.Replace("/identity", ""), $"account/changeemail?clientId={configuration.ClientId}&returnurl={System.Net.WebUtility.UrlEncode(returnUrl)}"), UseLegacyStyles ? "sub-menu-item" : "das-user-navigation__sub-menu-link"));
 
+            AddOrUpdateLink(new ChangeSignInSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/change-signin-details"), UseLegacyStyles ? "sub-menu-item" : "das-user-navigation__sub-menu-link"));
             AddOrUpdateLink(new NotificationSettings(_urlHelper.GetPath(configuration.ManageApprenticeshipsBaseUrl, "settings/notifications"), UseLegacyStyles ? "sub-menu-item" : "das-user-navigation__sub-menu-link"));
             AddOrUpdateLink(new AdvertNotificationSettings(_urlHelper.GetPath(userContext, configuration.EmployerRecruitBaseUrl, "notifications-manage"), UseLegacyStyles ? "sub-menu-item" : "das-user-navigation__sub-menu-link"));
 
