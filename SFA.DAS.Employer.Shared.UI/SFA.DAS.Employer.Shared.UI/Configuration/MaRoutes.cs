@@ -47,7 +47,7 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
 
         public static Dictionary<string, string> EmployerProfile => new Dictionary<string, string>()
         {
-            { "ChangeLoginDetails", "/accounts/{0}/employer/change-sign-in-details" }
+            { "ChangeLoginDetails", "/accounts/{0}/user/change-sign-in-details" }
         };
     }
 }
