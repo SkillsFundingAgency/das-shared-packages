@@ -20,12 +20,12 @@ namespace SFA.DAS.MA.Shared.UI.Models
         private readonly ILinkCollection _linkCollection;
         private readonly ILinkHelper _linkHelper;
         private readonly IUrlHelper _urlHelper;
-        
+
         public HeaderViewModel(
-            IHeaderConfiguration configuration, 
+            IHeaderConfiguration configuration,
             IUserContext userContext,
             ILinkCollection linkCollection = null,
-            ILinkHelper linkHelper = null, 
+            ILinkHelper linkHelper = null,
             IUrlHelper urlHelper = null,
             bool useLegacyStyles = false)
         {
@@ -39,7 +39,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
 
             MenuIsHidden = false;
             SelectedMenu = "home";
-        
+
             // Header links
             AddOrUpdateLink(new GovUk(GovUkHref, isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new ManageApprenticeships(configuration.ManageApprenticeshipsBaseUrl, UseLegacyStyles ? "" : "govuk-header__link govuk-header__link--service-name"));
@@ -76,7 +76,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
             {
                 AddOrUpdateLink(new Apprentices(_urlHelper.GetPath(userContext, configuration.EmployerCommitmentsV2BaseUrl, string.Empty, ""), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
             }
-            
+
             AddOrUpdateLink(new YourTeam(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "teams/view"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
 
             AddOrUpdateLink(new YourOrganisations(_urlHelper.GetPath(userContext, configuration.ManageApprenticeshipsBaseUrl, "agreements"), UseLegacyStyles ? "" : "das-navigation__link", isLegacy: UseLegacyStyles));
