@@ -81,5 +81,10 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         {
             return viewData.ContainsKey(ViewDataKeys.EnableCsp);
         }
+
+        public static bool GetDfESignInStatus(this ViewDataDictionary viewData)
+        {
+            return viewData.ContainsKey(ViewDataKeys.UseDfESignIn) && (bool)viewData[ViewDataKeys.UseDfESignIn];
+        }
     }
 }
