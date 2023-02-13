@@ -36,5 +36,10 @@ namespace SFA.DAS.Employer.Shared.UI
         {
             return $"https://{_environmentUsers}-login.apprenticeships.education.gov.uk{route}";
         }
+
+        public string EmployersProfiles(string route)
+        {
+            return $"https://employerprofiles.{_environment}.{_domainPart}.gov.uk{route}";
+        }
     }
 }

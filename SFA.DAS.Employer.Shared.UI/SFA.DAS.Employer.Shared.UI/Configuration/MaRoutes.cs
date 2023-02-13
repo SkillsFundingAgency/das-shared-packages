@@ -44,5 +44,10 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
             {"TermsAndConditions", "/TermsAndConditions" },
             {"ChangeEmailAddress", "/account/changeemail?clientId={0}&returnUrl={1}" }
         };
+
+        public static Dictionary<string, string> EmployerProfile => new Dictionary<string, string>()
+        {
+            { "ChangeLoginDetails", "/accounts/{0}/user/change-sign-in-details" }
+        };
     }
 }
