@@ -16,6 +16,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
         public IReadOnlyList<Link> Links => _linkCollection.Links;
 
         public bool UseLegacyStyles { get; private set; }
+        public bool UseDfESignIn { get; private set; }
 
         private readonly ILinkCollection _linkCollection;
         private readonly ILinkHelper _linkHelper;
@@ -39,7 +40,8 @@ namespace SFA.DAS.MA.Shared.UI.Models
 
             MenuIsHidden = false;
             SelectedMenu = "home";
-            
+            UseDfESignIn = configuration.UseDfESignIn;
+
             // Header links
             AddOrUpdateLink(new GovUk(GovUkHref, isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new ManageApprenticeships(configuration.ManageApprenticeshipsBaseUrl, UseLegacyStyles ? "" : "govuk-header__link govuk-header__link--service-name"));

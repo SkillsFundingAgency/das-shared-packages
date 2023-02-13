@@ -11,5 +11,6 @@
         public const string ZenDeskConfiguration = "SharedUI.ZenDeskConfiguration";
         public const string EnableCookieBanner = "SharedUI.EnableCookieBanner";
         public const string EnableCsp = "SharedUI.EnableCsp";
+        public const string UseDfESignIn = "SharedUI.UseDfESignIn";
     }
 }

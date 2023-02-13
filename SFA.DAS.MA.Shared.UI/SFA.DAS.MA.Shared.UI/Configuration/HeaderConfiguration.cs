@@ -15,5 +15,6 @@ namespace SFA.DAS.MA.Shared.UI.Configuration
         public Uri SignOutUrl { get; set; }
         public Uri ChangeEmailReturnUrl { get; set; }
         public Uri ChangePasswordReturnUrl { get; set; }
+        public bool UseDfESignIn { get; set; }
     }
 }
