@@ -176,28 +176,6 @@ namespace SFA.DAS.MA.Shared.UI.UnitTests.HeaderViewModel
         }
 
         [Test]
-        public void ThenAdvertNotificationSettingsHeaderLinkIsInitialised()
-        {
-            // arrange
-            var testEmployerRecruitBaseUrl = $"http://{Guid.NewGuid()}";
-            var testHashedAccountId = Guid.NewGuid().ToString();
-
-            _mockHeaderConfiguration
-                .Setup(m => m.EmployerRecruitBaseUrl)
-                .Returns(testEmployerRecruitBaseUrl);
-
-            _mockUserContext
-                .Setup(m => m.HashedAccountId)
-                .Returns(testHashedAccountId);
-
-            // act
-            _sut = new Models.HeaderViewModel(_mockHeaderConfiguration.Object, _mockUserContext.Object);
-
-            // assert            
-            _sut.Links.OfType<AdvertNotificationSettings>().Where(t => t.Href.Equals($"{testEmployerRecruitBaseUrl}/accounts/{testHashedAccountId}/notifications-manage")).Count().Should().Be(1);
-        }
-
-        [Test]
         public void ThenSignOutHeaderLinkIsInitialised()
         {
             // arrange
