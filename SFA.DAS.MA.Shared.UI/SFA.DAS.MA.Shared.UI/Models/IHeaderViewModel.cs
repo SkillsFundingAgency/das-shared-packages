@@ -11,6 +11,5 @@ namespace SFA.DAS.MA.Shared.UI.Models
         void HideMenu();
         void SelectMenu(string menu);
         bool UseLegacyStyles { get; }
-        bool UseDfESignIn { get; }
     }
 }

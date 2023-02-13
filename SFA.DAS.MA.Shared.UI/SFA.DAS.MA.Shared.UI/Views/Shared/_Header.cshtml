@@ -41,10 +41,6 @@
 
                                     @if (!Model.MenuIsHidden)
                                     {
-                                        if (Model.UseDfESignIn)
-                                        {
-                                            @Html.Raw(Model.RenderListItemLink<ChangeSignInSettings>())    
-                                        }
                                         @Html.Raw(Model.RenderListItemLink<NotificationSettings>())
                                         @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>())
                                     }
@@ -117,10 +113,6 @@ else
 
                                 @if (!Model.MenuIsHidden)
                                 {
-                                    if (Model.UseDfESignIn)
-                                    {
-                                        @Html.Raw(Model.RenderListItemLink<ChangeSignInSettings>(@class: "das-user-navigation__sub-menu-list-item"))    
-                                    }
                                     @Html.Raw(Model.RenderListItemLink<NotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
                                     @Html.Raw(Model.RenderListItemLink<AdvertNotificationSettings>(@class: "das-user-navigation__sub-menu-list-item"))
                                 }
