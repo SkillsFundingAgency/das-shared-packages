@@ -39,6 +39,7 @@ namespace SFA.DAS.MA.Shared.UI.Models
 
             MenuIsHidden = false;
             SelectedMenu = "home";
+
             // Header links
             AddOrUpdateLink(new GovUk(GovUkHref, isLegacy: UseLegacyStyles));
             AddOrUpdateLink(new ManageApprenticeships(configuration.ManageApprenticeshipsBaseUrl, UseLegacyStyles ? "" : "govuk-header__link govuk-header__link--service-name"));
