@@ -82,6 +82,11 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             return viewData.ContainsKey(ViewDataKeys.EnableCsp);
         }
 
+        /// <summary>
+        /// Method to get the DfESignIn Status from viewData.
+        /// </summary>
+        /// <param name="viewData"></param>
+        /// <returns>boolean.</returns>
         public static bool GetDfESignInStatus(this ViewDataDictionary viewData)
         {
             return viewData.ContainsKey(ViewDataKeys.UseDfESignIn) && (bool)viewData[ViewDataKeys.UseDfESignIn];

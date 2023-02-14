@@ -69,5 +69,14 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
             });
             return builder;
         }
+
+        public static IMvcBuilder SetDfESignInConfiguration(this IMvcBuilder builder, bool useDfESignIn)
+        {
+            builder.Services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new SetDfESignStatusValuesAttribute(useDfESignIn));
+            });
+            return builder;
+        }
     }
 }
