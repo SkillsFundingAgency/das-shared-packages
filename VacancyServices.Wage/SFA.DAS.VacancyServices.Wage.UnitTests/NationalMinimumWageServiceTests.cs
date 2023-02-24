@@ -102,5 +102,29 @@ namespace SFA.DAS.VacancyServices.Wage.UnitTests
             result.Between21AndUnder25NationalMinimumWage.Should().Be(9.18m);
             result.Over25NationalMinimumWage.Should().Be(9.50m);
         }
+
+        [Test]
+        public void ShouldReturnOldRatesUptoMarch2023()
+        {
+            var result = NationalMinimumWageService.GetHourlyRates(new DateTime(2023, 3, 31));
+
+            result.ApprenticeMinimumWage.Should().Be(4.81m);
+            result.Under18NationalMinimumWage.Should().Be(4.81m);
+            result.Between18AndUnder21NationalMinimumWage.Should().Be(6.83m);
+            result.Between21AndUnder25NationalMinimumWage.Should().Be(9.18m);
+            result.Over25NationalMinimumWage.Should().Be(9.50m);
+        }
+
+        [Test]
+        public void ShouldReturnNewRatesFromApril2023()
+        {
+            var result = NationalMinimumWageService.GetHourlyRates(new DateTime(2023, 4, 1));
+
+            result.ApprenticeMinimumWage.Should().Be(5.28m);
+            result.Under18NationalMinimumWage.Should().Be(5.28m);
+            result.Between18AndUnder21NationalMinimumWage.Should().Be(7.49m);
+            result.Between21AndUnder25NationalMinimumWage.Should().Be(10.18m);
+            result.Over25NationalMinimumWage.Should().Be(10.42m);
+        }
     }
 }
