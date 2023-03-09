@@ -6,7 +6,7 @@
     var enableCsp = ViewData.EnableCsp();
 }
 
-<script nws-csp-add-nonce="@enableCsp">
+<script nws-csp-add-nonce="@enableCsp.ToString().ToLower()">
     @if (ViewBag.GaData == null)
     {
         ViewBag.GaData = new GaData();

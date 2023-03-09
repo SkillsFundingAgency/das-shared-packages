@@ -14,7 +14,7 @@
         label = ViewBag.ZenDeskLabel;
     }
 }
-<script type="text/javascript" nws-csp-add-nonce="@enableCsp">
+<script type="text/javascript" nws-csp-add-nonce="@enableCsp.ToString().ToLower()">
         window.zESettings = {
             webWidget: {
                 contactForm: {
@@ -35,6 +35,6 @@
 </script>
 <script id="ze-snippet" src="@snippetUrl"></script>
 <script id="co-snippet" src="@cobrowsingSnippetUrl"></script>
-<script type="text/javascript" nws-csp-add-nonce="@enableCsp">
+<script type="text/javascript" nws-csp-add-nonce="@enableCsp.ToString().ToLower()">
 @Html.SetZenDeskLabels(new string[] { label })
 </script>
