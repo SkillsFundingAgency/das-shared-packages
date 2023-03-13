@@ -61,15 +61,6 @@ namespace SFA.DAS.Provider.Shared.UI.Startup
             return builder;
         }
 
-        public static IMvcBuilder EnableCsp(this IMvcBuilder builder)
-        {
-            builder.Services.Configure<MvcOptions>(options =>
-            {
-                options.Filters.Add(new EnableCspAttribute());
-            });
-            return builder;
-        }
-
         public static IMvcBuilder SetDfESignInConfiguration(this IMvcBuilder builder, bool useDfESignIn)
         {
             builder.Services.Configure<MvcOptions>(options =>

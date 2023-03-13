@@ -77,11 +77,6 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             return null;
         }
 
-        public static bool EnableCsp(this ViewDataDictionary viewData)
-        {
-            return viewData.ContainsKey(ViewDataKeys.EnableCsp);
-        }
-
         /// <summary>
         /// Method to get the DfESignIn Status from viewData.
         /// </summary>

@@ -2,7 +2,6 @@
 @{
     var enableGoogleAnalytics = ViewData.EnableGoogleAnalytics();
     var enableCookieBanner = ViewData.EnableCookieBanner();
-    var enableCsp = ViewData.EnableCsp();
 
     <!DOCTYPE html>
     <html lang="en" class="govuk-template ">
@@ -43,8 +42,8 @@
             <partial name="_GoogleTagManagerProviderBodyScript" />
         }
 
-        <script nws-csp-add-nonce="@enableCsp.ToString().ToLower()">
-        document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+        <script nws-csp-add-nonce="true">
+            document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
         </script>
         <partial name="_ZenDeskWidget" />
         <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
@@ -141,9 +140,9 @@
         <script src="/libs/jquery/jquery.min.js"></script>
         <script src="/js/das-all.js"></script>
         <script src="/js/app.min.js"></script>
-        <script nws-csp-add-nonce="@enableCsp.ToString().ToLower()">
-        window.GOVUKFrontend.initAll();
-        window.DASFrontend.initAll();
+        <script nws-csp-add-nonce="true">
+            window.GOVUKFrontend.initAll();
+            window.DASFrontend.initAll();
         </script>
         @RenderSection("Scripts", required: false)
     </body>

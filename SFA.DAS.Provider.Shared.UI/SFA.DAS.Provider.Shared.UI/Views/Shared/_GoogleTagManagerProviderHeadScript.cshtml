@@ -1,10 +1,5 @@
-﻿@using SFA.DAS.Provider.Shared.UI.Extensions
-@{
-    var enableCsp = ViewData.EnableCsp();
-}
-
-<!-- Google Tag Manager -->
-<script nws-csp-add-nonce="@enableCsp.ToString().ToLower()">
+﻿<!-- Google Tag Manager -->
+<script nws-csp-add-nonce="true">
     (function (w, d, s, l, i) {
         w[l] = w[l] || []; w[l].push({
             'gtm.start':
