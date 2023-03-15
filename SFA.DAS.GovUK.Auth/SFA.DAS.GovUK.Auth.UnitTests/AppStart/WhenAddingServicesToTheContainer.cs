@@ -46,6 +46,7 @@ public class WhenAddingServicesToTheContainer
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
     {   
         var configuration = GenerateConfiguration();
+        serviceCollection.AddSingleton<IConfiguration>(configuration);
         serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims));
     }
 
@@ -57,7 +58,8 @@ public class WhenAddingServicesToTheContainer
             {
                 new("GovUkOidcConfiguration:BaseUrl", "https://test.com/"),
                 new("GovUkOidcConfiguration:ClientId", "1234567"),
-                new("GovUkOidcConfiguration:KeyVaultIdentifier", "https://test.com/")
+                new("GovUkOidcConfiguration:KeyVaultIdentifier", "https://test.com/"),
+                new("ResourceEnvironmentName", "AT")
             }
         };
 
