@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Services;
 
@@ -30,6 +32,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddHttpClient<IOidcService, OidcService>();
             services.AddTransient<IAzureIdentityService, AzureIdentityService>();
             services.AddTransient<IJwtSecurityTokenService, JwtSecurityTokenService>();
+            services.AddSingleton<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
         }
     }
 }

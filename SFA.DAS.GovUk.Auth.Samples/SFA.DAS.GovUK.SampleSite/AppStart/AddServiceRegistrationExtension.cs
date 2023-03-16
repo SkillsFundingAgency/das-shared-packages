@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.GovUK.Auth.AppStart;
+using SFA.DAS.GovUK.Auth.Authentication;
 
 namespace SFA.DAS.GovUK.SampleSite.AppStart;
 
@@ -12,5 +13,20 @@ public static class AddServiceRegistrationExtension
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
         services.AddAndConfigureGovUkAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(CustomClaims));
+        
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(
+                PolicyNames.IsAuthenticated, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                });
+            options.AddPolicy(
+                PolicyNames.IsActiveAccount, policy =>
+                {
+                    policy.Requirements.Add(new AccountActiveRequirement());
+                    policy.RequireAuthenticatedUser();
+                });
+        });
     }
 }

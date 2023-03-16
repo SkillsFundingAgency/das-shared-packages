@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.GovUK.SampleSite.AppStart;
 
 namespace SFA.DAS.GovUK.SampleSite.Controllers;
 
@@ -14,9 +15,15 @@ public class HomeController : Controller
         return View();
     }
 
-    [Authorize]
+    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
     [HttpGet]
     public IActionResult Authenticated()
+    {
+        return View();
+    }
+    [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
+    [HttpGet]
+    public IActionResult IsActive()
     {
         return View();
     }
