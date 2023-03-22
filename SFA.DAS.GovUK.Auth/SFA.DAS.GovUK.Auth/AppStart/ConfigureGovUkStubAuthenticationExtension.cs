@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.GovUK.Auth.Configuration;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
@@ -22,6 +23,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.Events.OnSigningOut = c =>
                     {
                         c.Response.Cookies.Delete(authenticationCookieName);
+                        c.Response.Cookies.Delete(GovUkConstants.StubAuthCookieName);
                         c.Response.Redirect(redirectUrl);
                         return Task.CompletedTask;
                     };
