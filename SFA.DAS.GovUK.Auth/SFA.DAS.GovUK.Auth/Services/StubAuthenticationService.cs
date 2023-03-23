@@ -34,7 +34,7 @@ namespace SFA.DAS.GovUK.Auth.Services
                 Path = "/",
                 Domain = _environment != "LOCAL" ? $".{_environment.ToLower()}-eas.apprenticeships.education.gov.uk" : "localhost",
                 Secure = true,
-                HttpOnly = false,
+                HttpOnly = true,
                 SameSite = SameSiteMode.None
             };
             cookies.Append(GovUkConstants.StubAuthCookieName, JsonConvert.SerializeObject(model), authCookie);
