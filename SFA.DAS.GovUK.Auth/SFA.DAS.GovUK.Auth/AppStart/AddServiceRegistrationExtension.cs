@@ -32,6 +32,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddHttpClient<IOidcService, OidcService>();
             services.AddTransient<IAzureIdentityService, AzureIdentityService>();
             services.AddTransient<IJwtSecurityTokenService, JwtSecurityTokenService>();
+            services.AddTransient<IStubAuthenticationService, StubAuthenticationService>();
             services.AddSingleton<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
         }
     }

@@ -14,6 +14,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             For<IOidcService>().Use<OidcService>().Ctor<HttpClient>().Is(new HttpClient());
             For<IAzureIdentityService>().Use<AzureIdentityService>();
             For<IJwtSecurityTokenService>().Use<JwtSecurityTokenService>();
+            For<IStubAuthenticationService>().Use<StubAuthenticationService>();
         }
         private void AddConfiguration<T>(string key) where T : class
         {
