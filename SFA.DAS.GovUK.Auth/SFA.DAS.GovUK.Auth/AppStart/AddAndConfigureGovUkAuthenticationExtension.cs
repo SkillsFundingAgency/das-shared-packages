@@ -11,7 +11,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             IConfiguration configuration, string authenticationCookieName, Type customClaims, string signedOutRedirectUrl = "")
         {
             services.AddServiceRegistration(configuration, customClaims);
-            if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
+            if (!string.IsNullOrEmpty(configuration["StubAuth"]) && configuration["ResourceEnvironmentName"].ToUpper() != "PRD")
             {
                 services.AddEmployerStubAuthentication($"{authenticationCookieName}.stub",signedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
             }
