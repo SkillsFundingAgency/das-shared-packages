@@ -9,7 +9,7 @@ namespace SFA.DAS.GovUK.Auth.Services
 {
     public interface IStubAuthenticationService
     {
-        void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model);
+        void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model, bool isEssential = false);
     }
 
     public class StubAuthenticationService : IStubAuthenticationService
@@ -21,7 +21,7 @@ namespace SFA.DAS.GovUK.Auth.Services
             _environment = configuration["ResourceEnvironmentName"]?.ToUpper();
         }
 
-        public void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model)
+        public void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model, bool isEssential = false)
         {
             if (_environment == "PRD")
             {
@@ -35,6 +35,7 @@ namespace SFA.DAS.GovUK.Auth.Services
                 Domain = _environment != "LOCAL" ? $".{_environment.ToLower()}-eas.apprenticeships.education.gov.uk" : "localhost",
                 Secure = true,
                 HttpOnly = true,
+                IsEssential = isEssential,
                 SameSite = SameSiteMode.None
             };
             cookies.Append(GovUkConstants.StubAuthCookieName, JsonConvert.SerializeObject(model), authCookie);
