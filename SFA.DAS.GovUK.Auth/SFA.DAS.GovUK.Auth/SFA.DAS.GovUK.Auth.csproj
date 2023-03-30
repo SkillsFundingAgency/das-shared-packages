@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.15" />
+        
 
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.22.0" />
         <PackageReference Include="Microsoft.IdentityModel.KeyVaultExtensions" Version="6.22.0" />
@@ -27,10 +27,12 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.8" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.15" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.32" />
     </ItemGroup>
 </Project>
