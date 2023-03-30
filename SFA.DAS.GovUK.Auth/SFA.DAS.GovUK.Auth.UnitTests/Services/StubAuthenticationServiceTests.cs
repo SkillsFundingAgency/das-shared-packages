@@ -37,7 +37,28 @@ public class StubAuthenticationServiceTests
         
         service.AddStubEmployerAuth(responseCookies.Object, model);
         
-        responseCookies.Verify(x=>x.Append(GovUkConstants.StubAuthCookieName,JsonConvert.SerializeObject(model), It.Is<CookieOptions>(c=>c.Domain!.Equals("localhost"))));
+        responseCookies.Verify(x=>x.Append(GovUkConstants.StubAuthCookieName,JsonConvert.SerializeObject(model), It.Is<CookieOptions>(c=>c.Domain!.Equals("localhost") && !c.IsEssential)));
+    }
+    
+    [Test, MoqAutoData]
+    public void Then_Cookies_Are_Added_To_The_Response_With_Optional_Parameters(
+        StubAuthUserDetails model,
+        [Frozen] Mock<IResponseCookies> responseCookies,
+        [Frozen] Mock<IConfiguration> configuration)
+    {
+        configuration.Setup(x => x["ResourceEnvironmentName"]).Returns("local");
+        var service = new StubAuthenticationService(configuration.Object);
+        
+        service.AddStubEmployerAuth(responseCookies.Object, model, true);
+        
+        responseCookies.Verify(x=>x.Append(GovUkConstants.StubAuthCookieName,JsonConvert.SerializeObject(model), 
+            It.Is<CookieOptions>(c=>
+                c.Domain!.Equals("localhost") 
+                && c.IsEssential
+                && c.Secure
+                && c.HttpOnly
+                && c.Path!.Equals("/")
+                )));
     }
     
     [Test, MoqAutoData]
