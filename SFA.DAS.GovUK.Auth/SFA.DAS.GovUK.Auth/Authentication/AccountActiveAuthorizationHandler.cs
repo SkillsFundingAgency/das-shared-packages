@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.GovUK.Auth.Extensions;
 
@@ -19,12 +20,26 @@ namespace SFA.DAS.GovUK.Auth.Authentication
         }
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AccountActiveRequirement requirement)
         {
-            if (context.Resource is HttpContext httpContext)
+            HttpContext currentContext;
+            switch (context.Resource)
+            {
+                case HttpContext resource:
+                    currentContext = resource;
+                    break;
+                case AuthorizationFilterContext authorizationFilterContext:
+                    currentContext = authorizationFilterContext.HttpContext;
+                    break;
+                default:
+                    currentContext = null;
+                    break;
+            }
+
+            if (currentContext != null)
             {
                 var isAccountSuspended = context.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value;
                 if (isAccountSuspended != null && isAccountSuspended.Equals("Suspended", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    httpContext.Response.Redirect(RedirectExtension.GetAccountSuspendedRedirectUrl(_configuration["ResourceEnvironmentName"]));
+                    currentContext.Response.Redirect(RedirectExtension.GetAccountSuspendedRedirectUrl(_configuration["ResourceEnvironmentName"]));
                 }
             }
             context.Succeed(requirement);
