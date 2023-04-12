@@ -20,9 +20,17 @@ namespace DfE.Example.Web.Controllers
             _logger = logger;
         }
 
-        [Route("{employerAccountId}")]
-        public IActionResult Index(string employerAccountId)
+        [Route("")]
+        public IActionResult Index(bool error)
         {
+            ViewBag.IsErrorPage = error;
+            return View();
+        }
+        
+        [Route("{employerAccountId}")]
+        public IActionResult Index(string employerAccountId, bool error)
+        {
+            ViewBag.IsErrorPage = error;
             return View();
         }
 
