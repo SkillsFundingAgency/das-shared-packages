@@ -19,6 +19,7 @@ public static class AddServiceRegistrationExtension
             options.AddPolicy(
                 PolicyNames.IsAuthenticated, policy =>
                 {
+                    policy.Requirements.Add(new AccountActiveRequirement());
                     policy.RequireAuthenticatedUser();
                 });
             options.AddPolicy(
