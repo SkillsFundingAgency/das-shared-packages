@@ -23,6 +23,15 @@ namespace SFA.DAS.GovUK.Auth.Extensions
             return $"https://employerprofiles.{environmentPart}.{domainPart}.gov.uk/service/account-unavailable";
         }
     
+        public static string GetStubSignInRedirectUrl(string environment)
+        {
+            if (environment.ToLower() == "local" || environment.ToLower() == "prd")
+            {
+                return string.Empty;
+            }
+            
+            return $"https://employerprofiles.{environment.ToLower()}-eas.apprenticeships.education.gov.uk/service/account-details";
+        }
     }    
 }
 
