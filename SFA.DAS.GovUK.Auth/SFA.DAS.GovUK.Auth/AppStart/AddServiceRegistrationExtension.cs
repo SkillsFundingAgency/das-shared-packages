@@ -22,6 +22,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             }
 
             services.AddOptions();
+            services.AddHttpContextAccessor();
             services.AddTransient(typeof(ICustomClaims), customClaims);
 #if NETSTANDARD2_0
             services.Configure<GovUkOidcConfiguration>(_=>configuration.GetSection(nameof(GovUkOidcConfiguration)));

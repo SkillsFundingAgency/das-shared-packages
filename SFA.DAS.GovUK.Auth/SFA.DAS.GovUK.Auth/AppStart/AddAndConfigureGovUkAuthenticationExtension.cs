@@ -14,7 +14,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddServiceRegistration(configuration, customClaims);
             if (stubAuth && configuration["ResourceEnvironmentName"].ToUpper() != "PRD")
             {
-                services.AddEmployerStubAuthentication($"{authenticationCookieName}.stub",signedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
+                services.AddEmployerStubAuthentication($"{authenticationCookieName}.stub",
+                    signedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
+                    RedirectExtension.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]));
             }
             else
             {
