@@ -1,5 +1,7 @@
 using System;
+using System.Security.Policy;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -14,14 +16,13 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     {
 
         public static void AddEmployerStubAuthentication(this IServiceCollection services,
-            string authenticationCookieName, string redirectUrl, string loginRedirect)
+            string authenticationCookieName, string redirectUrl, string loginRedirect, string localRedirect)
         {
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                //.AddScheme<AuthenticationSchemeOptions, EmployerStubAuthHandler>(authenticationCookieName, _ => { })
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                 {
-                    options.LoginPath = "/home/AccountDetails";
+                    options.LoginPath = localRedirect;
                     options.AccessDeniedPath = new PathString("/error/403");
                     options.ExpireTimeSpan = TimeSpan.FromHours(1);
                     options.Cookie.Name = authenticationCookieName;
@@ -41,15 +42,17 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     {
                         options.Events.OnRedirectToLogin = c =>
                         {
-                            var redirectQuery = new Uri(c.RedirectUri).Query;
-                            c.Response.Redirect(loginRedirect + redirectQuery);
+                            var redirectUri = new Uri(c.RedirectUri);
+
+                            var redirectQuery = HttpUtility.UrlEncode(
+                                $"{redirectUri.Scheme}//{redirectUri.Authority}{HttpUtility.UrlDecode(redirectUri.Query.Replace("?ReturnUrl=", ""))}");
+                            c.Response.Redirect(loginRedirect + "?ReturnUrl=" + redirectQuery);
                             return Task.CompletedTask;
                         };    
                     }
                     
                 });
 
-            //services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName);
         }
 
     }
