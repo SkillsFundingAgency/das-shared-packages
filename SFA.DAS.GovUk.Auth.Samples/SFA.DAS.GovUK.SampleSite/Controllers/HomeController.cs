@@ -29,9 +29,12 @@ public class HomeController : Controller
         return View();
     }
     [HttpPost]
-    public IActionResult AccountDetails(StubAuthUserDetails model)
+    public async Task<IActionResult> AccountDetails(StubAuthUserDetails model)
     {
-        _stubAuthenticationService.AddStubEmployerAuth(Response.Cookies, model);
+        var claims = await _stubAuthenticationService.GetStubSignInClaims(model);
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
+            new AuthenticationProperties());
         
         return RedirectToAction("Authenticated");
     }
@@ -59,8 +62,12 @@ public class HomeController : Controller
         var authenticationProperties = new AuthenticationProperties();
         authenticationProperties.Parameters.Clear();
         authenticationProperties.Parameters.Add("id_token",idToken);
+        
         return SignOut(
-            authenticationProperties, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+            authenticationProperties, 
+            new[] {
+                CookieAuthenticationDefaults.AuthenticationScheme, 
+                OpenIdConnectDefaults.AuthenticationScheme});
     }
     
 }
