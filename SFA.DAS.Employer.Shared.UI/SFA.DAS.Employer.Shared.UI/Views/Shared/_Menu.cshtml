@@ -9,6 +9,7 @@
     var selectedSection = ViewData.SelectedNavigationSection();
     var logoutRoute = OptionsAccessor.LocalLogoutRouteName;
     var clientId = OptionsAccessor.AccountsOidcClientId;
+    var isServicePage = string.IsNullOrEmpty(accountId);
 }
 
 @{
@@ -66,7 +67,7 @@
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
                                 <a href="@LinkGenerator.AccountsLink("Accounts")" role="menuitem" class="das-user-navigation__sub-menu-link mu-accounts">Your accounts</a>
                             </li>
-                            @if (!IsErrorPage())
+                            @if (!IsErrorPage() && !isServicePage)
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
                                     <a href="@LinkGenerator.AccountsLink("RenameAccount", accountId)" class="das-user-navigation__sub-menu-link mu-rename-acc">Rename account</a>
@@ -84,11 +85,11 @@
                             else
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href="@LinkGenerator.EmployerProfiles("ChangeLoginDetails", accountId)">Change your sign-in details</a>
+                                    <a href="@LinkGenerator.EmployerProfiles("ChangeLoginDetails", accountId)" class="das-user-navigation__sub-menu-link mu-change-signindetails">Change your sign-in details</a>
                                 </li>
 
                             }
-                            @if (!IsErrorPage())
+                            @if (!IsErrorPage() && !isServicePage)
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
                                     <a href="@LinkGenerator.AccountsLink("Notifications")" class="das-user-navigation__sub-menu-link mu-not-settings">Notifications settings</a>
