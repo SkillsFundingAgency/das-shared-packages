@@ -1,21 +1,21 @@
-using System.Security.Claims;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
+using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
     internal static class ConfigureGovUkAuthenticationExtension
     {
-        internal static void ConfigureGovUkAuthentication(this IServiceCollection services,
-            IConfiguration configuration, string authenticationCookieName, string redirectUrl)
+        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -59,14 +59,23 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                     options.Events.OnSignedOutCallbackRedirect = c =>
                     {
-                        c.Response.Cookies.Delete(authenticationCookieName);
+                        c.Response.Cookies.Delete(GovUkConstants.AuthCookieName);
                         c.Response.Redirect(redirectUrl);
                         c.HandleResponse();
                         return Task.CompletedTask;
                     };
-
-
-                }).AddAuthenticationCookie(authenticationCookieName);
+                }).AddCookie(options =>
+                {
+                    options.AccessDeniedPath = new PathString("/error/403");
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                    options.Cookie.Name = GovUkConstants.AuthCookieName;
+                    options.Cookie.Domain = RedirectExtension.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]);
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.SlidingExpiration = true;
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
+                    options.LogoutPath = "/home/signed-out";
+                });
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
                 .Configure<IOidcService, IAzureIdentityService, ICustomClaims, GovUkOidcConfiguration>(

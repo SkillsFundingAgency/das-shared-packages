@@ -10,5 +10,6 @@ namespace SFA.DAS.GovUK.Auth.Configuration
     public static class GovUkConstants
     {
         public const string StubAuthCookieName = "SFA.Apprenticeships.StubAuthCookie";
+        public const string AuthCookieName = "SFA.Apprenticeships.AuthCookie";
     }
 }
