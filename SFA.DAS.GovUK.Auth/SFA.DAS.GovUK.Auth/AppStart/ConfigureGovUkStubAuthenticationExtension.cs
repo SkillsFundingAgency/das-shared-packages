@@ -27,6 +27,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.Cookie.Name = GovUkConstants.StubAuthCookieName;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.SlidingExpiration = true;
+                    options.Cookie.IsEssential = true;
                     options.Cookie.SameSite = SameSiteMode.None;
                     if (!string.IsNullOrEmpty(cookieDomain))
                     {

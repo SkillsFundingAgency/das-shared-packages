@@ -74,6 +74,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     {
                         options.Cookie.Domain = environmentAndDomain;
                     }
+                    options.Cookie.IsEssential = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.SlidingExpiration = true;
                     options.Cookie.SameSite = SameSiteMode.None;
