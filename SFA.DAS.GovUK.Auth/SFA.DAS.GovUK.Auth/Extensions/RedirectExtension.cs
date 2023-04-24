@@ -4,6 +4,10 @@ namespace SFA.DAS.GovUK.Auth.Extensions
     {
         public static string GetEnvironmentAndDomain(string environment)
         {
+            if (environment.ToLower() == "local")
+            {
+                return "";
+            }
             var environmentPart = environment.ToLower() == "prd" ? "manage-apprenticeships" : $"{environment.ToLower()}-eas.apprenticeships";
             var domainPart = environment.ToLower() == "prd" ?  "service" : "education";
 

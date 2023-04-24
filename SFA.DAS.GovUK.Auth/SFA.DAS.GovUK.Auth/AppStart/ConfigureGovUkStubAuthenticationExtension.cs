@@ -15,7 +15,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     internal static class ConfigureGovUkStubAuthenticationExtension
     {
 
-        public static void AddEmployerStubAuthentication(this IServiceCollection services, string redirectUrl, string loginRedirect, string localRedirect)
+        public static void AddEmployerStubAuthentication(this IServiceCollection services, string redirectUrl, string loginRedirect, string localRedirect, string cookieDomain)
         {
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -28,6 +28,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.SlidingExpiration = true;
                     options.Cookie.SameSite = SameSiteMode.None;
+                    if (!string.IsNullOrEmpty(cookieDomain))
+                    {
+                        options.Cookie.Domain = cookieDomain;
+                    }
                     options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
                     options.LogoutPath = "/home/signed-out";
                     options.Events.OnSigningOut = c =>

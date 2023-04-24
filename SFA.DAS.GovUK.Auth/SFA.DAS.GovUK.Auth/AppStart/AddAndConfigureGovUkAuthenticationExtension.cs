@@ -16,7 +16,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             {
                 services.AddEmployerStubAuthentication(signedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
                     RedirectExtension.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]),
-                    localStubLoginPath);
+                    localStubLoginPath,
+                    RedirectExtension.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
             }
             else
             {

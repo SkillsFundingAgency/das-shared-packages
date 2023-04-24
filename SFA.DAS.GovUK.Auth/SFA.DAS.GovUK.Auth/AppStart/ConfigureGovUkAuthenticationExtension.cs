@@ -69,7 +69,11 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.AccessDeniedPath = new PathString("/error/403");
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                     options.Cookie.Name = GovUkConstants.AuthCookieName;
-                    options.Cookie.Domain = RedirectExtension.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]);
+                    var environmentAndDomain = RedirectExtension.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]);
+                    if (!string.IsNullOrEmpty(environmentAndDomain))
+                    {
+                        options.Cookie.Domain = environmentAndDomain;
+                    }
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.SlidingExpiration = true;
                     options.Cookie.SameSite = SameSiteMode.None;
