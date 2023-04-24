@@ -43,7 +43,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                             var redirectUri = new Uri(c.RedirectUri);
 
                             var redirectQuery = HttpUtility.UrlEncode(
-                                $"{redirectUri.Scheme}//{redirectUri.Authority}{HttpUtility.UrlDecode(redirectUri.Query.Replace("?ReturnUrl=", ""))}");
+                                $"{redirectUri.Scheme}://{redirectUri.Authority}{HttpUtility.UrlDecode(redirectUri.Query.Replace("?ReturnUrl=", ""))}");
                             c.Response.Redirect(loginRedirect + "?ReturnUrl=" + redirectQuery);
                             return Task.CompletedTask;
                         };    
