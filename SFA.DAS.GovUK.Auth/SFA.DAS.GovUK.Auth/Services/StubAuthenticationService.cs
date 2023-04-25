@@ -70,14 +70,14 @@ namespace SFA.DAS.GovUK.Auth.Services
             };
 
 
-            var identity = new ClaimsIdentity(claims, "Employer-stub");
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             
             if (_customClaims != null)
             {
                 var additionalClaims = await _customClaims.GetClaims(new TokenValidatedContext(_httpContextAccessor.HttpContext,new AuthenticationScheme(CookieAuthenticationDefaults.AuthenticationScheme, "Cookie", typeof(EmployerStubAuthHandler)), new OpenIdConnectOptions(), principal, new AuthenticationProperties() ));
                 claims.AddRange(additionalClaims);
-                principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Employer-stub"));
+                principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
             }
 
             return principal;

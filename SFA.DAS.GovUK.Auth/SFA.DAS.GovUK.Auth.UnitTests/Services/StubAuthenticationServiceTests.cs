@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -92,11 +93,12 @@ public class StubAuthenticationServiceTests
         
         var actual = await service.GetStubSignInClaims(model);
 
-        actual.Identities.FirstOrDefault().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
+        actual!.Identity!.AuthenticationType.Should().Be(CookieAuthenticationDefaults.AuthenticationScheme);
+        actual.Identities.FirstOrDefault()!.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))!.Value.Should()
             .Be(model.Email);
-        actual.Identities.FirstOrDefault().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier)).Value.Should()
+        actual.Identities.FirstOrDefault()!.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))!.Value.Should()
             .Be(model.Id);
-        actual.Identities.FirstOrDefault().Claims.FirstOrDefault(c => c.Type.Equals("sub")).Value.Should()
+        actual.Identities.FirstOrDefault()!.Claims.FirstOrDefault(c => c.Type.Equals("sub"))!.Value.Should()
             .Be(model.Id);
     }
 
@@ -104,6 +106,7 @@ public class StubAuthenticationServiceTests
     public async Task GetStubSignInClaims_Then_The_Custom_Clams_Are_Added(
         string claimValue,
         string claimKey,
+        
         StubAuthUserDetails model,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         [Frozen] Mock<IConfiguration> configuration,
@@ -116,7 +119,8 @@ public class StubAuthenticationServiceTests
         
         var actual = await service.GetStubSignInClaims(model);
 
-        actual.Identities.FirstOrDefault().Claims.FirstOrDefault(c => c.Type.Equals(claimKey)).Value.Should()
+        actual.Identities.FirstOrDefault()!.AuthenticationType.Should().Be(CookieAuthenticationDefaults.AuthenticationScheme);
+        actual.Identities.FirstOrDefault()!.Claims.FirstOrDefault(c => c.Type.Equals(claimKey))!.Value.Should()
             .Be(claimValue);
     }
 
