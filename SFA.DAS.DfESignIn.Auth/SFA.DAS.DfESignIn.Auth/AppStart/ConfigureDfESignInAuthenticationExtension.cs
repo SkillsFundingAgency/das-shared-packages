@@ -16,8 +16,11 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class ConfigureDfESignInAuthenticationExtension
     {
-        internal static void ConfigureDfESignInAuthentication(this IServiceCollection services,
-            IConfiguration configuration, string authenticationCookieName)
+        internal static void ConfigureDfESignInAuthentication(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            string authenticationCookieName,
+            string clientName)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -29,8 +32,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 })
                 .AddOpenIdConnect(options =>
                 {
-                    options.ClientId = configuration["DfEOidcConfiguration:ClientId"];
-                    options.ClientSecret = configuration["DfEOidcConfiguration:Secret"];
+                    options.ClientId = configuration[$"DfEOidcConfiguration_{clientName}:ClientId"];
+                    options.ClientSecret = configuration[$"DfEOidcConfiguration_{clientName}:Secret"];
                     options.MetadataAddress = $"{configuration["DfEOidcConfiguration:BaseUrl"]}/.well-known/openid-configuration";
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
