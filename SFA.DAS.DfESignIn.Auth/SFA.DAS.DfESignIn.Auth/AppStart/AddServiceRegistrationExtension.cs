@@ -16,7 +16,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class AddServiceRegistrationExtension
     {
-        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration, Type customServiceRole)
+        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration, Type customServiceRole, string clientName)
         {
             if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
             {
@@ -24,11 +24,16 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     "Cannot find DfEOidcConfiguration in configuration. Please add a section called DfESignInOidcConfiguration with BaseUrl, ClientId and Secret properties.");
             }
 
+            if (string.IsNullOrEmpty(clientName))
+                throw new ArgumentNullException(nameof(clientName), "ClientName cannot be null or empty");
+
             services.AddOptions();
 #if NETSTANDARD2_0
             services.Configure<DfEOidcConfiguration>(options => configuration.GetSection(nameof(DfEOidcConfiguration)).Bind(options));
+            services.Configure<DfEOidcConfiguration>(options => configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{clientName}").Bind(options));
 #else 
             services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
+            services.Configure<DfEOidcConfiguration>(configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{clientName}"));
 #endif
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
