@@ -3,16 +3,40 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.GovUK.Auth.Models;
+using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.GovUK.SampleSite.AppStart;
 
 namespace SFA.DAS.GovUK.SampleSite.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly IStubAuthenticationService _stubAuthenticationService;
+
+    public HomeController(IStubAuthenticationService stubAuthenticationService)
+    {
+        _stubAuthenticationService = stubAuthenticationService;
+    }
     [HttpGet]
     public IActionResult Index()
     {
         return View();
+    }
+    
+    [HttpGet]
+    public IActionResult AccountDetails()
+    {
+        return View();
+    }
+    [HttpPost]
+    public async Task<IActionResult> AccountDetails(StubAuthUserDetails model)
+    {
+        var claims = await _stubAuthenticationService.GetStubSignInClaims(model);
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
+            new AuthenticationProperties());
+        
+        return RedirectToAction("Authenticated");
     }
 
     [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
@@ -38,8 +62,12 @@ public class HomeController : Controller
         var authenticationProperties = new AuthenticationProperties();
         authenticationProperties.Parameters.Clear();
         authenticationProperties.Parameters.Add("id_token",idToken);
+        
         return SignOut(
-            authenticationProperties, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+            authenticationProperties, 
+            new[] {
+                CookieAuthenticationDefaults.AuthenticationScheme, 
+                OpenIdConnectDefaults.AuthenticationScheme});
     }
     
 }

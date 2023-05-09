@@ -1,0 +1,15 @@
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SFA.DAS.GovUK.Auth.Models.StubAuthUserDetails
+@{
+    Layout = "_Layout";
+}
+
+<h1 class="govuk-heading-xl">POC Auth - Enter sign in details</h1>
+<form method="POST" asp-action="AccountDetails" asp-controller="Home">
+    <label asp-for="Id">Id</label>
+    <input asp-for="Id"/>
+    <label asp-for="Email">Email</label>
+    <input asp-for="Email"/>
+    <button class="govuk-button" type="submit">Log me in</button>
+</form>
