@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Constants;
+using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
@@ -38,7 +39,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
 
             var actualClaims = tokenValidatedContext.Principal?.Identities.First().Claims.ToList();
             actualClaims?.First(c => c.Type.Equals(CustomClaimsIdentity.UkPrn)).Value.Should().Be(organisation.UkPrn.ToString());
-            actualClaims?.First(c => c.Type.Equals(ClaimsIdentity.DefaultNameClaimType)).Value.Should().Be(userId);
+            actualClaims?.First(c => c.Type.Equals(ClaimsIdentity.DefaultNameClaimType)).Value.Should().Be("Test Tester");
             actualClaims?.First(c => c.Type.Equals(ClaimName.Sub)).Value.Should().Be(userId);
             actualClaims?.First(c => c.Type.Equals(CustomClaimsIdentity.DisplayName)).Value.Should().Be("Test Tester");
         }
@@ -54,7 +55,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             [Frozen] Mock<ICustomServiceRole> customServiceRole)
         {
             var tokenValidatedContext = ArrangeTokenValidatedContext(userId, organisation, string.Empty);
-            response.Roles = response.Roles.Select(c => {c.Status.Id = 1; return c;}).ToList();
+            response.Roles = response.Roles.Select(c => {c.Status.Id = (int)RoleStatus.Active; return c;}).ToList();
             apiHelper.Setup(x => x.Get<ApiServiceResponse>($"{config.APIServiceUrl}/services/{config.APIServiceId}/organisations/{organisation.Id}/users/{userId}")).ReturnsAsync(response);
             configuration.Setup(c => c.Value).Returns(config);
             customServiceRole.Setup(role => role.RoleClaimType).Returns(CustomClaimsIdentity.Service);

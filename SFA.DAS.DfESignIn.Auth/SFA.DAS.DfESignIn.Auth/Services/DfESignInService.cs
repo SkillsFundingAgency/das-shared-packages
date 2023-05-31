@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Constants;
+using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.DfESignIn.Auth.Extensions;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
@@ -54,10 +54,9 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                 ctx.HttpContext.Items.Add(ClaimsIdentity.DefaultNameClaimType, userId);
                 ctx.HttpContext.Items.Add(CustomClaimsIdentity.DisplayName, displayName);
 
-                ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, userId));
+                ctx.Principal.Identities.First().AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, displayName));
                 ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.DisplayName, displayName));
                 ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.UkPrn, ukPrn));
-                //ctx.Principal.Identities.First().AddClaim(new Claim(CustomClaimsIdentity.Service, "DAA"));
             }
         }
 
@@ -68,7 +67,9 @@ namespace SFA.DAS.DfESignIn.Auth.Services
             if (response != null)
             {
                 var roleClaims = new List<Claim>();
-                foreach (var role in response.Roles.Where(role => role.Status.Id.Equals(1)))
+
+                // Iterate the roles which are of only active status.
+                foreach (var role in response.Roles.Where(role => role.Status.Id.Equals((int)RoleStatus.Active)))
                 {
                     roleClaims.Add(new Claim(ClaimName.RoleCode, role.Code, ClaimTypes.Role, ctx.Options.ClientId));
                     roleClaims.Add(new Claim(ClaimName.RoleId, role.Id.ToString(), ClaimTypes.Role, ctx.Options.ClientId));
@@ -77,10 +78,17 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 
                     // Add to initial identity
                     // Check if the custom service role type is set in client side if not use the default CustomClaimsIdentity.Service
-                    ctx.Principal?.Identities.First()
-                        .AddClaim(new Claim(_customServiceRole.RoleClaimType ?? CustomClaimsIdentity.Service, role.Name));
+                    ctx.Principal?.Identities
+                        .First()
+                        .AddClaim(
+                            new Claim(
+                                type: _customServiceRole.RoleClaimType ?? CustomClaimsIdentity.Service,
+                                value: _customServiceRole.RoleValueType.Equals(CustomServiceRoleValueType.Name)
+                                    ? role.Name
+                                    : role.Code));
                 }
 
+                
                 ctx?.Principal?.Identities.First().AddClaims(roleClaims);
             }
         }

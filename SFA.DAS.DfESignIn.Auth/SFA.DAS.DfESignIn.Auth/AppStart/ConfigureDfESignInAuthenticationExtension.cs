@@ -38,7 +38,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                     options.SignedOutRedirectUri = "/";
-                    options.SignedOutCallbackPath = "/signed-out";
+                    options.SignedOutCallbackPath = configuration[$"DfEOidcConfiguration_{clientName}:SignedOutCallbackPath"];
                     options.CallbackPath = "/sign-in";
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
