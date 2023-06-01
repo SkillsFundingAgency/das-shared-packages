@@ -5,11 +5,11 @@
         /// <summary>
         /// Enum Service Role Value by Name.
         /// </summary>
-        Name = 0,
+        Name = 1,
 
         /// <summary>
         /// Enum Service Role Value by Code.
         /// </summary>
-        Code = 1
+        Code = 2
     }
 }

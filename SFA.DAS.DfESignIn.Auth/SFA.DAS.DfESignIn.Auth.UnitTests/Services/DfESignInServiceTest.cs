@@ -33,6 +33,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             apiHelper.Setup(x => x.Get<ApiServiceResponse>($"{config.APIServiceUrl}/services/{config.APIServiceId}/organisations/{organisation.Id}/users/{userId}")).ReturnsAsync(response);
             configuration.Setup(c => c.Value).Returns(config);
             customServiceRole.Setup(role => role.RoleClaimType).Returns(CustomClaimsIdentity.Service);
+            customServiceRole.Setup(role => role.RoleValueType).Returns(CustomServiceRoleValueType.Name);
             var service = new DfESignInService(configuration.Object, apiHelper.Object, customServiceRole.Object);
 
             await service.PopulateAccountClaims(tokenValidatedContext);
@@ -59,6 +60,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             apiHelper.Setup(x => x.Get<ApiServiceResponse>($"{config.APIServiceUrl}/services/{config.APIServiceId}/organisations/{organisation.Id}/users/{userId}")).ReturnsAsync(response);
             configuration.Setup(c => c.Value).Returns(config);
             customServiceRole.Setup(role => role.RoleClaimType).Returns(CustomClaimsIdentity.Service);
+            customServiceRole.Setup(role => role.RoleValueType).Returns(CustomServiceRoleValueType.Name);
             var service = new DfESignInService(configuration.Object, apiHelper.Object, customServiceRole.Object);
 
             await service.PopulateAccountClaims(tokenValidatedContext);
