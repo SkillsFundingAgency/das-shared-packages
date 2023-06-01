@@ -62,7 +62,7 @@
                 @if (Context.User.Identity.IsAuthenticated)
                 {
                     <li role="menuitem" class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
-                        <a href="/" role="menuitem" class="das-user-navigation__link">Settings</a>
+                        <a href="@LinkGenerator.AccountsLink("Accounts")" role="menuitem" class="das-user-navigation__link">Settings</a>
                         <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
                                 <a href="@LinkGenerator.AccountsLink("Accounts")" role="menuitem" class="das-user-navigation__sub-menu-link mu-accounts">Your accounts</a>
