@@ -7,7 +7,7 @@ namespace SFA.DAS.DfESignIn.Auth.Interfaces
         string RoleClaimType { get; }
 
         /// <summary>
-        /// Property defines the custom service role value type when mapping the claims to the identity.
+        /// Property defines the custom service role value type(Name/Code) when mapping the claims to the identity.
         /// </summary>
         CustomServiceRoleValueType RoleValueType { get; }
     }

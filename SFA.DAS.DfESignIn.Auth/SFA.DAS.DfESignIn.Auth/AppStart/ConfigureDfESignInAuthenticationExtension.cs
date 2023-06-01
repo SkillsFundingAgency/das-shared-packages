@@ -20,7 +20,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             this IServiceCollection services,
             IConfiguration configuration,
             string authenticationCookieName,
-            string clientName)
+            string clientName,
+            string signedOutCallbackPath)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -38,7 +39,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                     options.SignedOutRedirectUri = "/";
-                    options.SignedOutCallbackPath = configuration[$"DfEOidcConfiguration_{clientName}:SignedOutCallbackPath"];
+                    options.SignedOutCallbackPath = signedOutCallbackPath;
                     options.CallbackPath = "/sign-in";
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;

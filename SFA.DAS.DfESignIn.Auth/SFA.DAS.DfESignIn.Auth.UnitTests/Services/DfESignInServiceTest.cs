@@ -34,7 +34,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             configuration.Setup(c => c.Value).Returns(config);
             customServiceRole.Setup(role => role.RoleClaimType).Returns(CustomClaimsIdentity.Service);
             var service = new DfESignInService(configuration.Object, apiHelper.Object, customServiceRole.Object);
-                
+
             await service.PopulateAccountClaims(tokenValidatedContext);
 
             var actualClaims = tokenValidatedContext.Principal?.Identities.First().Claims.ToList();
@@ -43,7 +43,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             actualClaims?.First(c => c.Type.Equals(ClaimName.Sub)).Value.Should().Be(userId);
             actualClaims?.First(c => c.Type.Equals(CustomClaimsIdentity.DisplayName)).Value.Should().Be("Test Tester");
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_The_Organisations_Are_Added_To_The_Claims(
             string userId,
@@ -55,7 +55,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             [Frozen] Mock<ICustomServiceRole> customServiceRole)
         {
             var tokenValidatedContext = ArrangeTokenValidatedContext(userId, organisation, string.Empty);
-            response.Roles = response.Roles.Select(c => {c.Status.Id = (int)RoleStatus.Active; return c;}).ToList();
+            response.Roles = response.Roles.Select(c => { c.Status.Id = (int)RoleStatus.Active; return c; }).ToList();
             apiHelper.Setup(x => x.Get<ApiServiceResponse>($"{config.APIServiceUrl}/services/{config.APIServiceId}/organisations/{organisation.Id}/users/{userId}")).ReturnsAsync(response);
             configuration.Setup(c => c.Value).Returns(config);
             customServiceRole.Setup(role => role.RoleClaimType).Returns(CustomClaimsIdentity.Service);
@@ -66,7 +66,6 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             var claims = tokenValidatedContext.Principal?.Identities.Last().Claims.ToList();
             if (claims != null)
             {
-
                 claims.Where(x => x.Type.Equals(ClaimName.RoleCode)).Select(c => c.Value).Should()
                     .BeEquivalentTo(response.Roles.Select(c => c.Code).ToList());
                 claims.Where(x => x.Type.Equals(ClaimName.RoleId)).Select(c => c.Value).Should()
@@ -78,29 +77,31 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
                 claims.Where(x => x.Type.Equals(CustomClaimsIdentity.Service)).Select(c => c.Value).Should()
                     .BeEquivalentTo(response.Roles.Select(c => c.Name).ToList());
             }
-                
         }
-        
-        private TokenValidatedContext ArrangeTokenValidatedContext(string userId, Organisation organisation, string emailAddress)
+
+        private static TokenValidatedContext ArrangeTokenValidatedContext(string userId, Organisation organisation, string emailAddress)
         {
-            var identity = new ClaimsIdentity(new List<Claim>
+            return new TokenValidatedContext(
+                new DefaultHttpContext(), 
+                new AuthenticationScheme(",", "", typeof(TestAuthHandler)),
+                new OpenIdConnectOptions(), Mock.Of<ClaimsPrincipal>(),
+                new AuthenticationProperties())
             {
-                new Claim(ClaimName.Sub, userId),
-                new Claim(ClaimTypes.Email, emailAddress),
-                new Claim(ClaimName.Organisation, JsonConvert.SerializeObject(organisation)),
-                new Claim(ClaimName.FamilyName, "Tester"),
-                new Claim(ClaimName.GivenName, "Test")
-            });
-        
-            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(identity));
-            return new TokenValidatedContext(new DefaultHttpContext(), new AuthenticationScheme(",","", typeof(TestAuthHandler)),
-                new OpenIdConnectOptions(), Mock.Of<ClaimsPrincipal>(), new AuthenticationProperties())
-            {
-                Principal = claimsPrincipal
+                Principal = new ClaimsPrincipal(
+                    new ClaimsIdentity(
+                    new ClaimsIdentity(
+                    new List<Claim>
+                {
+                    new(ClaimName.Sub, userId),
+                    new(ClaimTypes.Email, emailAddress),
+                    new(ClaimName.Organisation, JsonConvert.SerializeObject(organisation)),
+                    new(ClaimName.FamilyName, "Tester"),
+                    new(ClaimName.GivenName, "Test")
+                })))
             };
         }
-    
-    
+
+
         private class TestAuthHandler : IAuthenticationHandler
         {
             public Task InitializeAsync(AuthenticationScheme scheme, HttpContext context)

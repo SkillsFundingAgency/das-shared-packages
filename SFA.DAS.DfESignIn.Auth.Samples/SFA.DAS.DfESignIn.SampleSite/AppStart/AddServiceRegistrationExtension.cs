@@ -11,13 +11,19 @@ public static class AddServiceRegistrationExtension
     // This client name value has to be same as OpenID Connect Client Id
     // https://test-manage.signin.education.gov.uk/services/9F92718F-FCC5-4CDA-8F80-EEA8004FE089/service-configuration
     private const string ClientName = "QA";
+    private const string SignedOutCallbackPath = "/signed-out";
 
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
-        services.AddAndConfigureDfESignInAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(CustomServiceRole), ClientName);
+        services.AddAndConfigureDfESignInAuthentication(
+            configuration,
+            $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth",
+            typeof(CustomServiceRole),
+            ClientName, 
+            SignedOutCallbackPath);
         services.AddProviderUiServiceRegistration(configuration);
     }
 }

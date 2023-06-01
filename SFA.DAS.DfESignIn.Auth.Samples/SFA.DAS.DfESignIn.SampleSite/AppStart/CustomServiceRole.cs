@@ -7,6 +7,8 @@ namespace SFA.DAS.DfESignIn.SampleSite.AppStart
     public class CustomServiceRole : ICustomServiceRole
     {
         public string RoleClaimType => CustomClaimsIdentity.Service;
+
+        // <inherit-doc/>
         public CustomServiceRoleValueType RoleValueType => CustomServiceRoleValueType.Name;
     }
 }

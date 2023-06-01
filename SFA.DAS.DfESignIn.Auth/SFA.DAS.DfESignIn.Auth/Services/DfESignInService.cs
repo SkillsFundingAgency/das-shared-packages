@@ -87,8 +87,6 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                                     ? role.Name
                                     : role.Code));
                 }
-
-                
                 ctx?.Principal?.Identities.First().AddClaims(roleClaims);
             }
         }
