@@ -8,6 +8,7 @@ using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
+using SFA.DAS.DfESignIn.Auth.Enums;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
@@ -102,5 +103,6 @@ public class WhenAddingServicesToTheContainer
     public class TestCustomServiceRole : ICustomServiceRole
     {
         public string RoleClaimType => throw new NotImplementedException();
+        public CustomServiceRoleValueType RoleValueType => CustomServiceRoleValueType.Name;
     }
 }

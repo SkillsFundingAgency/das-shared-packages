@@ -16,7 +16,11 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class AddServiceRegistrationExtension
     {
-        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration, Type customServiceRole, string clientName)
+        internal static void AddServiceRegistration(
+            this IServiceCollection services, 
+            IConfiguration configuration, 
+            Type customServiceRole, 
+            string clientName)
         {
             if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
             {

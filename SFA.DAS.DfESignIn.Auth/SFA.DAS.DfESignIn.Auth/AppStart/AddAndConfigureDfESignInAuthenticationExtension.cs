@@ -6,7 +6,13 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     public static class AddAndConfigureDfESignInAuthenticationExtension
     {
-        public static void AddAndConfigureDfESignInAuthentication(this IServiceCollection services, IConfiguration configuration, string authenticationCookieName, Type customServiceRole, string clientName)
+        public static void AddAndConfigureDfESignInAuthentication(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            string authenticationCookieName,
+            Type customServiceRole,
+            string clientName,
+            string signedOutCallbackPath = "/signed-out")
         {
             services.AddServiceRegistration(configuration, customServiceRole, clientName);
             if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
@@ -15,7 +21,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             }
             else
             {
-                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName);
+                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath);
             }
         }
     }
