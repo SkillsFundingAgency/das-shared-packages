@@ -22,12 +22,15 @@ Library to enable employer/citizen facing service to use [Gov One Login](https:/
   "GovUkOidcConfiguration": {
     "BaseUrl": "https://{INTEGRATION_ENVIRONMENT_URL}.gov.uk",    //From gov uk one login 
     "ClientId": "{CLIENT_ID}",    // From gov uk one login
-    "KeyVaultIdentifier": "https://{YOUR_KEYVAULT}.vault.azure.net/keys/{KEY_NAME}"
+    "KeyVaultIdentifier": "https://{YOUR_KEYVAULT}.vault.azure.net/keys/{KEY_NAME}",
+    "LoginSlidingExpiryTimeOutInMinutes" : 30,
+    "GovLoginSessionConnectionString" : "RedisConnectionString"
   }
 }
 ```
 
-The above is the minimum required configuration, in the employer apprenticeship service, this configuration is stored in a shared configuration key `SFA.DAS.Employer.GovSignIn_1.0` and using the Azure Table storage package, can be included in the config names required for the application.
+The above is the minimum required configuration, in the employer apprenticeship service, this configuration is stored in a shared configuration key `SFA.DAS.Employer.GovSignIn_1.0` and using the Azure Table storage package, can be included in the config names required for the application. It 
+should be noted that leaving `GovLoginSessionConnectionString` empty will use `DistributedMemoryCache` instead of `RedisCache`.
 
 ## ICustomClaims
 
@@ -120,6 +123,7 @@ public class HomeController : Controller
 }    
 ```
 
-To sign out the `SignOut` action result should be called, passing the `CookieAuthenticationDefaults.AuthenticationScheme` as the authentication scheme to sign out from
+To sign out the `SignOut` action result should be called, passing the `CookieAuthenticationDefaults.AuthenticationScheme` as the authentication scheme to sign out from. If using the redis cache session store
+this will end the session.
 
 

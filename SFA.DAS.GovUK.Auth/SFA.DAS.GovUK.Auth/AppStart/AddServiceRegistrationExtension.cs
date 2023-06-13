@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,20 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddTransient<IJwtSecurityTokenService, JwtSecurityTokenService>();
             services.AddTransient<IStubAuthenticationService, StubAuthenticationService>();
             services.AddSingleton<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
+            services.AddSingleton<ITicketStore, AuthenticationTicketStore>();
+            
+            var connection = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
+            if (string.IsNullOrEmpty(connection.GovLoginSessionConnectionString))
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = connection.GovLoginSessionConnectionString;
+                });
+            }
         }
     }
 }

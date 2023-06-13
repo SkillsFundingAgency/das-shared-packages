@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -57,17 +59,12 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         return Task.CompletedTask;
                     };
 
-                    options.Events.OnSignedOutCallbackRedirect = c =>
-                    {
-                        c.Response.Cookies.Delete(GovUkConstants.AuthCookieName);
-                        c.Response.Redirect(redirectUrl);
-                        c.HandleResponse();
-                        return Task.CompletedTask;
-                    };
-                }).AddCookie(options =>
+                    
+                })
+                .AddCookie(options =>
                 {
                     options.AccessDeniedPath = new PathString("/error/403");
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                    
                     options.Cookie.Name = GovUkConstants.AuthCookieName;
                     var environmentAndDomain = RedirectExtension.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]);
                     if (!string.IsNullOrEmpty(environmentAndDomain))
@@ -76,15 +73,16 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     }
                     options.Cookie.IsEssential = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    options.SlidingExpiration = true;
-                    options.Cookie.SameSite = SameSiteMode.None;
+                    
+                    options.Cookie.SameSite = SameSiteMode.Lax;
                     options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
                     options.LogoutPath = "/home/signed-out";
-                });
+                })
+                ;
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-                .Configure<IOidcService, IAzureIdentityService, ICustomClaims, GovUkOidcConfiguration>(
-                    (options, oidcService, azureIdentityService, customClaims, config) =>
+                .Configure<IOidcService, IAzureIdentityService, ICustomClaims, GovUkOidcConfiguration, ITicketStore>(
+                    (options, oidcService, azureIdentityService, customClaims, config, ticketStore) =>
                     {
                         var govUkConfiguration =config;
                         options.TokenValidationParameters = new TokenValidationParameters
@@ -105,9 +103,24 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                                 ctx.HandleCodeRedemption(token.AccessToken, token.IdToken);
                             }
                         };
+                        options.Events.OnSignedOutCallbackRedirect = c =>
+                        {
+                            c.Response.Cookies.Delete(GovUkConstants.AuthCookieName);
+                            c.Response.Redirect(redirectUrl);
+                            c.HandleResponse();
+                            return Task.CompletedTask;
+                        };
                         options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx);
-
                     });
+            services
+                .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+                .Configure<ITicketStore, GovUkOidcConfiguration>((options, ticketStore, config) =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(config.LoginSlidingExpiryTimeOutInMinutes);
+                    options.SlidingExpiration = true;
+                    options.SessionStore = ticketStore;
+                });
+            
         }
     }
 }
