@@ -27,9 +27,9 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
             Assert.That(Guid.TryParse(result, out var actualKey), Is.True);
             distributedCache.Verify(x => x.SetAsync(
                 actualKey.ToString(),
-                It.Is<byte[]>(c => TicketSerializer.Default.Deserialize(c).AuthenticationScheme == ticket.AuthenticationScheme),
+                It.Is<byte[]>(c => TicketSerializer.Default.Deserialize(c)!.AuthenticationScheme == ticket.AuthenticationScheme),
                 It.Is<DistributedCacheEntryOptions>(c
-                    => c.SlidingExpiration.Value.Minutes == TimeSpan.FromMinutes(expiryTime).Minutes),
+                    => c.SlidingExpiration != null && c.SlidingExpiration.Value.Minutes == TimeSpan.FromMinutes(expiryTime).Minutes),
                 It.IsAny<CancellationToken>()
                 ), Times.Once);
         }
