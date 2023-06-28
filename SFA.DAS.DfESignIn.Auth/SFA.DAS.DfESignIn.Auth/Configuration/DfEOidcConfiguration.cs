@@ -8,5 +8,7 @@ namespace SFA.DAS.DfESignIn.Auth.Configuration
         public string APIServiceUrl { get; set; }
         public string APIServiceId { get; set; }
         public string APIServiceSecret { get; set; }
+        public int LoginSlidingExpiryTimeOutInMinutes { get; set; } = 30;
+        public string DfELoginSessionConnectionString { get; set; }
     }
 }

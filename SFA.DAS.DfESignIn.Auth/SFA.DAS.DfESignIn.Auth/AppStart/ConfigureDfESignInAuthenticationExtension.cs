@@ -90,11 +90,19 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 .AddAuthenticationCookie(authenticationCookieName);
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-                .Configure<IDfESignInService, IOptions<DfEOidcConfiguration>>(
-                    (options, dfeSignInService, config) =>
+                .Configure<IDfESignInService, IOptions<DfEOidcConfiguration>, ITicketStore>(
+                    (options, dfeSignInService, config, ticketStore) =>
                     {
                         options.Events.OnTokenValidated = async ctx => await dfeSignInService.PopulateAccountClaims(ctx);
                     });
+            services
+                .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+                .Configure<ITicketStore, DfEOidcConfiguration>((options, ticketStore, config) =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(config.LoginSlidingExpiryTimeOutInMinutes);
+                    options.SlidingExpiration = true;
+                    options.SessionStore = ticketStore;
+                });
         }
 
     }
