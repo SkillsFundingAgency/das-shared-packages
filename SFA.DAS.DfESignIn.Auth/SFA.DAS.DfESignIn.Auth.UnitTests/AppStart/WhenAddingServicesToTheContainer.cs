@@ -12,6 +12,7 @@ using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Enums;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.AspNetCore.Authentication;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
@@ -102,6 +103,30 @@ public class WhenAddingServicesToTheContainer
         var distributedCache = serviceProvider.GetService<IDistributedCache>();
         Assert.That(distributedCache, Is.Not.Null);
         Assert.That(distributedCache, Is.InstanceOf<RedisCache>());
+    }
+
+    [Test]
+    public async Task Then_ConfigureDfESignInAuthentication_Should_Have_Expected_AuthenticationCookie()
+    {
+        // Arrange
+        var configuration = GenerateConfiguration();
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddAndConfigureDfESignInAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(TestCustomServiceRole), ClientName);
+        var expectedAuthSchemeNames = new[] { CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme };
+
+        // Assert
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var authenticationSchemeProvider = serviceProvider.GetService<IAuthenticationSchemeProvider>();
+        Assert.That(authenticationSchemeProvider, Is.Not.Null);
+        
+        var authenticationSchemes = await authenticationSchemeProvider?.GetAllSchemesAsync()!;
+        var authSchemeList = authenticationSchemes?.ToList();
+        var actualAuthSchemeNames = authSchemeList?.Select(args => args.Name);
+        Assert.Multiple(() =>
+        {
+            Assert.That(authSchemeList, Is.Not.Null);
+            Assert.That(actualAuthSchemeNames, Is.SupersetOf(expectedAuthSchemeNames));
+        });
     }
 
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
