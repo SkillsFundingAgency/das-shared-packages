@@ -84,9 +84,19 @@
                             }
                             else
                             {
-                                <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href="@LinkGenerator.EmployerProfiles("ChangeLoginDetails", accountId)" class="das-user-navigation__sub-menu-link mu-change-signindetails">Change your sign-in details</a>
-                                </li>
+                                if (string.IsNullOrEmpty(accountId))
+                                {
+                                    <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
+                                        <a href="@LinkGenerator.EmployerProfiles("ChangeLoginDetailsNoAccount")" class="das-user-navigation__sub-menu-link mu-change-signindetails">Change your sign-in details</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
+                                        <a href="@LinkGenerator.EmployerProfiles("ChangeLoginDetails", accountId)" class="das-user-navigation__sub-menu-link mu-change-signindetails">Change your sign-in details</a>
+                                    </li>    
+                                }
+                                
 
                             }
                             @if (!IsErrorPage() && !isServicePage)
