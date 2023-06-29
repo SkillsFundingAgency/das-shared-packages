@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
@@ -9,6 +10,8 @@ using SFA.DAS.DfESignIn.Auth.Interfaces;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Enums;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
@@ -22,6 +25,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(ITokenDataSerializer))]
     [TestCase(typeof(ITokenBuilder))]
     [TestCase(typeof(IApiHelper))]
+    [TestCase(typeof(ITicketStore))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var serviceCollection = new ServiceCollection();
@@ -67,6 +71,39 @@ public class WhenAddingServicesToTheContainer
             serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), It.IsAny<string>()));
     }
 
+    [Test]
+    public void Then_DfELoginSessionConnectionString_IsNull_AddDistributedMemoryCache_RegistersDistributedMemoryCache()
+    {
+        // Arrange
+        var configuration = GenerateConfiguration();
+        configuration["DfEOidcConfiguration:DfELoginSessionConnectionString"] = string.Empty;
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName);
+
+        // Assert
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var distributedCache = serviceProvider.GetService<IDistributedCache>();
+        Assert.That(distributedCache, Is.Not.Null);
+        Assert.That(distributedCache, Is.InstanceOf<MemoryDistributedCache>());
+    }
+
+    [Test]
+    public void Then_DfELoginSessionConnectionString_IsNotNull_AddStackExchangeRedisCache_RegistersDistributedMemoryCache()
+    {
+        // Arrange
+        var configuration = GenerateConfiguration();
+
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName);
+
+        // Assert
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var distributedCache = serviceProvider.GetService<IDistributedCache>();
+        Assert.That(distributedCache, Is.Not.Null);
+        Assert.That(distributedCache, Is.InstanceOf<RedisCache>());
+    }
+
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
     {
         var configuration = GenerateConfiguration();
@@ -83,7 +120,9 @@ public class WhenAddingServicesToTheContainer
                 new("DfEOidcConfiguration:ClientId", "1234567"),
                 new("DfEOidcConfiguration:APIServiceSecret", "1234567"),
                 new("DfEOidcConfiguration:KeyVaultIdentifier", "https://test.com/"),
-                new("ProviderSharedUIConfiguration:DashboardUrl", "https://test.com/")
+                new("ProviderSharedUIConfiguration:DashboardUrl", "https://test.com/"),
+                new("DfEOidcConfiguration:DfELoginSessionConnectionString", "https://test.com/"),
+                new("DfEOidcConfiguration:LoginSlidingExpiryTimeOutInMinutes", "30"),
             }
         };
 
