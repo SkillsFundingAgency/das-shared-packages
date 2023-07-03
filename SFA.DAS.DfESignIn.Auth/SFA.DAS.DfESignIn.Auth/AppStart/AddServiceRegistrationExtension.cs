@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using Polly;
 using Polly.Extensions.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -51,6 +52,24 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 .AddPolicyHandler(HttpClientRetryPolicy());
             services.AddTransient<ITokenDataSerializer, TokenDataSerializer>();
             services.AddTransient<ITokenBuilder, TokenBuilder>();
+            services.AddSingleton<ITicketStore, AuthenticationTicketStore>();
+
+            var connection = configuration.GetSection(nameof(DfEOidcConfiguration)).Get<DfEOidcConfiguration>();
+            if (string.IsNullOrEmpty(connection.DfELoginSessionConnectionString))
+            {
+#if NETSTANDARD2_0
+                services.AddMemoryCache();
+#else
+                services.AddDistributedMemoryCache();
+#endif
+            }
+            else
+            {
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = connection.DfELoginSessionConnectionString;
+                });
+            }
         }
 
         private static IAsyncPolicy<HttpResponseMessage> HttpClientRetryPolicy()
