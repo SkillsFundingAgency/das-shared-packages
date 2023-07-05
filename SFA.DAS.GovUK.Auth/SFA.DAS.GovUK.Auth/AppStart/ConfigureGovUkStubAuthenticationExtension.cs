@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web;
@@ -9,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Extensions;
+using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
@@ -54,6 +58,29 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         };    
                     }
                     
+                });
+            services.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+                .Configure<ICustomClaims>((options, customClaims) =>
+                {
+                    options.Events.OnValidatePrincipal = async (ctx) =>
+                    {
+                        var claims = new List<Claim>();
+                        claims.AddRange(ctx.Principal.Claims);
+                        
+                        if (customClaims != null)
+                        {
+                            var additionalClaims = await customClaims.GetClaims(new TokenValidatedContext(ctx.HttpContext,new AuthenticationScheme(CookieAuthenticationDefaults.AuthenticationScheme, "Cookie", typeof(EmployerStubAuthHandler)), new OpenIdConnectOptions(), ctx.Principal, new AuthenticationProperties() ));
+                            foreach (var additionalClaim in additionalClaims)
+                            {
+                                if(claims.FirstOrDefault(c=>c.Type == additionalClaim.Type) == null)
+                                    claims.Add(additionalClaim);    
+                            }
+                            
+                        }
+                        ctx.Principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+                        await ctx.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, ctx.Principal);
+                    };
+
                 });
 
         }
