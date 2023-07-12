@@ -39,7 +39,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddSingleton<ITicketStore, AuthenticationTicketStore>();
             
             var connection = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
-            if (string.IsNullOrEmpty(connection.GovLoginSessionConnectionString))
+            bool.TryParse(configuration["StubAuth"],out var stubAuth);
+            if ((stubAuth && configuration["ResourceEnvironmentName"].ToUpper() != "PRD") || string.IsNullOrEmpty(connection.GovLoginSessionConnectionString))
             {
                 services.AddDistributedMemoryCache();
             }
