@@ -48,7 +48,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         AuthenticationType = OpenIdConnectDefaults.AuthenticationScheme
                     };
 
-                    var scopes = "openid email profile organisation organisationid".Split(' ');
+                    var scopes = configuration["DfEOidcConfiguration:Scopes"].Split(' ');
                     options.Scope.Clear();
                     foreach (var scope in scopes)
                     {
