@@ -8,20 +8,22 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     public static class ConfigureSharedAuthenticationExtension
     {
-        public static void AddAuthenticationCookie(this AuthenticationBuilder services,
-            string cookieName)
+        public static void AddAuthenticationCookie(
+            this AuthenticationBuilder services,
+            string cookieName,
+            string signedOutCallbackPath)
         {
-            
             services.AddCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/error/403");
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 options.Cookie.Name = cookieName;
+                options.Cookie.IsEssential = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.SlidingExpiration = true;
-                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
                 options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
-                options.LogoutPath = "/home/signed-out";
+                options.LogoutPath = new PathString(signedOutCallbackPath);
             });
         }
     }

@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
-using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 
 namespace SFA.DAS.DfESignIn.Auth.Api.Client
 {

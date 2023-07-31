@@ -7,9 +7,10 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class ConfigureDfESignInStubAuthenticationExtension
     {
-
-        public static void AddProviderStubAuthentication(this IServiceCollection services,
-            string authenticationCookieName)
+        public static void AddProviderStubAuthentication(
+            this IServiceCollection services,
+            string authenticationCookieName,
+            string signedOutCallbackPath)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -27,8 +28,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     };
                 });
 
-            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName);
+            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath);
         }
-
     }
 }

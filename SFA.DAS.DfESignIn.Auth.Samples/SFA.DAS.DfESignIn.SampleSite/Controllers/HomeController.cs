@@ -35,7 +35,9 @@ public class HomeController : Controller
         authenticationProperties.Parameters.Clear();
         authenticationProperties.Parameters.Add("id_token",idToken);
         return SignOut(
-            authenticationProperties, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+            authenticationProperties,
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            OpenIdConnectDefaults.AuthenticationScheme);
     }
     
 }
