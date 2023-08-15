@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+        <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
@@ -16,24 +16,21 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.5.0" />
+        <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.16" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.22.0" />
         <PackageReference Include="Microsoft.IdentityModel.KeyVaultExtensions" Version="6.22.0" />
-        <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
+        <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
+        
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    </ItemGroup>
-    
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.8" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.15" />
+
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.32" />
-    </ItemGroup>
+    
+    
 </Project>
