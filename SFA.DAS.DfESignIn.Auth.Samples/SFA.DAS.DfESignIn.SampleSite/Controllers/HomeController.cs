@@ -36,8 +36,18 @@ public class HomeController : Controller
         authenticationProperties.Parameters.Add("id_token",idToken);
         return SignOut(
             authenticationProperties,
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            OpenIdConnectDefaults.AuthenticationScheme);
+            new[]
+            {
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                OpenIdConnectDefaults.AuthenticationScheme
+            }
+        );
     }
-    
+
+    [HttpGet]
+    [Route("dashboard")]
+    public IActionResult RedirectToDashboard()
+    {
+        return RedirectPermanent("https://test-pas.apprenticeships.education.gov.uk/");
+    }
 }

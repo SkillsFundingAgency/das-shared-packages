@@ -12,7 +12,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             string authenticationCookieName,
             Type customServiceRole,
             string clientName,
-            string signedOutCallbackPath = "/signed-out")
+            string signedOutCallbackPath = "/signed-out",
+            string redirectUrl = "/")
         {
             services.AddServiceRegistration(configuration, customServiceRole, clientName);
             if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
@@ -21,7 +22,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             }
             else
             {
-                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath);
+                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath, redirectUrl);
             }
         }
     }
