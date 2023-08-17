@@ -23,7 +23,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             IConfiguration configuration,
             string authenticationCookieName,
             string clientName,
-            string signedOutCallbackPath)
+            string signedOutCallbackPath,
+            string redirectUrl)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -40,11 +41,12 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.MetadataAddress = $"{configuration["DfEOidcConfiguration:BaseUrl"]}/.well-known/openid-configuration";
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
-                    options.SignedOutRedirectUri = new PathString("/");
+                    options.SignedOutRedirectUri = new PathString(redirectUrl);
                     options.SignedOutCallbackPath = new PathString(signedOutCallbackPath); // the path the authentication provider posts back after signing out.
                     options.CallbackPath = new PathString("/sign-in"); // the path the authentication provider posts back when authenticating.
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
+                    options.ResponseMode = string.Empty;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         AuthenticationType = OpenIdConnectDefaults.AuthenticationScheme
@@ -84,7 +86,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.Events.OnSignedOutCallbackRedirect = c =>
                     {
                         c.Response.Cookies.Delete(authenticationCookieName); // delete the client cookie by given cookie name.
-                        c.Response.Redirect(new PathString("/")); // the path the authentication provider posts back after signing out.
+                        c.Response.Redirect(c.Options.SignedOutRedirectUri); // the path the authentication provider posts back after signing out.
                         c.Request.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // clear the browser application cookie.
                         c.Request.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme); // delete the browser odic cookie.
                         c.HandleResponse();
