@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using SFA.DAS.DfESignIn.Auth.Constants;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -42,8 +42,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                     options.SignedOutRedirectUri = new PathString(redirectUrl);
-                    options.SignedOutCallbackPath = new PathString(signedOutCallbackPath); // the path the authentication provider posts back after signing out.
-                    options.CallbackPath = new PathString("/sign-in"); // the path the authentication provider posts back when authenticating.
+                    options.SignedOutCallbackPath = new PathString(RoutePath.OidcSignOut); // the path the authentication provider posts back after signing out.
+                    options.CallbackPath = new PathString(RoutePath.OidcSignIn); // the path the authentication provider posts back when authenticating.
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
                     options.ResponseMode = string.Empty;
@@ -76,7 +76,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     {
                         if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
                         {
-                            c.Response.Redirect("/");
+                            c.Response.Redirect(new PathString(redirectUrl));
                             c.HandleResponse();
                         }
 
@@ -87,8 +87,6 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     {
                         c.Response.Cookies.Delete(authenticationCookieName); // delete the client cookie by given cookie name.
                         c.Response.Redirect(c.Options.SignedOutRedirectUri); // the path the authentication provider posts back after signing out.
-                        c.Request.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // clear the browser application cookie.
-                        c.Request.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme); // delete the browser odic cookie.
                         c.HandleResponse();
                         return Task.CompletedTask;
                     };
