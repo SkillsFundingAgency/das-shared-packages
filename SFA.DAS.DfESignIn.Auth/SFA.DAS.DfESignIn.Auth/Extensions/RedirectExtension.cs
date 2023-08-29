@@ -21,8 +21,9 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
             {
                 return redirectUri;
             }
-            
-            return $"https://{GetEnvironmentAndDomain(environment)}";
+
+            var environmentAndDomain = GetEnvironmentAndDomain(environment);
+            return string.IsNullOrEmpty(environmentAndDomain) ? "/" : $"https://{environmentAndDomain}";
         }
     }
 }
