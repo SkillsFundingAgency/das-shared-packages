@@ -30,5 +30,34 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
 
             actual.Should().Be("providers.apprenticeships.education.gov.uk");
         }
+        
+        
+        [Test]
+        public void Then_The_Logged_Out_Url_Is_Returned_When_Specified()
+        {
+            var actual = "test".GetSignedOutRedirectUrl("environment");
+
+            actual.Should().Be("test");
+        }
+
+        [TestCase("test")]
+        [TestCase("pp")]
+        [TestCase("something")]
+        public void Then_The_Logged_Out_Url_Is_Returned_For_Test(string environment)
+        {
+            var actual = "".GetSignedOutRedirectUrl(environment);
+            
+            actual.Should().Be($"https://{environment}-pas.apprenticeships.education.gov.uk");
+        }
+        
+        [TestCase("test")]
+        [TestCase("pp")]
+        [TestCase("something")]
+        public void Then_The_Logged_Out_Url_Is_Returned_For_Prod(string environment)
+        {
+            var actual = "".GetSignedOutRedirectUrl("prd");
+            
+            actual.Should().Be("https://providers.apprenticeships.education.gov.uk");
+        }
     }
 }

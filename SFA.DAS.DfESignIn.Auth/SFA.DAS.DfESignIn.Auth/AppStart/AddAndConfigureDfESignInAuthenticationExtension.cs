@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using SFA.DAS.DfESignIn.Auth.Extensions;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -13,7 +14,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             Type customServiceRole,
             string clientName,
             string signedOutCallbackPath = "/signed-out",
-            string redirectUrl = "/")
+            string redirectUrl = "")
         {
             services.AddServiceRegistration(configuration, customServiceRole, clientName);
             if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
@@ -22,7 +23,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             }
             else
             {
-                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath, redirectUrl);
+                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath, redirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
             }
         }
     }

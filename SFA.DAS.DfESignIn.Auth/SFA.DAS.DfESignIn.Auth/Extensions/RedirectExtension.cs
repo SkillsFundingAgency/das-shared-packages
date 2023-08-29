@@ -15,5 +15,14 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
 
             return $"{environmentPart}.education.gov.uk";
         }
+        public static string GetSignedOutRedirectUrl(this string redirectUri, string environment)
+        {
+            if (!string.IsNullOrEmpty(redirectUri))
+            {
+                return redirectUri;
+            }
+            
+            return $"https://{GetEnvironmentAndDomain(environment)}";
+        }
     }
 }
