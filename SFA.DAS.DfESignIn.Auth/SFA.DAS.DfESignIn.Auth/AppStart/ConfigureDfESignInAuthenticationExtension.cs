@@ -91,7 +91,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         return Task.CompletedTask;
                     };
                 })
-                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath);
+                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, configuration["ResourceEnvironmentName"]);
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
                 .Configure<IDfESignInService, IOptions<DfEOidcConfiguration>, ITicketStore>(

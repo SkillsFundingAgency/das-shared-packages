@@ -18,7 +18,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             services.AddServiceRegistration(configuration, customServiceRole, clientName);
             if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
             {
-                services.AddProviderStubAuthentication($"{authenticationCookieName}.stub", signedOutCallbackPath);
+                services.AddProviderStubAuthentication($"{authenticationCookieName}.stub", signedOutCallbackPath,configuration["ResourceEnvironmentName"]);
             }
             else
             {
