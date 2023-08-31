@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using SFA.DAS.DfESignIn.Auth.Extensions;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -11,7 +12,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
         public static void AddAuthenticationCookie(
             this AuthenticationBuilder services,
             string cookieName,
-            string signedOutCallbackPath)
+            string signedOutCallbackPath,
+            string resourceEnvironmentName)
         {
             services.AddCookie(options =>
             {
@@ -24,6 +26,11 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
                 options.LogoutPath = new PathString(signedOutCallbackPath);
+                var environmentAndDomain = RedirectExtension.GetEnvironmentAndDomain(resourceEnvironmentName);
+                if (!string.IsNullOrEmpty(environmentAndDomain))
+                {
+                    options.Cookie.Domain = environmentAndDomain;
+                }
             });
         }
     }

@@ -41,7 +41,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.MetadataAddress = $"{configuration["DfEOidcConfiguration:BaseUrl"]}/.well-known/openid-configuration";
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
-                    options.SignedOutRedirectUri = new PathString(redirectUrl);
+                    options.SignedOutRedirectUri = redirectUrl;
                     options.SignedOutCallbackPath = new PathString(RoutePath.OidcSignOut); // the path the authentication provider posts back after signing out.
                     options.CallbackPath = new PathString(RoutePath.OidcSignIn); // the path the authentication provider posts back when authenticating.
                     options.SaveTokens = true;
@@ -76,7 +76,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     {
                         if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
                         {
-                            c.Response.Redirect(new PathString(redirectUrl));
+                            c.Response.Redirect(redirectUrl);
                             c.HandleResponse();
                         }
 
@@ -91,7 +91,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         return Task.CompletedTask;
                     };
                 })
-                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath);
+                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, configuration["ResourceEnvironmentName"]);
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
                 .Configure<IDfESignInService, IOptions<DfEOidcConfiguration>, ITicketStore>(

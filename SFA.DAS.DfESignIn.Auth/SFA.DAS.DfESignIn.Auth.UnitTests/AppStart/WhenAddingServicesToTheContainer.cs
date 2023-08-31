@@ -148,6 +148,7 @@ public class WhenAddingServicesToTheContainer
                 new("ProviderSharedUIConfiguration:DashboardUrl", "https://test.com/"),
                 new("DfEOidcConfiguration:DfELoginSessionConnectionString", "https://test.com/"),
                 new("DfEOidcConfiguration:LoginSlidingExpiryTimeOutInMinutes", "30"),
+                new("ResourceEnvironmentName", "test"),
             }
         };
 

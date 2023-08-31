@@ -12,7 +12,7 @@ public static class AddServiceRegistrationExtension
     // https://test-manage.signin.education.gov.uk/services/9F92718F-FCC5-4CDA-8F80-EEA8004FE089/service-configuration
     private const string ClientName = "QA";
     private const string SignedOutCallbackPath = "/signed-out";
-    private const string RedirectUrl = "/dashboard";
+    private const string RedirectUrl = "";
 
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
