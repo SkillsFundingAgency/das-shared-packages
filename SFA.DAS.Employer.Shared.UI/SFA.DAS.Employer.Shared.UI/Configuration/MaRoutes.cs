@@ -49,7 +49,8 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
         {
             { "ChangeLoginDetails", "/accounts/{0}/user/change-sign-in-details" },
             { "ChangeLoginDetailsNoAccount", "/accounts/user/change-sign-in-details" },
-            { "UpdateUserDetails", "/user/add-user-details" }
+            { "UpdateUserDetails", "/user/add-user-details" },
+            { "EditUserDetails", "/user/edit-user-details" }
         };
     }
 }
