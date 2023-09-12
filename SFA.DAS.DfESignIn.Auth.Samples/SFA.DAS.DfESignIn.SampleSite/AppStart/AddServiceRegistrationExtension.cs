@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace SFA.DAS.DfESignIn.SampleSite.AppStart;
@@ -10,7 +11,6 @@ public static class AddServiceRegistrationExtension
     // For testing purpose we have mentioned the ClientName as "QA".
     // This client name value has to be same as OpenID Connect Client Id
     // https://test-manage.signin.education.gov.uk/services/9F92718F-FCC5-4CDA-8F80-EEA8004FE089/service-configuration
-    private const string ClientName = "QA";
     private const string SignedOutCallbackPath = "/signed-out";
     private const string RedirectUrl = "";
 
@@ -23,7 +23,7 @@ public static class AddServiceRegistrationExtension
             configuration,
             $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth",
             typeof(CustomServiceRole),
-            ClientName, 
+            ClientName.Qa, 
             SignedOutCallbackPath,
             RedirectUrl);
         services.AddProviderUiServiceRegistration(configuration);

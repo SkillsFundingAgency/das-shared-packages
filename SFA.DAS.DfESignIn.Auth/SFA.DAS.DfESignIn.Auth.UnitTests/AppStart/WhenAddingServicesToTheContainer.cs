@@ -19,8 +19,6 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
 
 public class WhenAddingServicesToTheContainer
 {
-    private const string ClientName = "someProvider";
-
     [TestCase(typeof(DfEOidcConfiguration))]
     [TestCase(typeof(IDfESignInService))]
     [TestCase(typeof(ITokenDataSerializer))]
@@ -40,39 +38,6 @@ public class WhenAddingServicesToTheContainer
     }
 
     [Test]
-    [TestCase(null)]
-    [TestCase("")]
-    public void Then_The_ClientName_Given_NullOrEmpty_Throw_Exception(string clientName)
-    {
-        // arrange
-        var configuration = GenerateConfiguration();
-        var serviceCollection = new ServiceCollection();
-
-        // sut
-        Assert.Throws<ArgumentNullException>(() => 
-            serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), clientName));
-    }
-
-    [Test]
-    public void Then_The_Configuration_Given_NullOrEmpty_Throw_Exception()
-    {
-        // arrange
-        var configuration = new ConfigurationRoot(new List<IConfigurationProvider>
-        { 
-            new MemoryConfigurationProvider(new MemoryConfigurationSource
-            {
-                InitialData = new List<KeyValuePair<string, string>>()
-
-            })
-        });
-        var serviceCollection = new ServiceCollection();
-
-        // sut
-        Assert.Throws<ArgumentException>(() =>
-            serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), It.IsAny<string>()));
-    }
-
-    [Test]
     public void Then_DfELoginSessionConnectionString_IsNull_AddDistributedMemoryCache_RegistersDistributedMemoryCache()
     {
         // Arrange
@@ -80,7 +45,7 @@ public class WhenAddingServicesToTheContainer
         configuration["DfEOidcConfiguration:DfELoginSessionConnectionString"] = string.Empty;
 
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName);
+        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName.ProviderRoatp);
 
         // Assert
         var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -96,7 +61,7 @@ public class WhenAddingServicesToTheContainer
         var configuration = GenerateConfiguration();
 
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName);
+        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName.ProviderRoatp);
 
         // Assert
         var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -111,7 +76,7 @@ public class WhenAddingServicesToTheContainer
         // Arrange
         var configuration = GenerateConfiguration();
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddAndConfigureDfESignInAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(TestCustomServiceRole), ClientName);
+        serviceCollection.AddAndConfigureDfESignInAuthentication(configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(TestCustomServiceRole), ClientName.ProviderRoatp);
         var expectedAuthSchemeNames = new[] { CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme };
 
         // Assert
@@ -132,7 +97,7 @@ public class WhenAddingServicesToTheContainer
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
     {
         var configuration = GenerateConfiguration();
-        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName);
+        serviceCollection.AddServiceRegistration(configuration, typeof(TestCustomServiceRole), ClientName.ProviderRoatp);
     }
 
     private static IConfigurationRoot GenerateConfiguration()

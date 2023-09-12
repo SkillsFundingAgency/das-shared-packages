@@ -12,6 +12,7 @@ using System.Net.Http;
 using Polly;
 using Polly.Extensions.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SFA.DAS.DfESignIn.Auth.Enums;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -21,16 +22,13 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             this IServiceCollection services, 
             IConfiguration configuration, 
             Type customServiceRole, 
-            string clientName)
+            ClientName clientName)
         {
             if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
             {
                 throw new ArgumentException(
                     "Cannot find DfEOidcConfiguration in configuration. Please add a section called DfESignInOidcConfiguration with BaseUrl, ClientId and Secret properties.");
             }
-
-            if (string.IsNullOrEmpty(clientName))
-                throw new ArgumentNullException(nameof(clientName), "ClientName cannot be null or empty");
 
             services.AddOptions();
 #if NETSTANDARD2_0
