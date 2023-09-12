@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using SFA.DAS.DfESignIn.Auth.Enums;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -22,7 +23,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             this IServiceCollection services,
             IConfiguration configuration,
             string authenticationCookieName,
-            string clientName,
+            ClientName clientName,
             string signedOutCallbackPath,
             string redirectUrl)
         {
@@ -91,7 +92,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         return Task.CompletedTask;
                     };
                 })
-                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, configuration["ResourceEnvironmentName"]);
+                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, configuration["ResourceEnvironmentName"], clientName);
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
                 .Configure<IDfESignInService, IOptions<DfEOidcConfiguration>, ITicketStore>(

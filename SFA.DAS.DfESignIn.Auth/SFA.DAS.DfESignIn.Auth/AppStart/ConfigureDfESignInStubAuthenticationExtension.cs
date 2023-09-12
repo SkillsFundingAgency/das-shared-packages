@@ -2,16 +2,18 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using SFA.DAS.DfESignIn.Auth.Enums;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
     internal static class ConfigureDfESignInStubAuthenticationExtension
     {
-        public static void AddProviderStubAuthentication(
+        internal static void AddProviderStubAuthentication(
             this IServiceCollection services,
             string authenticationCookieName,
             string signedOutCallbackPath, 
-            string resourceEnvironmentName)
+            string resourceEnvironmentName,
+            ClientName clientName)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -29,7 +31,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     };
                 });
 
-            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, resourceEnvironmentName);
+            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, resourceEnvironmentName, clientName);
         }
     }
 }
