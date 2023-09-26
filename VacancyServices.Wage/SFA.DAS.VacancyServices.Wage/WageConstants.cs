@@ -10,7 +10,7 @@
         public const string PerMonthText = "per month";
         public const string PerWeekText = "per week";
         public const string UnknownText = "Unknown";
-        public const string CompetitiveSalaryText = "Competitive salary";
+        public const string CompetitiveSalaryText = "Competitive";
         public const string UnwagedText = "Unwaged";
         public const string ToBeAGreedUponAppointmentText = "To be agreed upon appointment";
         public const int MonthPerYear = 12;
