@@ -15,6 +15,8 @@ namespace SFA.DAS.DfESignIn.Auth.Enums
         [Description("admin")]
         ServiceAdmin = 5,
         [Description("console")]
-        SupportConsole = 6
+        SupportConsole = 6,
+        [Description("providers|pas")]
+        TraineeshipRoatp = 7
     }
 }

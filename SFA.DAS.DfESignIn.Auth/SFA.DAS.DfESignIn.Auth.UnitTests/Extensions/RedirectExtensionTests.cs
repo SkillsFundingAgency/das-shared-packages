@@ -23,6 +23,15 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
 
             actual.Should().Be($"{environment}-pas.apprenticeships.education.gov.uk");
         }
+        [TestCase("test")]
+        [TestCase("pp")]
+        [TestCase("something")]
+        public void Then_The_Domain_Is_Resolved_For_Test_Environments_Traineeships(string environment)
+        {
+            var actual = RedirectExtension.GetEnvironmentAndDomain(environment, ClientName.TraineeshipRoatp);
+
+            actual.Should().Be($"{environment}-pas.traineeships.education.gov.uk");
+        }
 
         [Test]
         public void Then_The_Domain_Is_Resolved_For_Prod_Environment()
@@ -32,6 +41,13 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
             actual.Should().Be("providers.apprenticeships.education.gov.uk");
         }
         
+        [Test]
+        public void Then_The_Domain_Is_Resolved_For_Prod_Traineeships_Environment()
+        {
+            var actual = RedirectExtension.GetEnvironmentAndDomain("PRD", ClientName.TraineeshipRoatp);
+
+            actual.Should().Be("providers.traineeships.education.gov.uk");
+        }
         
         [Test]
         public void Then_The_Logged_Out_Url_Is_Returned_When_Specified()
