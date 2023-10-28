@@ -61,6 +61,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
         [TestCase("pp","pp-pas", ClientName.ProviderRoatp)]
         [TestCase("something","something-pas", ClientName.ProviderRoatp)]
         [TestCase("test","test-admin", ClientName.ServiceAdmin)]
+        [TestCase("test","test-adminaan", ClientName.ServiceAdminAan)]
         [TestCase("test","test-support-tools", ClientName.BulkStop)]
         [TestCase("test","test-identify-data-locks", ClientName.DataLocks)]
         [TestCase("test","test-review", ClientName.Qa)]
@@ -74,6 +75,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
         
         [TestCase(ClientName.ProviderRoatp, "providers.apprenticeships")]
         [TestCase(ClientName.ServiceAdmin, "admin.apprenticeships")]
+        [TestCase(ClientName.ServiceAdminAan, "adminaan.apprenticeships")]
         [TestCase(ClientName.Qa, "review.apprenticeships")]
         [TestCase(ClientName.DataLocks, "identify-data-locks.apprenticeships")]
         [TestCase(ClientName.BulkStop, "support-tools.apprenticeships")]
