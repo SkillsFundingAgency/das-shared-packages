@@ -17,7 +17,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 {
     internal static class ConfigureGovUkAuthenticationExtension
     {
-        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl)
+        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -66,10 +66,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.AccessDeniedPath = new PathString("/error/403");
                     
                     options.Cookie.Name = GovUkConstants.AuthCookieName;
-                    var environmentAndDomain = RedirectExtension.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]);
-                    if (!string.IsNullOrEmpty(environmentAndDomain))
+                    if (!string.IsNullOrEmpty(cookieDomain))
                     {
-                        options.Cookie.Domain = environmentAndDomain;
+                        options.Cookie.Domain = cookieDomain;
                     }
                     options.Cookie.IsEssential = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
