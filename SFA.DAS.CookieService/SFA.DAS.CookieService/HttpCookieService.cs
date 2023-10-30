@@ -19,6 +19,7 @@ namespace SFA.DAS.CookieService
                 Expires = DateTime.Now.AddDays(expireDays),
                 Secure = true,
                 HttpOnly = true,
+                SameSite = SameSiteMode.Lax
             };
 
             context.Response.Cookies.Add(userCookie);
