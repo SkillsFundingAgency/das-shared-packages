@@ -62,7 +62,7 @@
                 @if (Context.User.Identity.IsAuthenticated)
                 {
                     <li role="menuitem" class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
-                        <a href="/" role="menuitem" class="das-user-navigation__link">Settings</a>
+                        <a href="@LinkGenerator.AccountsLink("Accounts")" role="menuitem" class="das-user-navigation__link">Settings</a>
                         <ul role="menu" class="das-user-navigation__sub-menu js-hidden">
                             <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
                                 <a href="@LinkGenerator.AccountsLink("Accounts")" role="menuitem" class="das-user-navigation__sub-menu-link mu-accounts">Your accounts</a>
@@ -76,10 +76,10 @@
                             @if (!string.IsNullOrEmpty(clientId))
                             {
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href="@LinkGenerator.UsersLink("ChangePassword", clientId, GetEncodedReturnUrl(LinkGenerator.ActiveSection(selectedSection, "ChangePasswordReturn")))" class="das-user-navigation__sub-menu-link mu-change-pass">Change your password</a>
+                                    <a href="@LinkGenerator.UsersLink("ChangePassword", clientId, GetEncodedReturnUrl(LinkGenerator.ActiveSection(selectedSection, "ChangePasswordReturn", accountId)))" class="das-user-navigation__sub-menu-link mu-change-pass">Change your password</a>
                                 </li>
                                 <li class="das-user-navigation__sub-menu-list-item" role="menuitem">
-                                    <a href="@LinkGenerator.UsersLink("ChangeEmailAddress", clientId, GetEncodedReturnUrl(LinkGenerator.ActiveSection(selectedSection, "ChangeEmailReturn")))" class="das-user-navigation__sub-menu-link mu-change-email">Change your email address</a>
+                                    <a href="@LinkGenerator.UsersLink("ChangeEmailAddress", clientId, GetEncodedReturnUrl(LinkGenerator.ActiveSection(selectedSection, "ChangeEmailReturn", accountId)))" class="das-user-navigation__sub-menu-link mu-change-email">Change your email address</a>
                                 </li>
                             }
                             else
