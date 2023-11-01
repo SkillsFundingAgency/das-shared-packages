@@ -18,7 +18,9 @@ namespace SFA.DAS.Telemetry.RedactionService
         {
             var components = HttpUtility.ParseQueryString(uri.Query);
 
-            var redactionList = components.AllKeys.Where(key => _options.RedactionList.Contains(key)).ToList();
+            var keysToRedact = _options.RedactionList.Select(x => x.ToLower());
+
+            var redactionList = components.AllKeys.Where(key => keysToRedact.Contains(key.ToLower())).ToList();
 
             foreach (var redaction in redactionList)
             {
