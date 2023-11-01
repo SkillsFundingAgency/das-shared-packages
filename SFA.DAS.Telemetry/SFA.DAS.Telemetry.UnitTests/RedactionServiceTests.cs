@@ -12,10 +12,10 @@ namespace SFA.DAS.Telemetry.UnitTests
 
         [TestCase("http://www.google.com", "http://www.google.com")]
         [TestCase("http://www.google.com?colour=blue", "http://www.google.com?colour=blue")]
-        [TestCase("http://www.google.com?email=chris@private.com", "http://www.google.com?email=*")]
-        [TestCase("http://www.google.com?email=chris@private.com,john@alsohere.com", "http://www.google.com?email=*")]
-        [TestCase("http://www.google.com?email=chris@private.com&isRobot=false", "http://www.google.com?email=*&isRobot=false")]
-        [TestCase("http://www.google.com?isRobot=false&email=chris@private.com", "http://www.google.com?isRobot=false&email=*")]
+        [TestCase("http://www.google.com?email=chris@private.com", "http://www.google.com?email=REDACTED")]
+        [TestCase("http://www.google.com?email=chris@private.com,john@alsohere.com", "http://www.google.com?email=REDACTED")]
+        [TestCase("http://www.google.com?email=chris@private.com&isRobot=false", "http://www.google.com?email=REDACTED&isRobot=false")]
+        [TestCase("http://www.google.com?isRobot=false&email=chris@private.com", "http://www.google.com?isRobot=false&email=REDACTED")]
         public void TestRedaction(string originalUri, string expectedUri)
         {
             var uri = new Uri(originalUri);
