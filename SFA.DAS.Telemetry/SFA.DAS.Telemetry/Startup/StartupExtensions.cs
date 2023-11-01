@@ -1,9 +1,9 @@
-﻿using Microsoft.ApplicationInsights.Extensibility;
+﻿using System;
+using System.Linq;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Telemetry.RedactionService;
 using SFA.DAS.Telemetry.Telemetry;
-using System;
-using System.Linq;
 
 namespace SFA.DAS.Telemetry.Startup
 {
@@ -15,7 +15,7 @@ namespace SFA.DAS.Telemetry.Startup
 
             var options = new UriRedactionOptions
             {
-                RedactionList = keysForRedaction.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList()
+                RedactionList = keysForRedaction.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList()
             };
 
             serviceCollection.AddSingleton<IUriRedactionService, UriRedactionService>(s => new UriRedactionService(options));
