@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Telemetry.RedactionService
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.Telemetry.RedactionService
 {
     public class UriRedactionOptions
     {
