@@ -25,7 +25,11 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
 
         public string GenerateUrl(UrlParameters urlParameters)
         {
-            var baseUrl = _isLocal && !string.IsNullOrEmpty(_configuration.GetSection("LocalPorts")[urlParameters.SubDomain]) ? "https://localhost" : _options.DashboardUrl;
+            var localPort = _configuration.GetSection("LocalPorts")?[urlParameters.SubDomain];
+
+            var baseUrl = _isLocal && !string.IsNullOrEmpty(localPort)
+                ? FormatBaseUrl($"https://localhost:{localPort}/", null, urlParameters.Folder)
+                : FormatBaseUrl(_options.DashboardUrl, urlParameters.SubDomain, urlParameters.Folder);
 
             return FormatUrl(baseUrl, urlParameters);
         }
@@ -34,9 +38,7 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         {
             var urlString = new StringBuilder();
 
-            urlString.Append(_isLocal
-                ? FormatBaseUrlLocal(baseUrl, urlParameters.SubDomain, urlParameters.Folder)
-                : FormatBaseUrl(baseUrl, urlParameters.SubDomain, urlParameters.Folder));
+            urlString.Append(baseUrl);
 
             if (!string.IsNullOrEmpty(urlParameters.Id))
             {
@@ -71,21 +73,6 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             {
                 returnUrl = returnUrl.Replace("https://", $"https://{subDomain}.");
             }
-
-            if (!string.IsNullOrEmpty(folder))
-            {
-                returnUrl = $"{returnUrl}{folder}/";
-            }
-
-            return returnUrl;
-        }
-
-        private string FormatBaseUrlLocal(string url, string subDomain = "", string folder = "")
-        {
-            var localPort = _configuration.GetSection("LocalPorts")[subDomain];
-            if (string.IsNullOrEmpty(localPort)) return FormatBaseUrl(url, subDomain, folder);
-
-            var returnUrl = $"{url}:{localPort}/";
 
             if (!string.IsNullOrEmpty(folder))
             {
