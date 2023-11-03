@@ -34,7 +34,7 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             return FormatUrl(baseUrl, urlParameters);
         }
 
-        private string FormatUrl(string baseUrl, UrlParameters urlParameters)
+        private static string FormatUrl(string baseUrl, UrlParameters urlParameters)
         {
             var urlString = new StringBuilder();
 
