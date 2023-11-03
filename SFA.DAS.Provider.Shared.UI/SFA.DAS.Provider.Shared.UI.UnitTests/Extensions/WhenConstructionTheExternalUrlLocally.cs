@@ -34,7 +34,7 @@ public class WhenConstructionTheExternalUrlLocally
         var subDomain = "testDomain";
         var localPort = "7123";
 
-        _configuration.Setup(x => x["EnvironmentName"]).Returns("LOCAL");
+        _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns("LOCAL");
         _configuration.Setup(x => x.GetSection("LocalPorts")[subDomain]).Returns(localPort);
 
         _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object, _configuration.Object);
@@ -58,7 +58,7 @@ public class WhenConstructionTheExternalUrlLocally
         var controller = "test-controller";
         var subDomain = "testDomain";
 
-        _configuration.Setup(x => x["EnvironmentName"]).Returns("LOCAL");
+        _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns("LOCAL");
         _configuration.Setup(x => x.GetSection("LocalPorts")[subDomain]).Returns("");
 
         _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object, _configuration.Object);

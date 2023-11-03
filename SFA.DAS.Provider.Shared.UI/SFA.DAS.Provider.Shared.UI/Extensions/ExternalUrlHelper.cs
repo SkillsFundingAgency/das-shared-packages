@@ -20,7 +20,7 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         {
             _configuration = configuration;
             _options = options.Value;
-            _isLocal = (_configuration["EnvironmentName"]?.StartsWith("LOCAL", StringComparison.CurrentCultureIgnoreCase)).GetValueOrDefault();
+            _isLocal = (_configuration["ResourceEnvironmentName"]?.StartsWith("LOCAL", StringComparison.CurrentCultureIgnoreCase)).GetValueOrDefault();
         }
 
         public string GenerateUrl(UrlParameters urlParameters)
