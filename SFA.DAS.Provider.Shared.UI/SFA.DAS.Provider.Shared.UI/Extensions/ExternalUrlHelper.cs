@@ -1,4 +1,6 @@
+using System;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Models;
 
@@ -10,25 +12,31 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
     }
     public class ExternalUrlHelper : IExternalUrlHelper
     {
+        private readonly IConfiguration _configuration;
         private readonly ProviderSharedUIConfiguration _options;
+        private readonly bool _isLocal;
 
-        public ExternalUrlHelper(IOptions<ProviderSharedUIConfiguration> options)
+        public ExternalUrlHelper(IOptions<ProviderSharedUIConfiguration> options, IConfiguration configuration)
         {
+            _configuration = configuration;
             _options = options.Value;
+            _isLocal = (_configuration["EnvironmentName"]?.StartsWith("LOCAL", StringComparison.CurrentCultureIgnoreCase)).GetValueOrDefault();
         }
 
         public string GenerateUrl(UrlParameters urlParameters)
         {
-            var baseUrl = _options.DashboardUrl;
+            var baseUrl = _isLocal && !string.IsNullOrEmpty(_configuration.GetSection("LocalPorts")[urlParameters.SubDomain]) ? "https://localhost" : _options.DashboardUrl;
 
             return FormatUrl(baseUrl, urlParameters);
         }
 
-        private static string FormatUrl(string baseUrl, UrlParameters urlParameters)
+        private string FormatUrl(string baseUrl, UrlParameters urlParameters)
         {
             var urlString = new StringBuilder();
 
-            urlString.Append(FormatBaseUrl(baseUrl, urlParameters.SubDomain, urlParameters.Folder));
+            urlString.Append(_isLocal
+                ? FormatBaseUrlLocal(baseUrl, urlParameters.SubDomain, urlParameters.Folder)
+                : FormatBaseUrl(baseUrl, urlParameters.SubDomain, urlParameters.Folder));
 
             if (!string.IsNullOrEmpty(urlParameters.Id))
             {
@@ -63,6 +71,28 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             {
                 returnUrl = returnUrl.Replace("https://", $"https://{subDomain}.");
             }
+
+            if (!string.IsNullOrEmpty(folder))
+            {
+                returnUrl = $"{returnUrl}{folder}/";
+            }
+
+            return returnUrl;
+        }
+
+        private string FormatBaseUrlLocal(string url, string subDomain = "", string folder = "")
+        {
+            var localPort = _configuration.GetSection("LocalPorts")[subDomain];
+            if (string.IsNullOrEmpty(localPort)) return FormatBaseUrl(url, subDomain, folder);
+
+            var returnUrl = url;
+
+            if (!string.IsNullOrEmpty(subDomain))
+            {
+                returnUrl += $":{localPort}";
+            }
+
+            returnUrl += "/";
 
             if (!string.IsNullOrEmpty(folder))
             {

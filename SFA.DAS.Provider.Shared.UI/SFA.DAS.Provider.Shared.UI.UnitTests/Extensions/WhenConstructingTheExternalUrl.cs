@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace SFA.DAS.Provider.Shared.UI.UnitTests.Extensions
             };
             _sharedUiConfiguration = new Mock<IOptions<ProviderSharedUIConfiguration>>();
             _sharedUiConfiguration.Setup(x => x.Value).Returns(config);
-            _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object);
+            _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object, Mock.Of<IConfiguration>());
         }
 
         [TestCase("https://test.local")]
