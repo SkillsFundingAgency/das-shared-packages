@@ -85,14 +85,7 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             var localPort = _configuration.GetSection("LocalPorts")[subDomain];
             if (string.IsNullOrEmpty(localPort)) return FormatBaseUrl(url, subDomain, folder);
 
-            var returnUrl = url;
-
-            if (!string.IsNullOrEmpty(subDomain))
-            {
-                returnUrl += $":{localPort}";
-            }
-
-            returnUrl += "/";
+            var returnUrl = $"{url}:{localPort}/";
 
             if (!string.IsNullOrEmpty(folder))
             {
