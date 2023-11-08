@@ -31,7 +31,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     };
                 });
 
-            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, resourceEnvironmentName, clientName);
+            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, resourceEnvironmentName, clientName, "");
         }
     }
 }

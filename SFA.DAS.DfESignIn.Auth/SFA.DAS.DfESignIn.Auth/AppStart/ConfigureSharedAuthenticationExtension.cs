@@ -15,9 +15,10 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             string cookieName,
             string signedOutCallbackPath,
             string resourceEnvironmentName,
-            ClientName clientName)
+            ClientName clientName,
+            string authenticationScheme)
         {
-            services.AddCookie(options =>
+            services.AddCookie(!string.IsNullOrEmpty(authenticationScheme)? authenticationScheme : CookieAuthenticationDefaults.AuthenticationScheme,options =>
             {
                 options.AccessDeniedPath = new PathString("/error/403");
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);

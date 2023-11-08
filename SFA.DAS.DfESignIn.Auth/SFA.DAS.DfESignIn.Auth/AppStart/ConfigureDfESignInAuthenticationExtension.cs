@@ -25,7 +25,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             string authenticationCookieName,
             ClientName clientName,
             string signedOutCallbackPath,
-            string redirectUrl, string authenticationScheme)
+            string redirectUrl, 
+            string authenticationScheme)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -92,7 +93,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         return Task.CompletedTask;
                     };
                 })
-                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, configuration["ResourceEnvironmentName"], clientName);
+                .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, configuration["ResourceEnvironmentName"], clientName, authenticationScheme);
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
                 .Configure<IDfESignInService, IOptions<DfEOidcConfiguration>, ITicketStore>(
