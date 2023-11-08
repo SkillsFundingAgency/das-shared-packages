@@ -19,6 +19,8 @@ namespace SFA.DAS.DfESignIn.Auth.Enums
         [Description("providers|pas")]
         TraineeshipRoatp = 7,
         [Description("adminaan")]
-        ServiceAdminAan = 8
+        ServiceAdminAan = 8,
+        [Description("easstaff")]
+        EmployerAccountsStaff = 9
     }
 }

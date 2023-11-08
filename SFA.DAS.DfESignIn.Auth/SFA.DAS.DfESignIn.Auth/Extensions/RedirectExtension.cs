@@ -23,6 +23,14 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
                     : $"{environment.ToLower()}-{ClientName.ProviderRoatp.GetDescription().Split('|')[1]}{apprenticeshipsEducationGovUk}";
             }
 
+            if (clientName == ClientName.EmployerAccountsStaff)
+            {
+                var environmentPart = environment.ToLower() == "prd" ? "manage-apprenticeships" : $"{environment.ToLower()}-eas.apprenticeships";
+                var domainPart = environment.ToLower() == "prd" ?  "service" : "education";
+
+                return $"accounts.{environmentPart}.{domainPart}.gov.uk";
+            }
+
             return environment.ToLower() == "prd"
                 ? $"{clientName.GetDescription()}{apprenticeshipsEducationGovUk}"
                 : $"{environment.ToLower()}-{clientName.GetDescription()}{apprenticeshipsEducationGovUk}";

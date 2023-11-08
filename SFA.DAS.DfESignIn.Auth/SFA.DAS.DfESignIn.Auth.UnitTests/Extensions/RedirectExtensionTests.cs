@@ -66,6 +66,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
         [TestCase("test","test-identify-data-locks", ClientName.DataLocks)]
         [TestCase("test","test-review", ClientName.Qa)]
         [TestCase("test","test-console", ClientName.SupportConsole)]
+        [TestCase("test","accounts.test-eas", ClientName.EmployerAccountsStaff)]
         public void Then_The_Logged_Out_Url_Is_Returned_For_Test(string environment,string expectedUrlPart, ClientName clientName)
         {
             var actual = "".GetSignedOutRedirectUrl(environment, clientName);
@@ -85,6 +86,14 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
             var actual = "".GetSignedOutRedirectUrl("prd", clientName);
             
             actual.Should().Be($"https://{expectedUrlPart}.education.gov.uk");
+        }
+        
+        [Test]
+        public void Then_The_Logged_Out_Url_Is_Returned_For_EasStaff_Client_Type()
+        {
+            var actual = "".GetSignedOutRedirectUrl("prd", ClientName.EmployerAccountsStaff);
+            
+            actual.Should().Be("https://accounts.manage-apprenticeships.service.gov.uk");
         }
     }
 }
