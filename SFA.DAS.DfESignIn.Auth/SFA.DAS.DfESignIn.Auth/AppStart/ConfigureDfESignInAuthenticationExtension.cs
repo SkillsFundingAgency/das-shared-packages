@@ -25,7 +25,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             string authenticationCookieName,
             ClientName clientName,
             string signedOutCallbackPath,
-            string redirectUrl)
+            string redirectUrl, string authenticationScheme)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -35,7 +35,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                     sharedOptions.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddOpenIdConnect(options =>
+                .AddOpenIdConnect(!string.IsNullOrEmpty(authenticationScheme)? authenticationScheme : OpenIdConnectDefaults.AuthenticationScheme,options =>
                 {
                     options.ClientId = configuration[$"DfEOidcConfiguration_{clientName}:ClientId"];
                     options.ClientSecret = configuration[$"DfEOidcConfiguration_{clientName}:Secret"];
