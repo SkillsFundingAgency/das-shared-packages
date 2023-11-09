@@ -18,10 +18,9 @@
         <PackageReference Include="Azure.Identity" Version="1.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
+        
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.16" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.0" />
+        
 
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.22.0" />
         <PackageReference Include="Microsoft.IdentityModel.KeyVaultExtensions" Version="6.22.0" />
@@ -31,9 +30,14 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.8" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
