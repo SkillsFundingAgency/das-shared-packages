@@ -27,7 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\SFA.DAS.DfESignIn.Auth.Samples\SFA.DAS.DfESignIn.SampleSite\SFA.DAS.DfESignIn.SampleSite.csproj" />
       <ProjectReference Include="..\SFA.DAS.DfESignIn.Auth\SFA.DAS.DfESignIn.Auth.csproj" />
     </ItemGroup>
 
