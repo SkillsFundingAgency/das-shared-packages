@@ -24,7 +24,6 @@
         <PackageReference Include="SFA.DAS.Testing" Version="3.0.169" />
         <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
