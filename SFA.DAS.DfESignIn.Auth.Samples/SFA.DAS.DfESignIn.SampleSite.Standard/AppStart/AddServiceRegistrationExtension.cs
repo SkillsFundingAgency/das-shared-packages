@@ -3,9 +3,17 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Enums;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.SampleSite.Standard.AppStart
 {
+    public class CustomServiceRole : ICustomServiceRole
+    {
+        public string RoleClaimType => "http://schemas.portal.com/service";
+        public CustomServiceRoleValueType RoleValueType  => CustomServiceRoleValueType.Code;
+    }
+
     public static class AddServiceRegistrationExtension
     {
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
@@ -14,7 +22,11 @@ namespace SFA.DAS.DfESignIn.SampleSite.Standard.AppStart
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
             services.AddAndConfigureDfESignInAuthentication(configuration,
-                $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(CustomClaims));
+                "SFA.DAS.ProviderApprenticeshipService",
+                typeof(CustomServiceRole),
+                ClientName.ServiceAdmin,
+                "/signout",
+                "");
         }
     }
 }
