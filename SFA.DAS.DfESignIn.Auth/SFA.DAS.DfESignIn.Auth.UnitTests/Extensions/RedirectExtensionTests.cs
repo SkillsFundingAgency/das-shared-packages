@@ -57,20 +57,21 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
             actual.Should().Be("test");
         }
 
-        [TestCase("test","test-pas", ClientName.ProviderRoatp)]
-        [TestCase("pp","pp-pas", ClientName.ProviderRoatp)]
-        [TestCase("something","something-pas", ClientName.ProviderRoatp)]
-        [TestCase("test","test-admin", ClientName.ServiceAdmin)]
-        [TestCase("test","test-adminaan", ClientName.ServiceAdminAan)]
-        [TestCase("test","test-support-tools", ClientName.BulkStop)]
-        [TestCase("test","test-identify-data-locks", ClientName.DataLocks)]
-        [TestCase("test","test-review", ClientName.Qa)]
-        [TestCase("test","test-console", ClientName.SupportConsole)]
+        [TestCase("test","test-pas.", ClientName.ProviderRoatp)]
+        [TestCase("pp","pp-pas.", ClientName.ProviderRoatp)]
+        [TestCase("something","something-pas.", ClientName.ProviderRoatp)]
+        [TestCase("test","test-admin.", ClientName.ServiceAdmin)]
+        [TestCase("test","test-adminaan.", ClientName.ServiceAdminAan)]
+        [TestCase("test","test-support-tools.", ClientName.BulkStop)]
+        [TestCase("test","test-identify-data-locks.", ClientName.DataLocks)]
+        [TestCase("test","test-review.", ClientName.Qa)]
+        [TestCase("test","test-console.", ClientName.SupportConsole)]
+        [TestCase("test","",ClientName.RoatpServiceAdmin)]
         public void Then_The_Logged_Out_Url_Is_Returned_For_Test(string environment,string expectedUrlPart, ClientName clientName)
         {
-            var actual = "".GetSignedOutRedirectUrl(environment, clientName);
+            var actual = RedirectExtension.GetEnvironmentAndDomain(environment, clientName);
             
-            actual.Should().Be($"https://{expectedUrlPart}.apprenticeships.education.gov.uk");
+            actual.Should().Be($"{expectedUrlPart}apprenticeships.education.gov.uk");
         }
         
         [TestCase(ClientName.ProviderRoatp, "providers.apprenticeships")]
@@ -80,6 +81,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
         [TestCase(ClientName.DataLocks, "identify-data-locks.apprenticeships")]
         [TestCase(ClientName.BulkStop, "support-tools.apprenticeships")]
         [TestCase(ClientName.SupportConsole, "console.apprenticeships")]
+        [TestCase(ClientName.RoatpServiceAdmin, "admin.apprenticeships")]
         public void Then_The_Logged_Out_Url_Is_Returned_For_Prod_For_Each_Client_Type(ClientName clientName, string expectedUrlPart)
         {
             var actual = "".GetSignedOutRedirectUrl("prd", clientName);

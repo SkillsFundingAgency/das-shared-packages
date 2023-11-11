@@ -11,7 +11,12 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
                 return "";
             }
 
-            var apprenticeshipsEducationGovUk = ".apprenticeships.education.gov.uk";
+            var apprenticeshipsEducationGovUk = "apprenticeships.education.gov.uk";
+            if (clientName == ClientName.RoatpServiceAdmin)
+            {
+                return apprenticeshipsEducationGovUk;
+            }
+            apprenticeshipsEducationGovUk = $".{apprenticeshipsEducationGovUk}";
             if (clientName == ClientName.ProviderRoatp || clientName == ClientName.TraineeshipRoatp)
             {
                 if (clientName == ClientName.TraineeshipRoatp)
@@ -35,8 +40,15 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
             {
                 return redirectUri;
             }
-
+            
             var environmentAndDomain = GetEnvironmentAndDomain(environment, clientName);
+            
+            if (clientName == ClientName.RoatpServiceAdmin)
+            {
+                environmentAndDomain = GetEnvironmentAndDomain(environment, ClientName.ServiceAdmin);
+            }
+
+            
             return string.IsNullOrEmpty(environmentAndDomain) ? "/" : $"https://{environmentAndDomain}";
         }
     }
