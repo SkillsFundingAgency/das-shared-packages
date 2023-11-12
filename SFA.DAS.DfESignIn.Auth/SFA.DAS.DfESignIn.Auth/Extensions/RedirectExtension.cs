@@ -43,7 +43,7 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
             
             var environmentAndDomain = GetEnvironmentAndDomain(environment, clientName);
             
-            if (clientName == ClientName.RoatpServiceAdmin)
+            if (clientName == ClientName.RoatpServiceAdmin || clientName == ClientName.ServiceAdmin)
             {
                 environmentAndDomain = environment.ToLower() == "prd"
                     ? $"{ClientName.ServiceAdmin.GetDescription()}.apprenticeships.education.gov.uk"
