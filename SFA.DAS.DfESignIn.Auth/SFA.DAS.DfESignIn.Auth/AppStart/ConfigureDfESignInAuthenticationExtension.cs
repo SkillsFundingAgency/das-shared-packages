@@ -37,8 +37,13 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 })
                 .AddOpenIdConnect(options =>
                 {
-                    options.ClientId = configuration[$"DfEOidcConfiguration_{clientName}:ClientId"];
-                    options.ClientSecret = configuration[$"DfEOidcConfiguration_{clientName}:Secret"];
+                    var configName = clientName;
+                    if (clientName == ClientName.RoatpServiceAdmin)
+                    {
+                        configName = ClientName.ServiceAdmin;
+                    }
+                    options.ClientId = configuration[$"DfEOidcConfiguration_{configName}:ClientId"];
+                    options.ClientSecret = configuration[$"DfEOidcConfiguration_{configName}:Secret"];
                     options.MetadataAddress = $"{configuration["DfEOidcConfiguration:BaseUrl"]}/.well-known/openid-configuration";
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
