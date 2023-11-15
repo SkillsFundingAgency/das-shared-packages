@@ -1,14 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUK.Auth", "SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth.csproj", "{AAE7A705-A95F-44BC-900D-49FC6647B1B2}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.GovUK.Auth", "SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth.csproj", "{AAE7A705-A95F-44BC-900D-49FC6647B1B2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D0E29E1B-0D74-49E5-83AF-581FEA6F4966}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUK.Auth.UnitTests", "SFA.DAS.GovUK.Auth.UnitTests\SFA.DAS.GovUK.Auth.UnitTests.csproj", "{A314850F-0D42-4CC3-9901-20D8F2CE51E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0FC1A393-51E5-4BD9-9576-B2436B1EA214}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.GovUK.SampleSite", "..\SFA.DAS.GovUk.Auth.Samples\SFA.DAS.GovUK.SampleSite\SFA.DAS.GovUK.SampleSite.csproj", "{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.GovUK.Auth.UnitTests", "SFA.DAS.GovUK.Auth.UnitTests\SFA.DAS.GovUK.Auth.UnitTests.csproj", "{A314850F-0D42-4CC3-9901-20D8F2CE51E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,13 +23,11 @@ Global
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8} = {D0E29E1B-0D74-49E5-83AF-581FEA6F4966}
-		{6F8D7D4D-2DDF-49D2-8194-B7DB97E3E919} = {0FC1A393-51E5-4BD9-9576-B2436B1EA214}
 	EndGlobalSection
 EndGlobal
