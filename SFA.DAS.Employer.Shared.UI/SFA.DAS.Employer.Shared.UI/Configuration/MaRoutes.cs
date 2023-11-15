@@ -21,7 +21,11 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
             {"RenameAccount", "/accounts/{0}/rename"},
             {"Privacy", "/service/privacy"},
             {"Help", "/service/help"},
-            {"CookiesInAccount", "/accounts/{0}/cookieConsent"}
+            {"CookiesInAccount", "/accounts/{0}/cookieConsent"},
+            {"CreateAccountTaskList", "/accounts/tasklist"},
+            {"CreateAccountTaskListInAccount", "/accounts/{0}/tasklist"},
+            {"CreateAccountProgressSaved", "/accounts/progress-saved"},
+            {"CreateAccountTaskListInAccount", "/accounts/{0}/progress-saved"}
         };
 
         public static Dictionary<string, string> CommitmentsV2 => new Dictionary<string,string>
