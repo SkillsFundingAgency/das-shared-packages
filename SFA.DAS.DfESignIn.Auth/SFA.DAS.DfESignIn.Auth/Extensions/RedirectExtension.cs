@@ -28,6 +28,13 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
                     : $"{environment.ToLower()}-{ClientName.ProviderRoatp.GetDescription().Split('|')[1]}{apprenticeshipsEducationGovUk}";
             }
 
+            if (clientName == ClientName.ServiceAdminAan)
+            {
+                return environment.ToLower() == "prd"
+                    ? $"admin-aan{apprenticeshipsEducationGovUk}"
+                    : $"{environment.ToLower()}-{clientName.GetDescription()}{apprenticeshipsEducationGovUk}";
+            }
+
             return environment.ToLower() == "prd"
                 ? $"{clientName.GetDescription()}{apprenticeshipsEducationGovUk}"
                 : $"{environment.ToLower()}-{clientName.GetDescription()}{apprenticeshipsEducationGovUk}";
