@@ -23,7 +23,11 @@
         <PackageReference Include="SFA.DAS.Testing" Version="3.0.169" />
         <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
+        <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     </ItemGroup>
 
     <ItemGroup>
