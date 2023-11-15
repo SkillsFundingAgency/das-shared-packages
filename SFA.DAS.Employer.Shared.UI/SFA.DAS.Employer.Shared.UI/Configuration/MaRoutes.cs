@@ -25,7 +25,7 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
             {"CreateAccountTaskList", "/accounts/tasklist"},
             {"CreateAccountTaskListInAccount", "/accounts/{0}/tasklist"},
             {"CreateAccountProgressSaved", "/accounts/progress-saved"},
-            {"CreateAccountTaskListInAccount", "/accounts/{0}/progress-saved"}
+            {"CreateAccountProgressSavedInAccount", "/accounts/{0}/progress-saved"}
         };
 
         public static Dictionary<string, string> CommitmentsV2 => new Dictionary<string,string>
