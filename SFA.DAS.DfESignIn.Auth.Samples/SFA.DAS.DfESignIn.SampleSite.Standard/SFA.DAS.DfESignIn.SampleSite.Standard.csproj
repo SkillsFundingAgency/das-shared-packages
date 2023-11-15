@@ -23,9 +23,4 @@
       <ProjectReference Include="..\..\SFA.DAS.DfESignIn.Auth\SFA.DAS.DfESignIn.Auth\SFA.DAS.DfESignIn.Auth.csproj" />
     </ItemGroup>
 
-
-    <ItemGroup>
-     
-    </ItemGroup>
-
 </Project>

@@ -30,13 +30,19 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     "Cannot find DfEOidcConfiguration in configuration. Please add a section called DfESignInOidcConfiguration with BaseUrl, ClientId and Secret properties.");
             }
 
+            var configName = clientName;
+            if (clientName == ClientName.RoatpServiceAdmin)
+            {
+                configName = ClientName.ServiceAdmin;
+            }
+            
             services.AddOptions();
 #if NETSTANDARD2_0
             services.Configure<DfEOidcConfiguration>(options => configuration.GetSection(nameof(DfEOidcConfiguration)).Bind(options));
-            services.Configure<DfEOidcConfiguration>(options => configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{clientName}").Bind(options));
+            services.Configure<DfEOidcConfiguration>(options => configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{configName}").Bind(options));
 #else 
             services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
-            services.Configure<DfEOidcConfiguration>(configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{clientName}"));
+            services.Configure<DfEOidcConfiguration>(configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{configName}"));
 #endif
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
