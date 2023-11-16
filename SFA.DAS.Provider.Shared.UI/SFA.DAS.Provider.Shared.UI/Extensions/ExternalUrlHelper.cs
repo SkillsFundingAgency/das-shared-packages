@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -39,6 +40,11 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
             var urlString = new StringBuilder();
 
             urlString.Append(baseUrl);
+
+            if (!string.IsNullOrEmpty(urlParameters.RelativeRoute))
+            {
+                return Path.Combine(urlString.ToString(), urlParameters.RelativeRoute);
+            }
 
             if (!string.IsNullOrEmpty(urlParameters.Id))
             {

@@ -136,5 +136,27 @@ namespace SFA.DAS.Provider.Shared.UI.UnitTests.Extensions
             Assert.IsNotNull(actual);
             Assert.AreEqual($"https://{subDomain}.test.local/{controller}?test=12345", actual);
         }
+
+        [Test]
+        public void Then_The_Url_Builds_From_Relative_Url()
+        {
+            //Arrange
+            var relativeRoute = "test/45/route";
+
+            //Act
+            var actual = _helper.GenerateUrl(new UrlParameters
+            {
+                Id = "457rt",
+                Controller = "34h",
+                Action = "q345t",
+                QueryString = "sdf98j",
+                RelativeRoute = relativeRoute
+                
+            });
+
+            //Assert
+            Assert.IsNotNull(actual);
+            Assert.AreEqual($"https://test.local/{relativeRoute}", actual);
+        }
     }
 }
