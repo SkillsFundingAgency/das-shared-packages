@@ -60,5 +60,10 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
             { "UpdateUserDetails", "/user/add-user-details" },
             { "EditUserDetails", "/user/edit-user-details" }
         };
+
+        public static Dictionary<string, string> Apprenticeships => new Dictionary<string, string>()
+        {
+            { "ViewPendingPriceChange", "/employer/{0}/ChangeOfPrice/{1}/pending" }
+        };
     }
 }

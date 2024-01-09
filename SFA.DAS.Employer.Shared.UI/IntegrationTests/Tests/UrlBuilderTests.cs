@@ -55,6 +55,14 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             Assert.AreEqual("https://test-login.apprenticeships.education.gov.uk/account/changepassword?clientId=ABC123&returnUrl=return-address", urlBuilder.UsersLink("ChangePassword", new [] {"ABC123", "return-address"})); 
         }
 
+        [Test]
+        public void Then_The_Apprenticeships_Links_Are_Built()
+        {
+            var urlBuilder = new UrlBuilder("test");
+
+            Assert.AreEqual("https://apprenticeshipdetails.test-eas.apprenticeships.education.gov.uk/employer/ABC123/ChangeOfPrice/ZZZ999/pending", urlBuilder.ApprenticeshipsLink("ViewPendingPriceChange", new[] { "ABC123", "ZZZ999" }));
+        }
+
         [TestCase("at","at-eas.apprenticeships.education")]
         [TestCase("test","test-eas.apprenticeships.education")]
         [TestCase("test2","test2-eas.apprenticeships.education")]
