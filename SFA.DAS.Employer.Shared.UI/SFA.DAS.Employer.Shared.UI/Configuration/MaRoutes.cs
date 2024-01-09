@@ -32,7 +32,8 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
 
         public static Dictionary<string, string> CommitmentsV2 => new Dictionary<string, string>
         {
-            { "ApprenticesHome", "/{0}" }
+            { "ApprenticesHome", "/{0}" },
+            { "ApprenticeDetails", "/{0}/apprentices/{1}/details"}
         };
 
         public static Dictionary<string, string> Recruit => new Dictionary<string, string>
