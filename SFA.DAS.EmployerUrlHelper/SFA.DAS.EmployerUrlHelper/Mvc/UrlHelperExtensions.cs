@@ -61,6 +61,11 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
             return GetLinkGenerator(urlHelper).LevyTransferMatchingLink(path);
         }
 
+        public static string ApprenticeshipsLink(this IUrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator(urlHelper).ApprenticeshipsLink(path);
+        }
+
         private static ILinkGenerator GetLinkGenerator(IUrlHelper urlHelper)
         {
             return urlHelper.ActionContext.HttpContext.RequestServices.GetRequiredService<ILinkGenerator>();
@@ -127,6 +132,11 @@ namespace SFA.DAS.EmployerUrlHelper.Mvc
         public static string LevyTransferMatchingLink(this UrlHelper urlHelper, string path)
         {
             return GetLinkGenerator().LevyTransferMatchingLink(path);
+        }
+
+        public static string ApprenticeshipsLink(this UrlHelper urlHelper, string path)
+        {
+            return GetLinkGenerator().ApprenticeshipsLink(path);
         }
 
         private static ILinkGenerator GetLinkGenerator()
