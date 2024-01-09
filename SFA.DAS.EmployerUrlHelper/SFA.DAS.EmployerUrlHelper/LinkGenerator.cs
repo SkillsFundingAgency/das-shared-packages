@@ -68,6 +68,11 @@ namespace SFA.DAS.EmployerUrlHelper
             return Action(_configuration.LevyTransferMatchingBaseUrl, path);
         }
 
+        public string ApprenticeshipsLink(string path = null)
+        {
+            return Action(_configuration.ApprenticeshipsBaseUrl, path);
+        }
+
         private string Action(string baseUrl, string path)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))
