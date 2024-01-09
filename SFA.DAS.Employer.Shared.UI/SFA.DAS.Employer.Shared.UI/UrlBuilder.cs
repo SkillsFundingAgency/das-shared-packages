@@ -23,40 +23,28 @@ namespace SFA.DAS.Employer.Shared.UI
                 return _generator.AccountsLink("/");
 
             var route = MaRoutes.Accounts[routeName];
-            
-            if (args != null && args.Length > 0)
-                route = string.Format(route, args);
-
+            route = FormatRoute(route, args);
             return _generator.AccountsLink(route);
         }
 
         public string FinanceLink(string routeName, params string[] args)
         {
             var route = MaRoutes.Finance[routeName];
-            
-            if (args != null && args.Length > 0)
-                route = string.Format(route, args);
-
+            route = FormatRoute(route, args);
             return _generator.FinanceLink(route);
         }
 
         public string UsersLink(string routeName, params string[] args)
         {
             var route = MaRoutes.Identity[routeName];
-            
-            if (args != null && args.Length > 0)
-                route = string.Format(route, args);
-
+            route = FormatRoute(route, args);
             return _generator.UsersLink(route);
         }
 
         public string CommitmentsV2Link(string routeName, params string[] args)
         {
             var route = MaRoutes.CommitmentsV2[routeName];
-
-            if (args != null && args.Length > 0)
-                route = string.Format(route, args);
-
+            route = FormatRoute(route, args);
             return _generator.CommitmentsV2Link(route);
         }
 
@@ -64,31 +52,30 @@ namespace SFA.DAS.Employer.Shared.UI
         public string RecruitLink(string routeName, params string[] args)
         {
             var route = MaRoutes.Recruit[routeName];
-            
-            if (args != null && args.Length > 0)
-                route = string.Format(route, args);
-
+            route = FormatRoute(route, args);
             return _generator.RecruitLink(route);
         }
 
         public string ApprenticeshipsLink(string routeName, params string[] args)
         {
             var route = MaRoutes.Apprenticeships[routeName];
-
-            if (args != null && args.Length > 0)
-                route = string.Format(route, args);
-
+            route = FormatRoute(route, args);
             return _generator.ApprenticeshipsLink(route);
         }
 
         public string EmployerProfiles(string routeName, params string[] args)
         {
             var route = MaRoutes.EmployerProfile[routeName];
-
-            if (args != null && args.Length > 0)
-                route = string.Format(route, args);
-
+            route = FormatRoute(route, args);
             return _generator.EmployersProfiles(route);
+        }
+
+        private string FormatRoute(string route, params string[] args)
+        {
+            if (args != null && args.Length > 0)
+                return string.Format(route, args);
+
+            return route;
         }
 
         public string ActiveSection(NavigationSection section, string routeName, params string[] args)
