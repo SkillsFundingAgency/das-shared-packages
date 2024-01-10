@@ -20,7 +20,8 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
         {
             var urlBuilder = new UrlBuilder("test");
             
-            Assert.AreEqual("https://approvals.test-eas.apprenticeships.education.gov.uk/ABC123", urlBuilder.CommitmentsV2Link("ApprenticesHome", "ABC123")); 
+            Assert.AreEqual("https://approvals.test-eas.apprenticeships.education.gov.uk/ABC123", urlBuilder.CommitmentsV2Link("ApprenticesHome", "ABC123"));
+            Assert.AreEqual("https://approvals.test-eas.apprenticeships.education.gov.uk/ABC123/apprentices/ZZZ999/details", urlBuilder.CommitmentsV2Link("ApprenticeDetails", "ABC123", "ZZZ999"));
         }
 
         [Test]
