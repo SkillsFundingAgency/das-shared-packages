@@ -6,12 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Azure.Identity" Version="1.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.8" />
-        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.22.0" />
-        <PackageReference Include="Microsoft.IdentityModel.KeyVaultExtensions" Version="6.32.2" />
+        <PackageReference Include="Azure.Identity" Version="1.10.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.25" />
         <PackageReference Include="SFA.DAS.MA.Shared.UI" Version="1.1.79" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.33.0" />
         <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
