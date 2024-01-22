@@ -22,6 +22,9 @@ namespace SFA.DAS.Employer.Shared.UI
             if (string.IsNullOrWhiteSpace(routeName))
                 return _generator.AccountsLink("/");
 
+            if (args != null && args.Length == 1 && args[0] == "")
+                return _generator.AccountsLink("/");
+
             var route = MaRoutes.Accounts[routeName];
             route = FormatRoute(route, args);
             return _generator.AccountsLink(route);

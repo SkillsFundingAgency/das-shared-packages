@@ -10,8 +10,9 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
 
             var urlBuilder = new UrlBuilder("test");
             
-            Assert.AreEqual("https://accounts.test-eas.apprenticeships.education.gov.uk/", urlBuilder.AccountsLink()); 
-
+            Assert.AreEqual("https://accounts.test-eas.apprenticeships.education.gov.uk/", urlBuilder.AccountsLink());
+            Assert.AreEqual("https://accounts.test-eas.apprenticeships.education.gov.uk/", urlBuilder.AccountsLink("AccountsHome", ""));
+            Assert.AreEqual("https://accounts.test-eas.apprenticeships.education.gov.uk/accounts/ABC123/teams", urlBuilder.AccountsLink("AccountsHome", "ABC123"));
             Assert.AreEqual("https://accounts.test-eas.apprenticeships.education.gov.uk/accounts/ABC123/teams/view", urlBuilder.AccountsLink("AccountsTeamsView", "ABC123")); 
         }
 
