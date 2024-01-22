@@ -40,7 +40,12 @@ public class EmployerUser
 
 public class AssociatedAccounts
 {
-        public string? AccountId { get; set; }
+	[JsonPropertyName("AccountId")]
+	public string? AccountId { get; set; }
+
+	[JsonPropertyName("EmployerName")]
 	public string? EmployerName { get; set; }
+
+	[JsonPropertyName("Role")]
 	public string? Role { get; set; }
 }

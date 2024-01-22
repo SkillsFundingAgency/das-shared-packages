@@ -1,11 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using SFA.DAS.Authorization.TokenGenerator.Models;
 using SFA.DAS.Authorization.TokenGenerator.Providers;
-using System.Reflection.Emit;
 using System.Security.Claims;
-using System.Text.Json;
 
-class program
+class Program
 {
 	static void Main(string[] args)
 	{

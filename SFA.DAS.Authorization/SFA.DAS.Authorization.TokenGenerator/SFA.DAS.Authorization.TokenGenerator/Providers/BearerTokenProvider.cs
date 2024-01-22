@@ -32,31 +32,22 @@ public static class BearerTokenProvider
     {
         if (string.IsNullOrEmpty(signingKey))
         {
-            throw new BearTokenException("Signing key cannot be null or empty");
+            throw new BearerTokenException("Signing key cannot be null or empty");
         }
 
         const int minimumKeySize = 128;
         if (signingKey.Length * 8 < minimumKeySize)
         {
             // This checks the key is at least 128 bits long, otherwise the token will fail to be generated
-            throw new BearTokenException("Signing key must exceed 128bits in length");
+            throw new BearerTokenException("Signing key must be at least 128bits in length");
         }
-    }
-
-    private static bool IsUserAuthenticated(ClaimsPrincipal? user)
-    {
-        if (user == null) return false;
-
-        if (user.Identity == null) return false;
-
-        return user.Identity.IsAuthenticated;
     }
 }
 
 
-public class BearTokenException : Exception
+public class BearerTokenException : Exception
 {
-    public BearTokenException(string message) : base(message)
+    public BearerTokenException(string message) : base(message)
     {
     }
 }
