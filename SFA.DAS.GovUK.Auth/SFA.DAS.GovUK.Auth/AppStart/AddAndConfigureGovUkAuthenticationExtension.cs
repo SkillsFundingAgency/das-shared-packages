@@ -8,14 +8,14 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     public static class AddAndConfigureGovUkAuthenticationExtension
     {
         public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services,
-            IConfiguration configuration, Type customClaims, string signedOutRedirectUrl = "", string localStubLoginPath = "", string cookieDomain = "")
+            IConfiguration configuration, Type customClaims, string signedOutRedirectUrl = "", string localStubLoginPath = "", string cookieDomain = "", string loginRedirect = "")
         {
             bool.TryParse(configuration["StubAuth"],out var stubAuth);
             services.AddServiceRegistration(configuration, customClaims);
             if (stubAuth && configuration["ResourceEnvironmentName"].ToUpper() != "PRD")
             {
                 services.AddEmployerStubAuthentication(signedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
-                    RedirectExtension.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]),
+                    loginRedirect.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]),
                     localStubLoginPath,
                     cookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
             }
