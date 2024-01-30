@@ -63,6 +63,7 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             var urlBuilder = new UrlBuilder("test");
 
             Assert.AreEqual("https://apprenticeshipdetails.test-eas.apprenticeships.education.gov.uk/employer/ABC123/ChangeOfPrice/ZZZ999/pending", urlBuilder.ApprenticeshipsLink("ViewPendingPriceChange", new[] { "ABC123", "ZZZ999" }));
+            Assert.AreEqual("https://apprenticeshipdetails.test-eas.apprenticeships.education.gov.uk/employer/ABC123/ChangeOfPrice/ZZZ999", urlBuilder.ApprenticeshipsLink("CreatePendingPriceChange", new[] { "ABC123", "ZZZ999" }));
         }
 
         [TestCase("at","at-eas.apprenticeships.education")]
