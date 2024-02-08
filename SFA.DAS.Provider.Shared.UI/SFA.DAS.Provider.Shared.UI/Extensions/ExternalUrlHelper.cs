@@ -1,4 +1,7 @@
+using System;
+using System.IO;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Models;
 
@@ -10,16 +13,24 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
     }
     public class ExternalUrlHelper : IExternalUrlHelper
     {
+        private readonly IConfiguration _configuration;
         private readonly ProviderSharedUIConfiguration _options;
+        private readonly bool _isLocal;
 
-        public ExternalUrlHelper(IOptions<ProviderSharedUIConfiguration> options)
+        public ExternalUrlHelper(IOptions<ProviderSharedUIConfiguration> options, IConfiguration configuration)
         {
+            _configuration = configuration;
             _options = options.Value;
+            _isLocal = (_configuration["ResourceEnvironmentName"]?.StartsWith("LOCAL", StringComparison.CurrentCultureIgnoreCase)).GetValueOrDefault();
         }
 
         public string GenerateUrl(UrlParameters urlParameters)
         {
-            var baseUrl = _options.DashboardUrl;
+            var localPort = _configuration.GetSection("LocalPorts")?[urlParameters.SubDomain];
+
+            var baseUrl = _isLocal && !string.IsNullOrEmpty(localPort)
+                ? FormatBaseUrl($"https://localhost:{localPort}/", null, urlParameters.Folder)
+                : FormatBaseUrl(_options.DashboardUrl, urlParameters.SubDomain, urlParameters.Folder);
 
             return FormatUrl(baseUrl, urlParameters);
         }
@@ -28,7 +39,12 @@ namespace SFA.DAS.Provider.Shared.UI.Extensions
         {
             var urlString = new StringBuilder();
 
-            urlString.Append(FormatBaseUrl(baseUrl, urlParameters.SubDomain, urlParameters.Folder));
+            urlString.Append(baseUrl);
+
+            if (!string.IsNullOrEmpty(urlParameters.RelativeRoute))
+            {
+                return Path.Combine(urlString.ToString(), urlParameters.RelativeRoute);
+            }
 
             if (!string.IsNullOrEmpty(urlParameters.Id))
             {
