@@ -8,5 +8,6 @@ namespace SFA.DAS.Provider.Shared.UI.Models
         public string SubDomain { get; set; }
         public string Folder { get; set; }
         public string QueryString { get; set; }
+        public string RelativeRoute { get; set; }
     }
 }

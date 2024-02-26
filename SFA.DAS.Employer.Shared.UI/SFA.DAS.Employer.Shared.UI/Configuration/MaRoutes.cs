@@ -65,7 +65,7 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
         public static Dictionary<string, string> Apprenticeships => new Dictionary<string, string>()
         {
             { "ViewPendingPriceChange", "/employer/{0}/ChangeOfPrice/{1}/pending" },
-            { "CreatePendingPriceChange", "/employer/{0}/ChangeOfPrice/{1}" }
+            { "CreatePriceChange", "/employer/{0}/ChangeOfPrice/{1}" }
         };
     }
 }

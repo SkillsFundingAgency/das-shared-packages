@@ -23,6 +23,8 @@ namespace SFA.DAS.Provider.Shared.UI.TagHelpers
         public string ExternalFolder { get; set; }
         [HtmlAttributeName("asp-external-querystring")]
         public string QueryString { get; set; }
+        [HtmlAttributeName("asp-external-relativeroute")]
+        public string RelativeRoute { get; set; }
 
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -36,7 +38,8 @@ namespace SFA.DAS.Provider.Shared.UI.TagHelpers
                 Action = ExternalAction,
                 SubDomain = ExternalSubDomain,
                 Folder = ExternalFolder,
-                QueryString = QueryString
+                QueryString = QueryString,
+                RelativeRoute = RelativeRoute
             };
             output.Attributes.SetAttribute("href",_helper.GenerateUrl(urlParams));
         }
