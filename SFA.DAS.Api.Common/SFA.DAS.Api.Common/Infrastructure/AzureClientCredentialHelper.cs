@@ -15,7 +15,10 @@ namespace SFA.DAS.Api.Common.Infrastructure
                 {
                     Retry = { NetworkTimeout = TimeSpan.FromSeconds(1), MaxRetries = 2, Delay = TimeSpan.FromMilliseconds(100) }
                 }),
-                new AzureCliCredential());
+                new AzureCliCredential(options: new AzureCliCredentialOptions
+                { 
+                    Retry = { NetworkTimeout = TimeSpan.FromSeconds(1), MaxRetries = 2, Delay = TimeSpan.FromMilliseconds(100) }
+                }));
             
             var accessToken = await azureServiceTokenProvider.GetTokenAsync(new TokenRequestContext(scopes: new[] { identifier }));
 
