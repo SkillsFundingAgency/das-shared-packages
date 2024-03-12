@@ -25,7 +25,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 options.Cookie.IsEssential = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.SlidingExpiration = true;
-                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SameSite = SameSiteMode.None;
                 options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
                 options.LogoutPath = new PathString(signedOutCallbackPath);
                 var environmentAndDomain = RedirectExtension.GetEnvironmentAndDomain(resourceEnvironmentName, clientName);

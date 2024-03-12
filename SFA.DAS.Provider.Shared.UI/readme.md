@@ -58,3 +58,14 @@ public class ErrorController : Controller
  ```csharp
 builder.SuppressNavigationSection(NavigationSection.Reservations);
  ```
+ 
+## Local development when using asp-external-controller
+
+If you are working with a solution that uses the asp-external-controller functionality to link to another web app within the service, by default when you run locally it will use whatever you have configured in DashboardUrl as the base url for that app. If you want to point to a specific locally running instance of the web app you are linking to you can do so with the following config:
+
+```
+	"ResourceEnvironmentName": "LOCAL", //this needs to be set to LOCAL otherwise the local development behaviour will not trigger
+	"LocalPorts": {
+		"myotherwebapp": "7088" //for any subdomain you set a local port value for here, localhost with that port will be used. e.g. myotherwebapp.at-pas.apprenticeships.education.gov.uk becomes localhost:7088 (for any apps you want to use for example the at version of, just leave them out of this array)
+	}
+```
