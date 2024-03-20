@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.MD" />
     <None Include="SFA.DAS.NLog.Targets.AzureEventHub.nuspec">
       <SubType>Designer</SubType>
     </None>
