@@ -68,6 +68,10 @@ namespace SFA.DAS.GovUK.Auth.Services
                 new Claim(ClaimTypes.NameIdentifier, model.Id),
                 new Claim("sub", model.Id)  
             };
+            if (model.Mobile != null)
+            {
+                claims.Add(new Claim(ClaimTypes.MobilePhone, model.Mobile));
+            }
 
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
