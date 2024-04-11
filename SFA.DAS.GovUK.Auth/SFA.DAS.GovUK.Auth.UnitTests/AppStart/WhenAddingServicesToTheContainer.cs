@@ -38,7 +38,7 @@ public class WhenAddingServicesToTheContainer
             
         var type = provider.GetServices(typeof(IAuthorizationHandler)).ToList();
             
-        Assert.IsNotNull(type);
+        Assert.That(type, Is.Not.Null);
         type.Count.Should().Be(1);
         type.Should().ContainSingle(c => c.GetType() == typeof(AccountActiveAuthorizationHandler));
     }
