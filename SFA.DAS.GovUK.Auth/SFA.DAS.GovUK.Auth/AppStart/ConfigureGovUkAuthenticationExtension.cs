@@ -92,7 +92,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                             ValidateIssuerSigningKey = true,
                             ValidateIssuer = true,
                             ValidateAudience = true,
-                            SaveSigninToken = true
+                            SaveSigninToken = true,
+                            ValidIssuer = govUkConfiguration.BaseUrl + "/"
                         };
                         options.Events.OnAuthorizationCodeReceived = async (ctx) =>
                         {
