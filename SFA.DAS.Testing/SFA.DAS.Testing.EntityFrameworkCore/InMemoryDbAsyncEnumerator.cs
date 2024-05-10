@@ -8,17 +8,10 @@ namespace SFA.DAS.Testing.EntityFrameworkCore
     public class InMemoryDbAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
         private readonly IEnumerator<T> innerEnumerator;
-        private bool disposed = false;
 
         public InMemoryDbAsyncEnumerator(IEnumerator<T> enumerator)
         {
             this.innerEnumerator = enumerator;
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         public Task<bool> MoveNext(CancellationToken cancellationToken)
@@ -28,19 +21,15 @@ namespace SFA.DAS.Testing.EntityFrameworkCore
 
         public T Current => this.innerEnumerator.Current;
 
-        protected virtual void Dispose(bool disposing)
+        public ValueTask<bool> MoveNextAsync()
         {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    // Dispose managed resources.
-                    this.innerEnumerator.Dispose();
-                }
-
-                this.disposed = true;
-            }
+            return new ValueTask<bool>(this.innerEnumerator.MoveNext());
         }
 
+        public ValueTask DisposeAsync()
+        {
+            GC.SuppressFinalize(this);
+            return new ValueTask();
+        }
     }
 }

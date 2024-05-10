@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.AzureStorag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.AutoFixture.UnitTests", "SFA.DAS.Testing.AutoFixture.UnitTests\SFA.DAS.Testing.AutoFixture.UnitTests.csproj", "{370B48DA-EAB6-45D4-8848-5E61DFF396A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Testing.EntityFrameworkCore", "SFA.DAS.Testing.EntityFrameworkCore\SFA.DAS.Testing.EntityFrameworkCore.csproj", "{1AABCF15-CFEC-4CF8-96B3-827D5C2D6F5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.EntityFrameworkCore", "SFA.DAS.Testing.EntityFrameworkCore\SFA.DAS.Testing.EntityFrameworkCore.csproj", "{1AABCF15-CFEC-4CF8-96B3-827D5C2D6F5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

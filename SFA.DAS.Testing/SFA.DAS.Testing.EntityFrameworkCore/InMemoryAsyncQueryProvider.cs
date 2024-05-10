@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace SFA.DAS.Testing.EntityFrameworkCore
 {
@@ -41,15 +40,14 @@ namespace SFA.DAS.Testing.EntityFrameworkCore
             return Task.FromResult(this.Execute(expression));
         }
 
-        public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
-        {
-
-            return Task.FromResult(this.Execute<TResult>(expression)).ToAsyncEnumerable();
-        }
-
         public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
             return Task.FromResult(this.Execute<TResult>(expression));
+        }
+
+        TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
