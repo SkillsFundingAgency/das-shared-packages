@@ -32,7 +32,7 @@ stages:
   jobs:
   - template: ../pipeline-templates/job/code-build.yml
     parameters:
-      WorkingDirectory: SFA.DAS.GovUK.Auth
+      WorkingDirectory: SFA.DAS.Testing
       DotNetStandardPackagesToPack: SFA.DAS.Testing/SFA.DAS.Testing/SFA.DAS.Testing.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Testing
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
