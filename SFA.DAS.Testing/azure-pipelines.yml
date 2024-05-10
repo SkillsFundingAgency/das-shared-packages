@@ -2,7 +2,7 @@ trigger:
   batch: true
   branches:
     include:
-      - "DASD-10915-SFA-DAS-Testing-YAML-Setup"
+      - "master"
   paths:
     include:
     - pipeline-templates
@@ -12,7 +12,7 @@ pr:
   autoCancel: true
   branches:
     include:
-      - "DASD-10915-SFA-DAS-Testing-YAML-Setup"
+      - "master"
   paths:
     include:
     - pipeline-templates
