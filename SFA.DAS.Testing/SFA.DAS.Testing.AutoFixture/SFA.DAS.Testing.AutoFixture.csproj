@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
         <Description>Shared library for autofixture extensions</Description>
-        <PackageLicenseUrl>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</PackageLicenseUrl>
+        <License>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</License>
         <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Testing</PackageProjectUrl>
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
         <IncludeSymbols>true</IncludeSymbols>
