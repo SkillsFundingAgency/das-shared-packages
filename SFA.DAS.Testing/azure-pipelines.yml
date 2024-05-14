@@ -33,6 +33,11 @@ stages:
   - template: ../pipeline-templates/job/code-build.yml
     parameters:
       WorkingDirectory: SFA.DAS.Testing
-      DotNetStandardPackagesToPack: SFA.DAS.Testing/SFA.DAS.Testing/SFA.DAS.Testing.csproj
+      DotNetStandardPackagesToPack: >
+        SFA.DAS.Testing/SFA.DAS.Testing/SFA.DAS.Testing.csproj;
+        SFA.DAS.Testing/SFA.DAS.Testing.AutoFixture/SFA.DAS.Testing.AutoFixture.csproj;
+        SFA.DAS.Testing/SFA.DAS.Testing.AzureStorageEmulator/SFA.DAS.Testing.AzureStorageEmulator.csproj;
+        SFA.DAS.Testing/SFA.DAS.Testing.EntityFramework/SFA.DAS.Testing.EntityFramework.csproj;
+        SFA.DAS.Testing/SFA.DAS.Testing.EntityFrameworkCore/SFA.DAS.Testing.EntityFrameworkCore.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Testing
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
