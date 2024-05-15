@@ -22,8 +22,8 @@ namespace SFA.DAS.Testing.Builders
                     propertyInfo.SetValue(@object, value);
                     break;
                 default:
-                    throw new Exception("Set can only be appled to a Field or Property");
-            } 
+                    throw new InvalidOperationException("Set can only be appled to a Field or Property");
+            }
             return @object;
         }
 
@@ -67,7 +67,7 @@ namespace SFA.DAS.Testing.Builders
                     collection = (ICollection<TItem>)propertyInfo.GetValue(@object);
                     break;
                 default:
-                    throw new Exception("Field or Property type expected");
+                    throw new InvalidOperationException("Field or Property type expected");
             }
 
             return collection;

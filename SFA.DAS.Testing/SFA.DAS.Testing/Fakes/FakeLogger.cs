@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Testing.Fakes
@@ -24,8 +23,8 @@ namespace SFA.DAS.Testing.Fakes
             return null;
         }
 
-        public bool HasErrors => LogMessages.Any(l => l.logLevel == LogLevel.Error);
-        public bool HasInfo => LogMessages.Any(l => l.logLevel == LogLevel.Information);
-        public bool HasWarnings => LogMessages.Any(l => l.logLevel == LogLevel.Warning);
+        public bool HasErrors => LogMessages.Exists(l => l.logLevel == LogLevel.Error);
+        public bool HasInfo => LogMessages.Exists(l => l.logLevel == LogLevel.Information);
+        public bool HasWarnings => LogMessages.Exists(l => l.logLevel == LogLevel.Warning);
     }
 }
