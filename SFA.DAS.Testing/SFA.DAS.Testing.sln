@@ -1,11 +1,8 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.202
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing", "SFA.DAS.Testing\SFA.DAS.Testing.csproj", "{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.EntityFramework", "SFA.DAS.Testing.EntityFramework\SFA.DAS.Testing.EntityFramework.csproj", "{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B437E0E-B62A-4493-8CF6-BF5FDD6F5CCC}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.AzureStorag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.AutoFixture.UnitTests", "SFA.DAS.Testing.AutoFixture.UnitTests\SFA.DAS.Testing.AutoFixture.UnitTests.csproj", "{370B48DA-EAB6-45D4-8848-5E61DFF396A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Testing.EntityFrameworkCore", "SFA.DAS.Testing.EntityFrameworkCore\SFA.DAS.Testing.EntityFrameworkCore.csproj", "{1AABCF15-CFEC-4CF8-96B3-827D5C2D6F5C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +29,6 @@ Global
 		{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E32B5FA-92BD-492F-8FB7-75D5E34C7120}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4C1C1AE-7274-47D8-82DA-1A13DBBCE8C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F43DAA82-0071-4708-B6F7-A915B74DE73D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,10 +45,6 @@ Global
 		{370B48DA-EAB6-45D4-8848-5E61DFF396A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{370B48DA-EAB6-45D4-8848-5E61DFF396A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{370B48DA-EAB6-45D4-8848-5E61DFF396A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AABCF15-CFEC-4CF8-96B3-827D5C2D6F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AABCF15-CFEC-4CF8-96B3-827D5C2D6F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AABCF15-CFEC-4CF8-96B3-827D5C2D6F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AABCF15-CFEC-4CF8-96B3-827D5C2D6F5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
