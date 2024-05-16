@@ -28,5 +28,11 @@ namespace SFA.DAS.Telemetry.Startup
             serviceCollection.AddSingleton<IUriRedactionService, UriRedactionService>(s => new UriRedactionService(options.Invoke()));
             return serviceCollection;
         }
+
+        public static IServiceCollection AddTelemetryNotFoundAsSuccessfulResponse(this IServiceCollection services)
+        {
+            services.AddSingleton<ITelemetryInitializer, NotFoundAsSuccessfulResponseTelemetryInitializer>();
+            return services;
+        }
     }
 }

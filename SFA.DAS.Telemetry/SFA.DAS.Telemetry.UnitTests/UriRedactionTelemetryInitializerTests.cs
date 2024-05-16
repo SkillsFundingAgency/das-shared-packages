@@ -6,7 +6,7 @@ using SFA.DAS.Telemetry.Telemetry;
 
 namespace SFA.DAS.Telemetry.UnitTests
 {
-    public class TelemetryInitializerTests
+    public class UriRedactionTelemetryInitializerTests
     {
         private UriRedactionTelemetryInitializer _telemetryInitializer;
         private Mock<IUriRedactionService> _redactionService;
