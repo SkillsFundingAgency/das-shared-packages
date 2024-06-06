@@ -66,7 +66,8 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
         {
             { "ViewPendingPriceChange", "/employer/{0}/ChangeOfPrice/{1}/pending" },
             { "CreatePriceChange", "/employer/{0}/ChangeOfPrice/{1}" },
-            { "ViewPendingStartDateChange", "/employer/{0}/ChangeOfStartDate/{1}/pending" }
+            { "ViewPendingStartDateChange", "/employer/{0}/ChangeOfStartDate/{1}/pending" },
+            { "PaymentsFreeze", "/employer/{0}/PaymentsFreeze/{1}" }
         };
     }
 }
