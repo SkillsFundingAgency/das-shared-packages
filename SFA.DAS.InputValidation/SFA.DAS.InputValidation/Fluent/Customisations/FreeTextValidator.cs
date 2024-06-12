@@ -15,7 +15,7 @@ namespace SFA.DAS.InputValidation.Fluent.Customisations
 
         protected override string GetDefaultMessageTemplate(string errorCode)
         {
-            return base.GetDefaultMessageTemplate("{PropertyName} must not contain valid characters");
+            return base.GetDefaultMessageTemplate("{PropertyName} must contain valid characters");
         }
 
         public override bool IsValid(ValidationContext<T> context, TProperty propertyValue)
