@@ -12,10 +12,10 @@ namespace SFA.DAS.InputValidation.Fluent.Customisations
         private Regex _regex = null!;
 
         private const string ValidCharactersExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
-
+        
         protected override string GetDefaultMessageTemplate(string errorCode)
         {
-            return base.GetDefaultMessageTemplate("{PropertyName} must contain valid characters");
+            return "{PropertyName} must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes";
         }
 
         public override bool IsValid(ValidationContext<T> context, TProperty propertyValue)

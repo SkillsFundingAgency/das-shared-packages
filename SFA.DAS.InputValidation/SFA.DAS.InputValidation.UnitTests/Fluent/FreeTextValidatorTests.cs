@@ -26,6 +26,12 @@ public class FreeTextValidatorTests
         var actual = _validator!.Validate(model);
 
         actual.IsValid.Should().Be(isValid);
+        if (!actual.IsValid)
+        {
+            actual.Errors
+                .FirstOrDefault(c => c.ErrorMessage == "My Test String must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
+                .Should().NotBeNull();
+        }
     }
 
     private class SomeTestClassValidator : AbstractValidator<SomeTestClass>
@@ -33,7 +39,7 @@ public class FreeTextValidatorTests
         public SomeTestClassValidator()
         {
             RuleFor(x => x.MyTestString)
-                .ValidFreeTextCharacters();
+                .ValidFreeTextCharacters().WithErrorCode(nameof(SomeTestClass.MyTestString));
         }
     }
 
