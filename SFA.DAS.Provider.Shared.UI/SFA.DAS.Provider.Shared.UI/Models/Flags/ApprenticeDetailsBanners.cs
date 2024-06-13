@@ -13,9 +13,9 @@ namespace SFA.DAS.Provider.Shared.UI.Models.Flags
         ChangeOfStartDateApproved = 2,
         ChangeOfStartDateCancelled = 4,
         ChangeOfPriceRequestSent = 8,
-        PriceChangeCancelled = 16,
-        PriceChangeApproved = 32,
+        ChangeOfPriceCancelled = 16,
+        ChangeOfPriceApproved = 32,
         ChangeOfPriceAutoApproved = 64,
-        PriceChangeRejected = 128
+        ChangeOfPriceRejected = 128
     }
 }

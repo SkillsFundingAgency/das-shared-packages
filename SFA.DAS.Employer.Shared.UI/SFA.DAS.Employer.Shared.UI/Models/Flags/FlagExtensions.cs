@@ -6,5 +6,16 @@
         {
             return (banners & flag) == flag;
         }
+
+        public static string AppendEmployerBannersToUrl(this string url, params ApprenticeDetailsBanners[] banners)
+        {
+            ApprenticeDetailsBanners bannersCombined = 0;
+            foreach (var banner in banners)
+            {
+                bannersCombined |= banner;
+            }
+
+            return $"{url}?banners={bannersCombined}";
+        }
     }
 }

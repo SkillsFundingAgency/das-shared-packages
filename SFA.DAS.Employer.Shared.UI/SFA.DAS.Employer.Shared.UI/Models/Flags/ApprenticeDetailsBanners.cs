@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.Employer.Shared.UI.Models.Flags
+﻿using System;
+
+namespace SFA.DAS.Employer.Shared.UI.Models.Flags
 {
+    [Flags]
     public enum ApprenticeDetailsBanners : ulong
     {
         None = 0,
