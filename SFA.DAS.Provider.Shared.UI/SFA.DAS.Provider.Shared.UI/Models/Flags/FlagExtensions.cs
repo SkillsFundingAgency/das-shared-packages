@@ -15,7 +15,7 @@
                 bannersCombined |= banner;
             }
 
-            return $"{url}?banners={bannersCombined}";
+            return $"{url}?banners={(ulong)bannersCombined}";
         }
     }
 }
