@@ -11,6 +11,7 @@ namespace SFA.DAS.Employer.Shared.UI.Models.Flags
         ChangeOfPriceRequestSent = 8,
         ChangeOfPriceCancelled = 16,
         ChangeOfStartDateApproved = 32,
-        ChangeOfStartDateRejected = 64
+        ChangeOfStartDateRejected = 64,
+        ProviderPaymentsInactive = 128
     }
 }
