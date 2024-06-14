@@ -16,8 +16,8 @@ namespace SFA.DAS.Employer.Shared.UI.UnitTests
             result.Should().Be(expectedToBeSet);
         }
 
-        [TestCase(ApprenticeDetailsBanners.ChangeOfPriceApproved | ApprenticeDetailsBanners.ChangeOfStartDateRejected, (ulong)68)]
-        [TestCase(ApprenticeDetailsBanners.ChangeOfPriceRequestSent, (ulong)8)]
+        [TestCase(ApprenticeDetailsBanners.ChangeOfPriceApproved | ApprenticeDetailsBanners.ChangeOfStartDateRejected, (ulong)34)]
+        [TestCase(ApprenticeDetailsBanners.ChangeOfPriceRequestSent, (ulong)4)]
         public void AppendProviderBannersToUrl_ReturnsExpectedResult(ApprenticeDetailsBanners banners, ulong expectedBannerValue)
         {
             var result = Guid.NewGuid().ToString().AppendEmployerBannersToUrl(banners);
