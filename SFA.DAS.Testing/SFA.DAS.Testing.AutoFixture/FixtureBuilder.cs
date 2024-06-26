@@ -2,28 +2,27 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
 
-namespace SFA.DAS.Testing.AutoFixture
+namespace SFA.DAS.Testing.AutoFixture;
+
+public static class FixtureBuilder
 {
-    internal static class FixtureBuilder
+    public static IFixture MoqFixtureFactory()
     {
-        public static IFixture MoqFixtureFactory()
-        {
-            var fixture = new Fixture();
-            fixture
-                .Customize(new AutoMoqCustomization{ConfigureMembers = true});
+        var fixture = new Fixture();
+        fixture
+            .Customize(new AutoMoqCustomization { ConfigureMembers = true });
 
-            return fixture;
-        }
+        return fixture;
+    }
 
-        public static IFixture RecursiveMoqFixtureFactory()
-        {
-            var fixture = MoqFixtureFactory();
+    public static IFixture RecursiveMoqFixtureFactory()
+    {
+        var fixture = MoqFixtureFactory();
 
-            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
-                .ForEach(b => fixture.Behaviors.Remove(b));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => fixture.Behaviors.Remove(b));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-            return fixture;
-        }
+        return fixture;
     }
 }
