@@ -87,6 +87,20 @@ namespace SFA.DAS.GovUK.Auth.Services
 
             var accessToken = tokenValidatedContext.TokenEndpointResponse.Parameters["access_token"];
 
+            var content = await GetAccountDetails(accessToken);
+            
+            if (content?.Email != null)
+            {
+                tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));
+            }
+
+            tokenValidatedContext.Principal.Identities.First()
+                .AddClaims(await _customClaims.GetClaims(tokenValidatedContext));
+
+        }
+
+        public async Task<GovUkUser> GetAccountDetails(string accessToken)
+        {
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo")
             {
 
@@ -97,16 +111,12 @@ namespace SFA.DAS.GovUK.Auth.Services
                 }
             };
             var response = await _httpClient.SendAsync(httpRequestMessage);
-            var valueString = response.Content.ReadAsStringAsync().Result;
-            var content = JsonSerializer.Deserialize<GovUkUser>(valueString);
-            if (content?.Email != null)
+            if (!response.IsSuccessStatusCode)
             {
-                tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));
+                return null;
             }
-
-            tokenValidatedContext.Principal.Identities.First()
-                .AddClaims(await _customClaims.GetClaims(tokenValidatedContext));
-
+            var valueString = response.Content.ReadAsStringAsync().Result;
+            return JsonSerializer.Deserialize<GovUkUser>(valueString);
         }
 
         private string CreateJwtAssertion()
