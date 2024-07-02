@@ -9,5 +9,6 @@ namespace SFA.DAS.GovUK.Auth.Services
     {
         Task<Token> GetToken(OpenIdConnectMessage openIdConnectMessage);
         Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext);
+        Task<GovUkUser> GetAccountDetails(string accessToken);
     }
 }

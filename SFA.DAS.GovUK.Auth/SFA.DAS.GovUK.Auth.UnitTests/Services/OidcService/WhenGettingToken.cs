@@ -2,7 +2,6 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Moq;

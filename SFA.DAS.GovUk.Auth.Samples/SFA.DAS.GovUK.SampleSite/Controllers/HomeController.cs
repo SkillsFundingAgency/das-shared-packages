@@ -9,14 +9,10 @@ using SFA.DAS.GovUK.SampleSite.AppStart;
 
 namespace SFA.DAS.GovUK.SampleSite.Controllers;
 
-public class HomeController : Controller
+public class HomeController(IStubAuthenticationService stubAuthenticationService, IOidcService oidcService)
+    : Controller
 {
-    private readonly IStubAuthenticationService _stubAuthenticationService;
 
-    public HomeController(IStubAuthenticationService stubAuthenticationService)
-    {
-        _stubAuthenticationService = stubAuthenticationService;
-    }
     [HttpGet]
     public IActionResult Index()
     {
@@ -31,7 +27,7 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> AccountDetails(StubAuthUserDetails model)
     {
-        var claims = await _stubAuthenticationService.GetStubSignInClaims(model);
+        var claims = await stubAuthenticationService.GetStubSignInClaims(model);
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
             new AuthenticationProperties());
@@ -45,6 +41,16 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
+    [HttpGet]
+    public async Task<IActionResult> GetAccountDetails()
+    {
+        var token = await HttpContext.GetTokenAsync("access_token");
+        var details = await oidcService.GetAccountDetails(token);
+        
+        return View("GetAccountDetails", details.Email);
+    }
     [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
     [HttpGet]
     public IActionResult IsActive()
@@ -54,7 +60,7 @@ public class HomeController : Controller
     
     [Authorize]
     [HttpGet]
-    [Route("sign-out")]
+    [Route("sign-out", Name = "SignOut")]
     public async Task<IActionResult> SigningOut()
     {
         var idToken = await HttpContext.GetTokenAsync("id_token");
