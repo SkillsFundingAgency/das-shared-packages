@@ -6,14 +6,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Azure.Identity" Version="1.11.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.4" />
-        <PackageReference Include="SFA.DAS.MA.Shared.UI" Version="1.1.79" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+        <PackageReference Include="Azure.Identity" Version="1.12.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.6" />
+        <PackageReference Include="SFA.DAS.Employer.Shared.UI" Version="17.1.97" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />
         <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth.csproj" />
