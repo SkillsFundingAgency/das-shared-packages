@@ -70,5 +70,10 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
             { "PaymentsFreeze", "/employer/{0}/PaymentsFreeze/{1}" },
             { "PaymentsUnfreeze", "/employer/{0}/PaymentsFreeze/{1}/unfreeze" }
         };
+
+        public static Dictionary<string, string> RequestApprenticeshipTraining => new Dictionary<string, string>()
+        {
+            { "Dashboard", "/accounts/{0}/employerrequests/dashboard" }
+        };
     }
 }
