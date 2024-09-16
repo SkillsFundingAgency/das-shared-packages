@@ -73,7 +73,7 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
 
         public static Dictionary<string, string> RequestApprenticeshipTraining => new Dictionary<string, string>()
         {
-            { "Dashboard", "/accounts/{0}/employerrequests/dashboard" }
+            { "Dashboard", "/accounts/{0}/employer-requests/dashboard" }
         };
     }
 }
