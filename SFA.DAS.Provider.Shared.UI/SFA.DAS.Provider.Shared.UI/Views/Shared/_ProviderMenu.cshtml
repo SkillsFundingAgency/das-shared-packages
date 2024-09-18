@@ -84,12 +84,6 @@
                             <a asp-external-controller="" asp-external-subdomain="recruit" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Recruit ? "das-navigation__link--current" : "")">Recruit apprentices</a>
                         </li>
                     }
-                    @if(!suppressed.Contains(NavigationSection.EmployerDemand))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-controller="" asp-external-action="find-apprenticeship-opportunities" asp-external-subdomain="find-employers" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.EmployerDemand ? "das-navigation__link--current" : "")">Find employers that need a training provider</a>
-                        </li>
-                    }
                     @if (!suppressed.Contains(NavigationSection.Agreements))
                     {
                         <li class="das-navigation__list-item">
