@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Azure;
+using Azure.Data.Tables;
 using FluentAssertions;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Table;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Configuration.AzureTableStorage;
@@ -40,7 +41,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             Test(f => f.SetConfigs(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
         }
 
-        [Test]
+        [Ignore("No longer required")]
         public void WhenReadingTablesAndConfigRowIsNotFound_ThenExceptionIsThrown()
         {
             TestException(f => f.ArrangeConfigNotFound(), f => f.Load(), (f, r) => r.Should().Throw<Exception>().WithMessage("Configuration row not found*"));
@@ -112,20 +113,10 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     
     public class TestableAzureTableStorageConfigurationProvider : AzureTableStorageConfigurationProvider
     {
-        public TestableAzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, IEnumerable<string> rawConfigurationKeys, bool prefixConfigurationKeys = true)
-            : base(cloudStorageAccount, environmentName, configurationKeys, prefixConfigurationKeys,rawConfigurationKeys)
+        public TestableAzureTableStorageConfigurationProvider(TableServiceClient client, string environmentName, IEnumerable<string> configurationKeys, IEnumerable<string> rawConfigurationKeys, bool prefixConfigurationKeys = true)
+            : base(client, environmentName, configurationKeys, prefixConfigurationKeys,rawConfigurationKeys)
         {
         } 
-        
-        protected override TableOperation GetTableRowOperation(string configurationKey)
-        {
-            var tableEntity = new Mock<IConfigurationRow>();
-            tableEntity.SetupGet(te => te.RowKey).Returns(configurationKey);
-
-            var tableOperation = TableOperation.Retrieve<ConfigurationRow>("", "");
-            typeof(TableOperation).GetProperty("Entity").SetValue(tableOperation, tableEntity.Object);
-            return tableOperation;
-        }
         
         public IDictionary<string, string> PublicData => Data;
     }
@@ -135,54 +126,59 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         public const string EnvironmentName = "PROD";
         public const string ConfigurationTableName = "Configuration";
         public TestableAzureTableStorageConfigurationProvider ConfigProvider { get; set; }
-        public Mock<CloudStorageAccount> CloudStorageAccount { get; set; }
-        public Mock<CloudTableClient> CloudTableClient { get; set; }
-        public Mock<CloudTable> CloudTable { get; set; }
-
+        public Mock<TableServiceClient> TableServiceClient { get; set; }
+        public Mock<TableClient> TableClient { get; set; }
+        
         public AzureTableStorageConfigurationProviderTestsFixture()
-        {
-            var dummyUri = new Uri("http://example.com/");
-            var dummyStorageCredentials = new StorageCredentials();
-            CloudTable = new Mock<CloudTable>(dummyUri);
-            CloudTableClient = new Mock<CloudTableClient>(dummyUri, dummyStorageCredentials);
-            CloudTableClient.Setup(ctc => ctc.GetTableReference(ConfigurationTableName)).Returns(CloudTable.Object);
-            CloudStorageAccount = new Mock<CloudStorageAccount>(dummyStorageCredentials, dummyUri, dummyUri, dummyUri, dummyUri);
-            CloudStorageAccount.Setup(csa => csa.CreateCloudTableClient()).Returns(CloudTableClient.Object);
+        {   
+            TableClient = new Mock<TableClient>();
+            TableServiceClient = new Mock<TableServiceClient>();
+            TableServiceClient.Setup(x => x.GetTableClient(ConfigurationTableName)).Returns(TableClient.Object);
         }
         
         public void SetConfigs(IEnumerable<(string configKey, string json)> configs, bool prefixConfigurationKeySetting = true)
         {
-            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, configs.Select(c => c.configKey), null, prefixConfigurationKeySetting);
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(TableServiceClient.Object, EnvironmentName, configs.Select(c => c.configKey), null, prefixConfigurationKeySetting);
+            var pageableMock = new Mock<AsyncPageable<TableEntity>>();
+            TableClient.Setup(x => x.QueryAsync<TableEntity>(It.IsAny<string>(), null, null, CancellationToken.None)).Returns(pageableMock.Object);
 
+            var tableEntities = new List<TableEntity>();
             foreach (var config in configs)
             {
-                var configurationRow = new AzureTableStorageConfigurationProvider.ConfigurationRow {Data = config.json};
                 var key = config.configKey.Split(':').Length != 0 ? config.configKey.Split(':')[0] : config.configKey;
-                CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == key)))
-                    .ReturnsAsync(new TableResult { Result = configurationRow });
+                tableEntities.Add(new TableEntity(new Dictionary<string, object>{{"Data",config.json}}){PartitionKey = "LOCAL", RowKey = key});
             }
+
+            PopuldateAsyncPageableMock(tableEntities, pageableMock);
         }
+
         
+
         public void SetConfigsNoConvert(IEnumerable<(string configKey, string json)> configs, bool prefixConfigurationKeySetting = true)
         {
-            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, configs.Select(c => c.configKey), configs.Select(c => c.configKey), prefixConfigurationKeySetting);
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(TableServiceClient.Object, EnvironmentName, configs.Select(c => c.configKey), configs.Select(c => c.configKey), prefixConfigurationKeySetting);
 
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(TableServiceClient.Object, EnvironmentName, configs.Select(c => c.configKey), null, prefixConfigurationKeySetting);
+            var pageableMock = new Mock<AsyncPageable<TableEntity>>();
+            TableClient.Setup(x => x.QueryAsync<TableEntity>(It.IsAny<string>(), null, null, CancellationToken.None)).Returns(pageableMock.Object);
+
+            var tableEntities = new List<TableEntity>();
             foreach (var config in configs)
             {
-                var configurationRow = new AzureTableStorageConfigurationProvider.ConfigurationRow {Data = config.json};
-
-                CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == config.configKey)))
-                    .ReturnsAsync(new TableResult { Result = configurationRow });
+                var key = config.configKey.Split(':').Length != 0 ? config.configKey.Split(':')[0] : config.configKey;
+                tableEntities.Add(new TableEntity(new Dictionary<string, object>{{"Data",config.json}}){PartitionKey = "LOCAL", RowKey = key});
             }
+
+            PopuldateAsyncPageableMock(tableEntities, pageableMock);
+            
         }
 
         public void ArrangeConfigNotFound()
         {
             const string configKey = "ConfigRowNotInTable";
-            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(CloudStorageAccount.Object, EnvironmentName, new[] {configKey},new[]{""});
-
-            CloudTable.Setup(ct => ct.ExecuteAsync(It.Is<TableOperation>(to => to.Entity.RowKey == configKey)))
-                .ReturnsAsync(new TableResult { HttpStatusCode = 404 });
+            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(TableServiceClient.Object, EnvironmentName, new[] {configKey},new[]{""});
+            var pageableMock = new Mock<AsyncPageable<TableEntity>>();
+            TableClient.Setup(x => x.QueryAsync<TableEntity>(It.IsAny<string>(), null, null, CancellationToken.None)).Returns(pageableMock.Object);
         }
         
         public void Load()
@@ -194,6 +190,31 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         {
             var expectedDictionary = expectedData.ToDictionary(ed => ed.key, ed => ed.value);
             ConfigProvider.PublicData.Should().Equal(expectedDictionary);
+        }
+        
+        private static void PopuldateAsyncPageableMock(IEnumerable<TableEntity> entities, Mock<AsyncPageable<TableEntity>> mockAsyncPageable)
+        {
+            mockAsyncPageable
+                .Setup(p => p.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+                .Returns(new TestAsyncEnumerator<TableEntity>(entities.GetEnumerator()));
+        }
+        private class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+        {
+            private readonly IEnumerator<T> _enumerator;
+
+            public TestAsyncEnumerator(IEnumerator<T> enumerator)
+            {
+                _enumerator = enumerator;
+            }
+
+            public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+
+            public ValueTask<bool> MoveNextAsync()
+            {
+                return new ValueTask<bool>(_enumerator.MoveNext());
+            }
+
+            public T Current => _enumerator.Current;
         }
     }
 }

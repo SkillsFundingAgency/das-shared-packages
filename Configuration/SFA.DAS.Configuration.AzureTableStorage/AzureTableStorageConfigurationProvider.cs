@@ -2,11 +2,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using Azure;
+using Azure.Data.Tables;
 using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
@@ -15,15 +14,15 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private const string ConfigurationTableName = "Configuration";
         private const string ConfigurationTableRowKeyVersion = "1.0";
 
-        private readonly CloudStorageAccount _storageAccount;
         private readonly string _environmentName;
         private readonly IEnumerable<string> _configurationKeys;
         private readonly bool _prefixConfigurationKeys;
         private readonly IEnumerable<string> _configurationKeysRawJsonResult;
+        private readonly TableServiceClient _client;
 
-        public AzureTableStorageConfigurationProvider(CloudStorageAccount cloudStorageAccount, string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys, IEnumerable<string> configurationKeysRawJsonResult)
+        public AzureTableStorageConfigurationProvider(TableServiceClient tableClient ,string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys, IEnumerable<string> configurationKeysRawJsonResult)
         {
-            _storageAccount = cloudStorageAccount;
+            _client = tableClient;
             _environmentName = environmentName;
             _configurationKeys = configurationKeys;
             _prefixConfigurationKeys = prefixConfigurationKeys;
@@ -32,77 +31,65 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         
         public override void Load()
         {
-            var client = _storageAccount.CreateCloudTableClient();
-            var table = client.GetTableReference(ConfigurationTableName);
+            var tableClient = _client.GetTableClient(ConfigurationTableName);
+            var filter = $"PartitionKey eq '{_environmentName}' and (RowKey eq '{string.Join($"_{ConfigurationTableRowKeyVersion}' or RowKey eq '",_configurationKeys)}_{ConfigurationTableRowKeyVersion}')";
+            var table = tableClient.QueryAsync<TableEntity>(filter: filter);
             var data = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var tasks = _configurationKeys.Select(k => GetTableRowData(table, k, data));
-            
-            Task.WhenAll(tasks).ConfigureAwait(false).GetAwaiter().GetResult();
+
+            Task.WhenAll(_configurationKeys.Select(k => GetTableRowData(table, k, data))).ConfigureAwait(false).GetAwaiter().GetResult();
             
             Data = data;
         }
 
-        private async Task GetTableRowData(CloudTable table, string configurationName, ConcurrentDictionary<string, string> data)
+        private async Task GetTableRowData(AsyncPageable<TableEntity> table, string configurationName,
+            ConcurrentDictionary<string, string> data)
         {
             var configParams = configurationName.Split(':');
             var configDefaultSectionName = configParams.Length > 1 ? configParams[1] : string.Empty;
             var configurationKey = configParams[0];
-                
+
+            var loadData = new ConcurrentDictionary<string, string>();
             
-            var operation = GetTableRowOperation(configurationKey);
-            var row = await table.ExecuteAsync(operation).ConfigureAwait(false);
-            
-            // CloudStorageAccount.ToString() removes sensitive data
-            if (row.HttpStatusCode == (int)HttpStatusCode.NotFound)
-                throw new Exception($"Configuration row not found. StorageAccount:{_storageAccount}, PartitionKey:{_environmentName}, RowKey:{configurationKey}");
-                
-            var configurationRow = (ConfigurationRow)row.Result;
-            
+            await foreach (var item in table)
+            {
+                loadData.AddOrUpdate(item.RowKey, item["Data"].ToString(), (k, v) => item["Data"].ToString());
+            }
+
+
             if (_configurationKeysRawJsonResult != null && _configurationKeysRawJsonResult.Contains(configurationKey))
             {
-                data.AddOrUpdate(configurationKey, configurationRow.Data, (k, v) => configurationRow.Data);
+                data.AddOrUpdate(configurationKey, loadData[configurationKey], (k, v) => loadData[configurationKey]);
                 return;
             }
-            
-            using (var stream = configurationRow.Data.ToStream())
+
+            foreach (var item in loadData)
             {
-                var parsedData = JsonConfigurationStreamParser.Parse(stream);
+
+                var parsedData = JsonConfigurationStreamParser.Parse(item.Value.ToStream());
 
                 foreach (var keyValuePair in parsedData)
                 {
                     if (_prefixConfigurationKeys)
                     {
-                        data.AddOrUpdate($"{configurationKey}:{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
+                        data.AddOrUpdate($"{configurationKey}:{keyValuePair.Key}", keyValuePair.Value,
+                            (k, v) => keyValuePair.Value);
                     }
                     else
                     {
                         if (string.IsNullOrEmpty(configDefaultSectionName))
                         {
-                            data.AddOrUpdate($"{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);    
+                            data.AddOrUpdate($"{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
                         }
                         else
                         {
-                            data.AddOrUpdate($"{configDefaultSectionName}:{keyValuePair.Key}", keyValuePair.Value, (k, v) => keyValuePair.Value);
+                            data.AddOrUpdate($"{configDefaultSectionName}:{keyValuePair.Key}", keyValuePair.Value,
+                                (k, v) => keyValuePair.Value);
                         }
-                        
+
                     }
                 }
             }
         }
-        
-        protected virtual TableOperation GetTableRowOperation(string configurationKey)
-        {
-            return TableOperation.Retrieve<ConfigurationRow>(_environmentName, $"{configurationKey}_{ConfigurationTableRowKeyVersion}");
-        }
-        
-        internal interface IConfigurationRow : ITableEntity
-        {
-            string Data { get; set; }
-        }
-        
-        internal class ConfigurationRow : TableEntity, IConfigurationRow
-        {
-            public string Data { get; set; }
-        }
+    
     }
 }
