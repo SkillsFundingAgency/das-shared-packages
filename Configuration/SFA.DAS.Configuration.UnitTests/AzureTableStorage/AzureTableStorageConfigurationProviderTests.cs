@@ -158,7 +158,6 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         {
             ConfigProvider = new TestableAzureTableStorageConfigurationProvider(TableServiceClient.Object, EnvironmentName, configs.Select(c => c.configKey), configs.Select(c => c.configKey), prefixConfigurationKeySetting);
 
-            ConfigProvider = new TestableAzureTableStorageConfigurationProvider(TableServiceClient.Object, EnvironmentName, configs.Select(c => c.configKey), null, prefixConfigurationKeySetting);
             var pageableMock = new Mock<AsyncPageable<TableEntity>>();
             TableClient.Setup(x => x.QueryAsync<TableEntity>(It.IsAny<string>(), null, null, CancellationToken.None)).Returns(pageableMock.Object);
 
