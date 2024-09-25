@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace SFA.DAS.Api.Common.Infrastructure
