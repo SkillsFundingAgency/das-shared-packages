@@ -41,12 +41,6 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         {
             Test(f => f.SetConfigs(sourceConfigs, false), f => f.Load(), f => f.AssertData(expected));
         }
-
-        [Ignore("No longer required")]
-        public void WhenReadingTablesAndConfigRowIsNotFound_ThenExceptionIsThrown()
-        {
-            TestException(f => f.ArrangeConfigNotFound(), f => f.Load(), (f, r) => r.Should().Throw<Exception>().WithMessage("Configuration row not found*"));
-        }
     }
 
     public class AzureTableStorageConfigurationProviderTestsSource
@@ -150,7 +144,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
                 tableEntities.Add(new TableEntity(new Dictionary<string, object>{{"Data",config.json}}){PartitionKey = "LOCAL", RowKey = key});
             }
 
-            PopuldateAsyncPageableMock(tableEntities, pageableMock);
+            PopulateAsyncPageableMock(tableEntities, pageableMock);
         }
 
         
@@ -169,7 +163,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
                 tableEntities.Add(new TableEntity(new Dictionary<string, object>{{"Data",config.json}}){PartitionKey = "LOCAL", RowKey = key});
             }
 
-            PopuldateAsyncPageableMock(tableEntities, pageableMock);
+            PopulateAsyncPageableMock(tableEntities, pageableMock);
             
         }
 
@@ -193,7 +187,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             ConfigProvider.PublicData.Should().Equal(expectedDictionary);
         }
         
-        private static void PopuldateAsyncPageableMock(IEnumerable<TableEntity> entities, Mock<AsyncPageable<TableEntity>> mockAsyncPageable)
+        private static void PopulateAsyncPageableMock(IEnumerable<TableEntity> entities, Mock<AsyncPageable<TableEntity>> mockAsyncPageable)
         {
             var queue = new Queue<TableEntity>(entities);
             
