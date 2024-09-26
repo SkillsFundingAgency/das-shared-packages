@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using Azure.Data.Tables;
 using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage;
 
 namespace SFA.DAS.Configuration.AzureTableStorage
 {
@@ -24,7 +24,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new AzureTableStorageConfigurationProvider(CloudStorageAccount.Parse(ConnectionString), EnvironmentName, ConfigurationKeys, PrefixConfigurationKeys, ConfigurationKeysRawJsonResult);
+            return new AzureTableStorageConfigurationProvider( new TableServiceClient(ConnectionString), EnvironmentName, ConfigurationKeys, PrefixConfigurationKeys, ConfigurationKeysRawJsonResult);
         }
     }
 }
