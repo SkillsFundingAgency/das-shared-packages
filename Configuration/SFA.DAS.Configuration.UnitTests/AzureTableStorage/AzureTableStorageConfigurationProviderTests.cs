@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Testing;
+using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
 {
@@ -177,7 +178,8 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
             const string configKey = "ConfigRowNotInTable";
             ConfigProvider = new TestableAzureTableStorageConfigurationProvider(TableServiceClient.Object, EnvironmentName, new[] {configKey},new[]{""});
             var pageableMock = new Mock<AsyncPageable<TableEntity>>();
-            TableClient.Setup(x => x.QueryAsync<TableEntity>(It.IsAny<string>(), null, null, CancellationToken.None)).Returns(pageableMock.Object);
+            TableClient.Setup(x => x.QueryAsync<TableEntity>(It.IsAny<string>(), null, null, CancellationToken.None))
+                .Returns(pageableMock.Object);
         }
         
         public void Load()
@@ -193,9 +195,12 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
         
         private static void PopuldateAsyncPageableMock(IEnumerable<TableEntity> entities, Mock<AsyncPageable<TableEntity>> mockAsyncPageable)
         {
+            var queue = new Queue<TableEntity>(entities);
+            
             mockAsyncPageable
                 .Setup(p => p.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
-                .Returns(new TestAsyncEnumerator<TableEntity>(entities.GetEnumerator()));
+                .Returns(() => new TestAsyncEnumerator<TableEntity>(new List<TableEntity> { queue.Dequeue() }
+                    .GetEnumerator()));   
         }
         private class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
         {

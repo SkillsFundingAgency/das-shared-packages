@@ -40,7 +40,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             
             Data = data;
         }
-
+        
         private async Task GetTableRowData(AsyncPageable<TableEntity> table, string configurationName,
             ConcurrentDictionary<string, string> data)
         {
