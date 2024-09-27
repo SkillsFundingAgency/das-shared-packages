@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         
         <Authors>DAS</Authors>
@@ -17,7 +17,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.33" />
+        <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.41" />
         <PackageReference Include="NServiceBus.Raw" Version="3.2.5" />
     </ItemGroup>
 
