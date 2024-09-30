@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using NServiceBus.ObjectBuilder.MSDependencyInjection;
 
 namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
 {
@@ -8,7 +7,11 @@ namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
     {
         public static IWebHostBuilder UseNServiceBusContainer(this IWebHostBuilder builder)
         {
-            return builder.ConfigureServices(s => s.AddSingleton<IServiceProviderFactory<UpdateableServiceProvider>>(new NServiceBusServiceProviderFactory()));
+            return builder.ConfigureServices(services =>
+            {
+                services.AddSingleton<NServiceBusServiceProviderFactory>();
+            });
+
         }
     }
 }

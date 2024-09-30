@@ -1,19 +1,14 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using NServiceBus.ObjectBuilder.MSDependencyInjection;
+using NServiceBus;
 
 namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
 {
-    public class NServiceBusServiceProviderFactory : IServiceProviderFactory<UpdateableServiceProvider>
+    public class NServiceBusServiceProviderFactory
     {
-        public UpdateableServiceProvider CreateBuilder(IServiceCollection services)
+        public IServiceProvider CreateServiceProvider(IServiceCollection services)
         {
-            return new UpdateableServiceProvider(services);
-        }
-
-        public IServiceProvider CreateServiceProvider(UpdateableServiceProvider containerBuilder)
-        {
-            return containerBuilder;
+            return services.BuildServiceProvider();
         }
     }
 }

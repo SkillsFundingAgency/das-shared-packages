@@ -1,4 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NServiceBus;
 
 namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
 {
@@ -6,7 +8,17 @@ namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
     {
         public static IHostBuilder UseNServiceBusContainer(this IHostBuilder builder)
         {
-            return builder.UseServiceProviderFactory(new NServiceBusServiceProviderFactory());
+            builder.ConfigureServices((context, services) =>
+            {
+                var endpointConfiguration = new EndpointConfiguration("YourEndpointName");
+
+                var endpointInstance = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+
+                services.AddSingleton<IEndpointInstance>(endpointInstance);
+            });
+
+            return builder;
         }
+
     }
 }
