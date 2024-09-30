@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -6,16 +6,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-        <PackageReference Include="Azure.Identity" Version="1.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.8" />
+        <PackageReference Include="Azure.Identity" Version="1.12.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.33" />
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.1.2" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="7.1.2" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.1.2" />
         <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.39" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Views\Home\Authenticated.cshtml" />
-      <AdditionalFiles Include="Views\Home\Index.cshtml" />
     </ItemGroup>
 
 
