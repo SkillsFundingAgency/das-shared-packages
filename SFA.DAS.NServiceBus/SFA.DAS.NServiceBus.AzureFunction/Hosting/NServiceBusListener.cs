@@ -2,13 +2,13 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Identity;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using NServiceBus;
 using NServiceBus.Extensibility;
 using NServiceBus.Raw;
 using NServiceBus.Transport;
+using NServiceBus.Unicast.Messages;
 using SFA.DAS.NServiceBus.AzureFunction.Attributes;
 using SFA.DAS.NServiceBus.AzureFunction.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
@@ -44,16 +44,16 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.Endpoint, OnMessage, _poisonMessageQueue);
+
+            TransportDefinition transportDefinition = (IsLearningTransportEndpoint())
+                ? SetupLearningTransportDefinition()
+                : SetupAzureServiceBusTransportDefinition();
+
+            var endpointConfigurationRaw = RawEndpointConfiguration.Create(_attribute.Endpoint, transportDefinition, OnMessage, _poisonMessageQueue);
 
             if (_nServiceBusOptions.EndpointConfiguration != null)
             {
                 endpointConfigurationRaw = _nServiceBusOptions.EndpointConfiguration.Invoke(endpointConfigurationRaw);
-            }
-            else
-            {
-                if (IsLearningTransportEndpoint()) SetupLearningTransportEndpoint(endpointConfigurationRaw);
-                else SetupAzureServiceBusTransportEndpoint(endpointConfigurationRaw);
             }
 
             if (!string.IsNullOrEmpty(EnvironmentVariables.NServiceBusLicense))
@@ -61,8 +61,8 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
                 endpointConfigurationRaw.UseLicense(EnvironmentVariables.NServiceBusLicense);
             }
 
-            endpointConfigurationRaw.DefaultErrorHandlingPolicy(_poisonMessageQueue, ImmediateRetryCount);
-            endpointConfigurationRaw.AutoCreateQueue();
+            endpointConfigurationRaw.CustomErrorHandlingPolicy(new ErrorHandlingPolicy(_poisonMessageQueue, ImmediateRetryCount));         
+            endpointConfigurationRaw.AutoCreateQueues();
 
             _endpoint = await RawEndpoint.Start(endpointConfigurationRaw).ConfigureAwait(false);
 
@@ -71,33 +71,36 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
                 _nServiceBusOptions.OnStarted.Invoke(_endpoint);
             }
 
-            await _endpoint.SubscriptionManager.Subscribe(_parameter.ParameterType, new ContextBag());
+            var messageMetadata = new MessageMetadata(_parameter.ParameterType);
+
+            var eventTypes = new[] { messageMetadata };
+
+            await _endpoint.SubscriptionManager.SubscribeAll(eventTypes, new ContextBag());
         }
 
         private bool IsLearningTransportEndpoint() => _attribute.Connection.Contains("LearningEndpoint");
 
-        private void SetupAzureServiceBusTransportEndpoint(RawEndpointConfiguration endpointConfigurationRaw)
-        {
-            endpointConfigurationRaw.UseTransport<AzureServiceBusTransport>()
-                .ConnectionString(_attribute.Connection)
-                .Transactions(TransportTransactionMode.ReceiveOnly)
-                .CustomTokenCredential(new DefaultAzureCredential())
-                .SubscriptionRuleNamingConvention(RuleNameShortener.Shorten)
-                ;
-        }
-
-        private void SetupLearningTransportEndpoint(RawEndpointConfiguration endpointConfigurationRaw)
+        private TransportDefinition SetupLearningTransportDefinition()
         {
             if (string.IsNullOrEmpty(_attribute.LearningTransportStorageDirectory))
                 throw new ArgumentException("LearningTransportStorageDirectory must be set");
-            
-            endpointConfigurationRaw.UseTransport<LearningTransport>()
-                .Transactions(TransportTransactionMode.ReceiveOnly)
-                .StorageDirectory(_attribute.LearningTransportStorageDirectory)
-                ;
+
+            return new LearningTransport {
+                StorageDirectory = _attribute.LearningTransportStorageDirectory,
+                TransportTransactionMode = TransportTransactionMode.ReceiveOnly
+            };
         }
 
-        protected async Task OnMessage(MessageContext context, IDispatchMessages dispatcher)
+        private TransportDefinition SetupAzureServiceBusTransportDefinition()
+        {
+            return new AzureServiceBusTransport(_attribute.Connection) 
+            {
+                SubscriptionRuleNamingConvention = RuleNameShortener.Shorten,
+                TransportTransactionMode = TransportTransactionMode.ReceiveOnly
+            };
+        }
+
+        protected async Task OnMessage(MessageContext context, IMessageDispatcher dispatcher, CancellationToken cancellationToken)
         {
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -105,7 +108,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
             {
                 TriggerValue = new NServiceBusTriggerData 
                 {
-                    Data = context.Body,
+                    Data = context.Body.ToArray(),
                     Headers = context.Headers,
                     Dispatcher = dispatcher
                 }
