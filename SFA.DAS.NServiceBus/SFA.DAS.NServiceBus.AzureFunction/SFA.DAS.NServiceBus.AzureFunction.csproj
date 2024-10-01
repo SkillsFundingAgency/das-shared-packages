@@ -18,7 +18,7 @@
     
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.41" />
-        <PackageReference Include="NServiceBus.Raw" Version="3.2.5" />
+        <PackageReference Include="NServiceBus.Raw" Version="4.0.0" />
     </ItemGroup>
 
     <ItemGroup>
