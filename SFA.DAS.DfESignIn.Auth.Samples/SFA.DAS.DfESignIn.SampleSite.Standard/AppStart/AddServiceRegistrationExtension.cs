@@ -13,6 +13,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.Standard.AppStart
     {
         public string RoleClaimType => "http://schemas.portal.com/service";
         public CustomServiceRoleValueType RoleValueType  => CustomServiceRoleValueType.Code;
+        
     }
 
     public static class AddServiceRegistrationExtension
