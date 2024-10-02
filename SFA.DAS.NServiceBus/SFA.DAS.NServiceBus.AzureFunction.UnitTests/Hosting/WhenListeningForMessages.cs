@@ -30,7 +30,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             _attribute = new NServiceBusTriggerAttribute();
             _options = new NServiceBusOptions();
             _listener = new TestListener(_executor.Object, _attribute, null, _options);
-            _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), , new ContextBag());
+            _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), "", new ContextBag());
 
             _executor.Setup(e => e.TryExecuteAsync(It.IsAny<TriggeredFunctionData>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync(new FunctionResult(true));
@@ -40,7 +40,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
         public async Task ThenCallsBindingWhenMessageReceived()
         {
             //Act
-            await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>());
+            await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>(), CancellationToken.None);
 
             //Assert
             _executor.Verify(expression => expression.TryExecuteAsync(It.IsAny<TriggeredFunctionData>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -59,7 +59,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             };
 
             //Act
-            await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>());
+            await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>(), CancellationToken.None);
 
             //Assert
             onMessageReceivedCalled.Should().Be(true);
@@ -79,7 +79,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             };
 
             //Act
-            await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>());
+            await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>(), CancellationToken.None);
 
             //Assert
             onMessageProcessedCalled.Should().Be(true);
@@ -107,7 +107,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             //Act
             try
             {
-                await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>());
+                await _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>(), CancellationToken.None);
             }
             catch
             {
@@ -128,7 +128,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
                      .ReturnsAsync(new FunctionResult(false, new Exception()));
 
             //Act + Assert
-            Assert.ThrowsAsync<Exception>(() => _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>(), cancellationToken));
+            Assert.ThrowsAsync<Exception>(() => _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>(), CancellationToken.None));
         }
         private class TestListener : NServiceBusListener
         {
