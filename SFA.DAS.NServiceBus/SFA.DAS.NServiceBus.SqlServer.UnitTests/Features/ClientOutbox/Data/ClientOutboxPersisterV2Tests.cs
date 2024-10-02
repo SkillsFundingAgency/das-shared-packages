@@ -141,7 +141,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         public DateTime Now { get; set; }
         public IClientOutboxStorageV2 ClientOutboxStorage { get; set; }
         public Mock<IDateTimeService> DateTimeService { get; set; }
-        public Mock<ReadOnlySettings> Settings { get; set; }
+        public Mock<IReadOnlySettings> Settings { get; set; }
         public Mock<DbConnection> Connection { get; set; }
         public Mock<DbTransaction> Transaction { get; set; }
         public Mock<DbCommand> Command { get; set; }
@@ -152,7 +152,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         public List<TransportOperation> TransportOperations { get; set; }
         public string TransportOperationsData { get; set; }
         public ClientOutboxMessageV2 ClientOutboxMessage { get; set; }
-        public Mock<SynchronizedStorageSession> SynchronizedStorageSession { get; set; }
+        public Mock<ISynchronizedStorageSession> SynchronizedStorageSession { get; set; }
         public Mock<ISqlStorageSession> SqlSession { get; set; }
         public List<IClientOutboxMessageAwaitingDispatch> OutboxMessages { get; set; }
         public Mock<DbDataReader> DataReader { get; set; }
@@ -163,7 +163,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
         {
             Now = DateTime.UtcNow;
             DateTimeService = new Mock<IDateTimeService>();
-            Settings = new Mock<ReadOnlySettings>();
+            Settings = new Mock<IReadOnlySettings>();
             Connection = new Mock<DbConnection>();
             Connection.As<IDisposable>().Setup(_ => _.Dispose());
             Transaction = new Mock<DbTransaction> { CallBase = true };
@@ -182,7 +182,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Features.ClientOutbox.Data
             TransportOperations = Events.Select(e => new TransportOperation(Guid.NewGuid(), e)).ToList();
             TransportOperationsData = JsonConvert.SerializeObject(TransportOperations, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
             ClientOutboxMessage = new ClientOutboxMessageV2(GuidComb.NewGuidComb(), EndpointName, TransportOperations);
-            SynchronizedStorageSession = new Mock<SynchronizedStorageSession>();
+            SynchronizedStorageSession = new Mock<ISynchronizedStorageSession>();
             SqlSession = SynchronizedStorageSession.As<ISqlStorageSession>();
             OutboxMessages = new List<IClientOutboxMessageAwaitingDispatch>();
             CancellationTokenSource = new CancellationTokenSource();
