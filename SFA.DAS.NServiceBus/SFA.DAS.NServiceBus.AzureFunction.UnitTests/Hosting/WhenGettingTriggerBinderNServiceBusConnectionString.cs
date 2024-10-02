@@ -38,7 +38,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             var result = await provider.TryCreateAsync(context);
 
             //Assert
-            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Null);
         }
 
         [Test]

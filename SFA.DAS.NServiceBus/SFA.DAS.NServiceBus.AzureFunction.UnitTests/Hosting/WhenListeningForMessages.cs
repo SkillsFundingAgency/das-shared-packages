@@ -30,7 +30,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             _attribute = new NServiceBusTriggerAttribute();
             _options = new NServiceBusOptions();
             _listener = new TestListener(_executor.Object, _attribute, null, _options);
-            _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), "", new ContextBag());
+            _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), "testReceiveAddress", new ContextBag());
 
             _executor.Setup(e => e.TryExecuteAsync(It.IsAny<TriggeredFunctionData>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync(new FunctionResult(true));

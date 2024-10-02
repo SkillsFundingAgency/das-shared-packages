@@ -1,17 +1,14 @@
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection
 {
     public static class WebHostBuilderExtensions
     {
-        public static IWebHostBuilder UseNServiceBusContainer(this IWebHostBuilder builder)
+        public static WebApplicationBuilder UseNServiceBusContainer(this WebApplicationBuilder builder)
         {
-            return builder.ConfigureServices(services =>
-            {
-                services.AddSingleton<NServiceBusServiceProviderFactory>();
-            });
-
+            builder.Services.AddSingleton<NServiceBusServiceProviderFactory>();
+            return builder;
         }
     }
 }
