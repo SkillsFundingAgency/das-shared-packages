@@ -9,14 +9,13 @@ public static class ServiceBusEndpointFactory
 {
     public static EndpointConfiguration CreateSingleQueueConfiguration(string endpointAndQueueName, IConfiguration appConfiguration, bool useManagedIdentity)
     {
-        var configuration = new EndpointConfiguration("YourEndpointName");
+        var configuration = new EndpointConfiguration("SFA.DAS.NServiceBus.AzureFunction");
 
         var transport = configuration.UseTransport<AzureServiceBusTransport>();
 
-        // TODO
-        //configuration.Ad.SendFailedMessagesTo($"{endpointAndQueueName}-error");
-        //configuration.AdvancedConfiguration.Pipeline.Register(new LogIncomingBehaviour(), nameof(LogIncomingBehaviour));
-        //configuration.AdvancedConfiguration.Pipeline.Register(new LogOutgoingBehaviour(), nameof(LogOutgoingBehaviour));
+        configuration.SendFailedMessagesTo($"{endpointAndQueueName}-error");
+        configuration.Pipeline.Register(new LogIncomingBehaviour(), nameof(LogIncomingBehaviour));
+        configuration.Pipeline.Register(new LogOutgoingBehaviour(), nameof(LogOutgoingBehaviour));
 
         if (useManagedIdentity)
         {

@@ -8,9 +8,9 @@ namespace SFA.DAS.NServiceBus.AzureFunctions.Extensions.Example.Infrastructure;
 
 internal class ServiceBusTriggerNonAtomicEntryPoint
 {
-    private readonly IFunctionEndpoint endpoint;
+    private readonly IEndpointInstance endpoint;
 
-    public ServiceBusTriggerNonAtomicEntryPoint(IFunctionEndpoint endpoint)
+    public ServiceBusTriggerNonAtomicEntryPoint(IEndpointInstance endpoint)
     {
         this.endpoint = endpoint;
     }
@@ -21,6 +21,6 @@ internal class ServiceBusTriggerNonAtomicEntryPoint
         ILogger logger,
         ExecutionContext context)
     {
-        await endpoint.ProcessNonAtomic(message, context, logger);
+        await endpoint.Send(message);
     }
 }

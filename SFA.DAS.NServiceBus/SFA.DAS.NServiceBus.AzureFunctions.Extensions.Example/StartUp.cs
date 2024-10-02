@@ -29,16 +29,15 @@ public class Startup : FunctionsStartup
 
         InitialiseNServiceBus();
 
-        builder.UseNServiceBus((IConfiguration appConfiguration) =>
-        {
-            var configuration =
-                ServiceBusEndpointFactory.CreateSingleQueueConfiguration(QueueNames.ExtensionExample, appConfiguration,
+        var endpointConfiguration =
+                ServiceBusEndpointFactory.CreateSingleQueueConfiguration(QueueNames.ExtensionExample, Configuration,
                     false);
-            configuration.AdvancedConfiguration.UseNewtonsoftJsonSerializer();
-            configuration.AdvancedConfiguration.UseMessageConventions();
-            configuration.AdvancedConfiguration.EnableInstallers();
-            return configuration;
-        });
+        endpointConfiguration.UseNewtonsoftJsonSerializer();
+        endpointConfiguration.UseMessageConventions();
+        endpointConfiguration.EnableInstallers();
+
+        var endpointInstance = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+        builder.Services.AddSingleton(endpointInstance);
     }
 
     public void InitialiseNServiceBus()

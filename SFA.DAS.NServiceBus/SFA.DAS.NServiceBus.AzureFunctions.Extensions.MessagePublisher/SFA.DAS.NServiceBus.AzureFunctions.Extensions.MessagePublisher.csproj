@@ -9,9 +9,9 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
         <PackageReference Include="NServiceBus" Version="9.2.2" />
-        <PackageReference Include="NServiceBus.Extensions.Hosting" Version="1.1.0" />
+        <PackageReference Include="NServiceBus.Extensions.Hosting" Version="3.0.0" />
         <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="4.2.2" />
         <PackageReference Include="SFA.DAS.TrackProgress.Messages" Version="0.1.5-prerelease-39" />
     </ItemGroup>

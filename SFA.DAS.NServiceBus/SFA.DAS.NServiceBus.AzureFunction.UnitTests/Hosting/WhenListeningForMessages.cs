@@ -30,7 +30,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             _attribute = new NServiceBusTriggerAttribute();
             _options = new NServiceBusOptions();
             _listener = new TestListener(_executor.Object, _attribute, null, _options);
-            _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), new CancellationTokenSource(), new ContextBag());
+            _messageContext = new MessageContext("1", new Dictionary<string, string>(), new byte[]{1,2,3}, new TransportTransaction(), , new ContextBag());
 
             _executor.Setup(e => e.TryExecuteAsync(It.IsAny<TriggeredFunctionData>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync(new FunctionResult(true));
@@ -128,7 +128,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
                      .ReturnsAsync(new FunctionResult(false, new Exception()));
 
             //Act + Assert
-            Assert.ThrowsAsync<Exception>(() => _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>()));
+            Assert.ThrowsAsync<Exception>(() => _listener.CallOnMessage(_messageContext, Mock.Of<IMessageDispatcher>(), cancellationToken));
         }
         private class TestListener : NServiceBusListener
         {
@@ -136,9 +136,9 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             {
             }
 
-            public async Task CallOnMessage(MessageContext context, IMessageDispatcher dispatcher)
+            public async Task CallOnMessage(MessageContext context, IMessageDispatcher dispatcher, CancellationToken cancellationToken)
             {
-                await OnMessage(context, dispatcher);
+                await OnMessage(context, dispatcher, cancellationToken);
             }
         }
     }
