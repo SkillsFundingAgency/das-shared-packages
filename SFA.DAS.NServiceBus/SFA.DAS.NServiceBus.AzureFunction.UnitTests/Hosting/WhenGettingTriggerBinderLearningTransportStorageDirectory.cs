@@ -28,8 +28,8 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             //Assert
             var binding = result as NServiceBusTriggerBinding;
 
-            Assert.IsNotNull(binding);
-            Assert.AreEqual(learningTransportStorageDirectory, binding.Attribute.LearningTransportStorageDirectory);
+            Assert.That(binding, Is.Not.Null);
+            Assert.That(learningTransportStorageDirectory, Is.EqualTo(binding.Attribute.LearningTransportStorageDirectory));
         }
 
         [Test]
@@ -46,8 +46,8 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             //Assert
             var binding = result as NServiceBusTriggerBinding;
 
-            Assert.IsNotNull(binding);
-            Assert.AreEqual(TestClass.LearningTransportStorageDirectory, binding.Attribute.LearningTransportStorageDirectory);
+            Assert.That(binding, Is.Not.Null);
+            Assert.That(TestClass.LearningTransportStorageDirectory, Is.EqualTo(binding.Attribute.LearningTransportStorageDirectory));
         }
     }
 }
