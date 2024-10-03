@@ -1,5 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ internal class ServiceBusTriggerNonAtomicEntryPoint
         this.endpoint = endpoint;
     }
 
-    [FunctionName("ExtensionExampleEntryPoint")]
+    [Function("ExtensionExampleEntryPoint")]
     public async Task Run(
         [ServiceBusTrigger(queueName: QueueNames.ExtensionExample, Connection = "AzureWebJobsServiceBus")] ServiceBusReceivedMessage message,
         ILogger logger,

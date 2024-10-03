@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
-using SFA.DAS.NServiceBus.AzureFunction.Extensions;
 
 namespace SFA.DAS.NServiceBus.AzureFunctions.Extensions.Example.AutoSubscribe;
 
@@ -22,7 +21,7 @@ public class ForceAutoEventSubscriptionFunction
     public ForceAutoEventSubscriptionFunction(IEndpointInstance functionEndpoint)
         => this.functionEndpoint = functionEndpoint;
 
-    [FunctionName("ForceAutoSubscriptionFunction")]
+    [Function("ForceAutoSubscriptionFunction")]
     public async Task Run(
         [TimerTrigger("* * * 1 1 *", RunOnStartup = true)] TimerInfo myTimer,
         ILogger logger, ExecutionContext executionContext)
