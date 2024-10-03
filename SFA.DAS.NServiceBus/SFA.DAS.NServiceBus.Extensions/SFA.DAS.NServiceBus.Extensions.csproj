@@ -18,8 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.1" />
-    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.2.0" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="4.2.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="NServiceBus" Version="9.2.2" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="4.0.0" />
