@@ -12,19 +12,29 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             this IServiceCollection services,
             IConfiguration configuration,
             string authenticationCookieName,
-            Type customServiceRole,
+            Type customClaims,
             ClientName clientName,
             string signedOutCallbackPath = "/signed-out",
-            string redirectUrl = "")
+            string signedOutRedirectUrl = "",
+            string cookieDomain = "",
+            string localStubLoginPath = "",
+            string loginRedirect = "")
         {
-            services.AddServiceRegistration(configuration, customServiceRole, clientName);
-            if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
+            var env = configuration["ResourceEnvironmentName"];
+
+            bool.TryParse(configuration["StubAuth"], out var stubAuth);
+
+            services.AddServiceRegistration(configuration, customClaims, clientName);
+            if(stubAuth && env.ToUpper() != "PRD")
             {
-                services.AddProviderStubAuthentication($"{authenticationCookieName}.stub", signedOutCallbackPath,configuration["ResourceEnvironmentName"], clientName);
+                services.AddProviderStubAuthentication(signedOutRedirectUrl.GetSignedOutRedirectUrl(env, clientName),
+                    loginRedirect.GetStubSignInRedirectUrl(env), 
+                    localStubLoginPath,
+                    cookieDomain.GetEnvironmentAndDomain(env));
             }
             else
             {
-                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath, redirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"], clientName));
+                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath, signedOutRedirectUrl.GetSignedOutRedirectUrl(env, clientName));
             }
         }
     }

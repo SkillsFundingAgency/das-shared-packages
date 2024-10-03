@@ -22,5 +22,7 @@ namespace SFA.DAS.DfESignIn.Auth.Enums
         ServiceAdminAan = 8,
         [Description("roatpadmin")]
         RoatpServiceAdmin = 9,
+        [Description("feedback")]
+        ProviderFeedback = 10
     }
 }

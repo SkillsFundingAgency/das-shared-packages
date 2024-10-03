@@ -60,5 +60,36 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
             
             return string.IsNullOrEmpty(environmentAndDomain) ? "/" : $"https://{environmentAndDomain}";
         }
+
+        public static string GetStubSignInRedirectUrl(this string redirectUrl, string environment)
+        {
+            if (environment.ToLower() == "local" || environment.ToLower() == "prd")
+            {
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrEmpty(redirectUrl))
+            {
+                return redirectUrl;
+            }
+
+            return $"https://{environment.ToLower()}-pas.apprenticeships.education.gov.uk";
+        }
+
+        public static string GetEnvironmentAndDomain(this string redirectUri, string environment)
+        {
+            if (environment.ToLower() == "local")
+            {
+                return "";
+            }
+            if (!string.IsNullOrEmpty(redirectUri))
+            {
+                return redirectUri;
+            }
+            var environmentPart = environment.ToLower() == "prd" ? "providers" : $"{environment.ToLower()}-pas.apprenticeships";
+            var domainPart = environment.ToLower() == "prd" ? "service" : "education";
+
+            return $"{environmentPart}.{domainPart}.gov.uk";
+        }
     }
 }
