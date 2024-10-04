@@ -14,7 +14,7 @@ using SFA.DAS.DfESignIn.Auth.Constants;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
-    internal class ProviderStubAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public class ProviderStubAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly IConfiguration _configuration;
         private readonly ICustomClaims _customClaims;
