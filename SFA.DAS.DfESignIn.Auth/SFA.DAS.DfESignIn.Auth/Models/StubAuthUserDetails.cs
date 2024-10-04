@@ -5,8 +5,9 @@ namespace SFA.DAS.DfESignIn.Auth.Models
     public class StubAuthUserDetails
     {
         public string Id { get; set; }
-        public string Ukprn { get; set; }
         public string DisplayName { get; set; }
+        public string Email { get; set; }
+        public string Ukprn { get; set; }
         public string Services { get; set; }
     }
 }
