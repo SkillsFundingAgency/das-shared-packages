@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
+using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace SFA.DAS.DfESignIn.SampleSite.Standard.AppStart
 {
@@ -12,6 +13,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.Standard.AppStart
     {
         public string RoleClaimType => "http://schemas.portal.com/service";
         public CustomServiceRoleValueType RoleValueType  => CustomServiceRoleValueType.Code;
+        
     }
 
     public static class AddServiceRegistrationExtension
@@ -27,6 +29,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.Standard.AppStart
                 ClientName.ServiceAdmin,
                 "/signout",
                 "");
+            services.AddProviderUiServiceRegistration(configuration);
         }
     }
 }

@@ -1,0 +1,21 @@
+@{
+    // ReSharper disable once Razor.LayoutNotResolved From shared provider library
+    Layout = "_Layout.cshtml";
+}
+
+@* ReSharper disable once Razor.SectionNotResolved - in shared provider layout *@
+@section Styles {
+    <link href="/css/app.css" rel="stylesheet" no-cdn />
+}
+
+    @* ReSharper disable once Razor.SectionNotResolved - in shared provider layout *@
+    @section Scripts {
+    <script src="/js/app.js" no-cdn></script>
+}
+
+    @section breadcrumb
+    {
+    @RenderSection("breadcrumb", required: false)
+}
+
+@RenderBody()
