@@ -14,6 +14,12 @@ namespace SFA.DAS.Api.Common.Infrastructure
         private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(100);
         private readonly bool _isLocal;
 
+        [Obsolete("Use AzureClientCredentialHelper(IConfiguration) instead")]
+        public AzureClientCredentialHelper()
+        {
+            _isLocal = false;
+        }
+        
         public AzureClientCredentialHelper(IConfiguration configuration)
         {
             var resourceEnvironmentName = configuration["ResourceEnvironmentName"];
@@ -45,11 +51,19 @@ namespace SFA.DAS.Api.Common.Infrastructure
                 azureServiceTokenProvider = new ChainedTokenCredential(
                     new ManagedIdentityCredential(options: new TokenCredentialOptions
                     {
-                        Retry =
-                        {
-                            NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay,
-                            Mode = RetryMode.Fixed
-                        }
+                        Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay, Mode = RetryMode.Fixed }
+                    }),
+                    new AzureCliCredential(options: new AzureCliCredentialOptions
+                    {
+                        Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay, Mode = RetryMode.Fixed }
+                    }),
+                    new VisualStudioCredential(options: new VisualStudioCredentialOptions
+                    {
+                        Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay, Mode = RetryMode.Fixed }
+                    }),
+                    new VisualStudioCodeCredential(options: new VisualStudioCodeCredentialOptions
+                    {
+                        Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay, Mode = RetryMode.Fixed }
                     }));
             }
             
