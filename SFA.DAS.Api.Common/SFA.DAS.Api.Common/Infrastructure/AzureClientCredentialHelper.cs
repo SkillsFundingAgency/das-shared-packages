@@ -26,10 +26,6 @@ namespace SFA.DAS.Api.Common.Infrastructure
             if (_isLocal)
             {
                 azureServiceTokenProvider = new ChainedTokenCredential(
-                    new ManagedIdentityCredential(options: new TokenCredentialOptions
-                    {
-                        Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay, Mode = RetryMode.Fixed}
-                    }),
                     new AzureCliCredential(options: new AzureCliCredentialOptions
                     {
                         Retry = { NetworkTimeout = _networkTimeout, MaxRetries = MaxRetries, Delay = _delay, Mode = RetryMode.Fixed }
