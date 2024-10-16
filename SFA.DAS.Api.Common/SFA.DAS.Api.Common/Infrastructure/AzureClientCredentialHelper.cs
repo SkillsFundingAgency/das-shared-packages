@@ -14,6 +14,7 @@ namespace SFA.DAS.Api.Common.Infrastructure
         private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(100);
         private readonly bool _isLocal;
 
+        [Obsolete("Use AzureClientCredentialHelper(IConfiguration) instead")]
         public AzureClientCredentialHelper()
         {
             _isLocal = false;
