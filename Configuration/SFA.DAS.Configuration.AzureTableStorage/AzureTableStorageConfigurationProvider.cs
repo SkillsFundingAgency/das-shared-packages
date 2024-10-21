@@ -58,7 +58,11 @@ namespace SFA.DAS.Configuration.AzureTableStorage
 
             if (_configurationKeysRawJsonResult != null && _configurationKeysRawJsonResult.Contains(configurationKey))
             {
-                data.AddOrUpdate(configurationKey, loadData[configurationKey], (k, v) => loadData[configurationKey]);
+                var key = loadData.Keys.FirstOrDefault(c => c.Contains(configurationKey));
+                if (key != null)
+                {
+                    data.AddOrUpdate(configurationKey, loadData[key], (k, v) => loadData[configurationKey]);
+                }
                 return;
             }
 
