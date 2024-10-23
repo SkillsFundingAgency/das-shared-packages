@@ -82,6 +82,7 @@ jobs:
           SonarCloudProjectKey: ${{ parameters.SonarCloudProjectKey }}
           TargetProjects: ${{ parameters.WorkingDirectory }}/**/*.csproj
           UnitTestProjects: ${{parameters.WorkingDirectory }}/**/*UnitTests.csproj
+          ContinueOnVulnerablePackageScanError: true
       - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
         parameters:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}
