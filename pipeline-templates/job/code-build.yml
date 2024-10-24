@@ -37,6 +37,7 @@ jobs:
         displayName: 'NuGet restore'
         inputs:
           restoreSolution: ${{ parameters.WorkingDirectory }}/**/*.sln
+          additionalArguments: "-p:TreatWarningsAsErrors=false"
       - task: VSBuild@1
         displayName: 'Build Solution'
         inputs:
