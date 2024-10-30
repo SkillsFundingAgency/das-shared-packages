@@ -6,10 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Azure.Identity" Version="1.12.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.6" />
         <PackageReference Include="SFA.DAS.Employer.Shared.UI" Version="17.1.97" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />
         <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />

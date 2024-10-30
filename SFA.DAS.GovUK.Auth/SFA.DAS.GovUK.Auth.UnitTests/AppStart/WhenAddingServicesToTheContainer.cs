@@ -40,7 +40,7 @@ public class WhenAddingServicesToTheContainer
             
         Assert.That(type, Is.Not.Null);
         type.Count.Should().Be(1);
-        type.Should().ContainSingle(c => c.GetType() == typeof(AccountActiveAuthorizationHandler));
+        type.Should().ContainSingle(c => c!.GetType() == typeof(AccountActiveAuthorizationHandler));
     }
     
 
@@ -61,7 +61,7 @@ public class WhenAddingServicesToTheContainer
                 new("GovUkOidcConfiguration:ClientId", "1234567"),
                 new("GovUkOidcConfiguration:KeyVaultIdentifier", "https://test.com/"),
                 new("ResourceEnvironmentName", "AT")
-            }
+            }!
         };
 
         var provider = new MemoryConfigurationProvider(configSource);
