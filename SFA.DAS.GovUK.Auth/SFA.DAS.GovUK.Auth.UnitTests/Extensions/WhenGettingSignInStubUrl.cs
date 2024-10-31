@@ -10,7 +10,7 @@ public class WhenGettingSignInStubUrl
     {
         var actual = "".GetStubSignInRedirectUrl(environment);
         
-        Assert.IsEmpty(actual);
+        Assert.That(actual, Is.Empty);
     }
 
     [Test]

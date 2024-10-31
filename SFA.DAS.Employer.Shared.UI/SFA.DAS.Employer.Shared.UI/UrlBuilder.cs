@@ -73,6 +73,13 @@ namespace SFA.DAS.Employer.Shared.UI
             return _generator.EmployersProfiles(route);
         }
 
+        public string RequestApprenticeshipTrainingLink(string routeName, params string[] args)
+        {
+            var route = MaRoutes.RequestApprenticeshipTraining[routeName];
+            route = FormatRoute(route, args);
+            return _generator.RequsestApprenticeshipTrainingLink(route);
+        }
+
         private string FormatRoute(string route, params string[] args)
         {
             if (args != null && args.Length > 0)

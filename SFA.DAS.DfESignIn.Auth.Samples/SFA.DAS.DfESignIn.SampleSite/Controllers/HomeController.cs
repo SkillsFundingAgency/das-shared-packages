@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.Provider.Shared.UI;
+using SFA.DAS.Provider.Shared.UI.Attributes;
 
 namespace SFA.DAS.DfESignIn.SampleSite.Controllers;
 
@@ -23,7 +23,7 @@ public class HomeController : Controller
     {
         return View();
     }
-    
+
     [Authorize]
     [HttpGet]
     [Route("signed-out")]
@@ -33,15 +33,10 @@ public class HomeController : Controller
 
         var authenticationProperties = new AuthenticationProperties();
         authenticationProperties.Parameters.Clear();
-        authenticationProperties.Parameters.Add("id_token",idToken);
-        return SignOut(
-            authenticationProperties,
-            new[]
-            {
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                OpenIdConnectDefaults.AuthenticationScheme
-            }
-        );
+        authenticationProperties.Parameters.Add("id_token", idToken);
+        return SignOut(authenticationProperties,
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            OpenIdConnectDefaults.AuthenticationScheme);
     }
 
     [HttpGet]

@@ -23,7 +23,7 @@ public static class AddServiceRegistrationExtension
             configuration,
             $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth",
             typeof(CustomServiceRole),
-            ClientName.RoatpServiceAdmin, 
+            ClientName.ProviderRoatp,
             SignedOutCallbackPath,
             RedirectUrl);
         services.AddProviderUiServiceRegistration(configuration);

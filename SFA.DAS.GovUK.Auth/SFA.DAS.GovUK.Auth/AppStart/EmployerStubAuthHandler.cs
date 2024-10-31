@@ -43,6 +43,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 new Claim(ClaimTypes.NameIdentifier, authCookieValue.Id),
                 new Claim("sub", authCookieValue.Id)
             };
+            if (authCookieValue.Mobile != null)
+            {
+                claims.Add(new Claim(ClaimTypes.MobilePhone, authCookieValue.Mobile));
+            }
 
 
             var identity = new ClaimsIdentity(claims, "Employer-stub");

@@ -14,7 +14,7 @@ namespace SFA.DAS.Testing.UnitTests
         {
             Test(f => f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>());
         }
-        
+
         [Test]
         public void Test_WhenAssertingWithFixtureAndResult_ThenShouldPassFixtureAndNullResult()
         {
@@ -24,13 +24,13 @@ namespace SFA.DAS.Testing.UnitTests
                 r.Should().BeNull();
             });
         }
-        
+
         [Test]
         public void Test_WhenActingAndAssertingWithFixture_ThenShouldActAndPassFixture()
         {
             Test(f => f.Act(), f => f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>());
         }
-        
+
         [Test]
         public void Test_WhenActingAndAssertingWithFixtureAndResult_ThenShouldActAndPassFixtureAndResult()
         {
@@ -40,13 +40,13 @@ namespace SFA.DAS.Testing.UnitTests
                 r.Should().BeTrue();
             });
         }
-        
+
         [Test]
         public void Test_WhenArrangingAndActingAndAssertingWithFixture_ThenShouldArrangeAndActAndPassFixture()
         {
             Test(f => f.Arrange(), f => f.Act(), f => f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>().Which.Arranged.Should().BeTrue());
         }
-        
+
         [Test]
         public void Test_WhenArrangingAndActingAndAssertingWithFixtureAndResult_ThenShouldArrangeAndActAndPassFixtureAndResult()
         {
@@ -56,13 +56,13 @@ namespace SFA.DAS.Testing.UnitTests
                 r.Should().BeTrue();
             });
         }
-        
+
         [Test]
         public Task TestAsync_WhenAssertingWithFixture_ThenShouldPassFixture()
         {
             return TestAsync(f => f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>());
         }
-        
+
         [Test]
         public Task TestAsync_WhenAssertingWithFixtureAndResult_ThenShouldPassFixtureAndNullResult()
         {
@@ -72,13 +72,13 @@ namespace SFA.DAS.Testing.UnitTests
                 r.Should().BeNull();
             });
         }
-        
+
         [Test]
         public Task TestAsync_WhenActingAndAssertingWithFixture_ThenShouldActAndPassFixture()
         {
             return TestAsync(f => f.ActAsync(), f => f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>());
         }
-        
+
         [Test]
         public Task TestAsync_WhenActingAndAssertingWithFixtureAndResult_ThenShouldActAndPassFixtureAndResult()
         {
@@ -88,13 +88,13 @@ namespace SFA.DAS.Testing.UnitTests
                 r.Should().BeTrue();
             });
         }
-        
+
         [Test]
         public Task TestAsync_WhenArrangingAndActingAndAssertingWithFixture_ThenShouldArrangeAndActAndPassFixture()
         {
             return TestAsync(f => f.Arrange(), f => f.ActAsync(), f => f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>().Which.Arranged.Should().BeTrue());
         }
-        
+
         [Test]
         public Task TestAsync_WhenArrangingAndActingAndAssertingWithFixtureAndResult_ThenShouldArrangeAndActAndPassFixtureAndResult()
         {
@@ -104,7 +104,7 @@ namespace SFA.DAS.Testing.UnitTests
                 r.Should().BeTrue();
             });
         }
-        
+
         [Test]
         public void TestException_WhenAssertingWithFixtureAndActionAndActionThrows_ThenShouldPassFixtureAndAction()
         {
@@ -114,7 +114,7 @@ namespace SFA.DAS.Testing.UnitTests
                 a.Should().Throw<Exception>();
             });
         }
-        
+
         [Test]
         public void TestException_WhenActingAndAssertingWithFixtureAndActionAndActionThrows_ThenShouldPassFixtureAndAction()
         {
@@ -124,7 +124,7 @@ namespace SFA.DAS.Testing.UnitTests
                 a.Should().Throw<Exception>().WithMessage("Foobar");
             });
         }
-        
+
         [Test]
         public void TestException_WhenArrangingAndActingAndAssertingWithFixtureAndActionAndActionDoesNotThrow_ThenShouldArrangeAndActAndPassFixtureAndAction()
         {
@@ -134,7 +134,7 @@ namespace SFA.DAS.Testing.UnitTests
                 a.Should().NotThrow();
             });
         }
-        
+
         [Test]
         public void TestException_WhenArrangingAndActingAndAssertingWithFixtureAndActionAndActionThrows_ThenShouldArrangeAndActAndPassFixtureAndAction()
         {
@@ -144,44 +144,44 @@ namespace SFA.DAS.Testing.UnitTests
                 a.Should().Throw<Exception>().WithMessage("Foobar");
             });
         }
-        
+
         [Test]
         public Task TestExceptionAsync_WhenAssertingWithFixtureAndActionAndActionThrows_ThenShouldPassFixtureAndAction()
         {
             return TestExceptionAsync((f, a) =>
             {
                 f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>();
-                a.Should().Throw<Exception>();
+                a.Should().ThrowAsync<Exception>();
             });
         }
-        
+
         [Test]
         public Task TestExceptionAsync_WhenActingAndAssertingWithFixtureAndActionAndActionThrows_ThenShouldPassFixtureAndAction()
         {
             return TestExceptionAsync(f => f.ThrowAsync(), (f, a) =>
             {
                 f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>();
-                a.Should().Throw<Exception>().WithMessage("Foobar");
+                a.Should().ThrowAsync<Exception>().WithMessage("Foobar");
             });
         }
-        
+
         [Test]
         public Task TestExceptionAsync_WhenArrangingAndActingAndAssertingWithFixtureAndActionAndActionThrows_ThenShouldArrangeAndActAndPassFixtureAndAction()
         {
             return TestExceptionAsync(f => f.Arrange(), f => f.ThrowAsync(), (f, a) =>
             {
                 f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>().Which.Arranged.Should().BeTrue();
-                a.Should().Throw<Exception>().WithMessage("Foobar");
+                a.Should().ThrowAsync<Exception>().WithMessage("Foobar");
             });
         }
-        
+
         [Test]
         public Task TestExceptionAsync_WhenArrangingAndActingAndAssertingWithFixtureAndActionAndActionDoesNotThrow_ThenShouldArrangeAndActAndPassFixtureAndAction()
         {
             return TestExceptionAsync(f => f.Arrange(), f => f.ActAsync(), (f, a) =>
             {
                 f.Should().NotBeNull().And.BeOfType<FluentTestTestsFixture>().Which.Arranged.Should().BeTrue();
-                a.Should().NotThrow();
+                a.Should().NotThrowAsync();
             });
         }
     }
