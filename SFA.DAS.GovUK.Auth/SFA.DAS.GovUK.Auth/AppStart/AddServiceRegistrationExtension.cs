@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Configuration;
+using SFA.DAS.GovUK.Auth.Employer;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
@@ -14,7 +15,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     internal static class AddServiceRegistrationExtension
     {
         internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration,
-            Type customClaims)
+            Type customClaims, Type employerAccountService)
         {
             if (!configuration.GetSection(nameof(GovUkOidcConfiguration)).GetChildren().Any())
             {
@@ -24,12 +25,22 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             services.AddOptions();
             services.AddHttpContextAccessor();
-            services.AddTransient(typeof(ICustomClaims), customClaims);
-#if NETSTANDARD2_0
-            services.Configure<GovUkOidcConfiguration>(_=>configuration.GetSection(nameof(GovUkOidcConfiguration)));
-#else 
+            
+            if (customClaims != null)
+            {
+                services.AddTransient(typeof(ICustomClaims), customClaims);    
+            }
+            else
+            {
+                services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();    
+            }
+
+            if (employerAccountService != null)
+            {
+                services.AddTransient(typeof(IEmployerAccountService), employerAccountService);
+            }
+            
             services.Configure<GovUkOidcConfiguration>(configuration.GetSection(nameof(GovUkOidcConfiguration)));
-#endif
             services.AddSingleton(c => c.GetService<IOptions<GovUkOidcConfiguration>>().Value);
             services.AddHttpClient<IOidcService, OidcService>();
             services.AddTransient<IAzureIdentityService, AzureIdentityService>();
@@ -40,7 +51,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             
             var connection = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
             bool.TryParse(configuration["StubAuth"],out var stubAuth);
-            if ((stubAuth && configuration["ResourceEnvironmentName"].ToUpper() != "PRD") || string.IsNullOrEmpty(connection.GovLoginSessionConnectionString))
+            if ((stubAuth && configuration["ResourceEnvironmentName"]!.ToUpper() != "PRD") || string.IsNullOrEmpty(connection.GovLoginSessionConnectionString))
             {
                 services.AddDistributedMemoryCache();
             }

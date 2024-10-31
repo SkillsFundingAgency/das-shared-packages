@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.GovUK.Auth.AppStart;
 using SFA.DAS.GovUK.Auth.Authentication;
+using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.SampleSite.AppStart;
 
@@ -12,8 +13,10 @@ public static class AddServiceRegistrationExtension
         services.AddHttpContextAccessor();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
-        services.AddAndConfigureGovUkAuthentication(configuration, typeof(CustomClaims), "",
-            "/home/AccountDetails");
+        services.AddAndConfigureGovUkAuthentication(configuration, new AuthRedirects
+            {
+                LoginRedirect = "/home/AccountDetails"
+            }, typeof(CustomClaims));
         
         services.AddAuthorization(options =>
         {

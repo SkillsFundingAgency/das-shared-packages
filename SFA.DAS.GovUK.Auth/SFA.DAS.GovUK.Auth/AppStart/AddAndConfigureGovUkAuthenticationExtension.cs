@@ -2,28 +2,28 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.GovUK.Auth.Extensions;
+using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
     public static class AddAndConfigureGovUkAuthenticationExtension
     {
         public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services,
-            IConfiguration configuration, Type customClaims, string signedOutRedirectUrl = "", string localStubLoginPath = "", string cookieDomain = "", string loginRedirect = "")
+            IConfiguration configuration, AuthRedirects authRedirects, Type customClaims = null, Type employerAccountService = null)
         {
             bool.TryParse(configuration["StubAuth"],out var stubAuth);
-            services.AddServiceRegistration(configuration, customClaims);
-            if (stubAuth && configuration["ResourceEnvironmentName"].ToUpper() != "PRD")
+            services.AddServiceRegistration(configuration, customClaims, employerAccountService);
+            if (stubAuth && configuration["ResourceEnvironmentName"]!.ToUpper() != "PRD")
             {
-                services.AddEmployerStubAuthentication(signedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
-                    loginRedirect.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]),
-                    localStubLoginPath,
-                    cookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
+                services.AddEmployerStubAuthentication(authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
+                    authRedirects.LoginRedirect.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]),
+                    authRedirects.LocalStubLoginPath,
+                    authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
             }
             else
             {
-                services.ConfigureGovUkAuthentication(configuration , signedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),cookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
+                services.ConfigureGovUkAuthentication(configuration , authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]), authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
             }
-
         }
     }
 }
