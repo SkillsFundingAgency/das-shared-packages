@@ -1,12 +1,9 @@
-using System.Text;
-using System.Text.Json;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Moq;
-using Newtonsoft.Json;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
@@ -30,9 +27,9 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.Services
             Assert.That(Guid.TryParse(result, out var actualKey), Is.True);
             distributedCache.Verify(x=>x.SetAsync(
                 actualKey.ToString(),
-                It.Is<byte[]>(c=>TicketSerializer.Default.Deserialize(c).AuthenticationScheme == ticket.AuthenticationScheme), 
+                It.Is<byte[]>(c=>TicketSerializer.Default.Deserialize(c)!.AuthenticationScheme == ticket.AuthenticationScheme), 
                 It.Is<DistributedCacheEntryOptions>(c
-                    => c.SlidingExpiration.Value.Minutes == TimeSpan.FromMinutes(expiryTime).Minutes),
+                    => c!.SlidingExpiration!.Value.Minutes == TimeSpan.FromMinutes(expiryTime).Minutes),
                 It.IsAny<CancellationToken>()
                 ), Times.Once);
         }
