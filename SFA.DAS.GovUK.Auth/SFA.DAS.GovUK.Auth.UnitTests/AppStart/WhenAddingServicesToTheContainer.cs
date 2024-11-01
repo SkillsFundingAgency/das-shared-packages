@@ -19,7 +19,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(IJwtSecurityTokenService))]
     [TestCase(typeof(ICustomClaims))]
     [TestCase(typeof(IStubAuthenticationService))]
-    [TestCase(typeof(IEmployerAccountService))]
+    [TestCase(typeof(IGovAuthEmployerAccountService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var serviceCollection = new ServiceCollection();
@@ -50,7 +50,7 @@ public class WhenAddingServicesToTheContainer
     {   
         var configuration = GenerateConfiguration();
         serviceCollection.AddSingleton<IConfiguration>(configuration);
-        serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims), typeof(EmployerAccountService));
+        serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims), typeof(GovAuthEmployerAccountService));
     }
 
     private static IConfigurationRoot GenerateConfiguration()
@@ -78,7 +78,7 @@ public class WhenAddingServicesToTheContainer
             throw new NotImplementedException();
         }
     }
-    public class EmployerAccountService : IEmployerAccountService
+    public class GovAuthEmployerAccountService : IGovAuthEmployerAccountService
     {
         public Task<EmployerUserAccounts> GetUserAccounts(string userId, string email)
         {

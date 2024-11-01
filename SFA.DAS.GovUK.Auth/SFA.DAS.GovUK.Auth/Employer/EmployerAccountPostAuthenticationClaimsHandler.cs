@@ -10,7 +10,7 @@ using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.Employer;
 
-public class EmployerAccountPostAuthenticationClaimsHandler(IEmployerAccountService accountsService) : ICustomClaims
+public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAccountService accountsService) : ICustomClaims
 {
     public async Task<IEnumerable<Claim>> GetClaims(TokenValidatedContext tokenValidatedContext)
     {

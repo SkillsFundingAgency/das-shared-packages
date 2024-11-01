@@ -37,7 +37,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             if (employerAccountService != null)
             {
-                services.AddTransient(typeof(IEmployerAccountService), employerAccountService);
+                services.AddTransient(typeof(IGovAuthEmployerAccountService), employerAccountService);
             }
             
             services.Configure<GovUkOidcConfiguration>(configuration.GetSection(nameof(GovUkOidcConfiguration)));

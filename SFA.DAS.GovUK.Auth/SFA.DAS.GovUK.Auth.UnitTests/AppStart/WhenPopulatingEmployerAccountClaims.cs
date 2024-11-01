@@ -18,7 +18,7 @@ public class WhenPopulatingAccountClaims
         string nameIdentifier,
         string emailAddress,
         EmployerUserAccounts accountData,
-        [Frozen] Mock<IEmployerAccountService> accountService,
+        [Frozen] Mock<IGovAuthEmployerAccountService> accountService,
         EmployerAccountPostAuthenticationClaimsHandler handler)
     {
         accountData.IsSuspended = false;
@@ -50,7 +50,7 @@ public class WhenPopulatingAccountClaims
         string nameIdentifier,
         string emailAddress,
         EmployerUserAccounts accountData,
-        [Frozen] Mock<IEmployerAccountService> accountService,
+        [Frozen] Mock<IGovAuthEmployerAccountService> accountService,
         EmployerAccountPostAuthenticationClaimsHandler handler)
     {
         accountData.IsSuspended = false;
@@ -79,7 +79,7 @@ public class WhenPopulatingAccountClaims
         string nameIdentifier,
         string emailAddress,
         EmployerUserAccounts accountData,
-        [Frozen] Mock<IEmployerAccountService> accountService,
+        [Frozen] Mock<IGovAuthEmployerAccountService> accountService,
         EmployerAccountPostAuthenticationClaimsHandler handler)
     {
         accountData.IsSuspended = true;
