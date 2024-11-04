@@ -4,5 +4,5 @@ namespace SFA.DAS.GovUK.Auth.Employer;
 
 public interface IGovAuthEmployerAccountService
 {
-    Task<EmployerUserAccounts> GetUserAccounts(string userId, string email);
+    public Task<EmployerUserAccounts> GetUserAccounts(string userId, string email);
 }
