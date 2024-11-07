@@ -18,7 +18,7 @@
     "SFA.DAS.DfESignIn.SampleSite.Standard": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7136",
+      "applicationUrl": "https://localhost:7136/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
