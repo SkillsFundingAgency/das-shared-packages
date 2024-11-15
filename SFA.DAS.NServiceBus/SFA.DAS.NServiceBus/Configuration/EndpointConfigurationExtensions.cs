@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using NServiceBus;
 
@@ -33,9 +34,12 @@ namespace SFA.DAS.NServiceBus.Configuration
             return config;
         }
 
-        public static EndpointConfiguration UseLearningTransport(this EndpointConfiguration config, Action<RoutingSettings> routing = null)
+        public static EndpointConfiguration UseLearningTransport(this EndpointConfiguration config, Action<RoutingSettings> routing = null, string learningTransportFolderPath = null)
         {
             var transport = config.UseTransport<LearningTransport>();
+
+            if(!string.IsNullOrWhiteSpace(learningTransportFolderPath))
+                transport.StorageDirectory(learningTransportFolderPath);
                 
             transport.Transactions(TransportTransactionMode.ReceiveOnly);
 
