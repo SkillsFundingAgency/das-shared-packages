@@ -15,7 +15,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Services
         [Test]
         public Task Publish_WhenPublishingEvents_ThenShouldAddEventsToUnitOfWorkContext()
         {
-            return RunAsync(f => f.Publish(), f =>
+            return TestAsync(f => f.Publish(), f =>
             {
                 f.UnitOfWorkContext.Verify(c => c.AddEvent(f.FooEvent));
                 f.UnitOfWorkContext.Verify(c => c.AddEvent(f.BarEvent));

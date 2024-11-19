@@ -22,7 +22,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldStoreClientOutboxMessage()
         {
-            return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f =>
+            return TestAsync(f => f.SetEvents(), f => f.CommitAsync(), f =>
             {
                 f.ClientOutboxStorage.Verify(o => o.StoreAsync(It.IsAny<ClientOutboxMessageV2>(), f.ClientOutboxTransaction.Object), Times.Once);
                 f.ClientOutboxMessage.MessageId.Should().NotBe(Guid.Empty);
@@ -34,13 +34,13 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWorkWithNoEvents_ThenShouldNotStoreClientOutboxMessage()
         {
-            return RunAsync(f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.StoreAsync(It.IsAny<ClientOutboxMessageV2>(), It.IsAny<IClientOutboxTransaction>()), Times.Never));
+            return TestAsync(f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.StoreAsync(It.IsAny<ClientOutboxMessageV2>(), It.IsAny<IClientOutboxTransaction>()), Times.Never));
         }
 
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldPublishEvents()
         {
-            return RunAsync(
+            return TestAsync(
                 f => f.SetEvents(), 
                 f => f.CommitAsync(), 
                 f => f.MessageSession.PublishedMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), m.Message }).Should().BeEquivalentTo(f.ClientOutboxMessage.TransportOperations));
@@ -49,7 +49,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldPublishCommands()
         {
-            return RunAsync(
+            return TestAsync(
                 f => f.SetCommands(),
                 f => f.CommitAsync(),
                 f => f.MessageSession.SentMessages.Select(m => new { MessageId = Guid.Parse(m.Options.GetMessageId()), m.Message }).Should().BeEquivalentTo(f.ClientOutboxMessage.TransportOperations));
@@ -58,13 +58,13 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Pipelin
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWork_ThenShouldSetTheClientOutboxMessageAsDispatched()
         {
-            return RunAsync(f => f.SetEvents(), f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, It.IsAny<IClientOutboxTransaction>())));
+            return TestAsync(f => f.SetEvents(), f => f.CommitAsync(), f => f.ClientOutboxStorage.Verify(o => o.SetAsDispatchedAsync(f.ClientOutboxMessage.MessageId, It.IsAny<IClientOutboxTransaction>())));
         }
 
         [Test]
         public Task CommitAsync_WhenCommittingAUnitOfWorkWithNoEvents_ThenShouldNotPublishEvents()
         {
-            return RunAsync(f => f.CommitAsync(), f => f.MessageSession.PublishedMessages.Should().BeEmpty());
+            return TestAsync(f => f.CommitAsync(), f => f.MessageSession.PublishedMessages.Should().BeEmpty());
         }
     }
 
