@@ -1,5 +1,4 @@
-﻿//#if net_core_8
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.UnitOfWork.Managers;
@@ -34,4 +33,3 @@ namespace SFA.DAS.UnitOfWork.Mvc.Middleware
         }
     }
 }
-//#endif

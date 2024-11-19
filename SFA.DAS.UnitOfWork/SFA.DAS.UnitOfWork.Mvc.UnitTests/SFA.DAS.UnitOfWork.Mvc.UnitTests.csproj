@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>net8.0;net462</TargetFrameworks>
+        <TargetFrameworks>net8.0</TargetFrameworks>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
@@ -13,22 +13,6 @@
         <PackageReference Include="NUnit" Version="4.2.2" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
         <PackageReference Include="SFA.DAS.Testing" Version="3.0.169" />
-    </ItemGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-        <DefineConstants>NETCOREAPP2_0</DefineConstants>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-        <DefineConstants>NET462</DefineConstants>
-    </PropertyGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
-        <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
     </ItemGroup>
 
     <ItemGroup>
