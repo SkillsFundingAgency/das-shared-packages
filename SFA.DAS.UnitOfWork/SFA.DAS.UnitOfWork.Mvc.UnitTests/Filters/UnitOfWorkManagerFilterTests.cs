@@ -17,67 +17,67 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests.Filters
         [Test]
         public void OnActionExecuting_WhenAnActionIsExecuting_ThenShouldBeginUnitOfWorkManager()
         {
-            Run(f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once()));
+            Test(f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once()));
         }
 
         [Test]
         public void OnActionExecuting_WhenAChildActionIsExecuting_ThenShouldNotBeginUnitOfWorkManager()
         {
-            Run(f => f.SetChildAction(), f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Never()));
+            Test(f => f.SetChildAction(), f => f.OnActionExecuting(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Never()));
         }
 
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecuted_ThenShouldNotEndUnitOfWorkManager()
         {
-            Run(f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
+            Test(f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
         }
 
         [Test]
         public void OnActionExecuted_WhenAChildActionHasExecuted_ThenShouldNotEndUnitOfWorkManager()
         {
-            Run(f => f.SetChildAction(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
+            Test(f => f.SetChildAction(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
         }
 
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAfterAnUnhandledException_ThenShouldEndUnitOfWorkManager()
         {
-            Run(f => f.SetActionExecutedUnhandledException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
+            Test(f => f.SetActionExecutedUnhandledException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
         }
 
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAfterAHandledException_ThenShouldAddExceptionToViewData()
         {
-            Run(f => f.SetActionExecutedHandledException(), f => f.OnActionExecuted(), f => f.Controller.Object.ViewData["__Exception__"].Should().Be(f.Exception));
+            Test(f => f.SetActionExecutedHandledException(), f => f.OnActionExecuted(), f => f.Controller.Object.ViewData["__Exception__"].Should().Be(f.Exception));
         }
 
         [Test]
         public void OnActionExecuted_WhenAnActionHasExecutedAfterAHandledException_ThenShouldNotEndUnitOfWorkManager()
         {
-            Run(f => f.SetActionExecutedHandledException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
+            Test(f => f.SetActionExecutedHandledException(), f => f.OnActionExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
         }
 
         [Test]
         public void OnResultExecuted_WhenAnResultHasExecuted_ThenShouldEndUnitOfWorkManager()
         {
-            Run(f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once()));
+            Test(f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once()));
         }
 
         [Test]
         public void OnResultExecuted_WhenAChildActionHasExecuted_ThenShouldNotEndUnitOfWorkManager()
         {
-            Run(f => f.SetChildAction(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
+            Test(f => f.SetChildAction(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Never));
         }
 
         [Test]
         public void OnResultExecuted_WhenAResultHasExecutedAfterAHandledException_ThenShouldEndUnitOfWorkManager()
         {
-            Run(f => f.SetResultExecutedHandledException(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
+            Test(f => f.SetResultExecutedHandledException(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
         }
 
         [Test]
         public void OnResultExecuted_WhenAResultHasExecutedAfterAnException_ThenShouldEndUnitOfWorkManager()
         {
-            Run(f => f.SetResultExecutedUnhandledException(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
+            Test(f => f.SetResultExecutedUnhandledException(), f => f.OnResultExecuted(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once()));
         }
     }
 

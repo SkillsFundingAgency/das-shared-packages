@@ -15,31 +15,31 @@ namespace SFA.DAS.UnitOfWork.UnitTests.Context
         [Test]
         public void Get_WhenGettingData_ThenShouldReturnData()
         {
-            Run(f => f.SetData(), f => f.GetData(), (f, d) => d.Should().Be(f.Data));
+            Test(f => f.SetData(), f => f.GetData(), (f, d) => d.Should().Be(f.Data));
         }
 
         [Test]
         public void Get_WhenGettingDataAndKeyDoesNotExist_ThenShouldThrowException()
         {
-            Run(f => f.GetData(), (f, a) => a.Should().Throw<Exception>().WithMessage($"The key '{typeof(object).FullName}' was not present in the unit of work context"));
+            TestException(f => f.GetData(), (f, a) => a.Should().Throw<Exception>().WithMessage($"The key '{typeof(object).FullName}' was not present in the unit of work context"));
         }
 
         [Test]
         public void Find_WhenGettingData_ThenShouldReturnData()
         {
-            Run(f => f.SetData(), f => f.FindData(), (f, d) => d.Should().Be(f.Data));
+            Test(f => f.SetData(), f => f.FindData(), (f, d) => d.Should().Be(f.Data));
         }
 
         [Test]
         public void Find_WhenGettingDataAndKeyDoesNotExist_ThenShouldReturnNull()
         {
-            Run(f => f.FindData(), (f, d) => d.Should().BeNull());
+            Test(f => f.FindData(), (f, d) => d.Should().BeNull());
         }
 
         [Test]
         public void GetEvents_WhenGettingEvents_ThenShouldReturnAllEvents()
         {
-            Run(f => f.SetEvents(), f => f.GetEvents(), (f, r) => r.Should().HaveCount(4).And.Match<IEnumerable<Event>>(e =>
+            Test(f => f.SetEvents(), f => f.GetEvents(), (f, r) => r.Should().HaveCount(4).And.Match<IEnumerable<Event>>(e =>
                 e.ElementAt(0) is FooEvent && e.ElementAt(0).Created == DateTime.MinValue &&
                 e.ElementAt(1) is FooEvent && e.ElementAt(1).Created == f.Now &&
                 e.ElementAt(2) is BarEvent && e.ElementAt(2).Created == DateTime.MinValue &&
@@ -49,7 +49,7 @@ namespace SFA.DAS.UnitOfWork.UnitTests.Context
         [Test]
         public void GetEvents_WhenGettingEventsAddedOnSeparateThreadsForSameAsyncFlow_ThenShouldReturnAllEvents()
         {
-            Run(f => f.SetEventsOnSeparateThreads(), f => f.GetEvents(), (f, r) => r.Should().HaveCount(4).And
+            Test(f => f.SetEventsOnSeparateThreads(), f => f.GetEvents(), (f, r) => r.Should().HaveCount(4).And
                 .Contain(e => e is FooEvent && e.Created == DateTime.MinValue).And
                 .Contain(e => e is FooEvent && e.Created == f.Now).And
                 .Contain(e => e is BarEvent && e.Created == DateTime.MinValue).And
@@ -59,7 +59,7 @@ namespace SFA.DAS.UnitOfWork.UnitTests.Context
         [Test]
         public void GetEvents_WhenGettingEventsAddedOnSeparateThreadsForDifferentAsyncFlows_ThenShouldReturnNoEvents()
         {
-            Run(f => f.SetEventsOnSeparateAsyncFlow(), f => f.GetEvents(), (f, r) => r.Should().BeEmpty());
+            Test(f => f.SetEventsOnSeparateAsyncFlow(), f => f.GetEvents(), (f, r) => r.Should().BeEmpty());
         }
     }
 

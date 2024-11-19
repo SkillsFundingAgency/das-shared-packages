@@ -16,7 +16,7 @@ namespace SFA.DAS.UnitOfWork.EntityFrameworkCore.UnitTests.Pipeline
         [Test]
         public Task CommitAsync_WhenCommittingUnitOfWork_ThenShouldSaveChangesBeforeNextTask()
         {
-            return RunAsync(f => f.CommitAsync(), f => f.DbContext.Verify(d => d.SaveChangesAsync(default(CancellationToken)), Times.Once()));
+            return TestAsync(f => f.CommitAsync(), f => f.DbContext.Verify(d => d.SaveChangesAsync(default(CancellationToken)), Times.Once()));
         }
     }
 
