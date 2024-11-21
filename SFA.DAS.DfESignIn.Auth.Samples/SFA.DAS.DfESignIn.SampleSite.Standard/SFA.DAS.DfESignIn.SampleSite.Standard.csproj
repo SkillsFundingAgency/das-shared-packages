@@ -7,7 +7,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-        <PackageReference Include="Azure.Identity" Version="1.4.0" />
+        <PackageReference Include="Azure.Identity" Version="1.10.2" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
         <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.10" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
