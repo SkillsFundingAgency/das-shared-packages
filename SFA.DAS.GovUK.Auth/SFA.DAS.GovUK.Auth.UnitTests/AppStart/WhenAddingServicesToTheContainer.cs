@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.GovUK.Auth.AppStart;
 using SFA.DAS.GovUK.Auth.Authentication;
+using SFA.DAS.GovUK.Auth.Employer;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart;
@@ -18,6 +19,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(IJwtSecurityTokenService))]
     [TestCase(typeof(ICustomClaims))]
     [TestCase(typeof(IStubAuthenticationService))]
+    [TestCase(typeof(IGovAuthEmployerAccountService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var serviceCollection = new ServiceCollection();
@@ -48,7 +50,7 @@ public class WhenAddingServicesToTheContainer
     {   
         var configuration = GenerateConfiguration();
         serviceCollection.AddSingleton<IConfiguration>(configuration);
-        serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims));
+        serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims), typeof(GovAuthEmployerAccountService));
     }
 
     private static IConfigurationRoot GenerateConfiguration()
@@ -72,6 +74,13 @@ public class WhenAddingServicesToTheContainer
     public class TestCustomClaims : ICustomClaims
     {
         public Task<IEnumerable<Claim?>> GetClaims(TokenValidatedContext tokenValidatedContext)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class GovAuthEmployerAccountService : IGovAuthEmployerAccountService
+    {
+        public Task<EmployerUserAccounts> GetUserAccounts(string userId, string email)
         {
             throw new NotImplementedException();
         }
