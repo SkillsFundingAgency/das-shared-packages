@@ -46,14 +46,17 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
             .Where(c => c.Role.Equals("owner", StringComparison.CurrentCultureIgnoreCase) || c.Role.Equals("transactor", StringComparison.CurrentCultureIgnoreCase))
             .ToList().ForEach(u => claims.Add(new Claim(EmployerClaims.Account, u.AccountId)));
         
+        var accountsAsJson = string.Empty;
+        
         // Some users have 100's of employer accounts. The claims cannot handle that volume of data, it will cause exceptions.
         if (result.EmployerAccounts.Count() <= MaxPermittedNumberOfAccountsOnClaim)
         {
-            var accountsAsJson = JsonConvert.SerializeObject(result.EmployerAccounts.ToDictionary(k => k.AccountId));
-            var associatedAccountsClaim = new Claim(EmployerClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
-
-            claims.Add(associatedAccountsClaim);
+            accountsAsJson = JsonConvert.SerializeObject(result.EmployerAccounts.ToDictionary(k => k.AccountId));
         }
+        
+        var associatedAccountsClaim = new Claim(EmployerClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
+
+        claims.Add(associatedAccountsClaim);
         
         return claims;
     }

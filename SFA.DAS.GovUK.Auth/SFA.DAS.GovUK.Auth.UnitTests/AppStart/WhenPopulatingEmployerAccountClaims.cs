@@ -117,7 +117,7 @@ public class WhenPopulatingAccountClaims
     }
 
     [Test, MoqAutoData]
-    public async Task Then_The_Associated_Account_Claims_Are_Not_Populated_When_Accounts_Count_Above_Limit(
+    public async Task Then_The_Associated_Account_Claims_Are_Not_Populated_When_Accounts_Count_Above_Limit_But_Claim_Is_Still_Added(
         string nameIdentifier,
         string emailAddress,
         EmployerUserAccounts accountData,
@@ -133,7 +133,10 @@ public class WhenPopulatingAccountClaims
         var actual = await handler.GetClaims(tokenValidatedContext);
 
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress), Times.Once);
-        actual.Should().NotContain(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
+        actual.Should().Contain(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
+        
+        var actualClaimValue = actual.First(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier)).Value;
+        actualClaimValue.Should().BeNullOrEmpty();
     }
 
     private static TokenValidatedContext ArrangeTokenValidatedContext(string nameIdentifier, string emailAddress)
