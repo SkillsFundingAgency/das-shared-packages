@@ -49,6 +49,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
         var accountsAsJson = string.Empty;
         
         // Some users have 100's of employer accounts. The claims cannot handle that volume of data, it will cause exceptions.
+        // If that is the case, we will still add the claim for authorization purposes but leave it empty.
         if (result.EmployerAccounts.Count() <= MaxPermittedNumberOfAccountsOnClaim)
         {
             accountsAsJson = JsonConvert.SerializeObject(result.EmployerAccounts.ToDictionary(k => k.AccountId));
