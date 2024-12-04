@@ -30,7 +30,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
         private readonly IDateTimeService _dateTimeService;
         private readonly Func<DbConnection> _connectionBuilder;
 
-        public ClientOutboxPersisterV2(IDateTimeService dateTimeService, ReadOnlySettings settings)
+        public ClientOutboxPersisterV2(IDateTimeService dateTimeService, IReadOnlySettings settings)
         {
             _dateTimeService = dateTimeService;
             _connectionBuilder = settings.Get<Func<DbConnection>>("SqlPersistence.ConnectionBuilder");
@@ -46,7 +46,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
             return sqlClientOutboxTransaction;
         }
 
-        public async Task<ClientOutboxMessageV2> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
+        public async Task<ClientOutboxMessageV2> GetAsync(Guid messageId, ISynchronizedStorageSession synchronizedStorageSession)
         {
             var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
 
@@ -114,7 +114,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
             }
         }
 
-        public Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
+        public Task SetAsDispatchedAsync(Guid messageId, ISynchronizedStorageSession synchronizedStorageSession)
         {
             var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
 
