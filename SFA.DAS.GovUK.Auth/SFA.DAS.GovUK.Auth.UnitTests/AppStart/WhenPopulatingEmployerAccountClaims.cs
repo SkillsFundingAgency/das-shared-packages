@@ -134,9 +134,10 @@ public class WhenPopulatingAccountClaims
 
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress), Times.Once);
         actual.Should().Contain(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
-        
+
         var actualClaimValue = actual.First(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier)).Value;
-        actualClaimValue.Should().BeNullOrEmpty();
+        var action = () => JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(actualClaimValue).Select(x => x.Value).ToList();
+        action.Should().NotThrow();
     }
 
     private static TokenValidatedContext ArrangeTokenValidatedContext(string nameIdentifier, string emailAddress)
