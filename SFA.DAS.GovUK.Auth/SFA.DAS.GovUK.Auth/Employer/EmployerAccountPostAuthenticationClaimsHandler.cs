@@ -50,7 +50,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
         // If that is the case, we will still add the claim for authorization purposes but leave it empty.
         var accountsAsJson = JsonConvert.SerializeObject(result.EmployerAccounts.Count() <= MaxPermittedNumberOfAccountsOnClaim
             ? result.EmployerAccounts.ToDictionary(k => k.AccountId)
-            : new List<EmployerUserAccountItem>().ToDictionary(k => k.AccountId));
+            : new Dictionary<string, EmployerUserAccountItem>());
 
         var associatedAccountsClaim = new Claim(EmployerClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 

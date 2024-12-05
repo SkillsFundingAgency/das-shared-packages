@@ -136,7 +136,10 @@ public class WhenPopulatingAccountClaims
         actual.Should().Contain(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
 
         var actualClaimValue = actual.First(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier)).Value;
-        var action = () => JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(actualClaimValue).Select(x => x.Value).ToList();
+        var action = () => JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(actualClaimValue)
+            .Select(x => x.Value)
+            .ToList();
+        
         action.Should().NotThrow();
     }
 
@@ -144,8 +147,8 @@ public class WhenPopulatingAccountClaims
     {
         var identity = new ClaimsIdentity(new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, nameIdentifier),
-            new Claim(ClaimTypes.Email, emailAddress)
+            new(ClaimTypes.NameIdentifier, nameIdentifier),
+            new(ClaimTypes.Email, emailAddress)
         });
 
         var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(identity));
