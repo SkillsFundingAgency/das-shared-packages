@@ -12,79 +12,82 @@ using SFA.DAS.GovUK.Auth.AppStart;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Models;
 
-namespace SFA.DAS.GovUK.Auth.Services
+namespace SFA.DAS.GovUK.Auth.Services;
+
+public interface IStubAuthenticationService
 {
-    public interface IStubAuthenticationService
+    void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model, bool isEssential = false);
+    Task<ClaimsPrincipal> GetStubSignInClaims(StubAuthUserDetails model);
+}
+
+public class StubAuthenticationService : IStubAuthenticationService
+{
+    private readonly ICustomClaims _customClaims;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly string _environment;
+
+    public StubAuthenticationService(IConfiguration configuration, ICustomClaims customClaims, IHttpContextAccessor httpContextAccessor)
     {
-        void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model, bool isEssential = false);
-        Task<ClaimsPrincipal> GetStubSignInClaims(StubAuthUserDetails model);
+        _customClaims = customClaims;
+        _httpContextAccessor = httpContextAccessor;
+        _environment = configuration["ResourceEnvironmentName"]?.ToUpper();
     }
 
-    public class StubAuthenticationService : IStubAuthenticationService
+    public void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model, bool isEssential = false)
     {
-        private readonly ICustomClaims _customClaims;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly string _environment;
-
-        public StubAuthenticationService(IConfiguration configuration, ICustomClaims customClaims, IHttpContextAccessor httpContextAccessor)
+        if (_environment == "PRD")
         {
-            _customClaims = customClaims;
-            _httpContextAccessor = httpContextAccessor;
-            _environment = configuration["ResourceEnvironmentName"]?.ToUpper();
+            return;
         }
 
-        public void AddStubEmployerAuth(IResponseCookies cookies, StubAuthUserDetails model, bool isEssential = false)
+        var authCookie = new CookieOptions
         {
-            if (_environment == "PRD")
-            {
-                return;
-            }
-            
-            var authCookie = new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddMinutes(10),
-                Path = "/",
-                Domain = _environment != "LOCAL" ? $".{_environment.ToLower()}-eas.apprenticeships.education.gov.uk" : "localhost",
-                Secure = true,
-                HttpOnly = true,
-                IsEssential = isEssential,
-                SameSite = SameSiteMode.None
-            };
-            cookies.Append(GovUkConstants.StubAuthCookieName, JsonConvert.SerializeObject(model), authCookie);
+            Expires = DateTimeOffset.UtcNow.AddMinutes(10),
+            Path = "/",
+            Domain = _environment != "LOCAL" ? $".{_environment.ToLower()}-eas.apprenticeships.education.gov.uk" : "localhost",
+            Secure = true,
+            HttpOnly = true,
+            IsEssential = isEssential,
+            SameSite = SameSiteMode.None
+        };
+        cookies.Append(GovUkConstants.StubAuthCookieName, JsonConvert.SerializeObject(model), authCookie);
+    }
 
-            
+    public async Task<ClaimsPrincipal> GetStubSignInClaims(StubAuthUserDetails model)
+    {
+        if (_environment == "PRD")
+        {
+            return null;
         }
 
-        public async Task<ClaimsPrincipal> GetStubSignInClaims(StubAuthUserDetails model)
+        var claims = new List<Claim>
         {
-            if (_environment == "PRD")
-            {
-                return null;
-            }
-            
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, model.Email),
-                new Claim(ClaimTypes.NameIdentifier, model.Id),
-                new Claim("sub", model.Id)  
-            };
-            if (model.Mobile != null)
-            {
-                claims.Add(new Claim(ClaimTypes.MobilePhone, model.Mobile));
-            }
-
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            
-            if (_customClaims != null)
-            {
-                var additionalClaims = await _customClaims.GetClaims(new TokenValidatedContext(_httpContextAccessor.HttpContext,new AuthenticationScheme(CookieAuthenticationDefaults.AuthenticationScheme, "Cookie", typeof(EmployerStubAuthHandler)), new OpenIdConnectOptions(), principal, new AuthenticationProperties() ));
-                claims.AddRange(additionalClaims);
-                principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
-            }
-
-            return principal;
+            new(ClaimTypes.Email, model.Email),
+            new(ClaimTypes.NameIdentifier, model.Id),
+            new("sub", model.Id)
+        };
+        if (model.Mobile != null)
+        {
+            claims.Add(new Claim(ClaimTypes.MobilePhone, model.Mobile));
         }
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        if (_customClaims != null)
+        {
+            var additionalClaims = await _customClaims.GetClaims(
+                new TokenValidatedContext(_httpContextAccessor.HttpContext,
+                    new AuthenticationScheme(CookieAuthenticationDefaults.AuthenticationScheme, "Cookie", typeof(EmployerStubAuthHandler)),
+                    new OpenIdConnectOptions(),
+                    principal,
+                    new AuthenticationProperties()
+                ));
+
+            claims.AddRange(additionalClaims);
+            principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+        }
+
+        return principal;
     }
 }
