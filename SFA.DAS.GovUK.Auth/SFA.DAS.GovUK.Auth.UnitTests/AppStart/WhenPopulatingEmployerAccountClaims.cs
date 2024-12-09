@@ -14,7 +14,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart;
 public class WhenPopulatingAccountClaims
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Claims_Are_Populated_For_User(
+    public async Task Then_The_Claims_Are_Populated_For_User_When_Accounts_Within_MaxAllowedOnClaims(
         string nameIdentifier,
         string emailAddress,
         EmployerUserAccounts accountData,
@@ -47,6 +47,56 @@ public class WhenPopulatingAccountClaims
     }
 
     [Test, MoqAutoData]
+    public async Task Then_The_Account_Claims_Are_Populated_For_User_When_Accounts_Within_MaxAllowedOnClaims(
+        string nameIdentifier,
+        string emailAddress,
+        EmployerUserAccounts accountData,
+        [Frozen] Mock<IGovAuthEmployerAccountService> accountService,
+        EmployerAccountPostAuthenticationClaimsHandler handler)
+    {
+        accountData.IsSuspended = false;
+        foreach (var accountDataEmployerAccount in accountData.EmployerAccounts)
+        {
+            accountDataEmployerAccount.Role = "owner";
+        }
+
+        var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
+        accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress)).ReturnsAsync(accountData);
+
+        handler.MaxPermittedNumberOfAccountsOnClaim = accountData.EmployerAccounts.Count();
+
+        var actual = await handler.GetClaims(tokenValidatedContext);
+        
+        var accountClaims = actual.Where(c => c.Type.Equals(EmployerClaims.Account)).Select(c => c.Value).ToList();
+        accountClaims.Should().BeEquivalentTo(accountData.EmployerAccounts.Select(c => c.AccountId).ToList());
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Account_Claims_Are_Not_Populated_For_User_When_Accounts_Are_Beyond_MaxAllowedOnClaims(
+        string nameIdentifier,
+        string emailAddress,
+        EmployerUserAccounts accountData,
+        [Frozen] Mock<IGovAuthEmployerAccountService> accountService,
+        EmployerAccountPostAuthenticationClaimsHandler handler)
+    {
+        accountData.IsSuspended = false;
+        foreach (var accountDataEmployerAccount in accountData.EmployerAccounts)
+        {
+            accountDataEmployerAccount.Role = "owner";
+        }
+
+        var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
+        accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress)).ReturnsAsync(accountData);
+
+        handler.MaxPermittedNumberOfAccountsOnClaim = accountData.EmployerAccounts.Count() - 1;
+
+        var actual = await handler.GetClaims(tokenValidatedContext);
+        
+        var accountClaims = actual.Where(c => c.Type.Equals(EmployerClaims.Account)).Select(c => c.Value).ToList();
+        accountClaims.Should().BeEmpty();
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_The_Claims_Are_Populated_For_User_With_No_Accounts(
         string nameIdentifier,
         string emailAddress,
@@ -74,6 +124,7 @@ public class WhenPopulatingAccountClaims
         var accountClaims = actual.Where(c => c.Type.Equals(EmployerClaims.Account)).Select(c => c.Value).ToList();
         accountClaims.Count.Should().Be(0);
     }
+
 
     [Test, MoqAutoData]
     public async Task Then_If_IsSuspended_Claim_Is_Marked_As_Suspended(
@@ -139,7 +190,7 @@ public class WhenPopulatingAccountClaims
         var action = () => JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(actualClaimValue)
             .Select(x => x.Value)
             .ToList();
-        
+
         action.Should().NotThrow();
     }
 
