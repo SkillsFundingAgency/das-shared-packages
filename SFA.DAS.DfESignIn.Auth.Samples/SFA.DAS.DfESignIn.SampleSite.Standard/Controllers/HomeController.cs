@@ -7,25 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.DfESignIn.SampleSite.Standard.Controllers
 {
-
+    [Route("")]
+    [Route("[controller]")]
     public class HomeController : Controller
     {
-        [HttpGet]
+        [HttpGet("")]
         public IActionResult Index()
         {
             return View();
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("authenticated")]
         public IActionResult Authenticated()
         {
             return View();
         }
 
         [Authorize]
-        [HttpGet]
-        [Route("sign-out")]
+        [HttpGet("sign-out")]
         public async Task<IActionResult> SigningOut()
         {
             var idToken = await HttpContext.GetTokenAsync("id_token");
@@ -34,9 +34,9 @@ namespace SFA.DAS.DfESignIn.SampleSite.Standard.Controllers
             authenticationProperties.Parameters.Clear();
             authenticationProperties.Parameters.Add("id_token", idToken);
             return SignOut(
-                authenticationProperties, CookieAuthenticationDefaults.AuthenticationScheme,
+                authenticationProperties,
+                CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);
         }
-
     }
 }
