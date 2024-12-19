@@ -27,7 +27,11 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
             .First(c => c.Type.Equals(ClaimTypes.Email))
             .Value;
 
-        var result = await accountsService.GetUserAccounts(userId, email);
+        var userAccountsCount = await accountsService.GetUserAccountsCount(userId, email);
+
+        var populateUserAccounts = userAccountsCount <= MaxPermittedNumberOfAccountsOnClaim;
+
+        var result = await accountsService.GetUserAccounts(userId, email, populateUserAccounts);
 
         if (result.IsSuspended)
         {
@@ -44,7 +48,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
         claims.Add(new Claim(EmployerClaims.IdamsUserIdClaimTypeIdentifier, result.EmployerUserId));
         claims.Add(new Claim(EmployerClaims.IdamsUserEmailClaimTypeIdentifier, email));
 
-        if (result.EmployerAccounts.Count() <= MaxPermittedNumberOfAccountsOnClaim)
+        if (populateUserAccounts)
         {
             result.EmployerAccounts
                 .Where(c => c.Role.Equals("owner", StringComparison.CurrentCultureIgnoreCase) || c.Role.Equals("transactor", StringComparison.CurrentCultureIgnoreCase))
@@ -52,10 +56,10 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
                 .ForEach(u => claims.Add(new Claim(EmployerClaims.Account, u.AccountId))
                 );
         }
-        
+
         // Some users have 100's of employer accounts. The claims cannot handle that volume of data, it will cause exceptions.
         // If that is the case, we will still add the claim for authorization purposes but leave it empty.
-        var accountsAsJson = JsonConvert.SerializeObject(result.EmployerAccounts.Count() <= MaxPermittedNumberOfAccountsOnClaim
+        var accountsAsJson = JsonConvert.SerializeObject(populateUserAccounts
             ? result.EmployerAccounts.ToDictionary(k => k.AccountId)
             : new Dictionary<string, EmployerUserAccountItem>());
 
