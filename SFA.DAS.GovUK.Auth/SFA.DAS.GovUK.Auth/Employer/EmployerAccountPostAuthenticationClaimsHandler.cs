@@ -27,7 +27,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
             .First(c => c.Type.Equals(ClaimTypes.Email))
             .Value;
 
-        var userAccountsCount = await accountsService.GetUserAccountsCount(userId, email);
+        var userAccountsCount = await accountsService.GetUserAccountsCount(userId);
 
         var populateUserAccounts = userAccountsCount <= MaxPermittedNumberOfAccountsOnClaim;
 

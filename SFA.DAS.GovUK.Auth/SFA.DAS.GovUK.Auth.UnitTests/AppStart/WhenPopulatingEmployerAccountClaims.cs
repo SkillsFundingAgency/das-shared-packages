@@ -28,12 +28,12 @@ public class WhenPopulatingAccountClaims
         }
 
         var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
-        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier, emailAddress)).ReturnsAsync(accountData.EmployerAccounts.Count);
+        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier)).ReturnsAsync(accountData.EmployerAccounts.Count);
         accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress, true)).ReturnsAsync(accountData);
 
         var actual = await handler.GetClaims(tokenValidatedContext);
 
-        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier, emailAddress), Times.Once);
+        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier), Times.Once);
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress, true), Times.Once);
         
         actual.Should().ContainSingle(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
@@ -65,7 +65,7 @@ public class WhenPopulatingAccountClaims
         }
     
         var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
-        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier, emailAddress)).ReturnsAsync(accountData.EmployerAccounts.Count);
+        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier)).ReturnsAsync(accountData.EmployerAccounts.Count);
         accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress, true)).ReturnsAsync(accountData);
     
         handler.MaxPermittedNumberOfAccountsOnClaim = accountData.EmployerAccounts.Count();
@@ -75,7 +75,7 @@ public class WhenPopulatingAccountClaims
         var accountClaims = actual.Where(c => c.Type.Equals(EmployerClaims.Account)).Select(c => c.Value).ToList();
         accountClaims.Should().BeEquivalentTo(accountData.EmployerAccounts.Select(c => c.AccountId).ToList());
         
-        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier, emailAddress), Times.Once);
+        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier), Times.Once);
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress, true), Times.Once);
     }
     
@@ -94,7 +94,7 @@ public class WhenPopulatingAccountClaims
         }
     
         var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
-        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier, emailAddress)).ReturnsAsync(accountData.EmployerAccounts.Count);
+        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier)).ReturnsAsync(accountData.EmployerAccounts.Count);
         accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress, false)).ReturnsAsync(accountData);
     
         handler.MaxPermittedNumberOfAccountsOnClaim = accountData.EmployerAccounts.Count() - 1;
@@ -104,7 +104,7 @@ public class WhenPopulatingAccountClaims
         var accountClaims = actual.Where(c => c.Type.Equals(EmployerClaims.Account)).Select(c => c.Value).ToList();
         accountClaims.Should().BeEmpty();
         
-        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier, emailAddress), Times.Once);
+        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier), Times.Once);
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress, false), Times.Once);
     }
     
@@ -119,12 +119,12 @@ public class WhenPopulatingAccountClaims
         accountData.IsSuspended = false;
         accountData.EmployerAccounts = new List<EmployerUserAccountItem>();
         var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
-        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier, emailAddress)).ReturnsAsync(accountData.EmployerAccounts.Count);
+        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier)).ReturnsAsync(accountData.EmployerAccounts.Count);
         accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress, true)).ReturnsAsync(accountData);
     
         var actual = await handler.GetClaims(tokenValidatedContext);
     
-        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier, emailAddress), Times.Once);
+        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier), Times.Once);
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress, true), Times.Once);
         actual.Should().ContainSingle(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
         var actualClaimValue = actual.First(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier)).Value;
@@ -149,12 +149,12 @@ public class WhenPopulatingAccountClaims
     {
         accountData.IsSuspended = true;
         var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
-        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier, emailAddress)).ReturnsAsync(accountData.EmployerAccounts.Count);
+        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier)).ReturnsAsync(accountData.EmployerAccounts.Count);
         accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress, true)).ReturnsAsync(accountData);
     
         var actual = await handler.GetClaims(tokenValidatedContext);
     
-        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier, emailAddress), Times.Once);
+        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier), Times.Once);
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress, true), Times.Once);
         actual.First(c => c.Type.Equals(ClaimTypes.AuthorizationDecision)).Value.Should().Be("Suspended");
     }
@@ -169,14 +169,14 @@ public class WhenPopulatingAccountClaims
     {
         accountData.IsSuspended = true;
         var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
-        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier, emailAddress)).ReturnsAsync(accountData.EmployerAccounts.Count);
+        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier)).ReturnsAsync(accountData.EmployerAccounts.Count);
         accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress, true)).ReturnsAsync(accountData);
     
         handler.MaxPermittedNumberOfAccountsOnClaim = accountData.EmployerAccounts.Count();
     
         var actual = await handler.GetClaims(tokenValidatedContext);
     
-        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier, emailAddress), Times.Once);
+        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier), Times.Once);
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress, true), Times.Once);
         actual.Should().ContainSingle(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
     
@@ -194,14 +194,14 @@ public class WhenPopulatingAccountClaims
     {
         accountData.IsSuspended = true;
         var tokenValidatedContext = ArrangeTokenValidatedContext(nameIdentifier, emailAddress);
-        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier, emailAddress)).ReturnsAsync(accountData.EmployerAccounts.Count);
+        accountService.Setup(x => x.GetUserAccountsCount(nameIdentifier)).ReturnsAsync(accountData.EmployerAccounts.Count);
         accountService.Setup(x => x.GetUserAccounts(nameIdentifier, emailAddress, false)).ReturnsAsync(accountData);
     
         handler.MaxPermittedNumberOfAccountsOnClaim = accountData.EmployerAccounts.Count() - 1;
     
         var actual = await handler.GetClaims(tokenValidatedContext);
     
-        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier, emailAddress), Times.Once);
+        accountService.Verify(x => x.GetUserAccountsCount(nameIdentifier), Times.Once);
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress, false), Times.Once);
         actual.Should().Contain(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier));
     

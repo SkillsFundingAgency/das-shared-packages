@@ -85,7 +85,7 @@ public class WhenAddingServicesToTheContainer
             throw new NotImplementedException();
         }
 
-        public Task<int> GetUserAccountsCount(string userId, string email)
+        public Task<int> GetUserAccountsCount(string userId)
         {
             throw new NotImplementedException();
         }
