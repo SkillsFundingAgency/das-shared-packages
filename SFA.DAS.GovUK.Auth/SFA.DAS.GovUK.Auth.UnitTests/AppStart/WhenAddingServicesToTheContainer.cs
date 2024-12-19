@@ -80,7 +80,7 @@ public class WhenAddingServicesToTheContainer
     }
     public class GovAuthEmployerAccountService : IGovAuthEmployerAccountService
     {
-        public Task<EmployerUserAccounts> GetUserAccounts(string userId, string email, bool populateUserAccounts)
+        public Task<EmployerUserAccounts> GetUserAccounts(string userId, string email, bool populateAssociatedAccounts)
         {
             throw new NotImplementedException();
         }
