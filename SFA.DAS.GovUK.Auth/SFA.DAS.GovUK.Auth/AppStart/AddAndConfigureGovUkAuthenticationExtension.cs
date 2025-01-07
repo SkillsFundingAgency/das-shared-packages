@@ -9,7 +9,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     public static class AddAndConfigureGovUkAuthenticationExtension
     {
         public static void AddAndConfigureGovUkAuthentication(this IServiceCollection services,
-            IConfiguration configuration, AuthRedirects authRedirects, Type customClaims = null, Type employerAccountService = null)
+            IConfiguration configuration, AuthRedirects authRedirects, Type customClaims = null, Type employerAccountService = null, bool enable2Fa = true)
         {
             bool.TryParse(configuration["StubAuth"],out var stubAuth);
             services.AddServiceRegistration(configuration, customClaims, employerAccountService);
@@ -22,7 +22,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             }
             else
             {
-                services.ConfigureGovUkAuthentication(configuration , authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]), authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
+                services.ConfigureGovUkAuthentication(configuration , authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]), authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]),enable2Fa);
             }
         }
     }

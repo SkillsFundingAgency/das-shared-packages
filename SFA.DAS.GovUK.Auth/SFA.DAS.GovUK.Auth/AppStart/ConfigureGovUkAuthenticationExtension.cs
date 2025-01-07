@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -12,12 +15,13 @@ using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Services;
+using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
     internal static class ConfigureGovUkAuthenticationExtension
     {
-        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain)
+        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain, bool enable2Fa)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -59,7 +63,19 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         return Task.CompletedTask;
                     };
 
-                    
+                    options.Events.OnRedirectToIdentityProvider = c =>
+                    {
+                        var stringVector = JsonSerializer.Serialize(new List<string>
+                            {
+                                enable2Fa ? "Cl.Cm" : "Cl"
+                            });
+                        if (c.ProtocolMessage.Parameters.ContainsKey("vtr"))
+                        {
+                            c.ProtocolMessage.Parameters.Remove("vtr");
+                        }
+                        c.ProtocolMessage.Parameters.Add("vtr",stringVector);
+                        return Task.CompletedTask;
+                    };
                 })
                 .AddCookie(options =>
                 {
