@@ -10,6 +10,5 @@
         public const string EnableGoogleAnalytics = "SharedUI.EnableGoogleAnalytics";
         public const string ZenDeskConfiguration = "SharedUI.ZenDeskConfiguration";
         public const string EnableCookieBanner = "SharedUI.EnableCookieBanner";
-        public const string UseDfESignIn = "SharedUI.UseDfESignIn";
     }
 }

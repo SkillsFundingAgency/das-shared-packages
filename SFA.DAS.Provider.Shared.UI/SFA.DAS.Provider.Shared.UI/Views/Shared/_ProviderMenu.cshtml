@@ -1,14 +1,11 @@
 @using SFA.DAS.Provider.Shared.UI
 @using SFA.DAS.Provider.Shared.UI.Extensions
 
-
-
 @if (Context.User.Identity.IsAuthenticated)
 {
     var providerId = User.Identity.GetProviderId();
     var selected = ViewData.SelectedNavigationSection();
     var suppressed = ViewData.SuppressedNavigationSections();
-    var isDfeSignInEnabled = ViewData.GetDfESignInStatus();
 
     if (!ViewData.HiddenAccountHeader())
     {
@@ -20,26 +17,17 @@
                         <li class="das-user-navigation__list-item">
                             <a asp-external-controller="" class="das-user-navigation__link">@Context.User.Identity.Name</a>
                         </li>
-                        @if (isDfeSignInEnabled)
-                        {
-                            <li class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
-                                <a href="/" class="das-user-navigation__link">Settings</a>
-                                <ul class="das-user-navigation__sub-menu js-hidden">
-                                    <li class="das-user-navigation__sub-menu-list-item">
-                                        <a asp-external-controller="change-signin-details" class="das-user-navigation__sub-menu-link">Change your sign-in details</a>
-                                    </li>
-                                    <li class="das-user-navigation__sub-menu-list-item">
-                                        <a asp-external-controller="notification-settings" class="das-user-navigation__sub-menu-link">Notification settings</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="das-user-navigation__list-item">
-                                <a asp-external-controller="notification-settings" class="das-user-navigation__link">Notification settings</a>
-                            </li>
-                        }
+                        <li class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
+                            <a href="/" class="das-user-navigation__link">Settings</a>
+                            <ul class="das-user-navigation__sub-menu js-hidden">
+                                <li class="das-user-navigation__sub-menu-list-item">
+                                    <a asp-external-controller="change-signin-details" class="das-user-navigation__sub-menu-link">Change your sign-in details</a>
+                                </li>
+                                <li class="das-user-navigation__sub-menu-list-item">
+                                    <a asp-external-controller="notification-settings" class="das-user-navigation__sub-menu-link">Notification settings</a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="das-user-navigation__list-item">
                             <a asp-Route="provider-signout" class="das-user-navigation__link">Sign out</a>
                         </li>
