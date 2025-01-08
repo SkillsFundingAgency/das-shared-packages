@@ -58,7 +58,6 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
         return View();
     }
     
-    [Authorize]
     [HttpGet]
     [Route("sign-out", Name = "SignOut")]
     public async Task<IActionResult> SigningOut()
