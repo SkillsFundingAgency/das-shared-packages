@@ -24,7 +24,8 @@ Library to enable employer/citizen facing service to use [Gov One Login](https:/
     "ClientId": "{CLIENT_ID}",    // From gov uk one login
     "KeyVaultIdentifier": "https://{YOUR_KEYVAULT}.vault.azure.net/keys/{KEY_NAME}",
     "LoginSlidingExpiryTimeOutInMinutes" : 30,
-    "GovLoginSessionConnectionString" : "RedisConnectionString"
+    "GovLoginSessionConnectionString" : "RedisConnectionString",
+    "Disable2Fa" : "false" // Defaults to false if not set - disables 2fa on authentication
   }
 }
 ```
