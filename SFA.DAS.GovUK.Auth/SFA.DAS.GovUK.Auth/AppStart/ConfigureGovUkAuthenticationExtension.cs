@@ -21,7 +21,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 {
     internal static class ConfigureGovUkAuthenticationExtension
     {
-        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain, bool enable2Fa)
+        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -34,6 +34,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 {
                     var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
 
+                    var disable2Fa = govUkConfiguration["Disable2Fa"] != null && govUkConfiguration["Disable2Fa"].Equals( "true", StringComparison.CurrentCultureIgnoreCase);
+                    
                     options.ClientId = govUkConfiguration["ClientId"];
                     options.MetadataAddress = $"{govUkConfiguration["BaseUrl"]}/.well-known/openid-configuration";
                     options.ResponseType = "code";
@@ -67,7 +69,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     {
                         var stringVector = JsonSerializer.Serialize(new List<string>
                             {
-                                enable2Fa ? "Cl.Cm" : "Cl"
+                                disable2Fa ? "Cl" : "Cl.Cm"
                             });
                         if (c.ProtocolMessage.Parameters.ContainsKey("vtr"))
                         {
