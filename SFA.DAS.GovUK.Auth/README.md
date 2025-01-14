@@ -24,7 +24,8 @@ Library to enable employer/citizen facing service to use [Gov One Login](https:/
     "ClientId": "{CLIENT_ID}",    // From gov uk one login
     "KeyVaultIdentifier": "https://{YOUR_KEYVAULT}.vault.azure.net/keys/{KEY_NAME}",
     "LoginSlidingExpiryTimeOutInMinutes" : 30,
-    "GovLoginSessionConnectionString" : "RedisConnectionString"
+    "GovLoginSessionConnectionString" : "RedisConnectionString",
+    "Disable2Fa" : "false" // Defaults to false if not set - disables 2fa on authentication
   }
 }
 ```
@@ -52,7 +53,13 @@ public class CustomClaims : ICustomClaims
     }
 }
 ```
-At this point you have the option to call any services in your code to add extra claim information that is required. The **NameIdentifier** and **Email** claims are always populated
+At this point you have the option to call any services in your code to add extra claim information that is required. The **NameIdentifier** and **Email** claims are always populated. Please note that
+this is only called once on login, if you need to update claims you'll need to log out then log in again.
+
+## IGovAuthEmployerAccountService
+
+To standardise the claims that come back for use with employer accounts, the `ICustomClaims` option should be set to null, and the 
+`IGovAuthEmployerAccountService` should be implemented returning the EmployerUserAccounts.
 
 ## Standard Usage
 The package is designed to be used with the `SFA.DAS.Employer.Shared.UI`, and also `SFA.DAS.EmployerProfiles.Web`. Many of the default redirect URLs will go to the employer profiles site. 
@@ -66,7 +73,17 @@ public static class AddServiceRegistrationExtension
 {
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAndConfigureGovUkAuthentication(configuration, typeof(CustomClaims), "", "/home/AccountDetails");
+        services.AddAndConfigureGovUkAuthentication(
+            configuration, 
+            new AuthRedirects 
+            {
+                LoginRedirect = "/home/AccountDetails", //Where to redirect after login
+                CookieDomain = "employer.gov.uk", //If using subsites for a client this should be the same across all
+                LocalStubLoginPath = "/home/stub-account-details", // detailed below - stub auth action
+                SignedOutRedirectUrl = "/home/signout" //where user is redirected to after signout, this shouldnt be the same as configured in gov login
+            }, 
+            typeof(CustomClaims), // Must implement ICustomClaims
+            typeof(UserAccountService) ); // Must implement IGovAuthEmployerAccountService
              
     }
 }    
@@ -110,15 +127,54 @@ public class HomeController : Controller
         _stubAuthenticationService = stubAuthenticationService;
     }
     
-    [HttpPost]
-    public async Task<IActionResult> AccountDetails(StubAuthUserDetails model)
+    [HttpGet]
+    [Route("stub-account-details", Name = RouteNames.StubAccountDetailsGet)]
+    public IActionResult AccountDetails([FromQuery] string returnUrl)
     {
-        var claims = await _stubAuthenticationService.GetStubSignInClaims(model);
-    
+        if (configuration["ResourceEnvironmentName"].ToUpper() == "PRD")
+        {
+            return NotFound();
+        }
+
+        return View("AccountDetails", new StubAuthenticationViewModel
+        {
+            ReturnUrl = returnUrl
+        });
+    }
+
+    [HttpPost]
+    [Route("stub-account-details", Name = RouteNames.StubAccountDetailsPost)]
+    public async Task<IActionResult> AccountDetails(StubAuthenticationViewModel model)
+    {
+        if (configuration["ResourceEnvironmentName"].ToUpper() == "PRD")
+        {
+            return NotFound();
+        }
+
+        var claims = await stubAuthenticationService.GetStubSignInClaims(model);
+
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
             new AuthenticationProperties());
-        
-        return RedirectToAction("Authenticated");
+
+        return RedirectToRoute(RouteNames.StubSignedIn, new { returnUrl = model.ReturnUrl });
+    }
+
+    [HttpGet]
+    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
+    [Route("Stub-Auth", Name = RouteNames.StubSignedIn)]
+    public IActionResult StubSignedIn([FromQuery] string returnUrl)
+    {
+        if (configuration["ResourceEnvironmentName"].ToUpper() == "PRD")
+        {
+            return NotFound();
+        }
+        var viewModel = new AccountStubViewModel
+        {
+            Email = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value,
+            Id = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value,
+            ReturnUrl = returnUrl
+        };
+        return View(viewModel);
     }
 }    
 ```

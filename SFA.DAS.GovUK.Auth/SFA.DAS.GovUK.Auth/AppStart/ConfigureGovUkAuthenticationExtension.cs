@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -12,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Services;
+using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
@@ -30,6 +34,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 {
                     var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
 
+                    var disable2Fa = govUkConfiguration["Disable2Fa"] != null && govUkConfiguration["Disable2Fa"].Equals( "true", StringComparison.CurrentCultureIgnoreCase);
+                    
                     options.ClientId = govUkConfiguration["ClientId"];
                     options.MetadataAddress = $"{govUkConfiguration["BaseUrl"]}/.well-known/openid-configuration";
                     options.ResponseType = "code";
@@ -59,7 +65,19 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         return Task.CompletedTask;
                     };
 
-                    
+                    options.Events.OnRedirectToIdentityProvider = c =>
+                    {
+                        var stringVector = JsonSerializer.Serialize(new List<string>
+                            {
+                                disable2Fa ? "Cl" : "Cl.Cm"
+                            });
+                        if (c.ProtocolMessage.Parameters.ContainsKey("vtr"))
+                        {
+                            c.ProtocolMessage.Parameters.Remove("vtr");
+                        }
+                        c.ProtocolMessage.Parameters.Add("vtr",stringVector);
+                        return Task.CompletedTask;
+                    };
                 })
                 .AddCookie(options =>
                 {
