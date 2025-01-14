@@ -2,6 +2,12 @@
 @using SFA.DAS.Employer.Shared.UI.Models
 @inject SFA.DAS.Employer.Shared.UI.UrlBuilder LinkGenerator
 
+<!-- Include the script only if the user is logged in -->
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <script src="/js/sessionTimeout.js"></script>
+}
+
 <footer class="govuk-footer " role="contentinfo">
     <div class="govuk-width-container ">
         <div class="govuk-footer__meta">
