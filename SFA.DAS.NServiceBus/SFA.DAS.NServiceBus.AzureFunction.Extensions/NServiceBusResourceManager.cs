@@ -1,10 +1,10 @@
 ﻿using Azure.Identity;
 using Azure.Messaging.ServiceBus.Administration;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using SFA.DAS.NServiceBus.Extensions;
+using Microsoft.Azure.Functions.Worker;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Extensions;
 
@@ -36,7 +36,7 @@ public class NServiceBusResourceManager
     {
         var attribute = myAssembly.GetTypes()
             .SelectMany(t => t.GetMethods())
-            .Where(m => m.GetCustomAttribute<FunctionNameAttribute>(false) != null)
+            .Where(m => m.GetCustomAttribute<FunctionAttribute>(false) != null)
             .SelectMany(m => m.GetParameters())
             .SelectMany(p => p.GetCustomAttributes<ServiceBusTriggerAttribute>(false))
             .FirstOrDefault();
