@@ -13,6 +13,6 @@ public static class SessionExtensions
             context.Response.StatusCode = context.User.Identity?.IsAuthenticated == true 
                 ? StatusCodes.Status204NoContent 
                 : StatusCodes.Status401Unauthorized;
-        });
+        }).RequireAuthorization();
     }
 }
