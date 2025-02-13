@@ -20,12 +20,14 @@ namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
             var privacyLink = content.QuerySelector(".mu-foot-privacy");
             var cookieConsent = content.QuerySelector(".mu-foot-cookieConsent");
             var termsOfUse = content.QuerySelector(".mu-foot-termsofuse");
+            var accessibilityStatement = content.QuerySelector(".mu-foot-accessibilityStatement");
 
             // Assert
             Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/service/help", helpLink.Attributes["href"].Value); 
             Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/service/ABC123/privacy", privacyLink.Attributes["href"].Value);
             Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/accounts/ABC123/cookieConsent", cookieConsent.Attributes["href"].Value);
             Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/service/termsAndConditions/overview", termsOfUse.Attributes["href"].Value);
+            Assert.AreEqual("https://accounts.at-eas.apprenticeships.education.gov.uk/service/accessibility-statement", accessibilityStatement.Attributes["href"].Value);
         }
     }
 }

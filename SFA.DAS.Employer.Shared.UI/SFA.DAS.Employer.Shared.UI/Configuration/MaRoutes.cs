@@ -9,6 +9,7 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
             { "AccountsTeamsView", "/accounts/{0}/teams/view" },
             { "Cookies", "/cookieConsent" },
             { "PrivacyV2", "/service/{0}/privacy" },
+            { "AccessibilityStatement", "/service/accessibility-statement" },
             { "AccountsAgreements", "/accounts/{0}/agreements" },
             { "AccountsFinance", "/accounts/{0}/finance" },
             { "AccountsSchemes", "/accounts/{0}/schemes" },

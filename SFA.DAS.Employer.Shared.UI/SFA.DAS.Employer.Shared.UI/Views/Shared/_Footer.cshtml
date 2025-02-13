@@ -24,6 +24,9 @@
                          <a class="govuk-footer__link mu-foot-privacy" href="@LinkGenerator.AccountsLink("PrivacyV2", Model.AccountId)">Privacy</a>        
                     </li>
                     <li class="govuk-footer__inline-list-item">
+                        <a class="govuk-footer__link mu-foot-accessibilityStatement" href="@LinkGenerator.AccountsLink("AccessibilityStatement")">Accessibility statement</a>
+                    </li>
+                    <li class="govuk-footer__inline-list-item">
                         @if (string.IsNullOrEmpty(Model.AccountId))
                         {
                         <a class="govuk-footer__link mu-foot-cookieConsent" href="@LinkGenerator.AccountsLink("Cookies")">Cookies</a>
