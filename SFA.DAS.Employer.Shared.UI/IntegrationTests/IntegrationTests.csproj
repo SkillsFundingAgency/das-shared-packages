@@ -6,7 +6,7 @@
     <AssemblyName>SFA.DAS.Employer.Shared.UI.IntegrationTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="nunit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.9" />
