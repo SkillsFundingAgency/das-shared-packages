@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Authentication;
 
-namespace SFA.DAS.Employer.Shared.UI.IntegrationTests
+namespace SFA.DAS.Employer.Shared.UI.IntegrationTests.Authentication;
+
+public static class TestAuthenticationExtensions
 {
-    public static class TestAuthenticationExtensions
+    public static AuthenticationBuilder AddTestAuthentication(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<TestAuthenticationOptions> configureOptions)
     {
-        public static AuthenticationBuilder AddTestAuthentication(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<TestAuthenticationOptions> configureOptions)
-        {
-            return builder.AddScheme<TestAuthenticationOptions, TestAuthHandler>(authenticationScheme, configureOptions);
-        }
+        return builder.AddScheme<TestAuthenticationOptions, TestAuthHandler>(authenticationScheme, configureOptions);
     }
 }
