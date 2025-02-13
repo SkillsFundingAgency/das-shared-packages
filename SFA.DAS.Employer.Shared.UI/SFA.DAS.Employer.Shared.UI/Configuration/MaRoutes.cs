@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Employer.Shared.UI.Configuration
 {
-    public class MaRoutes
+    public static class MaRoutes
     {
         public static Dictionary<string, string> Accounts => new Dictionary<string, string>
         {
