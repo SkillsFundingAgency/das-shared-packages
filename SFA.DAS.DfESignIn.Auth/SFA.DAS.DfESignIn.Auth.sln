@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.DfESignIn.Auth.Unit
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0FC1A393-51E5-4BD9-9576-B2436B1EA214}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DfESignIn.SampleSite", "..\SFA.DAS.DfESignIn.Auth.Samples\SFA.DAS.DfESignIn.SampleSite\SFA.DAS.DfESignIn.SampleSite.csproj", "{D69B8770-B560-4FDF-8999-6999CAAC8CDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,12 +27,17 @@ Global
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D69B8770-B560-4FDF-8999-6999CAAC8CDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D69B8770-B560-4FDF-8999-6999CAAC8CDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D69B8770-B560-4FDF-8999-6999CAAC8CDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D69B8770-B560-4FDF-8999-6999CAAC8CDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A314850F-0D42-4CC3-9901-20D8F2CE51E8} = {D0E29E1B-0D74-49E5-83AF-581FEA6F4966}
+		{D69B8770-B560-4FDF-8999-6999CAAC8CDA} = {0FC1A393-51E5-4BD9-9576-B2436B1EA214}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8508DF57-1D2D-4A6F-8C8D-3581C7303EBD}

@@ -27,6 +27,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             string signedOutCallbackPath,
             string redirectUrl)
         {
+            Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services
                 .AddAuthentication(sharedOptions =>
                 {
