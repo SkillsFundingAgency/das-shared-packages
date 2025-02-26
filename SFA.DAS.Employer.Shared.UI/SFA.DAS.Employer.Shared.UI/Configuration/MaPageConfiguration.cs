@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace SFA.DAS.Employer.Shared.UI.Configuration
 {
     public class MaPageConfiguration

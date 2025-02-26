@@ -2,13 +2,14 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Employer.Shared.UI.Configuration
 {
-    public class MaRoutes
+    public static class MaRoutes
     {
         public static Dictionary<string, string> Accounts => new Dictionary<string, string>
         {
             { "AccountsTeamsView", "/accounts/{0}/teams/view" },
             { "Cookies", "/cookieConsent" },
             { "PrivacyV2", "/service/{0}/privacy" },
+            { "AccessibilityStatement", "/service/accessibility-statement" },
             { "AccountsAgreements", "/accounts/{0}/agreements" },
             { "AccountsFinance", "/accounts/{0}/finance" },
             { "AccountsSchemes", "/accounts/{0}/schemes" },
