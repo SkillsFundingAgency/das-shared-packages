@@ -8,7 +8,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart
     {
         [TestCase(CustomServiceRoleValueType.Code, null)]
         [TestCase(CustomServiceRoleValueType.Name ,"http://schemas.portal.com/displayname")]
-        public void Then_The_Properties_Are_Correctly_Returned(CustomServiceRoleValueType roleValue, string roleClaim)
+        public void Then_The_Properties_Are_Correctly_Returned(CustomServiceRoleValueType roleValue, string? roleClaim)
         {
             // arrange
             var customServiceRole = new Mock<ICustomServiceRole>();

@@ -18,21 +18,13 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.DfESignIn.Auth.Services
 {
-    internal class DfESignInService : IDfESignInService
+    internal class DfESignInService(
+        IOptions<DfEOidcConfiguration> configuration,
+        IApiHelper apiHelper,
+        ICustomServiceRole customServiceRole)
+        : IDfESignInService
     {
-        private readonly DfEOidcConfiguration _configuration;
-        private readonly IApiHelper _apiHelper;
-        private readonly ICustomServiceRole _customServiceRole;
-
-        public DfESignInService(
-            IOptions<DfEOidcConfiguration> configuration,
-            IApiHelper apiHelper,
-            ICustomServiceRole customServiceRole)
-        {
-            _configuration = configuration.Value;
-            _apiHelper = apiHelper;
-            _customServiceRole = customServiceRole;
-        }
+        private readonly DfEOidcConfiguration _configuration = configuration.Value;
 
         public async Task PopulateAccountClaims(TokenValidatedContext ctx)
         {
@@ -43,7 +35,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 
             if (userOrganisation != null && ctx.Principal != null)
             {
-                var userId = ctx.Principal.GetClaimValue(ClaimName.Sub);
+                var userId = ctx.Principal.GetClaimValue(ClaimTypes.NameIdentifier);
                 var ukPrn = userOrganisation.UkPrn?.ToString() ?? "0";
 
                 if (userId != null)
@@ -62,7 +54,7 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 
         private async Task PopulateDfEClaims(TokenValidatedContext ctx, string userId, string userOrgId)
         {
-            var response = await _apiHelper.Get<ApiServiceResponse>($"{_configuration.APIServiceUrl}/services/{_configuration.APIServiceId}/organisations/{userOrgId}/users/{userId}");
+            var response = await apiHelper.Get<ApiServiceResponse>($"{_configuration.APIServiceUrl}/services/{_configuration.APIServiceId}/organisations/{userOrgId}/users/{userId}");
 
             if (response != null)
             {
@@ -82,8 +74,8 @@ namespace SFA.DAS.DfESignIn.Auth.Services
                         .First()
                         .AddClaim(
                             new Claim(
-                                type: _customServiceRole.RoleClaimType ?? CustomClaimsIdentity.Service,
-                                value: _customServiceRole.RoleValueType.Equals(CustomServiceRoleValueType.Name)
+                                type: customServiceRole.RoleClaimType ?? CustomClaimsIdentity.Service,
+                                value: customServiceRole.RoleValueType.Equals(CustomServiceRoleValueType.Name)
                                     ? role.Name
                                     : role.Code));
                 }
