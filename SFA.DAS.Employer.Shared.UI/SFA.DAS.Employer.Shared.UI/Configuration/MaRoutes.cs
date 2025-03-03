@@ -76,5 +76,10 @@ namespace SFA.DAS.Employer.Shared.UI.Configuration
         {
             { "Dashboard", "/accounts/{0}/employer-requests/dashboard" }
         };
+        
+        public static Dictionary<string, string> Reservations => new Dictionary<string, string>()
+        {
+            { "Dashboard", "/accounts/{0}/reservations/manage" }
+        };
     }
 }
