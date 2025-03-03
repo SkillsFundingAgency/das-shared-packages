@@ -51,5 +51,9 @@ namespace SFA.DAS.Employer.Shared.UI
         {
             return $"https://requesttraining.{_environment}.{_domainPart}.gov.uk{route}";
         }
+        public string ReservationsLink(string route)
+        {
+            return $"https://securefunding.{_environment}.{_domainPart}.gov.uk{route}";
+        }
     }
 }

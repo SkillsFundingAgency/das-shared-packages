@@ -80,6 +80,13 @@ namespace SFA.DAS.Employer.Shared.UI
             return _generator.RequsestApprenticeshipTrainingLink(route);
         }
 
+        public string ReservationsLink(string routeName, params string[] args)
+        {
+            var route = MaRoutes.Reservations[routeName];
+            route = FormatRoute(route, args);
+            return _generator.ReservationsLink(route);
+        }
+
         private string FormatRoute(string route, params string[] args)
         {
             if (args != null && args.Length > 0)
