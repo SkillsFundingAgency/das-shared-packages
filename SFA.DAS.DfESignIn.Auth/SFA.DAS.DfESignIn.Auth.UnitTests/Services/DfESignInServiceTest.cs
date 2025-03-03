@@ -94,6 +94,7 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
                     new ClaimsIdentity(
                     new List<Claim>
                 {
+                    new(ClaimTypes.NameIdentifier, userId),
                     new(ClaimName.Sub, userId),
                     new(ClaimTypes.Email, emailAddress),
                     new(ClaimName.Organisation, JsonConvert.SerializeObject(organisation)),
