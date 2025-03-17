@@ -28,7 +28,8 @@
         <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.12" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.12" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.12" />
-        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.3.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.1.2" />
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.1.2" />
         <PackageReference Include="Microsoft.IdentityModel.KeyVaultExtensions" Version="7.7.1" />
     </ItemGroup>
 </Project>
