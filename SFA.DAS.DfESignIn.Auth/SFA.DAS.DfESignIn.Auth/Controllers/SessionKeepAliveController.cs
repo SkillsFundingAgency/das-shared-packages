@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace SFA.DAS.DfESignIn.Auth.Controllers
 {
     [Route("service/keepalive")]
-    public class SessionKeepAliveController() : Controller
+    public class SessionKeepAliveController : Controller
     {
         [HttpGet]
         public async Task<IActionResult> Index()
