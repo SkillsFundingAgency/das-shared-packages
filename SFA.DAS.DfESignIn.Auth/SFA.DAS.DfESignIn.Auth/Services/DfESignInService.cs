@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
@@ -7,12 +13,6 @@ using SFA.DAS.DfESignIn.Auth.Constants;
 using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.DfESignIn.Auth.Extensions;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("SFA.DAS.DfESignIn.Auth.UnitTests")]
 
@@ -36,9 +36,19 @@ namespace SFA.DAS.DfESignIn.Auth.Services
 
         public async Task PopulateAccountClaims(TokenValidatedContext ctx)
         {
-            var userOrganisation = JsonConvert.DeserializeObject<Organisation>
-            (
-                ctx.Principal.GetClaimValue(ClaimName.Organisation)
+            var organisationClaim = ctx.Principal.GetClaimValue(ClaimName.Organisation);
+            if (string.IsNullOrEmpty(organisationClaim))
+            {
+                return;
+            }
+
+            var userOrganisation = JsonConvert.DeserializeObject<Organisation>(
+                organisationClaim,
+                new JsonSerializerSettings 
+                { 
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore
+                }
             );
 
             if (userOrganisation != null && ctx.Principal != null)

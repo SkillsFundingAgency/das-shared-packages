@@ -1,7 +1,7 @@
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.DfESignIn.Auth.Helpers;
-using System.IO;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
