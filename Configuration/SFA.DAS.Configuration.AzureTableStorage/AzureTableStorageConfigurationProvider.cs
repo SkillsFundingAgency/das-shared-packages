@@ -12,7 +12,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
     public class AzureTableStorageConfigurationProvider : ConfigurationProvider
     {
         private const string ConfigurationTableName = "Configuration";
-        private const string ConfigurationTableRowKeyVersion = "1.0";
+        private readonly string _configurationTableRowKeyVersion;
 
         private readonly string _environmentName;
         private readonly IEnumerable<string> _configurationKeys;
@@ -20,19 +20,20 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         private readonly IEnumerable<string> _configurationKeysRawJsonResult;
         private readonly TableServiceClient _client;
 
-        public AzureTableStorageConfigurationProvider(TableServiceClient tableClient ,string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys, IEnumerable<string> configurationKeysRawJsonResult)
+        public AzureTableStorageConfigurationProvider(TableServiceClient tableClient ,string environmentName, IEnumerable<string> configurationKeys, bool prefixConfigurationKeys, IEnumerable<string> configurationKeysRawJsonResult, bool configurationNameIncludesVersionNumber)
         {
             _client = tableClient;
             _environmentName = environmentName;
             _configurationKeys = configurationKeys;
             _prefixConfigurationKeys = prefixConfigurationKeys;
             _configurationKeysRawJsonResult = configurationKeysRawJsonResult;
+            _configurationTableRowKeyVersion = configurationNameIncludesVersionNumber ? "" : "1.0";
         }
         
         public override void Load()
         {
             var tableClient = _client.GetTableClient(ConfigurationTableName);
-            var filter = $"PartitionKey eq '{_environmentName}' and (RowKey eq '{string.Join($"_{ConfigurationTableRowKeyVersion}' or RowKey eq '",_configurationKeys)}_{ConfigurationTableRowKeyVersion}')";
+            var filter = $"PartitionKey eq '{_environmentName}' and (RowKey eq '{string.Join($"_{_configurationTableRowKeyVersion}' or RowKey eq '",_configurationKeys)}_{_configurationTableRowKeyVersion}')";
             var table = tableClient.QueryAsync<TableEntity>(filter: filter);
             var data = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
