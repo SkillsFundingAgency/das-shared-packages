@@ -11,6 +11,7 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         internal readonly IEnumerable<string> ConfigurationKeys;
         internal readonly IEnumerable<string> ConfigurationKeysRawJsonResult;
         internal readonly bool PrefixConfigurationKeys;
+        internal readonly bool ConfigurationNameIncludesVersionNumber;
 
 
         public AzureTableStorageConfigurationSource(ConfigurationOptions configOptions)
@@ -20,11 +21,12 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             ConfigurationKeys = configOptions.ConfigurationKeys;
             PrefixConfigurationKeys = configOptions.PrefixConfigurationKeys;
             ConfigurationKeysRawJsonResult = configOptions.ConfigurationKeysRawJsonResult;
+            ConfigurationNameIncludesVersionNumber = configOptions.ConfigurationNameIncludesVersionNumber;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new AzureTableStorageConfigurationProvider( new TableServiceClient(ConnectionString), EnvironmentName, ConfigurationKeys, PrefixConfigurationKeys, ConfigurationKeysRawJsonResult);
+            return new AzureTableStorageConfigurationProvider( new TableServiceClient(ConnectionString), EnvironmentName, ConfigurationKeys, PrefixConfigurationKeys, ConfigurationKeysRawJsonResult, ConfigurationNameIncludesVersionNumber);
         }
     }
 }
