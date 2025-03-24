@@ -27,13 +27,13 @@ namespace SFA.DAS.Configuration.AzureTableStorage
             _configurationKeys = configurationKeys;
             _prefixConfigurationKeys = prefixConfigurationKeys;
             _configurationKeysRawJsonResult = configurationKeysRawJsonResult;
-            _configurationTableRowKeyVersion = configurationNameIncludesVersionNumber ? "" : "1.0";
+            _configurationTableRowKeyVersion = configurationNameIncludesVersionNumber ? "" : "_1.0";
         }
         
         public override void Load()
         {
             var tableClient = _client.GetTableClient(ConfigurationTableName);
-            var filter = $"PartitionKey eq '{_environmentName}' and (RowKey eq '{string.Join($"_{_configurationTableRowKeyVersion}' or RowKey eq '",_configurationKeys)}_{_configurationTableRowKeyVersion}')";
+            var filter = $"PartitionKey eq '{_environmentName}' and (RowKey eq '{string.Join($"{_configurationTableRowKeyVersion}' or RowKey eq '",_configurationKeys)}{_configurationTableRowKeyVersion}')";
             var table = tableClient.QueryAsync<TableEntity>(filter: filter);
             var data = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
