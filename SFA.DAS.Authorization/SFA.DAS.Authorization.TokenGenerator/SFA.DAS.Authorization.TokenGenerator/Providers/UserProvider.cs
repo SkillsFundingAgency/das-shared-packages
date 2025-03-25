@@ -88,7 +88,7 @@ internal class UserProvider
         var claims = new List<Claim>
         {
             serviceAccount.CreateClaim(x => x.Sub),
-            //serviceAccount.CreateClaim(x => x.ServiceAccountId),
+            serviceAccount.CreateClaim(x => x.ServiceAccountId),
             CreateExpiryClaim()
         };
 
