@@ -7,6 +7,6 @@ public class ServiceAccount
     [JsonPropertyName("sub")]
     public string? Sub { get; set; }
 
-    //[JsonPropertyName("serviceAccount")]
-    //public string? ServiceAccountId { get; set; }
+    [JsonPropertyName("serviceAccount")]
+    public string? ServiceAccountId { get; set; }
 }
