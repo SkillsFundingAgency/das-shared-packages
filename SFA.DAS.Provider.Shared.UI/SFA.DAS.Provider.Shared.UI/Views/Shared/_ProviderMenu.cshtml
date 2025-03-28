@@ -72,10 +72,10 @@
                             <a asp-external-controller="" asp-external-subdomain="recruit" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Recruit ? "das-navigation__link--current" : "")">Recruit apprentices</a>
                         </li>
                     }
-                    @if (!suppressed.Contains(NavigationSection.Employers))
+                    @if (!suppressed.Contains(NavigationSection.Relationships))
                     {
                         <li class="das-navigation__list-item">
-                            <a asp-external-controller="employers" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Employers ? "das-navigation__link--current" : "")">View employers and manage permissions</a>
+                            <a asp-external-controller="" asp-external-subdomain="relationships" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Relationships ? "das-navigation__link--current" : "")">View employers and manage permissions</a>
                         </li>
                     }
                 </ul>

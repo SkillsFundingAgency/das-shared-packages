@@ -7,6 +7,6 @@
         Reservations,
         ManageApprentices,
         Recruit,
-        Employers
+        Relationships
     }
 }
