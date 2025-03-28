@@ -75,7 +75,7 @@
                     @if (!suppressed.Contains(NavigationSection.Relationships))
                     {
                         <li class="das-navigation__list-item">
-                            <a asp-external-controller="employers" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Relationships ? "das-navigation__link--current" : "")">View employers and manage permissions</a>
+                            <a asp-external-controller="" asp-external-subdomain="relationships" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Relationships ? "das-navigation__link--current" : "")">View employers and manage permissions</a>
                         </li>
                     }
                 </ul>
