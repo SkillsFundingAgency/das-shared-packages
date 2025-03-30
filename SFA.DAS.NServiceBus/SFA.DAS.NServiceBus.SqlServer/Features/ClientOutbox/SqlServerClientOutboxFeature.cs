@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
 using NServiceBus.Features;
+using NServiceBus.ObjectBuilder;
 using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data;
 using SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks;
@@ -16,15 +18,19 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox
 
         protected override void Setup(FeatureConfigurationContext context)
         {
-            context.Container.ConfigureComponent<ClientOutboxCleaner>(DependencyLifecycle.InstancePerCall);
-            context.Container.ConfigureComponent<ClientOutboxPersister>(DependencyLifecycle.InstancePerCall);
-            context.Container.ConfigureComponent<ClientOutboxPersisterV2>(DependencyLifecycle.InstancePerCall);
-            context.Container.ConfigureComponent<DateTimeService>(DependencyLifecycle.InstancePerCall);
-            context.Container.ConfigureComponent(b => new TimerService(b.Build<IDateTimeService>(), Task.Delay), DependencyLifecycle.InstancePerCall);
-            
+            context.Services.AddTransient<ClientOutboxCleaner>();
+            context.Services.AddTransient<ClientOutboxPersister>();
+            context.Services.AddTransient<ClientOutboxPersisterV2>();
+            context.Services.AddTransient<DateTimeService>();
+            context.Services.AddTransient<TimerService>(provider =>
+            {
+                var dateTimeService = provider.GetRequiredService<IDateTimeService>();
+                return new TimerService(dateTimeService, Task.Delay);
+            });
+
             if (!context.Settings.GetOrDefault<bool>("Persistence.Sql.Outbox.DisableCleanup"))
             {
-                context.RegisterStartupTask(b => b.Build<ClientOutboxCleaner>());
+                context.RegisterStartupTask(b => b.GetService<ClientOutboxCleaner>());
             }
         }
     }
