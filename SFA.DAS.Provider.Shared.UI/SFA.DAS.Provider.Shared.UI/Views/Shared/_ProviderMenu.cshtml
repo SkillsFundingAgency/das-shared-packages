@@ -78,6 +78,12 @@
                             <a asp-external-controller="" asp-external-subdomain="relationships" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Relationships ? "das-navigation__link--current" : "")">View employers and manage permissions</a>
                         </li>
                     }
+                    @if (!suppressed.Contains(NavigationSection.StandardsAndTrainingVenues))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-controller="" asp-external-subdomain="roatp" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.StandardsAndTrainingVenues ? "das-navigation__link--current" : "")">Your standards and training venues</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>
