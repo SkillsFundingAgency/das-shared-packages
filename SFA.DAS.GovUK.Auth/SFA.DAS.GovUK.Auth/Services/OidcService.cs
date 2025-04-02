@@ -70,7 +70,7 @@ internal class OidcService : IOidcService
             new("redirect_uri", openIdConnectMessage?.RedirectUri ?? ""),
             new("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
             new("client_assertion", CreateJwtAssertion()),
-            new("code_verifier", openIdConnectMessage != null && openIdConnectMessage.Parameters.ContainsKey("code_verifier")?openIdConnectMessage?.Parameters["code_verifier"]:"")
+            new("code_verifier", openIdConnectMessage != null && openIdConnectMessage.Parameters.TryGetValue("code_verifier", out var codeVerifier) ? codeVerifier : "" )
         });
         
         httpRequestMessage.Content.Headers.Clear();
