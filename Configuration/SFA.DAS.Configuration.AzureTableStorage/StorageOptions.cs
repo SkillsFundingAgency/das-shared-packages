@@ -21,5 +21,6 @@ namespace SFA.DAS.Configuration.AzureTableStorage
         public string[] ConfigurationKeys { get; set; }
         public bool PreFixConfigurationKeys { get; set; } = true;
         public string[] ConfigurationKeysRawJsonResult { get ; set ; } = null;
+        public bool ConfigurationNameIncludesVersionNumber { get; set; } = false;
     }
 }
