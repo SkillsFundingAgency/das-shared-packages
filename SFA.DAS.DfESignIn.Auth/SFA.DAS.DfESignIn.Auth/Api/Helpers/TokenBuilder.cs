@@ -41,15 +41,12 @@ namespace SFA.DAS.DfESignIn.Auth.Api.Helpers
 
         private byte[] SignToken(byte[] key, byte[] bytesToSign)
         {
-            using (var algorithm = HMAC.Create(AuthConfig.Algorithm))
-            {
-                algorithm.Key = key;
-                return algorithm.ComputeHash(bytesToSign);
-            }
+            using var algorithm = new HMACSHA256(key);
+            return algorithm.ComputeHash(bytesToSign);
         }
         private string Base64Encode(byte[] stringInput)
         {
-            return Convert.ToBase64String(stringInput).Split(new[] { '=' })[0].Replace('+', '-').Replace('/', '_');
+            return Convert.ToBase64String(stringInput).Split(['='])[0].Replace('+', '-').Replace('/', '_');
         }
     }
 }
