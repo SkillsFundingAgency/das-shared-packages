@@ -109,7 +109,7 @@ namespace SFA.DAS.Configuration.UnitTests.AzureTableStorage
     public class TestableAzureTableStorageConfigurationProvider : AzureTableStorageConfigurationProvider
     {
         public TestableAzureTableStorageConfigurationProvider(TableServiceClient client, string environmentName, IEnumerable<string> configurationKeys, IEnumerable<string> rawConfigurationKeys, bool prefixConfigurationKeys = true)
-            : base(client, environmentName, configurationKeys, prefixConfigurationKeys,rawConfigurationKeys)
+            : base(client, environmentName, configurationKeys, prefixConfigurationKeys,rawConfigurationKeys, false)
         {
         } 
         

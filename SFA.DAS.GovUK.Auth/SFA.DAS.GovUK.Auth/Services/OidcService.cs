@@ -65,13 +65,14 @@ internal class OidcService : IOidcService
 
         httpRequestMessage.Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
         {
-            new KeyValuePair<string, string>("grant_type", "authorization_code"),
-            new KeyValuePair<string, string>("code", openIdConnectMessage?.Code ?? ""),
-            new KeyValuePair<string, string>("redirect_uri", openIdConnectMessage?.RedirectUri ?? ""),
-            new KeyValuePair<string, string>("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
-            new KeyValuePair<string, string>("client_assertion", CreateJwtAssertion()),
+            new("grant_type", "authorization_code"),
+            new("code", openIdConnectMessage?.Code ?? ""),
+            new("redirect_uri", openIdConnectMessage?.RedirectUri ?? ""),
+            new("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
+            new("client_assertion", CreateJwtAssertion()),
+            new("code_verifier", openIdConnectMessage != null && openIdConnectMessage.Parameters.TryGetValue("code_verifier", out var codeVerifier) ? codeVerifier : "" )
         });
-
+        
         httpRequestMessage.Content.Headers.Clear();
         httpRequestMessage.Content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 

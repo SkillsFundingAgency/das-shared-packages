@@ -58,8 +58,9 @@ public class WhenGettingToken
     }
 
     [Test, MoqAutoData]
-    public async Task Then_The_OpenIdConnectMessage_And_Client_Assertion_Are_Passed_As_Form_Encoded_Content(
+    public async Task Then_The_OpenIdConnectMessage_And_Client_Assertion_Are_Passed_As_Form_Encoded_Content_Along_With_The_CodeVerifier(
         string clientAssertion,
+        string codeVerifier,
         Token token,
         OpenIdConnectMessage openIdConnectMessage,
         GovUkOidcConfiguration config)
@@ -71,6 +72,7 @@ public class WhenGettingToken
             Content = new StringContent(JsonSerializer.Serialize(token)),
             StatusCode = HttpStatusCode.Accepted
         };
+        openIdConnectMessage.Parameters.Add("code_verifier", codeVerifier);
         
         var expectedUrl = new Uri($"{config.BaseUrl}/token");
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
@@ -102,6 +104,7 @@ public class WhenGettingToken
                     && c.Content.ReadAsStringAsync().Result.Contains($"redirect_uri={openIdConnectMessage.RedirectUri}", StringComparison.CurrentCultureIgnoreCase)
                     && c.Content.ReadAsStringAsync().Result.Contains($"code={openIdConnectMessage.Code}", StringComparison.CurrentCultureIgnoreCase)
                     && c.Content.ReadAsStringAsync().Result.Contains($"client_assertion={clientAssertion}", StringComparison.CurrentCultureIgnoreCase)
+                    && c.Content.ReadAsStringAsync().Result.Contains($"code_verifier={codeVerifier}", StringComparison.CurrentCultureIgnoreCase)
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );

@@ -12,6 +12,7 @@ namespace SFA.DAS.Configuration.TestHarness
                 .AddAzureTableStorage(o =>
                 {
                     o.EnvironmentNameEnvironmentVariableName = "";
+                    o.ConfigurationNameIncludesVersionNumber = false;
                     o.ConfigurationKeys = new[]
                     {
                         "DoesntExist"
