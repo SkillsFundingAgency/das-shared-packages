@@ -4,8 +4,8 @@
 @if (Context.User.Identity.IsAuthenticated)
 {
     var providerId = User.Identity.GetProviderId();
-    var selected = ViewData.SelectedNavigationSection();
     var suppressed = ViewData.SuppressedNavigationSections();
+    var selected = ViewData.SelectedNavigationSection();
 
     if (!ViewData.HiddenAccountHeader())
     {
