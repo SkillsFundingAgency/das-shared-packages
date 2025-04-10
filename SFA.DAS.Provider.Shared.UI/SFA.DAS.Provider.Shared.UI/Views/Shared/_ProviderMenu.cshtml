@@ -4,8 +4,8 @@
 @if (Context.User.Identity.IsAuthenticated)
 {
     var providerId = User.Identity.GetProviderId();
-    var selected = ViewData.SelectedNavigationSection();
     var suppressed = ViewData.SuppressedNavigationSections();
+    var selected = ViewData.SelectedNavigationSection();
 
     if (!ViewData.HiddenAccountHeader())
     {
@@ -15,7 +15,7 @@
                 <nav class="das-user-navigation" id="das-user-navigation">
                     <ul class="das-user-navigation__list">
                         <li class="das-user-navigation__list-item">
-                            <a asp-external-controller="" class="das-user-navigation__link">@Context.User.Identity.Name</a>
+                        <span class="das-user-navigation__text-item">@Context.User.Identity.Name</span>
                         </li>
                         <li class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
                             <a href="/" class="das-user-navigation__link">Settings</a>
@@ -76,6 +76,12 @@
                     {
                         <li class="das-navigation__list-item">
                             <a asp-external-controller="" asp-external-subdomain="relationships" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Relationships ? "das-navigation__link--current" : "")">View employers and manage permissions</a>
+                        </li>
+                    }
+                    @if (!suppressed.Contains(NavigationSection.StandardsAndTrainingVenues))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-controller="review-your-details" asp-external-subdomain="roatp" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.StandardsAndTrainingVenues ? "das-navigation__link--current" : "")">Your standards and training venues</a>
                         </li>
                     }
                 </ul>

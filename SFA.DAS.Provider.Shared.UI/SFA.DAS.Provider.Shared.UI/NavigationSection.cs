@@ -7,6 +7,7 @@
         Reservations,
         ManageApprentices,
         Recruit,
-        Relationships
+        Relationships,
+        StandardsAndTrainingVenues
     }
 }
