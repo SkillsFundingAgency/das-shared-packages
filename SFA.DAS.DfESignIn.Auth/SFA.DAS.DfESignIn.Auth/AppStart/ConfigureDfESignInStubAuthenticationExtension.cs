@@ -1,7 +1,7 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 using SFA.DAS.DfESignIn.Auth.Enums;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart

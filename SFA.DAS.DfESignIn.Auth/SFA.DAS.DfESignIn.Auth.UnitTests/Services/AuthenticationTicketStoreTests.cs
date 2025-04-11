@@ -1,12 +1,12 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Moq;
-using SFA.DAS.Testing.AutoFixture;
-using FluentAssertions;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Services;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.Services
 {
