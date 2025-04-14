@@ -16,8 +16,7 @@ builder.Services
     {
         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
     })
-    .SetDefaultNavigationSection(NavigationSection.YourCohorts)
-    .SetDfESignInConfiguration(true);
+    .SetDefaultNavigationSection(NavigationSection.YourCohorts);
 
 var app = builder.Build();
 
