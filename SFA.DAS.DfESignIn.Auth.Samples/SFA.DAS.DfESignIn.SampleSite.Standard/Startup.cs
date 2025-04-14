@@ -19,11 +19,11 @@ namespace SFA.DAS.DfESignIn.SampleSite.Standard
         {
             _configuration = configuration;
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = _configuration.BuildConfiguration();
-            
+
             services.AddServiceRegistration(configuration);
 
             services
@@ -31,8 +31,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.Standard
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 })
-                .SetDefaultNavigationSection(NavigationSection.YourCohorts)
-                .SetDfESignInConfiguration(true);
+                .SetDefaultNavigationSection(NavigationSection.YourCohorts);
         }
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
