@@ -147,6 +147,12 @@
         <script src="/libs/jquery/jquery.min.js"></script>
         <script src="/js/das-all.js"></script>
         <script src="/js/app.min.js"></script>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <script src="/js/sessionTimeout.js"></script>
+        }
+        
         <script nws-csp-add-nonce="true">
             window.DASFrontend.initAll();
         </script>

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace SFA.DAS.DfESignIn.Auth.Interfaces
 {
