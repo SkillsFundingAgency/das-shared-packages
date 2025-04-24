@@ -29,7 +29,7 @@ namespace SFA.DAS.UnitOfWork.Sample.Web.Startup
                 .AddEntityFramework()
                 .AddEntityFrameworkUnitOfWork<SampleDbContext>()
                 .AddNServiceBusClientUnitOfWork()
-                .AddMvc();
+                .AddMvc(options=> options.EnableEndpointRouting = false);
         }
 
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
