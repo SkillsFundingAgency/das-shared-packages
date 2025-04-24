@@ -11,7 +11,7 @@
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.1.2" />
         <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="7.1.2" />
         <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.1.2" />
-        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.39" />
+        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.48" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
     </ItemGroup>
 
