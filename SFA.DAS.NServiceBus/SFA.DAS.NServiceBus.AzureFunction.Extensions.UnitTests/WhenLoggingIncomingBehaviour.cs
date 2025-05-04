@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NServiceBus.Pipeline;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Common;
+using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus.Persistence.Sql;
 using SFA.DAS.NServiceBus.Features.ClientOutbox.Data;
@@ -30,7 +31,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
             Connection.Dispose();
         }
 
-        public void OnSaveChanges(Func<ISqlStorageSession, Task> callback)
+        public void OnSaveChanges(Func<ISqlStorageSession, CancellationToken, Task> callback)
         {
             throw new NotImplementedException();
         }
