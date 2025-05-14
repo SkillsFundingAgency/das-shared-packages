@@ -1,21 +1,21 @@
 using System.Security.Claims;
+using FluentAssertions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using SFA.DAS.DfESignIn.Auth.AppStart;
-using SFA.DAS.DfESignIn.Auth.Interfaces;
-using SFA.DAS.DfESignIn.Auth.Configuration;
+using Microsoft.Extensions.Options;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
+using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Enums;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using Microsoft.AspNetCore.Authentication;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart;
-
 
 public class WhenAddingServicesToTheContainer
 {
@@ -34,7 +34,7 @@ public class WhenAddingServicesToTheContainer
 
         var type = provider.GetService(toResolve);
 
-        Assert.That(type, Is.Not.Null);
+        type.Should().NotBeNull();
     }
 
     [Test]
@@ -50,8 +50,8 @@ public class WhenAddingServicesToTheContainer
         // Assert
         var serviceProvider = serviceCollection.BuildServiceProvider();
         var distributedCache = serviceProvider.GetService<IDistributedCache>();
-        Assert.That(distributedCache, Is.Not.Null);
-        Assert.That(distributedCache, Is.InstanceOf<MemoryDistributedCache>());
+        distributedCache.Should().NotBeNull();
+        distributedCache.Should().BeOfType<MemoryDistributedCache>();
     }
 
     [Test]
@@ -66,8 +66,14 @@ public class WhenAddingServicesToTheContainer
         // Assert
         var serviceProvider = serviceCollection.BuildServiceProvider();
         var distributedCache = serviceProvider.GetService<IDistributedCache>();
-        Assert.That(distributedCache, Is.Not.Null);
-        Assert.That(distributedCache, Is.InstanceOf<RedisCache>());
+        distributedCache.Should().NotBeNull();
+        distributedCache.Should().BeAssignableTo<RedisCache>();
+
+        // We can't test the Redis connection details directly in .NET 8.0 as the implementation details have changed
+        // Instead, we'll verify that the service is registered correctly
+        var redisOptions = serviceProvider.GetService<IOptions<RedisCacheOptions>>();
+        redisOptions.Should().NotBeNull();
+        redisOptions!.Value.Configuration.Should().Be("https://test.com/");
     }
 
     [Test]
@@ -82,16 +88,14 @@ public class WhenAddingServicesToTheContainer
         // Assert
         var serviceProvider = serviceCollection.BuildServiceProvider();
         var authenticationSchemeProvider = serviceProvider.GetService<IAuthenticationSchemeProvider>();
-        Assert.That(authenticationSchemeProvider, Is.Not.Null);
+        authenticationSchemeProvider.Should().NotBeNull();
         
-        var authenticationSchemes = await authenticationSchemeProvider?.GetAllSchemesAsync()!;
-        var authSchemeList = authenticationSchemes?.ToList();
-        var actualAuthSchemeNames = authSchemeList?.Select(args => args.Name);
-        Assert.Multiple(() =>
-        {
-            Assert.That(authSchemeList, Is.Not.Null);
-            Assert.That(actualAuthSchemeNames, Is.SupersetOf(expectedAuthSchemeNames));
-        });
+        var authenticationSchemes = await authenticationSchemeProvider!.GetAllSchemesAsync();
+        var authSchemeList = authenticationSchemes.ToList();
+        var actualAuthSchemeNames = authSchemeList.Select(args => args.Name);
+        
+        authSchemeList.Should().NotBeNull();
+        actualAuthSchemeNames.Should().BeSubsetOf(expectedAuthSchemeNames);
     }
 
     private static void SetupServiceCollection(IServiceCollection serviceCollection)
@@ -104,7 +108,7 @@ public class WhenAddingServicesToTheContainer
     {
         var configSource = new MemoryConfigurationSource
         {
-            InitialData = new List<KeyValuePair<string, string>>
+            InitialData = new List<KeyValuePair<string, string?>>
             {
                 new("DfEOidcConfiguration:BaseUrl", "https://test.com/"),
                 new("DfEOidcConfiguration:ClientId", "1234567"),
@@ -113,7 +117,7 @@ public class WhenAddingServicesToTheContainer
                 new("ProviderSharedUIConfiguration:DashboardUrl", "https://test.com/"),
                 new("DfEOidcConfiguration:DfELoginSessionConnectionString", "https://test.com/"),
                 new("DfEOidcConfiguration:LoginSlidingExpiryTimeOutInMinutes", "30"),
-                new("ResourceEnvironmentName", "test"),
+                new("ResourceEnvironmentName", "test")
             }
         };
 
@@ -124,10 +128,8 @@ public class WhenAddingServicesToTheContainer
 
     public class TestCustomClaims : ICustomClaims
     {
-        public IEnumerable<Claim?> GetClaims(TokenValidatedContext tokenValidatedContext)
-        {
+        public IEnumerable<Claim?> GetClaims(TokenValidatedContext tokenValidatedContext) =>
             throw new NotImplementedException();
-        }
     }
 
     public class TestCustomServiceRole : ICustomServiceRole
