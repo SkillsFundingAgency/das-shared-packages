@@ -1,18 +1,18 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using SFA.DAS.DfESignIn.Auth.Api.Client;
-using SFA.DAS.DfESignIn.Auth.Api.Helpers;
-using SFA.DAS.DfESignIn.Auth.Configuration;
-using SFA.DAS.DfESignIn.Auth.Interfaces;
-using SFA.DAS.DfESignIn.Auth.Services;
 using System;
 using System.Linq;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using SFA.DAS.DfESignIn.Auth.Api.Client;
+using SFA.DAS.DfESignIn.Auth.Api.Helpers;
+using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Enums;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
+using SFA.DAS.DfESignIn.Auth.Services;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -37,13 +37,8 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             }
             
             services.AddOptions();
-#if NETSTANDARD2_0
-            services.Configure<DfEOidcConfiguration>(options => configuration.GetSection(nameof(DfEOidcConfiguration)).Bind(options));
-            services.Configure<DfEOidcConfiguration>(options => configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{configName}").Bind(options));
-#else 
             services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
             services.Configure<DfEOidcConfiguration>(configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{configName}"));
-#endif
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
             services.AddTransient(typeof(ICustomServiceRole), customServiceRole);
@@ -61,11 +56,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             var connection = configuration.GetSection(nameof(DfEOidcConfiguration)).Get<DfEOidcConfiguration>();
             if (string.IsNullOrEmpty(connection.DfELoginSessionConnectionString))
             {
-#if NETSTANDARD2_0
-                services.AddMemoryCache();
-#else
                 services.AddDistributedMemoryCache();
-#endif
             }
             else
             {

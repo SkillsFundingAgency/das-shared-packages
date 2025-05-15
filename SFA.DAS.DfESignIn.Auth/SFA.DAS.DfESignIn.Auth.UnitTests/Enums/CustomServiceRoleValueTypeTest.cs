@@ -1,11 +1,4 @@
-﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SFA.DAS.DfESignIn.Auth.Enums;
-using SFA.DAS.DfESignIn.Auth.Interfaces;
+﻿using SFA.DAS.DfESignIn.Auth.Enums;
 
 namespace SFA.DAS.DfESignIn.Auth.UnitTests.Enums
 {
