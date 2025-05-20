@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using FluentAssertions;
 
 namespace SFA.DAS.Testing.PackageScanning;
@@ -19,14 +20,13 @@ public static class PackageChecker
     {
         var scanResult = GetVulnerableAndDeprecatedPackages(directory);
 
-        Console.WriteLine(scanResult.VulnerablePackageResults);
-        Console.WriteLine(scanResult.DeprecatedPackageResults);
-
         foreach (var packageResult in scanResult.VulnerablePackageResults)
-            HasFailure(packageResult).Should().BeFalse();
+            HasFailure(packageResult).Should().BeFalse($"{packageResult}{Environment.NewLine}{BuildFullResults(scanResult)}");
 
         foreach (var packageResult in scanResult.DeprecatedPackageResults)
-            HasFailure(packageResult).Should().BeFalse();
+            HasFailure(packageResult).Should().BeFalse($"{packageResult}{Environment.NewLine}{BuildFullResults(scanResult)}");
+
+        Console.Write(BuildFullResults(scanResult));
     }
 
     /// <summary>
@@ -82,5 +82,19 @@ public static class PackageChecker
     private static bool HasFailure(string packageResult)
     {
         return packageResult.Contains("has the following");
+    }
+
+    private static string BuildFullResults(PackageScanResult scanResult)
+    {
+        var fullResults = new StringBuilder();
+
+        fullResults.AppendLine("Full scan results:");
+
+        foreach (var packageResult in scanResult.VulnerablePackageResults)
+            fullResults.AppendLine(packageResult);
+        foreach (var packageResult in scanResult.DeprecatedPackageResults)
+            fullResults.AppendLine(packageResult);
+
+        return fullResults.ToString();
     }
 }
