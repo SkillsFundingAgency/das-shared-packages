@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <LangVersion>latest</LangVersion>
+      <TargetFramework>net8.0</TargetFramework>
+      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+      <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
+      <Description>Tools for scanning for vulnerable and deprecated packages from with tests.</Description>
+      <License>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</License>
+      <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages/tree/master/SFA.DAS.Testing</PackageProjectUrl>
+      <EmbedUntrackedSources>false</EmbedUntrackedSources>
+      <IncludeSymbols>true</IncludeSymbols>
+      <PublishRepositoryUrl>true</PublishRepositoryUrl>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+  </ItemGroup>
+
+</Project>
