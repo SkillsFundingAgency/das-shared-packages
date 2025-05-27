@@ -18,6 +18,7 @@ namespace SFA.DAS.GovUK.Auth.Authentication
         {
             _configuration = configuration;
         }
+
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AccountActiveRequirement requirement)
         {
             HttpContext currentContext;

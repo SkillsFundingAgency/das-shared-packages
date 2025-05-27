@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -48,16 +49,31 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
     {
         var token = await HttpContext.GetTokenAsync("access_token");
         var details = await oidcService.GetAccountDetails(token);
-        
-        return View("GetAccountDetails", details.Email);
+
+        return Content(JsonSerializer.Serialize(details), "application/json");
     }
+    
     [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
     [HttpGet]
     public IActionResult IsActive()
     {
         return View();
     }
-    
+
+    [Authorize(Policy = nameof(PolicyNames.IsVerified))]
+    [HttpGet]
+    public IActionResult GetVerifiedAccountDetails()
+    {
+        return RedirectToAction(nameof(GetAccountDetails));
+    }
+
+    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
+    [HttpGet]
+    public IActionResult NotVerified()
+    {
+        return View();
+    }
+
     [HttpGet]
     [Route("sign-out", Name = "SignOut")]
     public async Task<IActionResult> SigningOut()

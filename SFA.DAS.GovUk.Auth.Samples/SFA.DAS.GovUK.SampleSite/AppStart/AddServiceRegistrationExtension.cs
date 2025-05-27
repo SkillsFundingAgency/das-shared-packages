@@ -15,6 +15,7 @@ public static class AddServiceRegistrationExtension
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
         services.AddAndConfigureGovUkAuthentication(configuration, new AuthRedirects
             {
+                NotVerifiedRedirectUrl = "/home/NotVerified",
                 LoginRedirect = "/home/AccountDetails"
             }, typeof(CustomClaims));
         
@@ -32,6 +33,11 @@ public static class AddServiceRegistrationExtension
                     policy.Requirements.Add(new AccountActiveRequirement());
                     policy.RequireAuthenticatedUser();
                 });
+            options.AddPolicy(PolicyNames.IsVerified, p =>
+            {
+                p.RequireAuthenticatedUser();
+                p.AddRequirements(new VerifiedIdentityRequirement());
+            });
         });
     }
 }

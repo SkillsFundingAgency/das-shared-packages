@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -13,15 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
-using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Services;
-using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
     internal static class ConfigureGovUkAuthenticationExtension
     {
-        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain)
+        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string notVerifiedUrl, string cookieDomain)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -34,10 +29,12 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 {
                     var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
 
+                    var baseUrl = govUkConfiguration["BaseUrl"];
                     var disable2Fa = govUkConfiguration["Disable2Fa"] != null && govUkConfiguration["Disable2Fa"].Equals( "true", StringComparison.CurrentCultureIgnoreCase);
-                    
+                    var enableVerify = govUkConfiguration["EnableVerify"] != null && govUkConfiguration["EnableVerify"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
+
                     options.ClientId = govUkConfiguration["ClientId"];
-                    options.MetadataAddress = $"{govUkConfiguration["BaseUrl"]}/.well-known/openid-configuration";
+                    options.MetadataAddress = $"{baseUrl}/.well-known/openid-configuration";
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                     options.SignedOutRedirectUri = "/";
@@ -56,27 +53,67 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                     options.Events.OnRemoteFailure = c =>
                     {
-                        if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
+                        var isVerification =
+                            c.Properties?.Items.TryGetValue("isVerification", out var flag) == true
+                            && string.Equals(flag, true.ToString(), StringComparison.OrdinalIgnoreCase);
+
+                        if (isVerification)
                         {
-                            c.Response.Redirect("/");
+                            c.Response.Redirect(notVerifiedUrl);
                             c.HandleResponse();
+                        }
+                        else
+                        {
+                            if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
+                            {
+                                c.Response.Redirect("/");
+                                c.HandleResponse();
+                            }
                         }
 
                         return Task.CompletedTask;
                     };
 
-                    options.Events.OnRedirectToIdentityProvider = c =>
+                    options.Events.OnRedirectToIdentityProvider = async c =>
                     {
-                        var stringVector = JsonSerializer.Serialize(new List<string>
+                        if (enableVerify)
+                        {
+                            var props = c.Properties?.Items ?? new Dictionary<string, string>();
+                            var vtr = props.TryGetValue("vtr", out var raw) ? JsonSerializer.Deserialize<string[]>(raw) : ["Cl.Cm"];
+                            var claims = props.TryGetValue("claims", out var cRaw) ? JsonSerializer.Deserialize<Dictionary<string, object>>(cRaw) : null;
+
+                            var reqSvc = c.HttpContext.RequestServices.GetRequiredService<IOidcRequestObjectService>();
+                            var jwt = await reqSvc.BuildRequestJwtAsync(
+                                baseUrl,
+                                options.ClientId, 
+                                c.ProtocolMessage.RedirectUri!, 
+                                string.Join(" ", options.Scope), 
+                                c.ProtocolMessage.State!, 
+                                c.ProtocolMessage.Nonce!, 
+                                vtr, 
+                                claims);
+
+                            c.ProtocolMessage.SetParameter("request", jwt);
+                            c.ProtocolMessage.Scope = null;
+                            c.ProtocolMessage.ClientId = null;
+                            c.ProtocolMessage.ResponseType = null;
+                            c.ProtocolMessage.RedirectUri = null;
+                            c.ProtocolMessage.Parameters.Clear();
+                        }
+                        else
+                        {
+                            var stringVector = JsonSerializer.Serialize(new List<string>
                             {
                                 disable2Fa ? "Cl" : "Cl.Cm"
                             });
-                        if (c.ProtocolMessage.Parameters.ContainsKey("vtr"))
-                        {
-                            c.ProtocolMessage.Parameters.Remove("vtr");
+
+                            if (c.ProtocolMessage.Parameters.ContainsKey("vtr"))
+                            {
+                                c.ProtocolMessage.Parameters.Remove("vtr");
+                            }
+
+                            c.ProtocolMessage.Parameters.Add("vtr", stringVector);
                         }
-                        c.ProtocolMessage.Parameters.Add("vtr",stringVector);
-                        return Task.CompletedTask;
                     };
                 })
                 .AddCookie(options =>
