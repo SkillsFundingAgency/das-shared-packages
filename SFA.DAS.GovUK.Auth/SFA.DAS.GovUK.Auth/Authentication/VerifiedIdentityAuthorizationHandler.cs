@@ -27,15 +27,19 @@ namespace SFA.DAS.GovUK.Auth.Authentication
             if (currentContext != null)
             {
                 var isVerified = context.User.FindFirst("vtr")?.Value?.Contains("Cl.Cm.P2") == true;
-                if (!isVerified)
+                if (isVerified)
                 {
-                    var originalUrl =  currentContext.Request.Path + currentContext.Request.QueryString;
-                    var target = $"/verify-identity?returnUrl={Uri.EscapeDataString(originalUrl)}";
+                    context.Succeed(req);
+                }
+                else
+                {
+                    var originalUrl = currentContext.Request.Path + currentContext.Request.QueryString;
+                    var target = $"/service/verify-identity?returnUrl={Uri.EscapeDataString(originalUrl)}";
                     currentContext.Response.Redirect(target);
+                    context.Fail();
                 }
             }
-            
-            context.Succeed(req);
+
             return Task.CompletedTask;
         }
     }

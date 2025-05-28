@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.GovUK.Auth.AppStart;
-using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.SampleSite.AppStart;
@@ -14,30 +13,10 @@ public static class AddServiceRegistrationExtension
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
         services.AddAndConfigureGovUkAuthentication(configuration, new AuthRedirects
-            {
-                NotVerifiedRedirectUrl = "/home/NotVerified",
-                LoginRedirect = "/home/AccountDetails"
-            }, typeof(CustomClaims));
-        
-        services.AddAuthorization(options =>
         {
-            options.AddPolicy(
-                PolicyNames.IsAuthenticated, policy =>
-                {
-                    policy.Requirements.Add(new AccountActiveRequirement());
-                    policy.RequireAuthenticatedUser();
-                });
-            options.AddPolicy(
-                PolicyNames.IsActiveAccount, policy =>
-                {
-                    policy.Requirements.Add(new AccountActiveRequirement());
-                    policy.RequireAuthenticatedUser();
-                });
-            options.AddPolicy(PolicyNames.IsVerified, p =>
-            {
-                p.RequireAuthenticatedUser();
-                p.AddRequirements(new VerifiedIdentityRequirement());
-            });
-        });
+            NotVerifiedRedirectUrl = "/home/NotVerified",
+            LoginRedirect = "/home/AccountDetails"
+        }, typeof(CustomClaims));
+        services.AddGovUkAuthorization();
     }
 }

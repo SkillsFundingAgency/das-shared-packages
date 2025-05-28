@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace SFA.DAS.GovUK.Auth.Services
 {
@@ -9,6 +8,7 @@ namespace SFA.DAS.GovUK.Auth.Services
         Task<string> BuildRequestJwtAsync(
             string baseUrl,
             string clientId,
+            string responseType,
             string redirectUri,
             string scopes,
             string state,

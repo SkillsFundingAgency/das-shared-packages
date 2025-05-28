@@ -1,5 +1,7 @@
-﻿using Microsoft.IdentityModel.KeyVaultExtensions;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Tokens;
+using SFA.DAS.GovUK.Auth.Configuration;
 
 namespace SFA.DAS.GovUK.Auth.Services
 {
@@ -7,9 +9,10 @@ namespace SFA.DAS.GovUK.Auth.Services
     {
         private readonly SigningCredentials _cached;
 
-        public AzureKeyVaultSigningCredentialsProvider(string keyIdentifier, IAzureIdentityService identityService)
+        public AzureKeyVaultSigningCredentialsProvider(IOptions<GovUkOidcConfiguration> options, IAzureIdentityService identityService)
         {
-            var key = new KeyVaultSecurityKey(keyIdentifier, identityService.AuthenticationCallback);
+            var config = options.Value;
+            var key = new KeyVaultSecurityKey(config.KeyVaultIdentifier, identityService.AuthenticationCallback);
             _cached = new SigningCredentials(key, SecurityAlgorithms.RsaSha256)
             {
                 CryptoProviderFactory = new CryptoProviderFactory { CustomCryptoProvider = new CustomKeyVaultCryptoProvider() }

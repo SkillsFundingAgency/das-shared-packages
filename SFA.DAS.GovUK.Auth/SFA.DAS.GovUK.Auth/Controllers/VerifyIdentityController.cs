@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 
+[assembly: Microsoft.AspNetCore.Mvc.ApplicationParts.ProvideApplicationPartFactory(
+    typeof(Microsoft.AspNetCore.Mvc.ApplicationParts.CompiledRazorAssemblyApplicationPartFactory))]
+
 namespace SFA.DAS.GovUK.Auth.Controllers
 {
+
     [Route("service/verify-identity")]
     public class VerifyIdentityController : Controller
     {

@@ -11,13 +11,14 @@ namespace SFA.DAS.GovUK.Auth.Services
         private readonly ISigningCredentialsProvider _signingProvider;
 
         public OidcRequestObjectService(ISigningCredentialsProvider signingProvider, IConfiguration configuration)
-        { 
+        {
             _signingProvider = signingProvider;
         }
 
         public Task<string> BuildRequestJwtAsync(
             string baseUrl,
             string clientId,
+            string responseType,
             string redirectUri,
             string scopes,
             string state,
@@ -27,23 +28,23 @@ namespace SFA.DAS.GovUK.Auth.Services
         {
             var now = DateTimeOffset.UtcNow;
             var payload = new JwtPayload
-            {
-                {"aud", $"{baseUrl}/authorize"},
-                {"iss", clientId},
-                {"client_id", clientId},
-                {"response_type", "code"},
-                {"redirect_uri", redirectUri},
-                {"scope", scopes},
-                {"state", state},
-                {"nonce", nonce},
-                {"ui_locales", "en"},
-                {"vtr", vtr},
-                {"exp", now.AddMinutes(5).ToUnixTimeSeconds()},
-                {"iat", now.ToUnixTimeSeconds()},
-                {"nbf", now.ToUnixTimeSeconds()},
-                {"jti", Guid.NewGuid().ToString()}
-            };
-            
+        {
+            {"aud", $"{baseUrl}/authorize"},
+            {"iss", clientId},
+            {"client_id", clientId},
+            {"response_type", responseType},
+            {"redirect_uri", redirectUri},
+            {"scope", scopes},
+            {"state", state},
+            {"nonce", nonce},
+            {"ui_locales", "en"},
+            {"vtr", vtr},
+            {"exp", now.AddMinutes(5).ToUnixTimeSeconds()},
+            {"iat", now.ToUnixTimeSeconds()},
+            {"nbf", now.ToUnixTimeSeconds()},
+            {"jti", Guid.NewGuid().ToString()}
+        };
+
             if (claims != null)
             {
                 payload.Add("claims", claims);

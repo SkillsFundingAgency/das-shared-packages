@@ -31,8 +31,6 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                     var baseUrl = govUkConfiguration["BaseUrl"];
                     var disable2Fa = govUkConfiguration["Disable2Fa"] != null && govUkConfiguration["Disable2Fa"].Equals( "true", StringComparison.CurrentCultureIgnoreCase);
-                    var enableVerify = govUkConfiguration["EnableVerify"] != null && govUkConfiguration["EnableVerify"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
-
                     options.ClientId = govUkConfiguration["ClientId"];
                     options.MetadataAddress = $"{baseUrl}/.well-known/openid-configuration";
                     options.ResponseType = "code";
@@ -76,29 +74,38 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                     options.Events.OnRedirectToIdentityProvider = async c =>
                     {
-                        if (enableVerify)
+                        var isVerification =
+                            c.Properties?.Items.TryGetValue("isVerification", out var flag) == true &&
+                            bool.TryParse(flag, out var f) && f;
+
+                        if (isVerification)
                         {
                             var props = c.Properties?.Items ?? new Dictionary<string, string>();
                             var vtr = props.TryGetValue("vtr", out var raw) ? JsonSerializer.Deserialize<string[]>(raw) : ["Cl.Cm"];
                             var claims = props.TryGetValue("claims", out var cRaw) ? JsonSerializer.Deserialize<Dictionary<string, object>>(cRaw) : null;
 
+                            var state = c.Options.StateDataFormat.Protect(c.Properties);
+
+                            var responseType = "code";
+                            var scope = string.Join(" ", options.Scope);
+
                             var reqSvc = c.HttpContext.RequestServices.GetRequiredService<IOidcRequestObjectService>();
                             var jwt = await reqSvc.BuildRequestJwtAsync(
                                 baseUrl,
                                 options.ClientId, 
-                                c.ProtocolMessage.RedirectUri!, 
-                                string.Join(" ", options.Scope), 
-                                c.ProtocolMessage.State!, 
+                                responseType,
+                                c.ProtocolMessage.RedirectUri!,
+                                scope,
+                                state, 
                                 c.ProtocolMessage.Nonce!, 
                                 vtr, 
                                 claims);
 
-                            c.ProtocolMessage.SetParameter("request", jwt);
-                            c.ProtocolMessage.Scope = null;
-                            c.ProtocolMessage.ClientId = null;
-                            c.ProtocolMessage.ResponseType = null;
-                            c.ProtocolMessage.RedirectUri = null;
                             c.ProtocolMessage.Parameters.Clear();
+                            c.ProtocolMessage.ResponseType = responseType;
+                            c.ProtocolMessage.Scope = scope;
+                            c.ProtocolMessage.ClientId = options.ClientId;
+                            c.ProtocolMessage.SetParameter("request", jwt);
                         }
                         else
                         {
