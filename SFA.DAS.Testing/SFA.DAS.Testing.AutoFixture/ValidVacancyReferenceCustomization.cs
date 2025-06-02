@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System;
+using AutoFixture;
 using SFA.DAS.Common.Domain.Models;
 
 namespace SFA.DAS.Testing.AutoFixture
@@ -7,7 +8,9 @@ namespace SFA.DAS.Testing.AutoFixture
     {
         public void Customize(IFixture fixture)
         {
-            fixture.Register(() => new VacancyReference("VAC1234567890"));
+            var random = new Random();
+            string number = random.Next(1000000000, int.MaxValue).ToString()[..10];
+            fixture.Register(() => new VacancyReference($"VAC{number}"));
         }
     }
 }
