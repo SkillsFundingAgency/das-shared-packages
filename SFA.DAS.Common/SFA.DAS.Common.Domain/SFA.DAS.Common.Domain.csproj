@@ -14,5 +14,10 @@
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-shared-packages</RepositoryUrl>
     <PackageTags>Esfa;Das;</PackageTags>
     <PackageReleaseNotes>Added support for .NetStandard2.0</PackageReleaseNotes>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
 </Project>
