@@ -6,7 +6,13 @@ using System.Runtime.InteropServices;
 
 namespace SFA.DAS.Common.Domain.Models
 {
-    public class InvalidVacancyReferenceException(string vacancyReference) : Exception($"The value '{vacancyReference}' is not a valid Vacancy Reference");
+    public class InvalidVacancyReferenceException : Exception
+    {
+        public InvalidVacancyReferenceException(string vacancyReference) : base($"The value '{vacancyReference}' is not a valid Vacancy Reference")
+        {
+
+        }
+    }
 
     [JsonConverter(typeof(VacancyReferenceJsonConverter))]
     [StructLayout(LayoutKind.Auto)]
@@ -16,11 +22,12 @@ namespace SFA.DAS.Common.Domain.Models
     {
         private bool IsNone => Value == 0;
 
-        public static readonly VacancyReference None = new(string.Empty);
-        public long Value { get; } = 0L;
+        public static readonly VacancyReference None = new VacancyReference(string.Empty);
+        public long Value { get; }
 
-        public VacancyReference(string? value)
+        public VacancyReference(string value)
         {
+            Value = 0L;
             if (string.IsNullOrWhiteSpace(value))
             {
                 return;
@@ -37,13 +44,16 @@ namespace SFA.DAS.Common.Domain.Models
 
         public VacancyReference(long? vacancyReference)
         {
+            Value = 0L;
             switch (vacancyReference)
             {
                 case null:
                     return;
-                case < 1:
-                    throw new InvalidVacancyReferenceException($"{vacancyReference}");
                 default:
+                    if (vacancyReference < 1)
+                    {
+                        throw new InvalidVacancyReferenceException($"{vacancyReference}");
+                    }
                     Value = vacancyReference.Value;
                     break;
             }
@@ -56,7 +66,7 @@ namespace SFA.DAS.Common.Domain.Models
                 return true;
             }
 
-            return left?.Equals(right) ?? right!.Value.Equals(left);
+            return left?.Equals(right) ?? right.Value.Equals(left);
         }
 
         public static bool operator !=(VacancyReference? left, VacancyReference? right)
@@ -69,17 +79,23 @@ namespace SFA.DAS.Common.Domain.Models
             return Value.GetHashCode();
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
-            return obj switch
+            switch (obj)
             {
-                null when IsNone => true,
-                null => false,
-                VacancyReference vacancyReference => Value == vacancyReference.Value,
-                long value => value == Value,
-                string value => IsNone && (this.ToString() == value || this.ToShortString() == value),
-                _ => false
-            };
+                case null when IsNone:
+                    return true;
+                case null:
+                    return false;
+                case VacancyReference vacancyReference:
+                    return Value == vacancyReference.Value;
+                case long value:
+                    return value == Value;
+                case string value:
+                    return IsNone && (this.ToString() == value || this.ToShortString() == value);
+                default:
+                    return false;
+            }
         }
 
         public bool Equals(VacancyReference other)
@@ -92,7 +108,7 @@ namespace SFA.DAS.Common.Domain.Models
             return Value == other;
         }
 
-        public bool Equals(string? other)
+        public bool Equals(string other)
         {
             return IsNone && other is null || (this.ToString() == other || this.ToShortString() == other);
         }
@@ -116,12 +132,12 @@ namespace SFA.DAS.Common.Domain.Models
             return value is null ? None : new VacancyReference(value.Value);
         }
 
-        public static implicit operator VacancyReference(string? value)
+        public static implicit operator VacancyReference(string value)
         {
             return value is null ? None : new VacancyReference(value);
         }
 
-        public static VacancyReference Parse(string value, IFormatProvider? provider)
+        public static VacancyReference Parse(string value, IFormatProvider provider)
         {
             if (TryParse(value, provider, out var result))
             {
@@ -131,7 +147,7 @@ namespace SFA.DAS.Common.Domain.Models
             throw new InvalidVacancyReferenceException(value);
         }
 
-        public static bool TryParse(string? value, IFormatProvider? provider, out VacancyReference result)
+        public static bool TryParse(string value, IFormatProvider provider, out VacancyReference result)
         {
             if (value is null)
             {
@@ -151,7 +167,7 @@ namespace SFA.DAS.Common.Domain.Models
             }
         }
 
-        public static bool TryParse(string? value, out VacancyReference result)
+        public static bool TryParse(string value, out VacancyReference result)
         {
             return TryParse(value, CultureInfo.CurrentCulture, out result);
         }

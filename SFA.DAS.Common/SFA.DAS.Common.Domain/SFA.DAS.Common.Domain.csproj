@@ -14,7 +14,6 @@
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-shared-packages</RepositoryUrl>
     <PackageTags>Esfa;Das;</PackageTags>
     <PackageReleaseNotes>Added support for .NetStandard2.0</PackageReleaseNotes>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
