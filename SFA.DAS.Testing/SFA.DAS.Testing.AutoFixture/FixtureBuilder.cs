@@ -11,6 +11,8 @@ public static class FixtureBuilder
         var fixture = new Fixture();
         fixture
             .Customize(new AutoMoqCustomization { ConfigureMembers = true });
+        fixture
+            .Customize(new ValidVacancyReferenceCustomization());
 
         return fixture;
     }
