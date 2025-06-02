@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.36105.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Common.Domain", "SFA.DAS.Common.Domain\SFA.DAS.Common.Domain.csproj", "{4AFA4D2B-FCC7-44AC-BFE9-AE50EC18BCA9}"
 EndProject
