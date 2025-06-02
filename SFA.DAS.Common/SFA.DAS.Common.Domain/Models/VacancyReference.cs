@@ -23,7 +23,7 @@ namespace SFA.DAS.Common.Domain.Models
         private bool IsNone => Value == 0;
 
         public static readonly VacancyReference None = new VacancyReference(string.Empty);
-        public long Value { get; }
+        private long Value { get; }
 
         public VacancyReference(string value)
         {
