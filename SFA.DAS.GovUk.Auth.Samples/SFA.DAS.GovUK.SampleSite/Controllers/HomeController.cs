@@ -67,6 +67,26 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
         return RedirectToAction(nameof(GetAccountDetails));
     }
 
+    [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
+    public IActionResult Explanation()
+    {
+        return View();
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetVerified()
+    {
+        return RedirectToAction(nameof(Verify));
+    }
+
+    [Authorize(Policy = nameof(PolicyNames.IsVerified))]
+    [HttpGet]
+    public IActionResult Verify()
+    {
+        return RedirectToAction(nameof(GetAccountDetails));
+    }
+
     [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
     [HttpGet]
     public IActionResult NotVerified()

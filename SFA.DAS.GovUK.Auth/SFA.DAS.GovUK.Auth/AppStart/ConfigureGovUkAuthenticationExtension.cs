@@ -1,7 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +32,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
 
                     var baseUrl = govUkConfiguration["BaseUrl"];
-                    var disable2Fa = govUkConfiguration["Disable2Fa"] != null && govUkConfiguration["Disable2Fa"].Equals( "true", StringComparison.CurrentCultureIgnoreCase);
+                    var disable2Fa = govUkConfiguration["Disable2Fa"] != null && govUkConfiguration["Disable2Fa"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
                     options.ClientId = govUkConfiguration["ClientId"];
                     options.MetadataAddress = $"{baseUrl}/.well-known/openid-configuration";
                     options.ResponseType = "code";
@@ -85,27 +87,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                             var claims = props.TryGetValue("claims", out var cRaw) ? JsonSerializer.Deserialize<Dictionary<string, object>>(cRaw) : null;
 
                             var state = c.Options.StateDataFormat.Protect(c.Properties);
-
-                            var responseType = "code";
-                            var scope = string.Join(" ", options.Scope);
-
-                            var reqSvc = c.HttpContext.RequestServices.GetRequiredService<IOidcRequestObjectService>();
-                            var jwt = await reqSvc.BuildRequestJwtAsync(
-                                baseUrl,
-                                options.ClientId, 
-                                responseType,
-                                c.ProtocolMessage.RedirectUri!,
-                                scope,
-                                state, 
-                                c.ProtocolMessage.Nonce!, 
-                                vtr, 
-                                claims);
-
-                            c.ProtocolMessage.Parameters.Clear();
-                            c.ProtocolMessage.ResponseType = responseType;
-                            c.ProtocolMessage.Scope = scope;
-                            c.ProtocolMessage.ClientId = options.ClientId;
-                            c.ProtocolMessage.SetParameter("request", jwt);
+                            c.ProtocolMessage.State = state;
+                            c.ProtocolMessage.Parameters.Add("vtr", JsonSerializer.Serialize(vtr));
+                            c.ProtocolMessage.Parameters.Add("claims", JsonSerializer.Serialize(claims));
                         }
                         else
                         {
@@ -126,7 +110,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 .AddCookie(options =>
                 {
                     options.AccessDeniedPath = new PathString("/error/403");
-                    
+
                     options.Cookie.Name = GovUkConstants.AuthCookieName;
                     if (!string.IsNullOrEmpty(cookieDomain))
                     {
@@ -134,12 +118,12 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     }
                     options.Cookie.IsEssential = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    
+
                     options.Cookie.SameSite = SameSiteMode.Lax;
                     options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
                     options.LogoutPath = "/home/signed-out";
-                })
-                ;
+                });
+
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
                 .Configure<IOidcService, IAzureIdentityService, ICustomClaims, GovUkOidcConfiguration, ITicketStore>(
@@ -157,14 +141,23 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                             SaveSigninToken = true,
                             ValidIssuer = govUkConfiguration.BaseUrl + "/"
                         };
+
                         options.Events.OnAuthorizationCodeReceived = async (ctx) =>
                         {
                             var token = await oidcService.GetToken(ctx.TokenEndpointRequest);
                             if (token?.AccessToken!=null && token.IdToken !=null)
                             {
+                                // Store tokens in AuthenticationProperties
+                                ctx.Properties.StoreTokens(new[]
+                                {
+                                    new AuthenticationToken { Name = "access_token", Value = token.AccessToken },
+                                    new AuthenticationToken { Name = "id_token", Value = token.IdToken },
+                                });
+
                                 ctx.HandleCodeRedemption(token.AccessToken, token.IdToken);
                             }
                         };
+
                         options.Events.OnSignedOutCallbackRedirect = c =>
                         {
                             c.Response.Cookies.Delete(GovUkConstants.AuthCookieName);
@@ -172,8 +165,13 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                             c.HandleResponse();
                             return Task.CompletedTask;
                         };
-                        options.Events.OnTokenValidated = async ctx => await oidcService.PopulateAccountClaims(ctx);
+
+                        options.Events.OnTokenValidated = async ctx =>
+                        {
+                            await oidcService.PopulateAccountClaims(ctx);
+                        };
                     });
+
             services
                 .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
                 .Configure<ITicketStore, GovUkOidcConfiguration>((options, ticketStore, config) =>
@@ -181,8 +179,35 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(config.LoginSlidingExpiryTimeOutInMinutes);
                     options.SlidingExpiration = true;
                     options.SessionStore = ticketStore;
+
+                    var baseEvents = options.Events ?? new CookieAuthenticationEvents();
+
+                    baseEvents.OnValidatePrincipal = async ctx =>
+                    {
+                        var isVerification =
+                                ctx.Properties?.Items.TryGetValue("isVerification", out var flag) == true &&
+                                    bool.TryParse(flag, out var f) && f;
+
+                        if (isVerification)
+                        {
+                            var identity = (ClaimsIdentity)ctx.Principal.Identity;
+
+                            if (!identity.HasClaim(c => c.Type == "custom_vot"))
+                            {
+                                identity.AddClaim(new Claim("custom_vot", "P2"));
+                            }
+
+                            if (ctx.Properties.Items.TryGetValue("custom.session-id", out var sessionId))
+                            {
+                                var updatedTicket = new AuthenticationTicket(ctx.Principal, ctx.Properties, ctx.Scheme.Name);
+                                await ticketStore.RenewAsync(sessionId, updatedTicket);
+                                ctx.ShouldRenew = true;
+                            }
+                        }
+                    };
+
+                    options.Events = baseEvents;
                 });
-            
         }
     }
 }

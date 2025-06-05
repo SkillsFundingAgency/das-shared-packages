@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.Authentication
 {
     public class VerifiedIdentityAuthorizationHandler : AuthorizationHandler<VerifiedIdentityRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, VerifiedIdentityRequirement req)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, VerifiedIdentityRequirement req)
         {
             HttpContext currentContext;
             switch (context.Resource)
@@ -26,21 +28,19 @@ namespace SFA.DAS.GovUK.Auth.Authentication
 
             if (currentContext != null)
             {
-                var isVerified = context.User.FindFirst("vtr")?.Value?.Contains("Cl.Cm.P2") == true;
-                if (isVerified)
+                var custom_vot = currentContext.User.Claims.FirstOrDefault(c => c.Type == "custom_vot")?.Value;
+                if (!string.IsNullOrEmpty(custom_vot) && custom_vot == "P2")
                 {
+
                     context.Succeed(req);
-                }
-                else
-                {
-                    var originalUrl = currentContext.Request.Path + currentContext.Request.QueryString;
-                    var target = $"/service/verify-identity?returnUrl={Uri.EscapeDataString(originalUrl)}";
-                    currentContext.Response.Redirect(target);
-                    context.Fail();
+                    return;
                 }
             }
 
-            return Task.CompletedTask;
+            var originalUrl = currentContext.Request.Path + currentContext.Request.QueryString;
+            var target = $"/service/verify-identity?returnUrl={Uri.EscapeDataString(originalUrl)}";
+            currentContext.Response.Redirect(target);
+            context.Fail();
         }
     }
 }

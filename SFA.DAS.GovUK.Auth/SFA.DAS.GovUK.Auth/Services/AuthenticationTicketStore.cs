@@ -21,22 +21,40 @@ namespace SFA.DAS.GovUK.Auth.Services
         public async Task<string> StoreAsync(AuthenticationTicket ticket)
         {
             var key = Guid.NewGuid().ToString();
-            await _distributedCache.SetAsync(key,TicketSerializer.Default.Serialize(ticket), new DistributedCacheEntryOptions
+
+            ticket.Properties.Items["custom.session-id"] = key;
+
+            var data = TicketSerializer.Default.Serialize(ticket);
+
+            await _distributedCache.SetAsync(key, data, new DistributedCacheEntryOptions
             {
-                SlidingExpiration =  TimeSpan.FromMinutes(_configuration.LoginSlidingExpiryTimeOutInMinutes)
+                SlidingExpiration = TimeSpan.FromMinutes(_configuration.LoginSlidingExpiryTimeOutInMinutes)
             });
+
             return key;
         }
 
         public async Task RenewAsync(string key, AuthenticationTicket ticket)
         {
-            await _distributedCache.RefreshAsync(key);
+            ticket.Properties.Items["custom.session-id"] = key;
+
+            var data = TicketSerializer.Default.Serialize(ticket);
+
+            await _distributedCache.SetAsync(key, data, new DistributedCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(_configuration.LoginSlidingExpiryTimeOutInMinutes)
+            });
         }
 
         public async Task<AuthenticationTicket> RetrieveAsync(string key)
         {
             var result = await _distributedCache.GetAsync(key);
-            return result == null ? null : TicketSerializer.Default.Deserialize(result);
+            if (result == null) return null;
+
+            var ticket = TicketSerializer.Default.Deserialize(result);
+            ticket.Properties.Items["custom.session-id"] = key; 
+
+            return ticket;
         }
 
         public async Task RemoveAsync(string key)
