@@ -8,7 +8,7 @@ namespace SFA.DAS.AcademicYearService
         {
             var (startYear, finishYear) = ConvertAcademicYear(academicYear);
 
-            return date >= new DateTime(startYear, 7, 1) && date < new DateTime(finishYear, 7, 1);
+            return date >= new DateTime(startYear, 8, 1) && date < new DateTime(finishYear, 8, 1);
         }
 
         private static (int, int) ConvertAcademicYear(int academicYears)
