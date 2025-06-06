@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Description>Helper to validate academic year checks</Description>
+    <Authors>ESFA</Authors>
+    <Company>ESFA</Company>
+    <License>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</License>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>false</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Version>1.0.0</Version>
+    <LangVersion>latestmajor</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+</Project>
