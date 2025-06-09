@@ -1,32 +1,42 @@
 ﻿using System;
 
-namespace SFA.DAS.AcademicYearService
+namespace SFA.DAS.AcademicYearService;
+public static class AcademicYearHelper
 {
-    public static class AcademicYearHelper
+    public static bool IsInAcademicYear(this DateTime date, int academicYear)
     {
-        public static bool IsInAcademicYear(this DateTime date, int academicYear)
-        {
-            var (startYear, finishYear) = ConvertAcademicYear(academicYear);
+        if (!ConvertAcademicYear(academicYear, out var startYear, out var finishYear))
+            return false;
 
-            return date >= new DateTime(startYear, 8, 1) && date < new DateTime(finishYear, 8, 1);
+        return date >= new DateTime(startYear, 8, 1) && date < new DateTime(finishYear, 8, 1);
+    }
+
+    public static bool IsValidAcademicYear(this int academicYear)
+    {
+        return ConvertAcademicYear(academicYear, out _, out _);
+    }
+
+    private static bool ConvertAcademicYear(int academicYears, out int startYear, out int finishYear)
+    {
+        startYear = academicYears / 100 + 2000;
+        finishYear = academicYears % 100 + 2000;
+
+        if (academicYears <= 0 || academicYears > 9999)
+        {
+            return false;
         }
 
-        private static (int, int) ConvertAcademicYear(int academicYears)
+        if (startYear + 1 == finishYear)
         {
-            if (academicYears < 2000 || academicYears > 3000)
-            {
-                throw new ArgumentException($"Invalid academic years {academicYears}");
-            }
-
-            int firstAcademicYear = academicYears / 100;
-            int secondAcademicYear = academicYears % 100;
-
-            if(firstAcademicYear + 1 != secondAcademicYear)
-            {
-                throw new ArgumentException($"Invalid academic years {academicYears}");
-            }
-
-            return (2000 + firstAcademicYear, 2000 + secondAcademicYear);
+            return true;
         }
+
+        if (startYear == 2099 && finishYear == 2000)
+        {
+            finishYear = 2100;
+            return true;
+        }
+
+        return false;
     }
 }

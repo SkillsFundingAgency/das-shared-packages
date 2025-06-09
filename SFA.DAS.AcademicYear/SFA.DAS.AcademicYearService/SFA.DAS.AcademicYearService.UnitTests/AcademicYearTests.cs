@@ -3,6 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 
 namespace SFA.DAS.AcademicYearService.UnitTests;
+
 public class AcademicYearTests
 {
     [TestCaseSource(typeof(ValidAcademicYearCases))]
@@ -13,15 +14,15 @@ public class AcademicYearTests
     public void DateShouldNotBeWithinAcademicYear(DateTime date, int academicYear)
         => date.IsInAcademicYear(academicYear).Should().BeFalse();
 
-
-    [TestCase(2524)]
-    [TestCase(2024)]
-    [TestCase(1999)]
-    [TestCase(1999)]
-    public void ShouldThrowExceptionForInvalidAcademicYear(int academicYear)
-    {
-        Action action = () => DateTime.Today.IsInAcademicYear(academicYear);
-        action.Should().Throw<ArgumentException>()
-            .WithMessage($"Invalid academic years {academicYear}");
-    }
+    [TestCase(0001, true)]
+    [TestCase(0100, false)]
+    [TestCase(2523, false)]
+    [TestCase(2324, true)]
+    [TestCase(9900, true)]
+    [TestCase(0099, false)]
+    [TestCase(0000, false)]
+    [TestCase(-1, false)]
+    [TestCase(10001, false)]
+    public void FormatOfAcademicYearCheck(int academicYear, bool isValid)
+        => academicYear.IsValidAcademicYear().Should().Be(isValid);
 }
