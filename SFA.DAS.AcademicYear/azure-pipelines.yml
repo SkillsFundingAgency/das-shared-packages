@@ -1,0 +1,38 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.AcademicYear
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+    - pipeline-templates
+    - SFA.DAS.AcademicYear
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/3.0.11
+    endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../pipeline-templates/job/code-build.yml
+    parameters:
+      WorkingDirectory: SFA.DAS.AcademicYear
+      DotNetStandardPackagesToPack: SFA.DAS.AcademicYear/SFA.DAS.AcademicYearService/SFA.DAS.AcademicYearService/SFA.DAS.AcademicYearService.csproj
+      SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.AcademicYearService
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
