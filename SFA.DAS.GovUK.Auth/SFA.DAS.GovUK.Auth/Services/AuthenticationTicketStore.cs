@@ -13,6 +13,8 @@ namespace SFA.DAS.GovUK.Auth.Services
         private readonly IDistributedCache _distributedCache;
         private readonly GovUkOidcConfiguration _configuration;
 
+        public const string SessionId = "authentication.session-id";
+
         public AuthenticationTicketStore(IDistributedCache distributedCache, IOptions<GovUkOidcConfiguration> configuration)
         {
             _distributedCache = distributedCache;
@@ -21,8 +23,7 @@ namespace SFA.DAS.GovUK.Auth.Services
         public async Task<string> StoreAsync(AuthenticationTicket ticket)
         {
             var key = Guid.NewGuid().ToString();
-
-            ticket.Properties.Items["custom.session-id"] = key;
+            ticket.Properties.Items[SessionId] = key;
 
             var data = TicketSerializer.Default.Serialize(ticket);
 
@@ -36,7 +37,7 @@ namespace SFA.DAS.GovUK.Auth.Services
 
         public async Task RenewAsync(string key, AuthenticationTicket ticket)
         {
-            ticket.Properties.Items["custom.session-id"] = key;
+            ticket.Properties.Items[SessionId] = key;
 
             var data = TicketSerializer.Default.Serialize(ticket);
 
@@ -52,7 +53,7 @@ namespace SFA.DAS.GovUK.Auth.Services
             if (result == null) return null;
 
             var ticket = TicketSerializer.Default.Deserialize(result);
-            ticket.Properties.Items["custom.session-id"] = key; 
+            ticket.Properties.Items[SessionId] = key; 
 
             return ticket;
         }

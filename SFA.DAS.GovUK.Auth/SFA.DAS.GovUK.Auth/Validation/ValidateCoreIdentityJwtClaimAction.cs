@@ -36,12 +36,6 @@ namespace SFA.DAS.GovUK.Auth.Validation
             }
 
             identity.AddClaim(new Claim(ClaimType, token!, valueType: "JSON"));
-
-            var vc = coreIdentityPrincipal.FindFirstValue("vc");
-            if (vc is not null)
-            {
-                identity.AddClaim(new Claim("vc", vc, valueType: "JSON"));
-            }
         }
     }
 }

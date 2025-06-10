@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -187,7 +185,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         {
                             var token = await oidcService.GetToken(ctx.TokenEndpointRequest);
                             if (token?.AccessToken != null && token.IdToken != null)
-                            {
+                            {   
                                 ctx.Properties.StoreTokens(new[]
                                 {
                                     new AuthenticationToken { Name = "access_token", Value = token.AccessToken },
@@ -228,17 +226,21 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         if (EnableVerify(govUkOidcConfiguration, ctx.Properties))
                         {
                             var identity = (ClaimsIdentity)ctx.Principal.Identity;
-
-                            if (!identity.HasClaim(c => c.Type == "enableVerify"))
+                            if (identity.HasClaim(c => c.Type == UserInfoClaims.CoreIdentityJWT.GetDescription()))
                             {
-                                identity.AddClaim(new Claim("enableVerify", "success"));
-                            }
+                                var existingVot = identity.FindFirst("vot");
+                                if (existingVot != null && !existingVot.Value.Contains("P2"))
+                                {
+                                    identity.RemoveClaim(existingVot);
+                                    identity.AddClaim(new Claim("vot", "Cl.Cm.P2"));
 
-                            if (ctx.Properties.Items.TryGetValue("custom.session-id", out var sessionId))
-                            {
-                                var updatedTicket = new AuthenticationTicket(ctx.Principal, ctx.Properties, ctx.Scheme.Name);
-                                await ticketStore.RenewAsync(sessionId, updatedTicket);
-                                ctx.ShouldRenew = true;
+                                    if (ctx.Properties.Items.TryGetValue(AuthenticationTicketStore.SessionId, out var sessionId))
+                                    {
+                                        var updatedTicket = new AuthenticationTicket(ctx.Principal, ctx.Properties, ctx.Scheme.Name);
+                                        await ticketStore.RenewAsync(sessionId, updatedTicket);
+                                        ctx.ShouldRenew = true;
+                                    }
+                                }
                             }
                         }
                     };

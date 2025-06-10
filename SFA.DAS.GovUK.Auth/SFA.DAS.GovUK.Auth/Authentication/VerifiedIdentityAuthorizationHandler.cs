@@ -28,10 +28,9 @@ namespace SFA.DAS.GovUK.Auth.Authentication
 
             if (currentContext != null)
             {
-                var enableVerify = currentContext.User.Claims.FirstOrDefault(c => c.Type == "enableVerify")?.Value;
-                if (!string.IsNullOrEmpty(enableVerify) && enableVerify == "success")
+                var vot = currentContext.User.Claims.FirstOrDefault(c => c.Type == "vot")?.Value;
+                if (!string.IsNullOrEmpty(vot) && vot.Contains("P2"))
                 {
-
                     context.Succeed(req);
                     return;
                 }
