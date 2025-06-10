@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,9 +12,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.KeyVaultExtensions;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
+using SFA.DAS.GovUK.Auth.Extensions;
+using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
+using SFA.DAS.GovUK.Auth.Validation;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
@@ -27,86 +33,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                     sharedOptions.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                }).AddOpenIdConnect(options =>
-                {
-                    var govUkConfiguration = configuration.GetSection(nameof(GovUkOidcConfiguration));
-
-                    var baseUrl = govUkConfiguration["BaseUrl"];
-                    var disable2Fa = govUkConfiguration["Disable2Fa"] != null && govUkConfiguration["Disable2Fa"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
-                    options.ClientId = govUkConfiguration["ClientId"];
-                    options.MetadataAddress = $"{baseUrl}/.well-known/openid-configuration";
-                    options.ResponseType = "code";
-                    options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
-                    options.SignedOutRedirectUri = "/";
-                    options.SignedOutCallbackPath = "/signed-out";
-                    options.CallbackPath = "/sign-in";
-                    options.ResponseMode = string.Empty;
-
-                    options.SaveTokens = true;
-
-                    var scopes = "openid email phone".Split(' ');
-                    options.Scope.Clear();
-                    foreach (var scope in scopes)
-                    {
-                        options.Scope.Add(scope);
-                    }
-
-                    options.Events.OnRemoteFailure = c =>
-                    {
-                        var isVerification =
-                            c.Properties?.Items.TryGetValue("isVerification", out var flag) == true
-                            && string.Equals(flag, true.ToString(), StringComparison.OrdinalIgnoreCase);
-
-                        if (isVerification)
-                        {
-                            c.Response.Redirect(notVerifiedUrl);
-                            c.HandleResponse();
-                        }
-                        else
-                        {
-                            if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
-                            {
-                                c.Response.Redirect("/");
-                                c.HandleResponse();
-                            }
-                        }
-
-                        return Task.CompletedTask;
-                    };
-
-                    options.Events.OnRedirectToIdentityProvider = async c =>
-                    {
-                        var isVerification =
-                            c.Properties?.Items.TryGetValue("isVerification", out var flag) == true &&
-                            bool.TryParse(flag, out var f) && f;
-
-                        if (isVerification)
-                        {
-                            var props = c.Properties?.Items ?? new Dictionary<string, string>();
-                            var vtr = props.TryGetValue("vtr", out var raw) ? JsonSerializer.Deserialize<string[]>(raw) : ["Cl.Cm"];
-                            var claims = props.TryGetValue("claims", out var cRaw) ? JsonSerializer.Deserialize<Dictionary<string, object>>(cRaw) : null;
-
-                            var state = c.Options.StateDataFormat.Protect(c.Properties);
-                            c.ProtocolMessage.State = state;
-                            c.ProtocolMessage.Parameters.Add("vtr", JsonSerializer.Serialize(vtr));
-                            c.ProtocolMessage.Parameters.Add("claims", JsonSerializer.Serialize(claims));
-                        }
-                        else
-                        {
-                            var stringVector = JsonSerializer.Serialize(new List<string>
-                            {
-                                disable2Fa ? "Cl" : "Cl.Cm"
-                            });
-
-                            if (c.ProtocolMessage.Parameters.ContainsKey("vtr"))
-                            {
-                                c.ProtocolMessage.Parameters.Remove("vtr");
-                            }
-
-                            c.ProtocolMessage.Parameters.Add("vtr", stringVector);
-                        }
-                    };
                 })
+                .AddOpenIdConnect()
                 .AddCookie(options =>
                 {
                     options.AccessDeniedPath = new PathString("/error/403");
@@ -126,28 +54,140 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-                .Configure<IOidcService, IAzureIdentityService, ICustomClaims, GovUkOidcConfiguration, ITicketStore>(
-                    (options, oidcService, azureIdentityService, customClaims, config, ticketStore) =>
+                .Configure<GovUkOidcConfiguration, ICoreIdentityHelper, ValidateCoreIdentityJwtClaimAction>(
+                    (options, govUkOidcConfiguration, coreIdentityHelper, validateCoreIdentityJwtClaimAction) =>
                     {
-                        var govUkConfiguration =config;
+                        var baseUrl = govUkOidcConfiguration.BaseUrl;
+                        options.ClientId = govUkOidcConfiguration.ClientId;
+                        options.MetadataAddress = OneLoginUrlHelper.GetMetadataAddress(baseUrl);
+                        options.ResponseType = "code";
+                        options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
+                        options.SignedOutRedirectUri = "/";
+                        options.SignedOutCallbackPath = "/signed-out";
+                        options.CallbackPath = "/sign-in";
+                        options.ResponseMode = string.Empty;
+                        options.SaveTokens = true;
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                        options.ClaimActions.Add(validateCoreIdentityJwtClaimAction);
+
+                        var scopes = "openid email phone".Split(' ');
+                        options.Scope.Clear();
+                        foreach (var scope in scopes)
+                        {
+                            options.Scope.Add(scope);
+                        }
+
+                        options.Events.OnRemoteFailure = c =>
+                        {
+                            if (EnableVerify(govUkOidcConfiguration, c.Properties))
+                            {
+                                c.Response.Redirect(notVerifiedUrl);
+                                c.HandleResponse();
+                            }
+                            else
+                            {
+                                if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
+                                {
+                                    c.Response.Redirect("/");
+                                    c.HandleResponse();
+                                }
+                            }
+
+                            return Task.CompletedTask;
+                        };
+
+                        options.Events.OnRedirectToIdentityProvider = async c =>
+                        {
+                            var disable2Fa = Disable2Fa(govUkOidcConfiguration);
+                            var enableVerify = EnableVerify(govUkOidcConfiguration, c.Properties);
+
+                            var vtr = disable2Fa ? "Cl" : "Cl.Cm";
+                            var stringVtr = JsonSerializer.Serialize(new List<string>
+                            {
+                                enableVerify ? vtr + ".P2" : vtr
+                            });
+
+                            if (c.ProtocolMessage.Parameters.ContainsKey("vtr"))
+                            {
+                                c.ProtocolMessage.Parameters.Remove("vtr");
+                            }
+
+                            c.ProtocolMessage.Parameters.Add("vtr", stringVtr);
+
+                            if (enableVerify)
+                            {
+                                var userInfoClaimKeys = govUkOidcConfiguration.RequestedUserInfoClaims
+                                    .Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                                var claims = new Dictionary<string, Dictionary<string, object>>
+                                {
+                                    ["userinfo"] = new Dictionary<string, object>()
+                                };
+
+                                foreach (var key in userInfoClaimKeys)
+                                {
+                                    if (Enum.TryParse<UserInfoClaims>(key, out var enumValue))
+                                    {
+                                        var description = enumValue.GetDescription();
+                                        if (!string.IsNullOrEmpty(description))
+                                        {
+                                            claims["userinfo"][description] = null;
+                                        }
+                                    }
+                                }
+
+                                c.ProtocolMessage.Parameters.Add("claims", JsonSerializer.Serialize(claims));
+                            }
+
+                            if (c.ProtocolMessage.State == null)
+                            {
+                                c.ProtocolMessage.State = c.Options.StateDataFormat.Protect(c.Properties);
+                            }
+                        };
+
+                        options.Events.OnTokenResponseReceived = async ctx =>
+                        {
+                            if (ctx.TokenEndpointResponse.IdToken is string idToken)
+                            {
+                                ctx.Properties?.StoreTokens(
+                                [
+                                    new AuthenticationToken
+                                    {
+                                        Name = OpenIdConnectParameterNames.IdToken,
+                                        Value = idToken
+                                    }
+                                ]);
+                            }
+
+                            if(EnableVerify(govUkOidcConfiguration, ctx.Properties))
+                            {
+                                await coreIdentityHelper.EnsureDidDocument();
+                            }
+                        };
+                    });
+
+            services
+                .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
+                .Configure<GovUkOidcConfiguration, IOidcService, IAzureIdentityService, ICustomClaims, ITicketStore>(
+                    (options, govUkOidcConfiguration, oidcService, azureIdentityService, customClaims, ticketStore) =>
+                    {
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             AuthenticationType = "private_key_jwt",
-                            IssuerSigningKey = new KeyVaultSecurityKey(govUkConfiguration.KeyVaultIdentifier,
+                            IssuerSigningKey = new KeyVaultSecurityKey(govUkOidcConfiguration.KeyVaultIdentifier,
                                 azureIdentityService.AuthenticationCallback),
                             ValidateIssuerSigningKey = true,
                             ValidateIssuer = true,
                             ValidateAudience = true,
                             SaveSigninToken = true,
-                            ValidIssuer = govUkConfiguration.BaseUrl + "/"
+                            ValidIssuer = OneLoginUrlHelper.GetCoreIdentityClaimIssuer(govUkOidcConfiguration.BaseUrl)
                         };
 
                         options.Events.OnAuthorizationCodeReceived = async (ctx) =>
                         {
                             var token = await oidcService.GetToken(ctx.TokenEndpointRequest);
-                            if (token?.AccessToken!=null && token.IdToken !=null)
+                            if (token?.AccessToken != null && token.IdToken != null)
                             {
-                                // Store tokens in AuthenticationProperties
                                 ctx.Properties.StoreTokens(new[]
                                 {
                                     new AuthenticationToken { Name = "access_token", Value = token.AccessToken },
@@ -174,9 +214,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             services
                 .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-                .Configure<ITicketStore, GovUkOidcConfiguration>((options, ticketStore, config) =>
+                .Configure<GovUkOidcConfiguration, ITicketStore>(
+                    (options, govUkOidcConfiguration, ticketStore) =>
                 {
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(config.LoginSlidingExpiryTimeOutInMinutes);
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(govUkOidcConfiguration.LoginSlidingExpiryTimeOutInMinutes);
                     options.SlidingExpiration = true;
                     options.SessionStore = ticketStore;
 
@@ -184,17 +225,13 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                     baseEvents.OnValidatePrincipal = async ctx =>
                     {
-                        var isVerification =
-                                ctx.Properties?.Items.TryGetValue("isVerification", out var flag) == true &&
-                                    bool.TryParse(flag, out var f) && f;
-
-                        if (isVerification)
+                        if (EnableVerify(govUkOidcConfiguration, ctx.Properties))
                         {
                             var identity = (ClaimsIdentity)ctx.Principal.Identity;
 
-                            if (!identity.HasClaim(c => c.Type == "custom_vot"))
+                            if (!identity.HasClaim(c => c.Type == "enableVerify"))
                             {
-                                identity.AddClaim(new Claim("custom_vot", "P2"));
+                                identity.AddClaim(new Claim("enableVerify", "success"));
                             }
 
                             if (ctx.Properties.Items.TryGetValue("custom.session-id", out var sessionId))
@@ -208,6 +245,25 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                     options.Events = baseEvents;
                 });
+        }
+
+        internal static bool EnableVerify(GovUkOidcConfiguration govUkOidcConfiguration, AuthenticationProperties authenticationProperties)
+        {
+            var enabledByConfig = govUkOidcConfiguration.EnableVerify != null && 
+                govUkOidcConfiguration.EnableVerify.Equals("true", StringComparison.CurrentCultureIgnoreCase);
+
+            var enabledByProperties = authenticationProperties.Items.TryGetValue("enableVerify", out var flag)
+                    && string.Equals(flag, true.ToString(), StringComparison.OrdinalIgnoreCase);
+
+            return enabledByConfig || enabledByProperties;
+        }
+
+        internal static bool Disable2Fa(GovUkOidcConfiguration govUkOidcConfiguration)
+        {
+            var disabled2FaByConfig = govUkOidcConfiguration.Disable2Fa != null && 
+                govUkOidcConfiguration.Disable2Fa.Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            
+            return disabled2FaByConfig;
         }
     }
 }

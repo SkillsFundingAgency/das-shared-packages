@@ -17,21 +17,7 @@ namespace SFA.DAS.GovUK.Auth.Controllers
         public IActionResult Index(string returnUrl = "/")
         {
             var props = new AuthenticationProperties { RedirectUri = returnUrl, AllowRefresh = true };
-            props.Items["vtr"] = JsonSerializer.Serialize(new[] { "Cl.Cm.P2" });
-
-            props.Items["claims"] = JsonSerializer.Serialize(new Dictionary<string, object>
-            {
-                ["userinfo"] = new Dictionary<string, object>
-                {
-                    ["https://vocab.account.gov.uk/v1/coreIdentityJWT"] = null,
-                    ["https://vocab.account.gov.uk/v1/address"] = null,
-                    ["https://vocab.account.gov.uk/v1/passport"] = null,
-                    ["https://vocab.account.gov.uk/v1/drivingPermit"] = null,
-                    ["https://vocab.account.gov.uk/v1/returnCode"] = null
-                }
-            });
-
-            props.Items["isVerification"] = true.ToString();
+            props.Items["enableVerify"] = true.ToString();
             return Challenge(props, OpenIdConnectDefaults.AuthenticationScheme);
         }
     }
