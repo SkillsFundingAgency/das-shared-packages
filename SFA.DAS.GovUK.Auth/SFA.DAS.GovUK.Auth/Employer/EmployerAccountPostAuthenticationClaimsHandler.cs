@@ -17,13 +17,18 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
 
     public async Task<IEnumerable<Claim>> GetClaims(TokenValidatedContext tokenValidatedContext)
     {
+        return await GetClaims(tokenValidatedContext.Principal);
+    }
+
+    public async Task<IEnumerable<Claim>> GetClaims(ClaimsPrincipal principal)
+    {
         var claims = new List<Claim>();
 
-        var userId = tokenValidatedContext.Principal.Claims
+        var userId = principal.Claims
             .First(c => c.Type.Equals(ClaimTypes.NameIdentifier))
             .Value;
 
-        var email = tokenValidatedContext.Principal.Claims
+        var email = principal.Claims
             .First(c => c.Type.Equals(ClaimTypes.Email))
             .Value;
 

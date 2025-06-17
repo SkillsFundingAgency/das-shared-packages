@@ -14,7 +14,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart;
 
 public class WhenAddingServicesToTheContainer
 {
-    [TestCase(typeof(IOidcService))]
+    [TestCase(typeof(IGovUkAuthenticationService))]
     [TestCase(typeof(IAzureIdentityService))]
     [TestCase(typeof(IJwtSecurityTokenService))]
     [TestCase(typeof(ICustomClaims))]

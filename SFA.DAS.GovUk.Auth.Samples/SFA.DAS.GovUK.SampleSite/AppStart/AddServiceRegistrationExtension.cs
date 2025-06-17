@@ -14,8 +14,8 @@ public static class AddServiceRegistrationExtension
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
         services.AddAndConfigureGovUkAuthentication(configuration, new AuthRedirects
         {
-            NotVerifiedRedirectUrl = "/home/NotVerified",
-            LoginRedirect = "/home/AccountDetails"
+            SignedOutRedirectUrl = "/signed-out",
+            LocalStubLoginPath = "/services/sign-in-Stub"
         }, typeof(CustomClaims));
         services.AddGovUkAuthorization();
     }

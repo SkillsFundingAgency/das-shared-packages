@@ -5,35 +5,25 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.GovUK.Auth.Authentication;
-using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.SampleSite.Controllers;
 
-public class HomeController(IStubAuthenticationService stubAuthenticationService, IOidcService oidcService)
-    : Controller
+public class HomeController : Controller
 {
+    private readonly IConfiguration _configuration;
+    private readonly IGovUkAuthenticationService _govUkAuthenticationService;
+
+    public HomeController(IConfiguration configuration, IGovUkAuthenticationService govUkAuthenticationService)
+    {
+        _configuration = configuration;
+        _govUkAuthenticationService = govUkAuthenticationService;
+    }
 
     [HttpGet]
     public IActionResult Index()
     {
         return View();
-    }
-    
-    [HttpGet]
-    public IActionResult AccountDetails()
-    {
-        return View();
-    }
-    [HttpPost]
-    public async Task<IActionResult> AccountDetails(StubAuthUserDetails model)
-    {
-        var claims = await stubAuthenticationService.GetStubSignInClaims(model);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
-            new AuthenticationProperties());
-        
-        return RedirectToAction("Authenticated");
     }
 
     [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
@@ -42,17 +32,17 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
     {
         return View();
     }
-    
+
     [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
     [HttpGet]
-    public async Task<IActionResult> GetAccountDetails()
+    public async Task<IActionResult> AccountDetails()
     {
         var token = await HttpContext.GetTokenAsync("access_token");
-        var details = await oidcService.GetAccountDetails(token);
+        var details = await _govUkAuthenticationService.GetAccountDetails(token);
 
         return Content(JsonSerializer.Serialize(details), "application/json");
     }
-    
+
     [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
     [HttpGet]
     public IActionResult IsActive()
@@ -64,7 +54,7 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
     [HttpGet]
     public IActionResult GetVerifiedAccountDetails()
     {
-        return RedirectToAction(nameof(GetAccountDetails));
+        return RedirectToAction(nameof(AccountDetails));
     }
 
     [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
@@ -72,7 +62,6 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
     {
         return View();
     }
-
 
     [HttpGet]
     public async Task<IActionResult> GetVerified()
@@ -84,7 +73,7 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
     [HttpGet]
     public IActionResult Verify()
     {
-        return RedirectToAction(nameof(GetAccountDetails));
+        return RedirectToAction(nameof(AccountDetails));
     }
 
     [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
@@ -102,13 +91,25 @@ public class HomeController(IStubAuthenticationService stubAuthenticationService
 
         var authenticationProperties = new AuthenticationProperties();
         authenticationProperties.Parameters.Clear();
-        authenticationProperties.Parameters.Add("id_token",idToken);
-        
+        authenticationProperties.Parameters.Add("id_token", idToken);
+
+        var authenticationSchemes = new[] { CookieAuthenticationDefaults.AuthenticationScheme };
+        if (!bool.TryParse(_configuration["StubAuth"], out var stubAuth) || !stubAuth)
+        {
+            authenticationSchemes = authenticationSchemes
+                .Append(OpenIdConnectDefaults.AuthenticationScheme)
+                .ToArray();
+        }
+
         return SignOut(
-            authenticationProperties, 
-            new[] {
-                CookieAuthenticationDefaults.AuthenticationScheme, 
-                OpenIdConnectDefaults.AuthenticationScheme});
+            authenticationProperties,
+            authenticationSchemes);
     }
-    
+
+    [HttpGet]
+    [Route("signed-out", Name = "SignedOut")]
+    public IActionResult SignedOut()
+    {
+        return View();
+    }
 }

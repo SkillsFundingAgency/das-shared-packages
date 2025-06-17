@@ -22,7 +22,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 {
     internal static class ConfigureGovUkAuthenticationExtension
     {
-        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string notVerifiedUrl, string cookieDomain)
+        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -36,7 +36,6 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 .AddCookie(options =>
                 {
                     options.AccessDeniedPath = new PathString("/error/403");
-
                     options.Cookie.Name = GovUkConstants.AuthCookieName;
                     if (!string.IsNullOrEmpty(cookieDomain))
                     {
@@ -44,7 +43,6 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     }
                     options.Cookie.IsEssential = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-
                     options.Cookie.SameSite = SameSiteMode.Lax;
                     options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
                     options.LogoutPath = "/home/signed-out";
@@ -77,18 +75,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                         options.Events.OnRemoteFailure = c =>
                         {
-                            if (EnableVerify(govUkOidcConfiguration, c.Properties))
+                            if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
                             {
-                                c.Response.Redirect(notVerifiedUrl);
+                                c.Response.Redirect("/");
                                 c.HandleResponse();
-                            }
-                            else
-                            {
-                                if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
-                                {
-                                    c.Response.Redirect("/");
-                                    c.HandleResponse();
-                                }
                             }
 
                             return Task.CompletedTask;
@@ -166,7 +156,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-                .Configure<GovUkOidcConfiguration, IOidcService, IAzureIdentityService, ICustomClaims, ITicketStore>(
+                .Configure<GovUkOidcConfiguration, IGovUkAuthenticationService, IAzureIdentityService, ICustomClaims, ITicketStore>(
                     (options, govUkOidcConfiguration, oidcService, azureIdentityService, customClaims, ticketStore) =>
                     {
                         options.TokenValidationParameters = new TokenValidationParameters

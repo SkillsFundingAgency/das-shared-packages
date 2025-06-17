@@ -1,0 +1,30 @@
+@using SFA.DAS.GovUK.SampleSite.Models
+@model SignInStubViewModel
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Sign in stub
+        </h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            <h2 class="govuk-heading-l">Authenticate as:</h2>
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Email)
+
+            <p><b>Id:</b> @Model.Id</p>
+            <p><b>Email:</b> @Model.Email</p>
+
+            <label for="UserFile">Upload JSON (GovUkUser):</label>
+            <input type="file" name="UserFile" id="UserFile" accept=".json" /><br />
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" type="submit">Authenticate</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -8,8 +8,14 @@ public class CustomClaims : ICustomClaims
 {
     public async Task<IEnumerable<Claim?>> GetClaims(TokenValidatedContext tokenValidatedContext)
     {
-        var value = tokenValidatedContext?.Principal?.Identities.First().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        return await GetClaims(tokenValidatedContext?.Principal);
+    }
+
+    public async Task<IEnumerable<Claim>> GetClaims(ClaimsPrincipal principal)
+    {
+        var value = principal?.Identities.First().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))
             ?.Value;
+    
         return new List<Claim>
         {
             new Claim("EmployerAccountId",$"ABC123-{value}"),

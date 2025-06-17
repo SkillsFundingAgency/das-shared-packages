@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Models;
+using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
@@ -16,7 +17,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddServiceRegistration(configuration, customClaims, employerAccountService);
             if (stubAuth && configuration["ResourceEnvironmentName"]!.ToUpper() != "PRD")
             {
-                services.AddEmployerStubAuthentication(
+                services.AddTransient<IGovUkAuthenticationService, StubAuthenticationService>();
+                services.ConfigureStubAuthentication(
                     authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
                     authRedirects.LoginRedirect.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]),
                     authRedirects.LocalStubLoginPath,
@@ -24,9 +26,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             }
             else
             {
+                services.AddHttpClient<IGovUkAuthenticationService, OidcGovUkAuthenticationService>();
                 services.ConfigureGovUkAuthentication(configuration, 
                     authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]), 
-                    authRedirects.NotVerifiedRedirectUrl,
                     authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
             }
         }

@@ -43,14 +43,13 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             
             services.Configure<GovUkOidcConfiguration>(configuration.GetSection(nameof(GovUkOidcConfiguration)));
             services.AddSingleton(c => c.GetService<IOptions<GovUkOidcConfiguration>>().Value);
-            
-            services.AddHttpClient<IOidcService, OidcService>();
+
+            services.AddHttpClient<IGovUkAuthenticationService, OidcGovUkAuthenticationService>();
             services.AddTransient<ISigningCredentialsProvider, AzureKeyVaultSigningCredentialsProvider>();
-            services.AddTransient<IOidcRequestObjectService, OidcRequestObjectService>();
             services.AddTransient<IAzureIdentityService, AzureIdentityService>();
             services.AddTransient<IJwtSecurityTokenService, JwtSecurityTokenService>();
             services.AddTransient<IStubAuthenticationService, StubAuthenticationService>();
-            
+
             services.AddSingleton<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, VerifiedIdentityAuthorizationHandler>();
             services.AddSingleton<IAuthorizationMiddlewareResultHandler, RedirectOnVerifiedIdentityFailedResultHandler>();

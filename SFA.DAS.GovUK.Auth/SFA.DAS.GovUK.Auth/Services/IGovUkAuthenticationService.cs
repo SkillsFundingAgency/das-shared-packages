@@ -5,7 +5,7 @@ using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.Auth.Services
 {
-    public interface IOidcService
+    public interface IGovUkAuthenticationService
     {
         Task<Token> GetToken(OpenIdConnectMessage openIdConnectMessage);
         Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext);

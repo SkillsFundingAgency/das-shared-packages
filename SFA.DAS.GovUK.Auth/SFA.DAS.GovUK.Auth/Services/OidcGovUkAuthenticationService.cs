@@ -16,7 +16,7 @@ using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.Auth.Services;
 
-internal class OidcService : IOidcService
+internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
 {
     private readonly HttpClient _httpClient;
     private readonly ISigningCredentialsProvider _signingProvider;
@@ -24,7 +24,7 @@ internal class OidcService : IOidcService
     private readonly ICustomClaims _customClaims;
     private readonly GovUkOidcConfiguration _configuration;
 
-    public OidcService(HttpClient httpClient,
+    public OidcGovUkAuthenticationService(HttpClient httpClient,
                        ISigningCredentialsProvider signingProvider,
                        IJwtSecurityTokenService jwtSecurityTokenService,
                        GovUkOidcConfiguration configuration,
