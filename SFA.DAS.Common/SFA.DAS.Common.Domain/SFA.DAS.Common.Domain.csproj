@@ -15,4 +15,8 @@
     <PackageTags>Esfa;Das;</PackageTags>
     <PackageReleaseNotes>Added support for .NetStandard2.0</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
 </Project>

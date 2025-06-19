@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
+using Newtonsoft.Json;
 using SFA.DAS.DfESignIn.Auth.Api.Client;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.Api.Models;
@@ -11,8 +12,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
     [TestFixture]
     public class DfeSignInApiHelperTest
     {
-        private Mock<HttpMessageHandler> _mockHttpMessageHandler;
-        private Mock<ITokenBuilder> _tokenBuilder;
+        private Mock<HttpMessageHandler> _mockHttpMessageHandler = null!;
+        private Mock<ITokenBuilder> _tokenBuilder = null!;
 
         [SetUp]
         public void SetUp()
@@ -44,7 +45,6 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
                 })
                 .Verifiable();
 
-            // use real http client with mocked handler here
             var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
             {
                 BaseAddress = new Uri("http://test.com/"),
@@ -57,28 +57,26 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var result = await subjectUnderTest.Get<ApiServiceResponse>("api/test/whatever");
 
             // ASSERT
-            result.Should().NotBeNull(); // this is fluent assertions here...
-            result.UserId.Should().Be(userId);
+            result.Should().NotBeNull();
+            result!.UserId.Should().Be(userId);
             result.ServiceId.Should().Be(serviceId);
             result.OrganisationId.Should().Be(orgId);
 
-            // also check the 'http' call was like we expected it
             var expectedUri = new Uri("http://test.com/api/test/whatever");
 
-            // verify if called at least once.
             _mockHttpMessageHandler.Protected().Verify(
                 "SendAsync",
-                Times.Exactly(1), // we expected a single external request
+                Times.Exactly(1),
                 ItExpr.Is<HttpRequestMessage>(req =>
-                        req.Method == HttpMethod.Get  // we expected a GET request
+                        req.Method == HttpMethod.Get
                         && req.RequestUri == expectedUri
+                    && req.Headers.Authorization != null
                     && req.Headers.Authorization.Scheme == "Bearer"
                     && req.Headers.Authorization.Parameter == authToken.ToString()
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
         }
-
 
         [Test]
         public async Task Get_Return_Default_When_HttpResponse_IsInValid()
@@ -98,7 +96,6 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
                 })
                 .Verifiable();
 
-            // use real http client with mocked handler here
             var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
             {
                 BaseAddress = new Uri("http://test.com/"),
@@ -110,21 +107,52 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Api.Client
             var result = await subjectUnderTest.Get<ApiServiceResponse>("api/test/whatever");
 
             // ASSERT
-            result.Should().BeNull(); // this is fluent assertions here...
+            result.Should().BeNull();
 
-            // also check the 'http' call was like we expected it
             var expectedUri = new Uri("http://test.com/api/test/whatever");
 
-            // verify if called at least once.
             _mockHttpMessageHandler.Protected().Verify(
                 "SendAsync",
-                Times.Exactly(1), // we expected a single external request
+                Times.Exactly(1),
                 ItExpr.Is<HttpRequestMessage>(req =>
-                        req.Method == HttpMethod.Get  // we expected a GET request
-                        && req.RequestUri == expectedUri // to this uri
+                        req.Method == HttpMethod.Get
+                        && req.RequestUri == expectedUri
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
+        }
+
+        [Test]
+        public async Task Then_If_Response_Is_Valid_Then_Returns_Response()
+        {
+            // ARRANGE
+            var response = new ApiResponse<string>("test");
+            var authToken = Guid.NewGuid();
+
+            _mockHttpMessageHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(JsonConvert.SerializeObject(response)),
+                })
+                .Verifiable();
+
+            var httpClient = new HttpClient(_mockHttpMessageHandler.Object);
+            _tokenBuilder.Setup(x => x.CreateToken()).Returns(authToken.ToString);
+            var subjectUnderTest = new DfeSignInApiHelper(httpClient, _tokenBuilder.Object);
+
+            // ACT
+            var actual = await subjectUnderTest.Get<ApiResponse<string>>("https://test.local/api/test");
+
+            // ASSERT
+            actual.Should().NotBeNull();
+            actual!.Body.Should().Be("test");
         }
     }
 }

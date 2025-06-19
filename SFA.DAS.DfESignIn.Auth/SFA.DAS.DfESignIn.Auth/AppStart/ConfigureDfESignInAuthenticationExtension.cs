@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
@@ -8,12 +12,8 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Constants;
-using SFA.DAS.DfESignIn.Auth.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Threading.Tasks;
 using SFA.DAS.DfESignIn.Auth.Enums;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -48,15 +48,13 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.ResponseType = "code";
                     options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                     options.SignedOutRedirectUri = redirectUrl;
-                    options.SignedOutCallbackPath = new PathString(RoutePath.OidcSignOut); // the path the authentication provider posts back after signing out.
-                    options.CallbackPath = new PathString(RoutePath.OidcSignIn); // the path the authentication provider posts back when authenticating.
+                    options.SignedOutCallbackPath = new PathString(RoutePath.OidcSignOut);
+                    options.CallbackPath = new PathString(RoutePath.OidcSignIn);
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
                     options.ResponseMode = string.Empty;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        AuthenticationType = OpenIdConnectDefaults.AuthenticationScheme
-                    };
+                    options.MapInboundClaims = false;
+                    options.UseTokenLifetime = true;
 
                     var scopes = configuration["DfEOidcConfiguration:Scopes"].Split(' ');
                     options.Scope.Clear();
@@ -65,12 +63,15 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         options.Scope.Add(scope);
                     }
 
-                    options.SecurityTokenValidator = new JwtSecurityTokenHandler()
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        InboundClaimTypeMap = new Dictionary<string, string>(),
-                        TokenLifetimeInMinutes = 90,
-                        SetDefaultTimesOnTokenCreation = true
+                        AuthenticationType = OpenIdConnectDefaults.AuthenticationScheme,
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = false
                     };
+
                     options.ProtocolValidator = new OpenIdConnectProtocolValidator
                     {
                         RequireSub = true,
@@ -78,23 +79,30 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                         NonceLifetime = TimeSpan.FromMinutes(60)
                     };
 
-                    options.Events.OnRemoteFailure = c =>
+                    options.Events = new OpenIdConnectEvents
                     {
-                        if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
+                        OnRemoteFailure = c =>
                         {
-                            c.Response.Redirect(redirectUrl);
+                            if (c.Failure != null && c.Failure.Message.Contains("Correlation failed"))
+                            {
+                                c.Response.Redirect(redirectUrl);
+                                c.HandleResponse();
+                            }
+
+                            return Task.CompletedTask;
+                        },
+                        OnSignedOutCallbackRedirect = c =>
+                        {
+                            c.Response.Cookies.Delete(authenticationCookieName);
+                            c.Response.Redirect(c.Options.SignedOutRedirectUri);
                             c.HandleResponse();
+                            return Task.CompletedTask;
+                        },
+                        OnTokenValidated = async ctx => 
+                        {
+                            var dfeSignInService = ctx.HttpContext.RequestServices.GetRequiredService<IDfESignInService>();
+                            await dfeSignInService.PopulateAccountClaims(ctx);
                         }
-
-                        return Task.CompletedTask;
-                    };
-
-                    options.Events.OnSignedOutCallbackRedirect = c =>
-                    {
-                        c.Response.Cookies.Delete(authenticationCookieName); // delete the client cookie by given cookie name.
-                        c.Response.Redirect(c.Options.SignedOutRedirectUri); // the path the authentication provider posts back after signing out.
-                        c.HandleResponse();
-                        return Task.CompletedTask;
                     };
                 })
                 .AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, configuration["ResourceEnvironmentName"], clientName);
@@ -114,6 +122,5 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     options.SessionStore = ticketStore;
                 });
         }
-
     }
 }

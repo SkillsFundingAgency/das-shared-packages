@@ -36,6 +36,7 @@ stages:
       DotNetStandardPackagesToPack: >
         SFA.DAS.Testing/SFA.DAS.Testing/SFA.DAS.Testing.csproj;
         SFA.DAS.Testing/SFA.DAS.Testing.AutoFixture/SFA.DAS.Testing.AutoFixture.csproj;
-        SFA.DAS.Testing/SFA.DAS.Testing.AzureStorageEmulator/SFA.DAS.Testing.AzureStorageEmulator.csproj
+        SFA.DAS.Testing/SFA.DAS.Testing.AzureStorageEmulator/SFA.DAS.Testing.AzureStorageEmulator.csproj;
+        SFA.DAS.Testing/SFA.DAS.Testing.PackageScanning/SFA.DAS.Testing.PackageScanning.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Testing
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
