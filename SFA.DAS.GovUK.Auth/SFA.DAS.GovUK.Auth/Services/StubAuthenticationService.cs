@@ -1,16 +1,19 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SFA.DAS.GovUK.Auth.Configuration;
+using SFA.DAS.GovUK.Auth.Exceptions;
 using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Models;
 
@@ -18,16 +21,16 @@ namespace SFA.DAS.GovUK.Auth.Services;
 
 public class StubAuthenticationService : IStubAuthenticationService
 {
+    public const string StubGovUkUserClaimType = nameof(StubGovUkUserClaimType);
+
     private readonly ICustomClaims _customClaims;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly GovUkOidcConfiguration _govUkOidcConfiguration;
     private readonly string _environment;
 
-    public StubAuthenticationService(IConfiguration configuration, GovUkOidcConfiguration govUkOidcConfiguration, ICustomClaims customClaims, IHttpContextAccessor httpContextAccessor)
+    public StubAuthenticationService(IConfiguration configuration, ICustomClaims customClaims, IHttpContextAccessor httpContextAccessor)
     {
         _customClaims = customClaims;
         _httpContextAccessor = httpContextAccessor;
-        _govUkOidcConfiguration = govUkOidcConfiguration;
         _environment = configuration["ResourceEnvironmentName"]?.ToUpper();
     }
 
@@ -69,61 +72,13 @@ public class StubAuthenticationService : IStubAuthenticationService
             claims.Add(new Claim(ClaimTypes.MobilePhone, model.Mobile));
         }
 
+        if(model.GovUkUser != null)
+        {
+            claims.Add(new Claim(StubGovUkUserClaimType, JsonSerializer.Serialize(model.GovUkUser)));
+        }
+
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(claimsIdentity);
-
-        var userInfoClaimKeys = _govUkOidcConfiguration.RequestedUserInfoClaims
-            .Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-        foreach (var key in userInfoClaimKeys)
-        {
-            if (Enum.TryParse<UserInfoClaims>(key, out var enumValue))
-            {
-                if (enumValue == UserInfoClaims.CoreIdentityJWT)
-                {
-                    claimsIdentity
-                        .AddClaim(
-                            new Claim(enumValue.GetDescription(),
-                            CoreIdentityJwtConverter.SerializeStubCoreIdentityJwt(model.GovUkUser.CoreIdentityJwt)));
-
-                    claimsIdentity
-                        .AddClaim(
-                            new Claim("vot", "Cl.Cm.P2"));
-                }
-
-                if (enumValue == UserInfoClaims.Address)
-                {
-                    claimsIdentity
-                        .AddClaim(
-                            new Claim(enumValue.GetDescription(),
-                            JsonSerializer.Serialize(model.GovUkUser.Addresses)));
-                }
-
-                if (enumValue == UserInfoClaims.Passport)
-                {
-                    claimsIdentity
-                        .AddClaim(
-                            new Claim(enumValue.GetDescription(),
-                            JsonSerializer.Serialize(model.GovUkUser.Passports)));
-                }
-
-                if (enumValue == UserInfoClaims.DrivingPermit)
-                {
-                    claimsIdentity
-                        .AddClaim(
-                            new Claim(enumValue.GetDescription(),
-                            JsonSerializer.Serialize(model.GovUkUser.DrivingPermits)));
-                }
-
-                if (enumValue == UserInfoClaims.ReturnCode)
-                {
-                    claimsIdentity
-                        .AddClaim(
-                            new Claim(enumValue.GetDescription(),
-                            JsonSerializer.Serialize(model.GovUkUser.ReturnCodes)));
-                }
-            }
-        }
 
         if (_customClaims != null)
         {
@@ -134,6 +89,39 @@ public class StubAuthenticationService : IStubAuthenticationService
         return principal;
     }
 
+    public async Task<GovUkUser> GetStubVerifyGovUkUser(IFormFile formFile)
+    {
+        if (formFile != null && formFile.Length > 0)
+        {
+            try
+            {
+                using var reader = new StreamReader(formFile.OpenReadStream());
+                var json = await reader.ReadToEndAsync();
+
+                var rootNode = JsonNode.Parse(json)?.AsObject();
+                if (rootNode == null) throw new StubVerifyException("Invalid JSON structure.");
+
+                if (rootNode.TryGetPropertyValue("https://vocab.account.gov.uk/v1/coreIdentityJWT", out var unwrappedNode))
+                {
+                    var coreJwt = unwrappedNode.Deserialize<GovUkCoreIdentityJwt>();
+                    var jwtString = CoreIdentityJwtConverter.SerializeStubCoreIdentityJwt(coreJwt);
+
+                    rootNode.Remove("https://vocab.account.gov.uk/v1/coreIdentityJWT");
+                    rootNode["https://vocab.account.gov.uk/v1/coreIdentityJWT"] = jwtString;
+                }
+
+                var encryptedJson = rootNode.ToJsonString();
+                return JsonSerializer.Deserialize<GovUkUser>(encryptedJson);
+            }
+            catch
+            {
+                throw new StubVerifyException("Invalid JSON file.");
+            }
+        }
+
+        return null;
+    }
+
     public async Task<Token> GetToken(OpenIdConnectMessage openIdConnectMessage)
     {
         return await Task.FromResult(new Token { AccessToken = "stub-token" });
@@ -142,6 +130,26 @@ public class StubAuthenticationService : IStubAuthenticationService
     public Task PopulateAccountClaims(TokenValidatedContext tokenValidatedContext)
     {
         return Task.CompletedTask;
+    }
+
+    public async Task<IActionResult> ChallengeWithVerifyAsync(string returnUrl, Controller controller)
+    {
+        var props = new AuthenticationProperties
+        {
+            RedirectUri = returnUrl,
+            AllowRefresh = true
+        };
+        props.Items["enableVerify"] = true.ToString();
+
+        var currentIdentity = (ClaimsIdentity)controller.User.Identity;
+        var newIdentity = new ClaimsIdentity(currentIdentity.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        await controller.HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(newIdentity),
+            props);
+
+        return controller.LocalRedirect(returnUrl);
     }
 
     private bool TryGetUserInfoClaim(UserInfoClaims userInfoClaim, out string value) 

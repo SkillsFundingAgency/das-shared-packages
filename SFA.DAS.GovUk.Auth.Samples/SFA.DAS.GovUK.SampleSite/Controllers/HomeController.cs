@@ -23,12 +23,15 @@ public class HomeController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        if (HttpContext?.User?.Identity?.IsAuthenticated ?? false)
+            return RedirectToAction("Home");
+        
         return View();
     }
 
-    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
     [HttpGet]
-    public IActionResult Authenticated()
+    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
+    public IActionResult Home()
     {
         return View();
     }
@@ -52,33 +55,13 @@ public class HomeController : Controller
 
     [Authorize(Policy = nameof(PolicyNames.IsVerified))]
     [HttpGet]
-    public IActionResult GetVerifiedAccountDetails()
+    public IActionResult VerifiedAccountDetails()
     {
         return RedirectToAction(nameof(AccountDetails));
     }
 
     [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
-    public IActionResult Explanation()
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetVerified()
-    {
-        return RedirectToAction(nameof(Verify));
-    }
-
-    [Authorize(Policy = nameof(PolicyNames.IsVerified))]
-    [HttpGet]
-    public IActionResult Verify()
-    {
-        return RedirectToAction(nameof(AccountDetails));
-    }
-
-    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
-    [HttpGet]
-    public IActionResult NotVerified()
+    public IActionResult ExplainVerify()
     {
         return View();
     }

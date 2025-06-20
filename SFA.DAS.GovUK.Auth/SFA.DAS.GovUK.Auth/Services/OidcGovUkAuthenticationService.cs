@@ -7,7 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Models;
@@ -113,6 +115,18 @@ internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
 
         var valueString = response.Content.ReadAsStringAsync().Result;
         return JsonSerializer.Deserialize<GovUkUser>(valueString);
+    }
+
+    public Task<IActionResult> ChallengeWithVerifyAsync(string returnUrl, Controller controller)
+    {
+        var props = new AuthenticationProperties
+        {
+            RedirectUri = returnUrl,
+            AllowRefresh = true
+        };
+        props.Items["enableVerify"] = true.ToString();
+
+        return Task.FromResult<IActionResult>(controller.Challenge(props, OpenIdConnectDefaults.AuthenticationScheme));
     }
 
     private string CreateJwtAssertion()

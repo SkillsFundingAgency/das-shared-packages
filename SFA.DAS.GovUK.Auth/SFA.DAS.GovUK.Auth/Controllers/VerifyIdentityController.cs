@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.GovUK.Auth.Services;
 
 [assembly: Microsoft.AspNetCore.Mvc.ApplicationParts.ProvideApplicationPartFactory(
     typeof(Microsoft.AspNetCore.Mvc.ApplicationParts.CompiledRazorAssemblyApplicationPartFactory))]
@@ -11,12 +11,17 @@ namespace SFA.DAS.GovUK.Auth.Controllers
     [Route("service/verify-identity")]
     public class VerifyIdentityController : Controller
     {
-        [HttpGet]
-        public IActionResult Index(string returnUrl = "/")
+        private readonly IGovUkAuthenticationService _govUkAuthenticationService;
+
+        public VerifyIdentityController(IGovUkAuthenticationService govUkAuthenticationService)
         {
-            var props = new AuthenticationProperties { RedirectUri = returnUrl, AllowRefresh = true };
-            props.Items["enableVerify"] = true.ToString();
-            return Challenge(props, OpenIdConnectDefaults.AuthenticationScheme);
+            _govUkAuthenticationService = govUkAuthenticationService;
+        }
+
+        [HttpGet]
+        public Task<IActionResult> Index(string returnUrl = "/")
+        {
+            return _govUkAuthenticationService.ChallengeWithVerifyAsync(returnUrl, this);
         }
     }
 }

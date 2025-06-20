@@ -1,0 +1,38 @@
+@using SFA.DAS.GovUK.Auth.Configuration
+@using SFA.DAS.GovUK.Auth.Models
+@inject IConfiguration Configuration
+@inject GovUkOidcConfiguration GovUkOidcConfiguration
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "GOV.UK One Login Sample Service";
+    var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var stubAuth = bool.Parse(Configuration["StubAuth"] ?? "false");
+}
+
+<h1 class="govuk-heading-xl">Explain Verify</h1>
+
+<div class="govuk-body">
+    <p>A page can be shown to explain that the Verify journey will confirm your identity.</p>
+
+    @if (stubAuth)
+    {
+        <p class="govuk-body"> By continuing, the following identity attributes will be used from your uploaded JSON file:</p>
+        <div class="govuk-inset-text">
+            <ul class="govuk-list govuk-list--bullet">
+            @foreach (var claim in requestedClaims)
+                {
+                    <li>@claim</li>
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <p class="govuk-body">
+            By continuing, you will be redirected to the integration server for GOV.UK One Login service to verify your identity.
+        </p>
+    }
+
+    <a asp-action="VerifiedAccountDetails" asp-Controller="Home" class="govuk-button">Continue</a>
+</div>

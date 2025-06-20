@@ -18,7 +18,7 @@ public class CustomClaims : ICustomClaims
     
         return new List<Claim>
         {
-            new Claim("EmployerAccountId",$"ABC123-{value}"),
+            new Claim("CustomClaimId",$"ABC123-{value}"),
             new Claim(ClaimTypes.Name,$"Mr Tester Test")
         };
     }

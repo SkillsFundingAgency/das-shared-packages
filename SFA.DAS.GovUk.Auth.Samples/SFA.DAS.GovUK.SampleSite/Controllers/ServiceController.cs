@@ -1,11 +1,14 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.GovUK.Auth.Exceptions;
 using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
+using SFA.DAS.GovUK.SampleSite.Extensions;
 using SFA.DAS.GovUK.SampleSite.Models;
 
 
@@ -17,20 +20,26 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
     {
         private readonly IConfiguration _config;
         private readonly IStubAuthenticationService _stubAuthenticationService;
+        private readonly IValidator<SignInStubViewModel> _signInStubViewModelValidator;
 
-        public ServiceController(IConfiguration config, IStubAuthenticationService stubAuthenticationService)
+        public ServiceController(IConfiguration config, IStubAuthenticationService stubAuthenticationService, IValidator<SignInStubViewModel> signInStubViewModelValidator)
         {
             _config = config;
             _stubAuthenticationService = stubAuthenticationService;
+            _signInStubViewModelValidator = signInStubViewModelValidator;
         }
 
-#if DEBUG
         [HttpGet]
         [Route("sign-in-stub", Name = "SignIn-Stub")]
         [AllowAnonymous]
         public IActionResult SignInStub(string returnUrl)
         {
-            return View("SignInStub", new SignInStubViewModel { Id = _config["StubId"], Email = _config["StubEmail"], ReturnUrl = returnUrl });
+            return View("SignInStub", new SignInStubViewModel
+            {
+                Id = ModelState.IsValid ? _config["StubId"] : ModelState[nameof(SignInStubViewModel.Id)]?.AttemptedValue,
+                Email = ModelState.IsValid ? _config["StubEmail"] : ModelState[nameof(SignInStubViewModel.Email)]?.AttemptedValue,
+                ReturnUrl = returnUrl
+            });
         }
 
         [HttpPost]
@@ -38,52 +47,28 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignInStubPost(SignInStubViewModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest("Form data is invalid.");
+            if(!await _signInStubViewModelValidator.ModelStateIsValid(model, ModelState))
+                return RedirectToRoute("SignIn-Stub", new { model.ReturnUrl });
 
-            if (string.IsNullOrWhiteSpace(model.Id) || string.IsNullOrWhiteSpace(model.Email))
-                return BadRequest("Id and Email are required.");
-
-            GovUkUser? govUkUser = null;
-            if (model.UserFile != null && model.UserFile.Length > 0)
+            try
             {
-                try
+                GovUkUser? govUkUser = await _stubAuthenticationService.GetStubVerifyGovUkUser(model.UserFile);
+
+                var claims = await _stubAuthenticationService.GetStubSignInClaims(new StubAuthUserDetails
                 {
-                    using var reader = new StreamReader(model.UserFile.OpenReadStream());
-                    var json = await reader.ReadToEndAsync();
+                    Id = model.Id,
+                    Email = model.Email,
+                    GovUkUser = govUkUser
+                });
 
-                    var rootNode = JsonNode.Parse(json)?.AsObject();
-                    if (rootNode == null) return BadRequest("Invalid JSON structure.");
-
-                    if (rootNode.TryGetPropertyValue("https://vocab.account.gov.uk/v1/coreIdentityJWT", out var unwrappedNode))
-                    {
-                        var coreJwt = unwrappedNode.Deserialize<GovUkCoreIdentityJwt>();
-                        var jwtString = CoreIdentityJwtConverter.SerializeStubCoreIdentityJwt(coreJwt);
-
-                        rootNode.Remove("https://vocab.account.gov.uk/v1/coreIdentityJWT");
-                        rootNode["https://vocab.account.gov.uk/v1/coreIdentityJWT"] = jwtString;
-                    }
-
-                    var encryptedJson = rootNode.ToJsonString();
-                    govUkUser = JsonSerializer.Deserialize<GovUkUser>(encryptedJson);
-                    var t = govUkUser.CoreIdentityJwt.Vc.CredentialSubject.GetHistoricalNames();
-
-                }
-                catch
-                {
-                    return BadRequest("Invalid JSON file.");
-                }
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
+                    new AuthenticationProperties());
             }
-
-            var claims = await _stubAuthenticationService.GetStubSignInClaims(new StubAuthUserDetails
+            catch (StubVerifyException ex)
             {
-                Id = model.Id,
-                Email = model.Email,
-                GovUkUser = govUkUser
-            });
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
-                new AuthenticationProperties());
+                ModelState.AddModelError(nameof(model.UserFile), ex.Message);
+                return RedirectToRoute("SignIn-Stub", new { model.ReturnUrl });
+            }
 
             return RedirectToRoute("SignedIn-stub", new { model.ReturnUrl });
         }
@@ -95,6 +80,5 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
         {
             return View(model: returnUrl);
         }
-#endif
     }
 }

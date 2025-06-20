@@ -4,6 +4,7 @@ using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Controllers;
 using SFA.DAS.GovUK.SampleSite.AppStart;
+using SFA.DAS.Validation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services
 builder.Services
     .AddMvc(options =>
     {
+        options.AddValidation();
         options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
     });
 var app = builder.Build();
