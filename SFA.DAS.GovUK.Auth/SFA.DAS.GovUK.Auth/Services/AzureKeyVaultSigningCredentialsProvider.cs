@@ -13,7 +13,7 @@ namespace SFA.DAS.GovUK.Auth.Services
         {
             var config = options.Value;
             var key = new KeyVaultSecurityKey(config.KeyVaultIdentifier, identityService.AuthenticationCallback);
-            _cached = new SigningCredentials(key, SecurityAlgorithms.RsaSha256)
+            _cached = new SigningCredentials(key, SecurityAlgorithms.RsaSha512)
             {
                 CryptoProviderFactory = new CryptoProviderFactory { CustomCryptoProvider = new CustomKeyVaultCryptoProvider() }
             };
