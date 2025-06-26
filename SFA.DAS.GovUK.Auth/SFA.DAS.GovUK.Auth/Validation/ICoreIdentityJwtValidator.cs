@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.GovUK.Auth.Validation
 {
-    internal interface ICoreIdentityHelper : IDisposable
+    public interface ICoreIdentityJwtValidator : IDisposable
     {
         ClaimsPrincipal ValidateCoreIdentity(string coreIdentityJwt);
-        Task EnsureDidDocument();
+        Task LoadDidDocument();
     }
 }

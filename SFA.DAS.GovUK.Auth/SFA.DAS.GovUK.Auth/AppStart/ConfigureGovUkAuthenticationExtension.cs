@@ -50,7 +50,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             services
                 .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
-                .Configure<GovUkOidcConfiguration, ICoreIdentityHelper, ValidateCoreIdentityJwtClaimAction>(
+                .Configure<GovUkOidcConfiguration, ICoreIdentityJwtValidator, ValidateCoreIdentityJwtClaimAction>(
                     (options, govUkOidcConfiguration, coreIdentityHelper, validateCoreIdentityJwtClaimAction) =>
                     {
                         var baseUrl = govUkOidcConfiguration.BaseUrl;
@@ -149,7 +149,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
                             if(EnableVerify(govUkOidcConfiguration, ctx.Properties))
                             {
-                                await coreIdentityHelper.EnsureDidDocument();
+                                await coreIdentityHelper.LoadDidDocument();
                             }
                         };
                     });

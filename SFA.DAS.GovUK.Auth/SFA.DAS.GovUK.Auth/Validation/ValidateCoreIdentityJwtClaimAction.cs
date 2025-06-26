@@ -8,11 +8,16 @@ using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.Auth.Validation
 {
+    internal class SomethingOrOther
+    {
+        public SomethingOrOther(ICoreIdentityJwtValidator test) { }
+    }
+    
     internal class ValidateCoreIdentityJwtClaimAction : ClaimAction
     {
-        private readonly ICoreIdentityHelper _coreIdentityHelper;
+        private readonly ICoreIdentityJwtValidator _coreIdentityHelper;
 
-        public ValidateCoreIdentityJwtClaimAction(ICoreIdentityHelper coreIdentityHelper) :
+        public ValidateCoreIdentityJwtClaimAction(ICoreIdentityJwtValidator coreIdentityHelper) :
             base(UserInfoClaims.CoreIdentityJWT.GetDescription(), valueType: JsonClaimValueTypes.Json)
         {
             _coreIdentityHelper = coreIdentityHelper;

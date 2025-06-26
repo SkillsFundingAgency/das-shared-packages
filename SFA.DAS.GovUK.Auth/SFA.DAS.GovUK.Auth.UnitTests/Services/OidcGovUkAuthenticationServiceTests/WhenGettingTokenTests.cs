@@ -12,9 +12,9 @@ using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcGovUkAuthenticationServiceTest;
+namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcGovUkAuthenticationServiceTests;
 
-public class WhenGettingToken
+public class WhenGettingTokenTests
 {
     [Test, MoqAutoData]
     public async Task Then_The_Endpoint_Is_Called_And_Token_Returned(

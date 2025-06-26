@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Employer;
+using SFA.DAS.GovUK.Auth.Helper;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.GovUK.Auth.Validation;
 
@@ -44,6 +45,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.Configure<GovUkOidcConfiguration>(configuration.GetSection(nameof(GovUkOidcConfiguration)));
             services.AddSingleton(c => c.GetService<IOptions<GovUkOidcConfiguration>>().Value);
 
+            services.AddTransient<IDateTimeHelper, DateTimeHelper>();
+            
             services.AddHttpClient<IGovUkAuthenticationService, OidcGovUkAuthenticationService>();
             services.AddTransient<ISigningCredentialsProvider, AzureKeyVaultSigningCredentialsProvider>();
             services.AddTransient<IAzureIdentityService, AzureIdentityService>();
@@ -56,7 +59,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             services.AddTransient<ValidateCoreIdentityJwtClaimAction>();
             services.AddSingleton<ITicketStore, AuthenticationTicketStore>();
-            services.AddSingleton<ICoreIdentityHelper, CoreIdentityHelper>();
+            services.AddSingleton<ICoreIdentityJwtValidator, CoreIdentityJwtValidator>();
             
             var connection = configuration.GetSection(nameof(GovUkOidcConfiguration)).Get<GovUkOidcConfiguration>();
             bool.TryParse(configuration["StubAuth"],out var stubAuth);

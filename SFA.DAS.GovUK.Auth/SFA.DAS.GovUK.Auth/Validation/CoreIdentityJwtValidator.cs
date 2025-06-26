@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
@@ -11,20 +10,23 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
+using SFA.DAS.GovUK.Auth.Exceptions;
+using SFA.DAS.GovUK.Auth.Helper;
 
 namespace SFA.DAS.GovUK.Auth.Validation
 {
-    internal sealed class CoreIdentityHelper : ICoreIdentityHelper
+    public sealed class CoreIdentityJwtValidator : ICoreIdentityJwtValidator
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
-        private readonly ILogger<CoreIdentityHelper> _logger;
+        private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly ILogger<CoreIdentityJwtValidator> _logger;
         private readonly JwtSecurityTokenHandler _tokenHandler;
-        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);  // The lock that guards against multiple DID requests happening at once.
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1); 
         private Did? _did;
         private DateTimeOffset? _didExpires;
 
-        public CoreIdentityHelper(HttpClient httpClient, GovUkOidcConfiguration config, ILogger<CoreIdentityHelper> logger)
+        public CoreIdentityJwtValidator(HttpClient httpClient, GovUkOidcConfiguration config, IDateTimeHelper dateTimeHelper, ILogger<CoreIdentityJwtValidator> logger)
         {
             ArgumentNullException.ThrowIfNull(httpClient);
             ArgumentNullException.ThrowIfNull(config);
@@ -32,6 +34,7 @@ namespace SFA.DAS.GovUK.Auth.Validation
 
             _httpClient = httpClient;
             _baseUrl = config.BaseUrl;
+            _dateTimeHelper = dateTimeHelper;
             _logger = logger;
 
             _tokenHandler = new JwtSecurityTokenHandler
@@ -74,55 +77,53 @@ namespace SFA.DAS.GovUK.Auth.Validation
             return coreIdentityPrincipal;
         }
 
-        public async Task EnsureDidDocument()
+        public async Task LoadDidDocument()
         {
             if (_did is null)
             {
-                await LoadDid();
+                await RefreshDid();
             }
-            else if (_didExpires is DateTimeOffset expires && expires < DateTimeOffset.UtcNow)
+            else if (_didExpires is DateTimeOffset expires && expires < _dateTimeHelper.UtcNowOffset)
             {
-                // Docs say that a cached document should be used if refreshing the document fails
-                // so we should not bubble up any exceptions here.
-
                 try
                 {
-                    await LoadDid();
+                    await RefreshDid();
                 }
                 catch (Exception ex)
                 {
+                    // a cached document should be used if refreshing the document fails
+                    // so do not bubble up any exceptions
                     _logger.LogWarning(ex, "Failed to refresh DID document.");
                 }
             }
-
-            Debug.Assert(_did is not null);
         }
 
-        private async Task LoadDid()
+        private async Task RefreshDid()
         {
             var endpoint = OneLoginUrlHelper.GetDidEndpoint(_baseUrl);
 
-            await _lock.WaitAsync();
             try
             {
+                await _lock.WaitAsync();
+
                 var response = await _httpClient.GetAsync(endpoint);
                 response.EnsureSuccessStatusCode();
 
                 DateTimeOffset? didDocumentExpires = null;
                 if (response.Headers.CacheControl?.MaxAge is TimeSpan maxAge)
                 {
-                    didDocumentExpires = DateTimeOffset.UtcNow.Add(maxAge);
+                    didDocumentExpires = _dateTimeHelper.UtcNowOffset.Add(maxAge);
                 }
 
                 using var document = JsonSerializer.Deserialize<JsonDocument>(await response.Content.ReadAsStringAsync())!;
 
                 if (!document.RootElement.TryGetProperty("id", out var docIdElement) || docIdElement.ValueKind != JsonValueKind.String)
                 {
-                    throw new Exception("DID does not contain an 'id' string property.");
+                    throw new DidLoadException("DID does not contain an 'id' string property.");
                 }
                 if (!document.RootElement.TryGetProperty("assertionMethod", out var assertionMethodsElement) || assertionMethodsElement.ValueKind != JsonValueKind.Array)
                 {
-                    throw new Exception("DID does not contain an 'assertionMethod' array property.");
+                    throw new DidLoadException("DID does not contain an 'assertionMethod' array property.");
                 }
 
                 var docId = docIdElement.GetString()!;

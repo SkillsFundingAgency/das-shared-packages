@@ -13,9 +13,9 @@ using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcGovUkAuthenticationServiceTest;
+namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcGovUkAuthenticationServiceTests;
 
-public class WhenPopulatingAccountClaims
+public class WhenPopulatingAccountClaimsTests
 {
     [Test, MoqAutoData]
     public async Task If_Token_TokenEndpointPrincipal_Is_Null_Then_Not_Updated(GovUkOidcConfiguration config, string accessToken)

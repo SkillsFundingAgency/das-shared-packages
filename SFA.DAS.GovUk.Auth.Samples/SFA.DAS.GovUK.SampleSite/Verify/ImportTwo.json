@@ -5,7 +5,18 @@
     "vc": {
       "credentialSubject": {
         "name": [
+         {
+            "validFrom": "2021-03-01",
+            "nameParts": [
+              { "value": "Alice", "type": "GivenName" },
+              { "value": "Jane", "type": "GivenName" },
+              { "value": "Laura", "type": "GivenName" },
+              { "value": "Doe", "type": "FamilyName" }
+              { "value": "Ray", "type": "FamilyName", "ValidUntil": "2022-03-01" }
+            ]
+          },
           {
+            "validUntil": "2021-03-01",
             "validFrom": "2020-03-01",
             "nameParts": [
               { "value": "Alice", "type": "GivenName" },
