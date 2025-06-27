@@ -8,11 +8,6 @@ using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.Auth.Validation
 {
-    internal class SomethingOrOther
-    {
-        public SomethingOrOther(ICoreIdentityJwtValidator test) { }
-    }
-    
     internal class ValidateCoreIdentityJwtClaimAction : ClaimAction
     {
         private readonly ICoreIdentityJwtValidator _coreIdentityHelper;

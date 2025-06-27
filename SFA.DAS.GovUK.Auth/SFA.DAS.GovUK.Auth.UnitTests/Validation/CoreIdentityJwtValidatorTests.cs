@@ -145,7 +145,7 @@ public class CoreIdentityJwtValidatorTests
         Action act = () => _sut.ValidateCoreIdentity("fake-jwt");
 
         act.Should().Throw<InvalidOperationException>()
-            .WithMessage("DID has not been fetched.");
+            .WithMessage("The DID has not been fetched.");
     }
 
     [Test]

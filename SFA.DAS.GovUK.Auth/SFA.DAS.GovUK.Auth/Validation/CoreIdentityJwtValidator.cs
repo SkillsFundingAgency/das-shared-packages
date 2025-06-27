@@ -49,7 +49,7 @@ namespace SFA.DAS.GovUK.Auth.Validation
         {
             if (_did is null)
             {
-                throw new InvalidOperationException("DID has not been fetched.");
+                throw new InvalidOperationException("The DID has not been fetched.");
             }
 
             var coreIdentityClaimIssuer = OneLoginUrlHelper.GetCoreIdentityClaimIssuer(_baseUrl);
@@ -73,6 +73,14 @@ namespace SFA.DAS.GovUK.Auth.Validation
             };
 
             var coreIdentityPrincipal = _tokenHandler.ValidateToken(coreIdentityJwt, tokenValidationParameters, out var securityKey);
+
+            var idToken = securityKey as JwtSecurityToken;
+            var vot = idToken?.Claims.FirstOrDefault(c => c.Type == "vot")?.Value;
+
+            if (!vot.Contains("P2"))
+            {
+                throw new SecurityTokenException("The vot claim does not contain the required level of confidence");
+            }
 
             return coreIdentityPrincipal;
         }
