@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.GovUK.Auth.Exceptions
 {
+    [ExcludeFromCodeCoverage]
     public class StubVerifyException : Exception
     {
         public StubVerifyException() :

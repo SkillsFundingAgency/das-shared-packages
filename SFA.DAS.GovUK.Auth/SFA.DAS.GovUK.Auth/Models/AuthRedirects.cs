@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace SFA.DAS.GovUK.Auth.Models
 {
+    [ExcludeFromCodeCoverage]
     public class AuthRedirects
     {
         public string SignedOutRedirectUrl { get; set; } = "";

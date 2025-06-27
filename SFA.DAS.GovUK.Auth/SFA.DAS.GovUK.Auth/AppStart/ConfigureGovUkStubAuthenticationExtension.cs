@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,7 @@ using SFA.DAS.GovUK.Auth.Configuration;
 
 namespace SFA.DAS.GovUK.Auth.AppStart
 {
+    [ExcludeFromCodeCoverage]
     internal static class ConfigureGovUkStubAuthenticationExtension
     {
         public static void ConfigureStubAuthentication(this IServiceCollection services, string signedOutRedirectUrl, string loginRedirect, string localStubLoginPath, string cookieDomain)

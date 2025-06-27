@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace SFA.DAS.GovUK.Auth.Authentication
 {
+    [ExcludeFromCodeCoverage]
     public static class PolicyNames
     {
         public static string IsAuthenticated => nameof(IsAuthenticated);

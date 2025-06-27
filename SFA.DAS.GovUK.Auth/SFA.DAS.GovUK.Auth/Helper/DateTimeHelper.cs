@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.GovUK.Auth.Helper
 {
+    [ExcludeFromCodeCoverage]
     public class DateTimeHelper : IDateTimeHelper
     {
         public DateTime Now => DateTime.Now;
