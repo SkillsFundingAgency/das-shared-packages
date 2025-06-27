@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Exceptions;
 using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Models;
