@@ -77,9 +77,9 @@ namespace SFA.DAS.GovUK.Auth.Validation
             var idToken = securityKey as JwtSecurityToken;
             var vot = idToken?.Claims.FirstOrDefault(c => c.Type == "vot")?.Value;
 
-            if (!vot.Contains("P2"))
+            if (vot == null || !vot.Contains("P2"))
             {
-                throw new SecurityTokenException("The vot claim does not contain the required level of confidence");
+                throw new SecurityTokenException("The vot claim does not exist or does not contain the required level of confidence");
             }
 
             return coreIdentityPrincipal;

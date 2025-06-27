@@ -33,11 +33,12 @@ namespace SFA.DAS.GovUK.Auth.Authentication
                     context.Succeed(req);
                     return;
                 }
+
+                var originalUrl = currentContext.Request.Path + currentContext.Request.QueryString;
+                var target = $"/service/verify-identity?returnUrl={Uri.EscapeDataString(originalUrl)}";
+                currentContext.Response.Redirect(target);
             }
 
-            var originalUrl = currentContext.Request.Path + currentContext.Request.QueryString;
-            var target = $"/service/verify-identity?returnUrl={Uri.EscapeDataString(originalUrl)}";
-            currentContext.Response.Redirect(target);
             context.Fail();
         }
     }
