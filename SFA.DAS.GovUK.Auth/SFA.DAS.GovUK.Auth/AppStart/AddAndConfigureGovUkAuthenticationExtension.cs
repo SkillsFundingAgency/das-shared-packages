@@ -32,30 +32,5 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
             }
         }
-
-        public static void AddGovUkAuthorization(this IServiceCollection services)
-        {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(
-                    PolicyNames.IsAuthenticated, policy =>
-                    {
-                        policy.Requirements.Add(new AccountActiveRequirement());
-                        policy.RequireAuthenticatedUser();
-                    });
-                options.AddPolicy(
-                    PolicyNames.IsActiveAccount, policy =>
-                    {
-                        policy.Requirements.Add(new AccountActiveRequirement());
-                        policy.RequireAuthenticatedUser();
-                    });
-                options.AddPolicy(
-                    PolicyNames.IsVerified, policy =>
-                    {
-                        policy.Requirements.Add(new VerifiedIdentityRequirement());
-                        policy.RequireAuthenticatedUser();
-                    });
-            });
-        }
     }
 }

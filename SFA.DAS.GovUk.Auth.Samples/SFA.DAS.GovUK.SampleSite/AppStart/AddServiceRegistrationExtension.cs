@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.GovUK.Auth.AppStart;
+using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.SampleSite.Validators;
 
@@ -21,5 +22,30 @@ public static class AddServiceRegistrationExtension
         }, typeof(CustomClaims));
         services.AddGovUkAuthorization();
         services.AddValidatorsFromAssemblyContaining<SignInStubViewModelValidator>();
+    }
+
+    public static void AddGovUkAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(
+                PolicyNames.IsAuthenticated, policy =>
+                {
+                    policy.Requirements.Add(new AccountActiveRequirement());
+                    policy.RequireAuthenticatedUser();
+                });
+            options.AddPolicy(
+                PolicyNames.IsActiveAccount, policy =>
+                {
+                    policy.Requirements.Add(new AccountActiveRequirement());
+                    policy.RequireAuthenticatedUser();
+                });
+            options.AddPolicy(
+                PolicyNames.IsVerified, policy =>
+                {
+                    policy.Requirements.Add(new VerifiedIdentityRequirement());
+                    policy.RequireAuthenticatedUser();
+                });
+        });
     }
 }
