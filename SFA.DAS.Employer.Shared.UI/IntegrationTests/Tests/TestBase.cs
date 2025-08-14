@@ -64,7 +64,7 @@ public abstract class TestBase
             })
             .CreateClient(new WebApplicationFactoryClientOptions
             {
-                AllowAutoRedirect = false
+                AllowAutoRedirect = true,
             });
     }
 }

@@ -104,4 +104,17 @@ public class UrlBuilderTests
             .UsersLink("TermsAndConditions")
             .Should().Be($"https://{expectedUrlPart}-login.apprenticeships.education.gov.uk/TermsAndConditions");
     }
+
+    [Test]
+    public void Then_The_Training_Request_Url_Is_Built_Correctly()
+    {
+        // arrange
+        var sut = new UrlBuilder("prd");
+
+        // act
+        var result = sut.RequestApprenticeshipTrainingLink("TrainingRequest", "ABCD", "1234");
+
+        // assert
+        result.Should().Be("https://requesttraining.manage-apprenticeships.service.gov.uk/accounts/ABCD/employer-requests/overview?standardId=1234&requestType=CourseDetail");
+    }
 }
