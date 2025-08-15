@@ -188,8 +188,8 @@ public class WhenPopulatingAccountClaims
 
         var actualClaimValue = actual.First(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier)).Value;
         var action = () => JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(actualClaimValue)
-            .Select(x => x.Value)
-            .ToList();
+            ?.Select(x => x.Value)
+            ?.ToList();
 
         action.Should().NotThrow();
     }

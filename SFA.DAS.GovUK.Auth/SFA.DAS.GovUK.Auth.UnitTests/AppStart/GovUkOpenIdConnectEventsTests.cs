@@ -24,6 +24,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         private Mock<IOptions<GovUkOidcConfiguration>> _configMock;
         private GovUkOpenIdConnectEvents _sut;
         private const string RedirectUrl = "/signed-out";
+        private const string SuspendedUrl = "/suspended";
 
         [SetUp]
         public void SetUp()
@@ -38,7 +39,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             _authServiceMock = new Mock<IGovUkAuthenticationService>();
             _jwtValidatorMock = new Mock<ICoreIdentityJwtValidator>();
 
-            _sut = new GovUkOpenIdConnectEvents(_configMock.Object, _authServiceMock.Object, _jwtValidatorMock.Object, RedirectUrl);
+            _sut = new GovUkOpenIdConnectEvents(_configMock.Object, _authServiceMock.Object, _jwtValidatorMock.Object, RedirectUrl, SuspendedUrl);
         }
 
         [Test]

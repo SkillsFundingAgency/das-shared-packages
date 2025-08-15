@@ -11,12 +11,12 @@ namespace SFA.DAS.GovUK.Auth.Exceptions
         {
         }
 
-        public DidLoadException(string? message) :
+        public DidLoadException(string message) :
             base(message)
         {
         }
 
-        public DidLoadException(string? message, Exception innerException) :
+        public DidLoadException(string message, Exception innerException) :
             base(message, innerException)
         {
         }

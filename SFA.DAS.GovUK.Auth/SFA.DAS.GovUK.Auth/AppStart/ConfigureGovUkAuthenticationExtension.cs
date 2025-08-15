@@ -17,7 +17,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     [ExcludeFromCodeCoverage]
     internal static class ConfigureGovUkAuthenticationExtension
     {
-        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string redirectUrl, string cookieDomain)
+        internal static void ConfigureGovUkAuthentication(this IServiceCollection services, IConfiguration configuration, string signedOutRedirectUrl, string suspendedRedirectUrl, string cookieDomain)
         {
             services.AddScoped(sp =>
             {
@@ -29,7 +29,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     config,
                     govUkAuthenticationService,
                     coreIdentityJwtValidator,
-                    redirectUrl);
+                    signedOutRedirectUrl,
+                    suspendedRedirectUrl);
             });
 
             services.AddScoped(sp =>

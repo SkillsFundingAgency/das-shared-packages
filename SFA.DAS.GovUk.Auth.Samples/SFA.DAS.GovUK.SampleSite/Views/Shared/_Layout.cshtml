@@ -2,7 +2,7 @@
 @using WebEssentials.AspNetCore.CdnTagHelpers
 @using SFA.DAS.Employer.Shared.UI.Models
 @{
-    string accountId = (string)this.ViewContext.RouteData.Values["employerAccountId"] ?? "";
+    string accountId = this.ViewContext.RouteData.Values["employerAccountId"] as string ?? string.Empty;
     ViewBag.HideHeaderBorder = true;
     var footerModel = new FooterModel { AccountId = accountId, UsePrivacyV2 = true };
 }
@@ -40,7 +40,7 @@
         </partial>
 
         <div class="govuk-width-container">
-            @RenderSection("breadcrumb", required: false)
+            @await RenderSectionAsync("breadcrumb", required: false)
             <main class="govuk-main-wrapper" id="main-content" role="main">
                 @RenderBody()
             </main>

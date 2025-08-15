@@ -9,7 +9,7 @@ namespace SFA.DAS.GovUK.Auth.Authentication
 {
     public class VerifiedIdentityAuthorizationHandler : AuthorizationHandler<VerifiedIdentityRequirement>
     {
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, VerifiedIdentityRequirement req)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, VerifiedIdentityRequirement req)
         {
             HttpContext currentContext;
             switch (context.Resource)
@@ -31,7 +31,7 @@ namespace SFA.DAS.GovUK.Auth.Authentication
                 if (!string.IsNullOrEmpty(vot) && vot.Contains("P2"))
                 {
                     context.Succeed(req);
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 var originalUrl = currentContext.Request.Path + currentContext.Request.QueryString;
@@ -40,6 +40,7 @@ namespace SFA.DAS.GovUK.Auth.Authentication
             }
 
             context.Fail();
+            return Task.CompletedTask;
         }
     }
 }

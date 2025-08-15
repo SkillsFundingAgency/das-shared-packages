@@ -58,7 +58,17 @@
             }
         }
 
-        <form method="get" asp-controller="Home" asp-action="Home">
+        <form method="post" asp-controller="Home" asp-action="Start" class="govuk-!-margin-top-6">
+            <div class="govuk-form-group">
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="suspend" name="suspend" type="checkbox" value="true">
+                        <label class="govuk-label govuk-checkboxes__label" for="suspend">
+                            Mark this sign-in as <strong>Suspended</strong>
+                        </label>
+                    </div>
+                </div>
+            </div>
             <button class="govuk-button" data-module="govuk-button" type="submit">
                 Start
             </button>

@@ -18,18 +18,27 @@ namespace SFA.DAS.GovUK.Auth.AppStart
         private readonly GovUkOidcConfiguration _config;
         private readonly ITicketStore _ticketStore;
         private readonly string _signedOutRedirectUrl;
+        private readonly string _suspendedRedirectUrl;
         private readonly string _loginRedirect;
 
         public StubCookieAuthenticationEvents(
             IOptions<GovUkOidcConfiguration> config,
             ITicketStore ticketStore,
             string signedOutRedirectUrl,
+            string suspendedRedirectUrl,
             string loginRedirect)
         {
             _config = config.Value;
             _ticketStore = ticketStore;
             _signedOutRedirectUrl = signedOutRedirectUrl;
+            _suspendedRedirectUrl = suspendedRedirectUrl;
             _loginRedirect = loginRedirect;
+        }
+
+        public override Task SigningIn(CookieSigningInContext context)
+        {
+            context.Properties.Items["suspended_redirect"] = _suspendedRedirectUrl;
+            return Task.CompletedTask;
         }
 
         public override Task SigningOut(CookieSigningOutContext context)
@@ -53,10 +62,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             return base.RedirectToLogin(context);
         }
 
-        public override async Task ValidatePrincipal(CookieValidatePrincipalContext ctx)
+        public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
         {
-            var enableVerify = AuthenticationExtension.EnableVerify(_config, ctx.Properties);
-            var identity = (ClaimsIdentity)ctx.Principal.Identity;
+            var enableVerify = AuthenticationExtension.EnableVerify(_config, context.Properties);
+            var identity = (ClaimsIdentity)context.Principal.Identity;
             var existingVot = identity.FindFirst("vot");
 
             if (existingVot == null)
@@ -65,7 +74,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 var vot = enableVerify ? "Cl.Cm.P2" : "Cl.Cm";
                 identity.AddClaim(new Claim("vot", vot));
                 AddStubUserInfoClaims(enableVerify, identity);
-                ctx.ShouldRenew = true;
+                context.ShouldRenew = true;
             }
             else if (enableVerify && !existingVot.Value.Contains("P2"))
             {
@@ -73,12 +82,12 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 identity.RemoveClaim(existingVot);
                 identity.AddClaim(new Claim("vot", "Cl.Cm.P2"));
                 AddStubUserInfoClaims(enableVerify, identity);
-                ctx.ShouldRenew = true;
+                context.ShouldRenew = true;
             }
 
-            if (ctx.ShouldRenew && ctx.Properties.Items.TryGetValue(AuthenticationTicketStore.SessionId, out var sessionId))
+            if (context.ShouldRenew && context.Properties.Items.TryGetValue(AuthenticationTicketStore.SessionId, out var sessionId))
             {
-                var updatedTicket = new AuthenticationTicket(ctx.Principal, ctx.Properties, ctx.Scheme.Name);
+                var updatedTicket = new AuthenticationTicket(context.Principal, context.Properties, context.Scheme.Name);
                 await _ticketStore.RenewAsync(sessionId, updatedTicket);
             }
         }

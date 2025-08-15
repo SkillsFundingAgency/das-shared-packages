@@ -6,7 +6,7 @@
     Layout = "_Layout";
     ViewBag.Title = "GOV.UK One Login Sample Service";
     var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
-        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? new string[0];
     var stubAuth = bool.Parse(Configuration["StubAuth"] ?? "false");
 }
 

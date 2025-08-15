@@ -8,7 +8,7 @@ namespace SFA.DAS.GovUK.SampleSite.TagHelpers
     public class GovUkFormGroupTagHelper : TagHelper
     {
         [HtmlAttributeName("asp-for")]
-        public ModelExpression For { get; set; }
+        public required ModelExpression For { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]

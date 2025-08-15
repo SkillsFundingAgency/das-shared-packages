@@ -17,8 +17,9 @@ public static class AddServiceRegistrationExtension
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
         services.AddAndConfigureGovUkAuthentication(configuration, new AuthRedirects
         {
-            SignedOutRedirectUrl = "/signed-out",
-            LocalStubLoginPath = "/services/sign-in-Stub"
+            SignedOutRedirectUrl = "/user-signed-out",
+            SuspendedRedirectUrl = "/user-suspended",
+            LocalStubLoginPath = "/stub/sign-in-Stub"
         }, typeof(CustomClaims));
         services.AddGovUkAuthorization();
         services.AddValidatorsFromAssemblyContaining<SignInStubViewModelValidator>();

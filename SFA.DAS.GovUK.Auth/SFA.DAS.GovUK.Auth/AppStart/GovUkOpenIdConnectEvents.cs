@@ -19,18 +19,21 @@ namespace SFA.DAS.GovUK.Auth.AppStart
         private readonly GovUkOidcConfiguration _config;
         private readonly IGovUkAuthenticationService _govUkAuthenticationService;
         private readonly ICoreIdentityJwtValidator _jwtValidator;
-        private readonly string _redirectUrl;
+        private readonly string _signedOutRedirectUrl;
+        private readonly string _suspendedRedirectUrl;
 
         public GovUkOpenIdConnectEvents(
             IOptions<GovUkOidcConfiguration> config,
             IGovUkAuthenticationService govUkAuthenticationService,
             ICoreIdentityJwtValidator coreIdentityJwtValidator,
-            string redirectUrl)
+            string signedOutRedirectUrl,
+            string suspendedRedirectUrl)
         {
             _config = config.Value;
             _govUkAuthenticationService = govUkAuthenticationService;
             _jwtValidator = coreIdentityJwtValidator;
-            _redirectUrl = redirectUrl;
+            _signedOutRedirectUrl = signedOutRedirectUrl;
+            _suspendedRedirectUrl = suspendedRedirectUrl;
         }
 
         public override Task RemoteFailure(RemoteFailureContext context)
@@ -133,7 +136,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
         public override Task SignedOutCallbackRedirect(RemoteSignOutContext context)
         {
             context.Response.Cookies.Delete(GovUkConstants.AuthCookieName);
-            context.Response.Redirect(_redirectUrl);
+            context.Response.Redirect(_signedOutRedirectUrl);
             context.HandleResponse();
             return Task.CompletedTask;
         }
@@ -141,6 +144,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
         public override async Task TokenValidated(TokenValidatedContext context)
         {
             await _govUkAuthenticationService.PopulateAccountClaims(context);
+
+            context.Properties ??= new AuthenticationProperties();
+            context.Properties.Items["suspended_redirect"] = _suspendedRedirectUrl;
         }
     }
 }

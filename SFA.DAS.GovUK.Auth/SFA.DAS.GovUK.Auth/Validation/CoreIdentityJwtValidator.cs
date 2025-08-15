@@ -23,7 +23,7 @@ namespace SFA.DAS.GovUK.Auth.Validation
         private readonly ILogger<CoreIdentityJwtValidator> _logger;
         private readonly JwtSecurityTokenHandler _tokenHandler;
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1); 
-        private Did? _did;
+        private Did _did;
         private DateTimeOffset? _didExpires;
 
         public CoreIdentityJwtValidator(HttpClient httpClient, GovUkOidcConfiguration config, IDateTimeHelper dateTimeHelper, ILogger<CoreIdentityJwtValidator> logger)

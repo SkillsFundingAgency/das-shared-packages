@@ -15,14 +15,14 @@ using SFA.DAS.GovUK.SampleSite.Models;
 namespace SFA.DAS.GovUK.SampleSite.Controllers
 {
     [AllowAnonymous]
-    [Route("services", Name = "Service", Order = 0)]
-    public class ServiceController : Controller
+    [Route("stub", Name = "Stub", Order = 0)]
+    public class StubController : Controller
     {
         private readonly IConfiguration _config;
         private readonly IStubAuthenticationService _stubAuthenticationService;
         private readonly IValidator<SignInStubViewModel> _signInStubViewModelValidator;
 
-        public ServiceController(IConfiguration config, IStubAuthenticationService stubAuthenticationService, IValidator<SignInStubViewModel> signInStubViewModelValidator)
+        public StubController(IConfiguration config, IStubAuthenticationService stubAuthenticationService, IValidator<SignInStubViewModel> signInStubViewModelValidator)
         {
             _config = config;
             _stubAuthenticationService = stubAuthenticationService;

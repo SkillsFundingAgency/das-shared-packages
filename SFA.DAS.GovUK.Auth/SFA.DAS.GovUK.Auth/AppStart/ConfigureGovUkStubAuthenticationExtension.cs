@@ -11,7 +11,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
     [ExcludeFromCodeCoverage]
     internal static class ConfigureGovUkStubAuthenticationExtension
     {
-        public static void ConfigureStubAuthentication(this IServiceCollection services, string signedOutRedirectUrl, string loginRedirect, string localStubLoginPath, string cookieDomain)
+        public static void ConfigureStubAuthentication(this IServiceCollection services, 
+            string signedOutRedirectUrl, string suspendedRedirectUrl, string loginRedirect, string localStubLoginPath, string cookieDomain)
         {
             services.AddScoped(sp =>
             {
@@ -22,6 +23,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     config,
                     ticketStore,
                     signedOutRedirectUrl,
+                    suspendedRedirectUrl,
                     loginRedirect);
             });
 

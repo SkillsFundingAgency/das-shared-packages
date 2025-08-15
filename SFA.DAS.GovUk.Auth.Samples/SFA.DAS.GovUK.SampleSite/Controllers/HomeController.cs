@@ -9,6 +9,7 @@ using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.SampleSite.Controllers;
 
+//[Route("home")]
 public class HomeController : Controller
 {
     private readonly IConfiguration _configuration;
@@ -27,6 +28,14 @@ public class HomeController : Controller
             return RedirectToAction("Home");
         
         return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Start(bool suspend = false)
+    {
+        HttpContext.Session.SetString("user:suspended", suspend ? "1" : "0");
+        return RedirectToAction("Home"); 
     }
 
     [HttpGet]
@@ -90,8 +99,15 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    [Route("signed-out", Name = "SignedOut")]
-    public IActionResult SignedOut()
+    [Route("user-signed-out", Name = "UserSignedOut")]
+    public IActionResult UserSignedOut()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    [Route("user-suspended", Name = "UserSuspended")]
+    public IActionResult UserSuspended()
     {
         return View();
     }

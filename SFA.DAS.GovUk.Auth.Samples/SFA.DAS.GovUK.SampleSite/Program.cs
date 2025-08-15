@@ -8,6 +8,14 @@ using SFA.DAS.Validation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".sample.session";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; 
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+});
+
 builder.Services.Configure<GovUkOidcConfiguration>(builder.Configuration.GetSection(nameof(GovUkOidcConfiguration)));
 
 builder.Services.AddServiceRegistration(builder.Configuration);
@@ -28,6 +36,7 @@ builder.Services
 var app = builder.Build();
 
 app.UseRouting();
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
@@ -37,4 +46,4 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=Index}/{id?}");
 });
 
-app.Run();
+await app.RunAsync();

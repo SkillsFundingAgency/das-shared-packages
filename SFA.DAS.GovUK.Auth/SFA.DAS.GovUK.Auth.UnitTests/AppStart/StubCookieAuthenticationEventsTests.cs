@@ -24,6 +24,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         private GovUkOidcConfiguration _config;
 
         private const string SignedOutUrl = "/signed-out";
+        private const string SuspendedUrl = "/suspended";
         private const string LoginRedirect = "/custom-login";
 
         [SetUp]
@@ -44,6 +45,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
                 _configMock.Object,
                 _ticketStoreMock.Object,
                 SignedOutUrl,
+                SuspendedUrl,
                 LoginRedirect);
         }
 

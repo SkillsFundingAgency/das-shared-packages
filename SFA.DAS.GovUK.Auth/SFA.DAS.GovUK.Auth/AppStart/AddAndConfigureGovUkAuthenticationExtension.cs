@@ -20,6 +20,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 services.AddTransient<IGovUkAuthenticationService, StubAuthenticationService>();
                 services.ConfigureStubAuthentication(
                     authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
+                    authRedirects.SuspendedRedirectUrl.GetSuspendedRedirectUrl(configuration["ResourceEnvironmentName"]),
                     authRedirects.LoginRedirect.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]),
                     authRedirects.LocalStubLoginPath,
                     authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
@@ -27,8 +28,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             else
             {
                 services.AddHttpClient<IGovUkAuthenticationService, OidcGovUkAuthenticationService>();
-                services.ConfigureGovUkAuthentication(configuration, 
-                    authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]), 
+                services.ConfigureGovUkAuthentication(configuration,
+                    authRedirects.SignedOutRedirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]),
+                    authRedirects.SuspendedRedirectUrl.GetSuspendedRedirectUrl(configuration["ResourceEnvironmentName"]),
                     authRedirects.CookieDomain.GetEnvironmentAndDomain(configuration["ResourceEnvironmentName"]));
             }
         }

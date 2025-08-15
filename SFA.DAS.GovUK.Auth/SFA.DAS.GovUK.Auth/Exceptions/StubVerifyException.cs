@@ -11,12 +11,12 @@ namespace SFA.DAS.GovUK.Auth.Exceptions
         {
         }
 
-        public StubVerifyException(string? message) :
+        public StubVerifyException(string message) :
             base(message)
         {
         }
 
-        public StubVerifyException(string? message, Exception innerException) :
+        public StubVerifyException(string message, Exception innerException) :
             base(message, innerException)
         {
         }
