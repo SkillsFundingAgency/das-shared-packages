@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NServiceBus.Transport;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
@@ -7,6 +8,6 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
     {
         public byte[] Data { get; set; }
         public Dictionary<string, string> Headers { get; set; }
-        public IDispatchMessages Dispatcher { get; set; }
+        public IMessageDispatcher Dispatcher { get; set; }
     }
 }

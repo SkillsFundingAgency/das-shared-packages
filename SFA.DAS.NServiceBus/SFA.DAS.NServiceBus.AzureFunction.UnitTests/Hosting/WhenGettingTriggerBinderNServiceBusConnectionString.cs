@@ -23,7 +23,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             //Assert
             var binding = result as NServiceBusTriggerBinding;
 
-            Assert.IsNotNull(binding);
+            Assert.That(binding, Is.Not.Null);
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             var result = await provider.TryCreateAsync(context);
 
             //Assert
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -58,8 +58,8 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             //Assert
             var binding = result as NServiceBusTriggerBinding;
 
-            Assert.IsNotNull(binding);
-            Assert.AreEqual("new connection", binding.Attribute.Connection);
+            Assert.That(binding, Is.Not.Null);
+            Assert.That(binding.Attribute.Connection, Is.EqualTo("new connection"));
         }
 
         [Test]
@@ -76,8 +76,9 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
             //Assert
             var binding = result as NServiceBusTriggerBinding;
 
-            Assert.IsNotNull(binding);
-            Assert.AreEqual(TestClass.ConnectionString, binding.Attribute.Connection);
+            Assert.That(binding, Is.Not.Null);
+
+            Assert.That(binding.Attribute.Connection, Is.EqualTo(TestClass.ConnectionString));
         }
     }
 }

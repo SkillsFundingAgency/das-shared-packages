@@ -31,7 +31,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Hosting
         public IReadOnlyDictionary<string, Type> BindingDataContract => new Dictionary<string, Type>
         {
             {BindingNames.Headers, typeof(Dictionary<string, string>) },
-            {BindingNames.Dispatcher, typeof(IDispatchMessages) }
+            {BindingNames.Dispatcher, typeof(IMessageDispatcher) }
         };
 
         public NServiceBusTriggerBinding(ParameterInfo parameter, NServiceBusTriggerAttribute attribute, NServiceBusOptions nServiceBusOptions = null)

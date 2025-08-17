@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 
@@ -15,20 +14,17 @@ public class ForceAutoEventSubscription : IMessage { }
 
 public class ForceAutoEventSubscriptionFunction
 {
-    private readonly IFunctionEndpoint functionEndpoint;
+    private readonly IEndpointInstance functionEndpoint;
 
-    public ForceAutoEventSubscriptionFunction(IFunctionEndpoint functionEndpoint)
+    public ForceAutoEventSubscriptionFunction(IEndpointInstance functionEndpoint)
         => this.functionEndpoint = functionEndpoint;
 
-    [FunctionName("ForceAutoSubscriptionFunction")]
+    [Function("ForceAutoSubscriptionFunction")]
     public async Task Run(
         [TimerTrigger("* * * 1 1 *", RunOnStartup = true)] TimerInfo myTimer,
         ILogger logger, ExecutionContext executionContext)
     {
-        var sendOptions = SendLocally.Options;
-        sendOptions.SetHeader(Headers.ControlMessageHeader, bool.TrueString);
-        sendOptions.SetHeader(Headers.MessageIntent, nameof(MessageIntentEnum.Send));
-        await functionEndpoint.Send(new ForceAutoEventSubscription(), sendOptions, executionContext, logger);
+        await functionEndpoint.Send(new ForceAutoEventSubscription());
     }
 }
 
