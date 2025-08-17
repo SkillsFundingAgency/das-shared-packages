@@ -5,4 +5,5 @@ public class AppSettings
     public string? UserBearerTokenSigningKey { get; set; }
     public ProviderUser? ProviderUser { get; set; }
     public EmployerUser? EmployerUser { get; set; }
+    public ServiceAccount? ServiceAccount { get; set; }
 }
