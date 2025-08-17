@@ -16,7 +16,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Behaviors
         [Test]
         public Task Invoke_WhenInvokingAHandler_ThenShouldSetUnitOfWorkContextSynchronizedStorageSessionBeforeNextTask()
         {
-            return RunAsync(f => f.Invoke(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.SynchronizedStorageSession.Object), Times.Once));
+            return TestAsync(f => f.Invoke(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.SynchronizedStorageSession.Object), Times.Once));
         }
     }
 
