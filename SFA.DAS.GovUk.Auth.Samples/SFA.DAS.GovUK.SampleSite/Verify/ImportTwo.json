@@ -5,33 +5,74 @@
     "vc": {
       "credentialSubject": {
         "name": [
-         {
+          {
             "validFrom": "2021-03-01",
             "nameParts": [
-              { "value": "Alice", "type": "GivenName" },
-              { "value": "Jane", "type": "GivenName" },
-              { "value": "Laura", "type": "GivenName" },
-              { "value": "Doe", "type": "FamilyName" }
-              { "value": "Ray", "type": "FamilyName", "ValidUntil": "2022-03-01" }
+              {
+                "value": "Alice",
+                "type": "GivenName"
+              },
+              {
+                "value": "Kate",
+                "type": "GivenName"
+              },
+              {
+                "value": "Laura",
+                "type": "GivenName"
+              },
+              {
+                "value": "Doe",
+                "type": "FamilyName",
+                "validFrom": "2022-03-01"
+              },
+              {
+                "value": "Ray",
+                "type": "FamilyName",
+                "validUntil": "2022-03-01"
+              }
             ]
           },
           {
             "validUntil": "2021-03-01",
             "validFrom": "2020-03-01",
             "nameParts": [
-              { "value": "Alice", "type": "GivenName" },
-              { "value": "Jane", "type": "GivenName" },
-              { "value": "Laura", "type": "GivenName" },
-              { "value": "Doe", "type": "FamilyName" }
+              {
+                "value": "Alice",
+                "type": "GivenName"
+              },
+              {
+                "value": "Jane",
+                "type": "GivenName"
+              },
+              {
+                "value": "Laura",
+                "type": "GivenName"
+              },
+              {
+                "value": "Doe",
+                "type": "FamilyName"
+              }
             ]
           },
           {
             "validUntil": "2020-03-01",
             "nameParts": [
-              { "value": "Alice", "type": "GivenName" },
-              { "value": "Jane", "type": "GivenName" },
-              { "value": "Laura", "type": "GivenName" },
-              { "value": "O’Donnell", "type": "FamilyName" }
+              {
+                "value": "Alice",
+                "type": "GivenName"
+              },
+              {
+                "value": "Jane",
+                "type": "GivenName"
+              },
+              {
+                "value": "Laura",
+                "type": "GivenName"
+              },
+              {
+                "value": "O’Donnell",
+                "type": "FamilyName"
+              }
             ]
           }
         ],
