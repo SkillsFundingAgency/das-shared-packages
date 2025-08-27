@@ -31,7 +31,7 @@ namespace SFA.DAS.GovUK.Auth.Authentication
             if (currentContext != null)
             {
                 var isAccountSuspended = context.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value;
-                if (isAccountSuspended != null && isAccountSuspended.Equals("Suspended", StringComparison.CurrentCultureIgnoreCase))
+                if (isAccountSuspended != null && isAccountSuspended.Equals(AuthorizationDecisions.Suspended, StringComparison.CurrentCultureIgnoreCase))
                 {
                     var authResult = await currentContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     var props = authResult?.Properties;

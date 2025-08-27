@@ -87,7 +87,7 @@ public class WhenHandlingAccountActiveRequirement
     {
         // Arrange
         var suspended = new ClaimsPrincipal(new ClaimsIdentity(
-            [new Claim(ClaimTypes.AuthorizationDecision, "Suspended")]));
+            [new Claim(ClaimTypes.AuthorizationDecision, AuthorizationDecisions.Suspended)]));
         var ctx = new AuthorizationHandlerContext([requirement], suspended, _mockHttpContext.Object);
 
         // Act
@@ -104,7 +104,7 @@ public class WhenHandlingAccountActiveRequirement
     {
         // Arrange
         var suspended = new ClaimsPrincipal(new ClaimsIdentity(
-            [new Claim(ClaimTypes.AuthorizationDecision, "Suspended")]));
+            [new Claim(ClaimTypes.AuthorizationDecision, AuthorizationDecisions.Suspended)]));
         var filterContext = new AuthorizationFilterContext(new ActionContext(_mockHttpContext.Object, new RouteData(), new ActionDescriptor()), new List<IFilterMetadata>());
         var context = new AuthorizationHandlerContext([requirement], suspended, filterContext);
 

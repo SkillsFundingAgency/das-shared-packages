@@ -1,6 +1,7 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Services;
+using System.Security.Claims;
 
 namespace SFA.DAS.GovUK.SampleSite.AppStart;
 
@@ -30,11 +31,12 @@ public class CustomClaims : ICustomClaims
         };
 
         // an actual service would read the user details in the service database this sample
-        // is using the flag on the index page to indicate suspension
+        // is using the flag on the index page to indicate suspension, so that either
+        // GovUk Auth or Stub Auth can be suspended in the sample app without a service database
         var suspended = _httpContextAccessor?.HttpContext?.Session.GetString("user:suspended");
         if (string.Equals(suspended, "1", StringComparison.Ordinal))
         {
-            claims.Add(new Claim(ClaimTypes.AuthorizationDecision, "Suspended"));
+            claims.Add(new Claim(ClaimTypes.AuthorizationDecision, AuthorizationDecisions.Suspended));
         }
 
         return await Task.FromResult(claims);

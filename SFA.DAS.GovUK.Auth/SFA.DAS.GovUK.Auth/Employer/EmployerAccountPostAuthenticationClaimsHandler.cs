@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Newtonsoft.Json;
+using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.Employer;
@@ -36,7 +37,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
 
         if (result.IsSuspended)
         {
-            claims.Add(new Claim(ClaimTypes.AuthorizationDecision, "Suspended"));
+            claims.Add(new Claim(ClaimTypes.AuthorizationDecision, AuthorizationDecisions.Suspended));
         }
 
         if (!string.IsNullOrEmpty(result.FirstName) && !string.IsNullOrEmpty(result.LastName))
