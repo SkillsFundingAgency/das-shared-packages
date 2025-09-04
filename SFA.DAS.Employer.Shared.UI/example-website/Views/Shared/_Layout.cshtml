@@ -23,9 +23,10 @@
     <script nws-csp-add-nonce="true">
         document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');
     </script>
-    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
-    <partial name="_Header"></partial>
-    <partial name="_Menu" model="@accountId"></partial>
+<a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+    <partial name="_Header" model="@accountId"></partial>
+    
     <div class="govuk-width-container app-account-header">
         @RenderSection("BodyHeader", required: false)
     </div>
