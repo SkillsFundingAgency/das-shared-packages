@@ -32,7 +32,8 @@ namespace SFA.DAS.Api.Common.AppStart
                         $"https://login.microsoftonline.com/{config.Tenant}";
                     auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
-                        ValidAudiences = config.Identifier.Split(",")
+                        ValidAudiences = config.Identifier.Split(","),
+                        ValidateIssuer = false // TODO to replace with valid list of issuers
                     };
                 });
 
