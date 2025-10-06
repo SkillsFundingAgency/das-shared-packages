@@ -34,7 +34,7 @@ namespace SFA.DAS.Api.Common.AppStart
                     {
                         ValidAudiences = config.Identifier.Split(","),
                         ValidateIssuer = !string.IsNullOrEmpty(config.TenantId), // For backwards compatibility. 
-                        ValidIssuers = string.IsNullOrEmpty(config.TenantId) ? [] : [$"https://login.microsoftonline.com/{config.TenantId}/", $"https://sts.windows.net/{config.TenantId}"]
+                        ValidIssuers = string.IsNullOrEmpty(config.TenantId) ? [] : [$"https://login.microsoftonline.com/{config.TenantId}/", $"https://sts.windows.net/{config.TenantId}/"]
                     };
                 });
             services.AddSingleton<IClaimsTransformation, AzureAdScopeClaimTransformation>();
