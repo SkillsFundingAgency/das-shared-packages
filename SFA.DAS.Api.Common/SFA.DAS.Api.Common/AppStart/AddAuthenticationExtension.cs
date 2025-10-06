@@ -33,11 +33,10 @@ namespace SFA.DAS.Api.Common.AppStart
                     auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
                         ValidAudiences = config.Identifier.Split(","),
-                        ValidateIssuer = !string.IsNullOrEmpty(config.Issuers), // For backwards compatibility. 
-                        ValidIssuers = string.IsNullOrEmpty(config.Issuers) ? [] : config.Issuers.Split(",")
+                        ValidateIssuer = !string.IsNullOrEmpty(config.TenantId), // For backwards compatibility. 
+                        ValidIssuers = string.IsNullOrEmpty(config.TenantId) ? [] : [$"https://login.microsoftonline.com/{config.TenantId}/", $"https://sts.windows.net/{config.TenantId}"]
                     };
                 });
-
             services.AddSingleton<IClaimsTransformation, AzureAdScopeClaimTransformation>();
         }
     }
