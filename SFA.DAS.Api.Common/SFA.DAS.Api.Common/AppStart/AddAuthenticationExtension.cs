@@ -28,13 +28,10 @@ namespace SFA.DAS.Api.Common.AppStart
             services.AddAuthentication(auth => { auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
                 .AddJwtBearer(auth =>
                 {
-                    auth.Authority =
-                        $"https://login.microsoftonline.com/{config.Tenant}";
+                    auth.Authority = $"https://login.microsoftonline.com/{config.Tenant}";
                     auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
-                        ValidAudiences = config.Identifier.Split(","),
-                        ValidateIssuer = !string.IsNullOrEmpty(config.TenantId), // For backwards compatibility. 
-                        ValidIssuers = string.IsNullOrEmpty(config.TenantId) ? [] : [$"https://login.microsoftonline.com/{config.TenantId}/", $"https://sts.windows.net/{config.TenantId}/"]
+                        ValidAudiences = config.Identifier.Split(",")
                     };
                 });
             services.AddSingleton<IClaimsTransformation, AzureAdScopeClaimTransformation>();
