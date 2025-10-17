@@ -28,8 +28,13 @@ namespace SFA.DAS.GovUK.Auth.Extensions
             return $"https://employerprofiles.{"".GetEnvironmentAndDomain(environment)}/service/user-signed-out";
         }
 
-        public static string GetAccountSuspendedRedirectUrl(string environment)
+        public static string GetSuspendedRedirectUrl(this string suspendedRedirectUri, string environment)
         {   
+            if(!string.IsNullOrEmpty(suspendedRedirectUri))
+            {
+                return suspendedRedirectUri;
+            }
+
             return $"https://employerprofiles.{"".GetEnvironmentAndDomain(environment)}/service/account-unavailable";
         }
     

@@ -1,7 +1,8 @@
+@inject IConfiguration Configuration
 @using WebEssentials.AspNetCore.CdnTagHelpers
 @using SFA.DAS.Employer.Shared.UI.Models
 @{
-    string accountId = (string)this.ViewContext.RouteData.Values["employerAccountId"] ?? "";
+    string accountId = this.ViewContext.RouteData.Values["employerAccountId"] as string ?? string.Empty;
     ViewBag.HideHeaderBorder = true;
     var footerModel = new FooterModel { AccountId = accountId, UsePrivacyV2 = true };
 }
@@ -39,7 +40,7 @@
         </partial>
 
         <div class="govuk-width-container">
-            @RenderSection("breadcrumb", required: false)
+            @await RenderSectionAsync("breadcrumb", required: false)
             <main class="govuk-main-wrapper" id="main-content" role="main">
                 @RenderBody()
             </main>
@@ -48,15 +49,18 @@
         @* ReSharper disable once Mvc.PartialViewNotResolved *@
         <partial name="_Footer" model="@footerModel"/>
         
+        <script type="module" src="/libs/govuk-frontend/govuk-frontend.min.js"></script>
+            <script type="module" cdnify>
+            import {
+                initAll
+            } from '@Configuration["cdn:url"]/libs/govuk-frontend/govuk-frontend.min.js'
+
+            initAll()
+        </script>
         <script src="/libs/jquery/jquery.min.js"></script>
-        <script src="/libs/govuk-frontend/all.js"></script>
         <script src="/js/das-all.min.js"></script>
         <script src="/js/app.min.js"></script>
-        
-        <script src="/js/app.js" no-cdn></script>
-
         <script>
-            window.GOVUKFrontend.initAll();
             window.DASFrontend.initAll();
         </script>
     </body>

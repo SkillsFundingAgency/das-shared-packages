@@ -1,0 +1,132 @@
+{
+	"https://vocab.account.gov.uk/v1/coreIdentityJWT": {
+		"sub": null,
+		"vot": null,
+		"vc": {
+			"credentialSubject": {
+				"name": [
+					{
+						"validFrom": "2021-03-01",
+						"nameParts": [
+							{
+								"value": "Alice",
+								"type": "GivenName"
+							},
+							{
+								"value": "Jane",
+								"type": "GivenName",
+								"validUntil": "2021-09-01"
+							},
+							{
+								"value": "Emma",
+								"type": "GivenName",
+								"validFrom": "2021-09-01"
+							},
+							{
+								"value": "Laura",
+								"type": "GivenName"
+							},
+							{
+								"value": "Doe",
+								"type": "FamilyName",
+								"validUntil": "2022-03-01"
+							},
+							{
+								"value": "Ray",
+								"type": "FamilyName",
+								"validFrom": "2022-03-01"
+							}
+						]
+					},
+					{
+						"validFrom": "2020-03-01",
+						"validUntil": "2021-03-01",
+						"nameParts": [
+							{
+								"value": "Alice",
+								"type": "GivenName"
+							},
+							{
+								"value": "Jane",
+								"type": "GivenName"
+							},
+							{
+								"value": "Laura",
+								"type": "GivenName"
+							},
+							{
+								"value": "Doe",
+								"type": "FamilyName"
+							}
+						]
+					},
+					{
+						"validUntil": "2020-03-01",
+						"nameParts": [
+							{
+								"value": "Alice",
+								"type": "GivenName"
+							},
+							{
+								"value": "Jane",
+								"type": "GivenName"
+							},
+							{
+								"value": "Laura",
+								"type": "GivenName"
+							},
+							{
+								"value": "O’Donnell",
+								"type": "FamilyName"
+							}
+						]
+					}
+				],
+				"birthDate": [
+					{ "value": "1970-01-01" }
+				]
+			}
+		}
+	},
+	"https://vocab.account.gov.uk/v1/address": [
+		{
+			"uprn": "10022812929",
+			"subBuildingName": "FLAT 5",
+			"buildingName": "WEST LEA",
+			"buildingNumber": "16",
+			"dependentStreetName": "KINGS PARK",
+			"streetName": "HIGH STREET",
+			"doubleDependentAddressLocality": "EREWASH",
+			"dependentAddressLocality": "LONG EATON",
+			"addressLocality": "GREAT MISSENDEN",
+			"postalCode": "HP16 0AL",
+			"addressCountry": "GB",
+			"validFrom": "2022-01-01"
+		},
+		{
+			"uprn": "10002345923",
+			"buildingName": "SAWLEY MARINA",
+			"streetName": "INGWORTH ROAD",
+			"dependentAddressLocality": "LONG EATON",
+			"addressLocality": "NOTTINGHAM",
+			"postalCode": "BH12 1JY",
+			"addressCountry": "GB",
+			"validUntil": "2022-01-01"
+		}
+	],
+	"https://vocab.account.gov.uk/v1/drivingPermit": [
+		{
+			"expiryDate": "2023-01-18",
+			"issueNumber": "5",
+			"issuedBy": "DVLA",
+			"personalNumber": "DOE99802085J99FG"
+		}
+	],
+	"https://vocab.account.gov.uk/v1/passport": [
+		{
+			"documentNumber": "1223456",
+			"icaoIssuerCode": "GBR",
+			"expiryDate": "2032-02-02"
+		}
+	]
+}
