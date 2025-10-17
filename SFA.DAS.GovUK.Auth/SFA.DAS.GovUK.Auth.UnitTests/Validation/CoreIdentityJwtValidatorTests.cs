@@ -16,7 +16,7 @@ public class CoreIdentityJwtValidatorTests
 {
     private CoreIdentityJwtValidator _sut;
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
-    private HttpClient _httpClient;
+    private Mock<IHttpClientFactory> _httpClientFactory;
     private GovUkOidcConfiguration _config;
     private Mock<ILogger<CoreIdentityJwtValidator>> _loggerMock;
     private Mock<IDateTimeHelper> _dateTimeHelperMock;
@@ -26,7 +26,11 @@ public class CoreIdentityJwtValidatorTests
     public void Setup()
     {
         _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
-        _httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactory = new Mock<IHttpClientFactory>();
+        _httpClientFactory
+            .Setup(m => m.CreateClient(It.IsAny<string>()))
+            .Returns(new HttpClient(_httpMessageHandlerMock.Object));
+
         _config = new GovUkOidcConfiguration { BaseUrl = "https://identity.account.gov.uk" };
         _loggerMock = new Mock<ILogger<CoreIdentityJwtValidator>>();
         _dateTimeHelperMock = new Mock<IDateTimeHelper>();
@@ -34,17 +38,7 @@ public class CoreIdentityJwtValidatorTests
         _now = new DateTimeOffset(2025, 6, 23, 12, 0, 0, TimeSpan.Zero);
         _dateTimeHelperMock.Setup(d => d.UtcNowOffset).Returns(() => _now);
 
-        _sut = new CoreIdentityJwtValidator(_httpClient, _config, _dateTimeHelperMock.Object, _loggerMock.Object);
-    }
-
-    [TearDown]
-    public void Teardown()
-    {
-        if(_httpClient != null ) 
-            _httpClient.Dispose();
-        
-        if(_sut != null)
-            _sut.Dispose();
+        _sut = new CoreIdentityJwtValidator(_httpClientFactory.Object, _config, _dateTimeHelperMock.Object, _loggerMock.Object);
     }
 
     private static string ValidDidJson => @"{

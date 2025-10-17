@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace SFA.DAS.GovUK.Auth.Validation
 {
     public sealed class CoreIdentityJwtValidator : ICoreIdentityJwtValidator
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _baseUrl;
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ILogger<CoreIdentityJwtValidator> _logger;
@@ -26,13 +27,13 @@ namespace SFA.DAS.GovUK.Auth.Validation
         private Did _did;
         private DateTimeOffset? _didExpires;
 
-        public CoreIdentityJwtValidator(HttpClient httpClient, GovUkOidcConfiguration config, IDateTimeHelper dateTimeHelper, ILogger<CoreIdentityJwtValidator> logger)
+        public CoreIdentityJwtValidator(IHttpClientFactory httpClientFactory, GovUkOidcConfiguration config, IDateTimeHelper dateTimeHelper, ILogger<CoreIdentityJwtValidator> logger)
         {
-            ArgumentNullException.ThrowIfNull(httpClient);
+            ArgumentNullException.ThrowIfNull(httpClientFactory);
             ArgumentNullException.ThrowIfNull(config);
             ArgumentNullException.ThrowIfNull(logger);
 
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
             _baseUrl = config.BaseUrl;
             _dateTimeHelper = dateTimeHelper;
             _logger = logger;
@@ -42,8 +43,6 @@ namespace SFA.DAS.GovUK.Auth.Validation
                 MapInboundClaims = false
             };
         }
-
-        public void Dispose() => _httpClient.Dispose();
 
         public ClaimsPrincipal ValidateCoreIdentity(string coreIdentityJwt)
         {
@@ -114,7 +113,13 @@ namespace SFA.DAS.GovUK.Auth.Validation
             {
                 await _lock.WaitAsync();
 
-                var response = await _httpClient.GetAsync(endpoint);
+                // creating a client with a specific user agent as unknown agents are forbidden (403)
+                var httpClient = _httpClientFactory.CreateClient();
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("SFA.Apprenticeships/1.0 (+https://www.gov.uk)");
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await httpClient.GetAsync(endpoint);
                 response.EnsureSuccessStatusCode();
 
                 DateTimeOffset? didDocumentExpires = null;
