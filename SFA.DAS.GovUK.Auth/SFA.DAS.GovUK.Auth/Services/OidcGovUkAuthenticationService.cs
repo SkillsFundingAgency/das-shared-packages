@@ -7,16 +7,10 @@ using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Azure.Core;
-using Azure.Identity;
-using Azure.Security.KeyVault.Keys;
-using Azure.Security.KeyVault.Keys.Cryptography;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.Extensions.Azure;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.KeyVaultExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Models;
 
@@ -24,28 +18,26 @@ using SFA.DAS.GovUK.Auth.Models;
 
 namespace SFA.DAS.GovUK.Auth.Services;
 
-internal class OidcService : IOidcService
+internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
 {
     private readonly HttpClient _httpClient;
-    private readonly IAzureIdentityService _azureIdentityService;
+    private readonly ISigningCredentialsProvider _signingProvider;
     private readonly IJwtSecurityTokenService _jwtSecurityTokenService;
     private readonly ICustomClaims _customClaims;
     private readonly GovUkOidcConfiguration _configuration;
 
-    public OidcService(
-        HttpClient httpClient,
-        IAzureIdentityService azureIdentityService,
-        IJwtSecurityTokenService jwtSecurityTokenService,
-        GovUkOidcConfiguration configuration,
-        ICustomClaims customClaims)
+    public OidcGovUkAuthenticationService(HttpClient httpClient,
+                       ISigningCredentialsProvider signingProvider,
+                       IJwtSecurityTokenService jwtSecurityTokenService,
+                       GovUkOidcConfiguration configuration,
+                       ICustomClaims customClaims)
     {
         _httpClient = httpClient;
-        _azureIdentityService = azureIdentityService;
+        _signingProvider = signingProvider;
         _jwtSecurityTokenService = jwtSecurityTokenService;
         _customClaims = customClaims;
         _configuration = configuration;
         _httpClient.BaseAddress = new Uri(configuration.BaseUrl);
-
     }
 
     public async Task<Token> GetToken(OpenIdConnectMessage openIdConnectMessage)
@@ -72,7 +64,7 @@ internal class OidcService : IOidcService
             new("client_assertion", CreateJwtAssertion()),
             new("code_verifier", openIdConnectMessage != null && openIdConnectMessage.Parameters.TryGetValue("code_verifier", out var codeVerifier) ? codeVerifier : "" )
         });
-        
+
         httpRequestMessage.Content.Headers.Clear();
         httpRequestMessage.Content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
 
@@ -94,7 +86,7 @@ internal class OidcService : IOidcService
         var accessToken = tokenValidatedContext.TokenEndpointResponse.Parameters["access_token"];
 
         var content = await GetAccountDetails(accessToken);
-            
+
         if (content?.Email != null)
         {
             tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));
@@ -102,54 +94,55 @@ internal class OidcService : IOidcService
 
         tokenValidatedContext.Principal.Identities.First()
             .AddClaims(await _customClaims.GetClaims(tokenValidatedContext));
-
     }
 
     public async Task<GovUkUser> GetAccountDetails(string accessToken)
     {
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo")
         {
-
             Headers =
             {
                 UserAgent = {new ProductInfoHeaderValue("DfEApprenticeships", "1")},
                 Authorization = new AuthenticationHeaderValue("Bearer", accessToken)
             }
         };
+
         var response = await _httpClient.SendAsync(httpRequestMessage);
         if (!response.IsSuccessStatusCode)
         {
             return null;
         }
+
         var valueString = response.Content.ReadAsStringAsync().Result;
         return JsonSerializer.Deserialize<GovUkUser>(valueString);
+    }
+
+    public Task<IActionResult> ChallengeWithVerifyAsync(string returnUrl, Controller controller)
+    {
+        var props = new AuthenticationProperties
+        {
+            RedirectUri = returnUrl,
+            AllowRefresh = true
+        };
+        props.Items["enableVerify"] = true.ToString();
+
+        return Task.FromResult<IActionResult>(controller.Challenge(props, OpenIdConnectDefaults.AuthenticationScheme));
     }
 
     private string CreateJwtAssertion()
     {
         var jti = Guid.NewGuid().ToString();
         var claimsIdentity = new ClaimsIdentity(
-            new List<Claim>
-            {
-                new Claim("sub", _configuration.ClientId),
-                new Claim("jti", jti)
+        [
+            new Claim("sub", _configuration.ClientId),
+            new Claim("jti", jti)
+        ]);
 
-            });
+        var signingCredentials = _signingProvider.GetSigningCredentials();
 
-        var signingCredentials = new SigningCredentials(
-            new KeyVaultSecurityKey(_configuration.KeyVaultIdentifier,
-                _azureIdentityService.AuthenticationCallback), "RS512")
-        {
-            CryptoProviderFactory = new CryptoProviderFactory
-            {
-                CustomCryptoProvider = new CustomKeyVaultCryptoProvider()
-            }
-        };
-  
         var value = _jwtSecurityTokenService.CreateToken(_configuration.ClientId,
             $"{_configuration.BaseUrl}/token", claimsIdentity, signingCredentials);
 
         return value;
-            
     }
 }

@@ -1,0 +1,57 @@
+@inject GovUkOidcConfiguration GovUkOidcConfiguration
+@using SFA.DAS.GovUK.Auth.Configuration
+@using SFA.DAS.GovUK.SampleSite.Models
+@model SignInStubViewModel
+@{
+    ViewBag.Title = "GOV.UK One Login Sample Service";
+    Layout = "_Layout";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Sign in stub</h1>
+        
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">There is a problem</h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <form method="POST" enctype="multipart/form-data">
+            <h2 class="govuk-heading-l">Authenticate as:</h2>
+
+            <govuk-form-group asp-for="Id">
+                <label class="govuk-label" for="Id">Id</label>
+                @Html.TextBoxFor(m => m.Id, new { @class = "govuk-input", id = "Id" })
+            </govuk-form-group>
+
+            <govuk-form-group asp-for="Email">
+                <label class="govuk-label" for="Email">Email</label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "govuk-input", id = "Email", type = "email" })
+            </govuk-form-group>
+
+            @if (!string.IsNullOrEmpty(GovUkOidcConfiguration.RequestedUserInfoClaims))
+            {
+                <govuk-form-group asp-for="UserFile">
+                    <label class="govuk-label" for="UserFile">Upload a JSON file that includes your verified identity information</label>
+                    <input type="file" name="UserFile" id="UserFile" accept=".json" class="govuk-file-upload" />
+                </govuk-form-group>
+            }
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" type="submit">Authenticate</button>
+            </div>
+        </form>
+    </div>
+</div>

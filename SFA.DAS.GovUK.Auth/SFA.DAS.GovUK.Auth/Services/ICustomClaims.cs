@@ -8,5 +8,6 @@ namespace SFA.DAS.GovUK.Auth.Services
     public interface ICustomClaims
     {
         Task<IEnumerable<Claim>> GetClaims(TokenValidatedContext tokenValidatedContext);
+        Task<IEnumerable<Claim>> GetClaims(ClaimsPrincipal principal);
     }
 }
