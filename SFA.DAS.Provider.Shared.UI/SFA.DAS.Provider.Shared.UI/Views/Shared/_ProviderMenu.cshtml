@@ -9,84 +9,76 @@
 
     if (!ViewData.HiddenAccountHeader())
     {
-        <div class="das-account-header das-account-header--provider">
+        
+        <section aria-label="Service information" class="govuk-service-navigation das-header__navigation">
             <div class="govuk-width-container">
-                <p class="das-account-header__title">Your training provider account</p>
-                <nav class="das-user-navigation" id="das-user-navigation">
-                    <ul class="das-user-navigation__list">
-                        <li class="das-user-navigation__list-item">
-                        <span class="das-user-navigation__text-item">@Context.User.Identity.Name</span>
-                        </li>
-                        <li class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
-                            <a href="/" class="das-user-navigation__link">Settings</a>
-                            <ul class="das-user-navigation__sub-menu js-hidden">
-                                <li class="das-user-navigation__sub-menu-list-item">
-                                    <a asp-external-controller="change-signin-details" class="das-user-navigation__sub-menu-link">Change your sign-in details</a>
-                                </li>
-                                <li class="das-user-navigation__sub-menu-list-item">
-                                    <a asp-external-controller="notification-settings" class="das-user-navigation__sub-menu-link">Notification settings</a>
-                                </li>
+                <div class="govuk-service-navigation__container das-header__navigation__container">
+                    <div class="das-header__service-user-name-wrap">
+                        <span class="govuk-service-navigation__service-name">
+                            <span class="govuk-service-navigation__text">Your training provider account</span>
+                        </span>
+                        <p class="das-header__user-name">@Context.User.Identity.Name</p>
+                    </div>
+                    @if (!ViewData.HiddenNavigationLinks())
+                    {
+                        <nav
+                            aria-label="Menu"
+                            class="govuk-service-navigation__wrapper das-header__navigation__wrapper"
+                        >
+                            <ul class="govuk-service-navigation__list das-header__navigation__list">
+                                @if (!suppressed.Contains(NavigationSection.Home))
+                                {
+                                    <li class="govuk-service-navigation__item @(selected == NavigationSection.Home ? "govuk-service-navigation__item--active" : "")">
+                                        <a class="govuk-service-navigation__link" asp-external-controller="Account"> Home </a>
+                                    </li>
+                                }
+                                @if (!suppressed.Contains(NavigationSection.YourCohorts))
+                                {
+                                    <li class="govuk-service-navigation__item @(selected == NavigationSection.YourCohorts ? "govuk-service-navigation__item--active" : "")">
+                                        <a class="govuk-service-navigation__link" asp-external-subdomain="approvals" asp-external-controller="unapproved" asp-external-id="@providerId"> Apprentice requests </a>
+                                    </li>
+                                }
+                                @if (!suppressed.Contains(NavigationSection.Reservations))
+                                {
+                                    <li class="govuk-service-navigation__item @(selected == NavigationSection.Reservations ? "govuk-service-navigation__item--active" : "")">
+                                        <a class="govuk-service-navigation__link" asp-external-subdomain="securefunding" asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@providerId"> Manage funding </a>
+                                    </li>
+                                }
+                                @if (!suppressed.Contains(NavigationSection.ManageApprentices))
+                                {
+                                    <li class="govuk-service-navigation__item @(selected == NavigationSection.ManageApprentices ? "govuk-service-navigation__item--active" : "")">
+                                        <a class="govuk-service-navigation__link" asp-external-subdomain="approvals" asp-external-controller="apprentices" asp-external-id="@providerId"> Manage your apprentices </a>
+                                    </li>
+                                }
+                                @if (!suppressed.Contains(NavigationSection.Recruit))
+                                {
+                                    <li class="govuk-service-navigation__item @(selected == NavigationSection.Recruit ? "govuk-service-navigation__item--active" : "")">
+                                        <a class="govuk-service-navigation__link" asp-external-controller="" asp-external-subdomain="recruit" asp-external-id="@providerId"> Recruit apprentices </a>
+                                    </li>
+                                }
+                                @if (!suppressed.Contains(NavigationSection.Relationships))
+                                {
+                                    <li class="govuk-service-navigation__item @(selected == NavigationSection.Relationships ? "govuk-service-navigation__item--active" : "")">
+                                        <a class="govuk-service-navigation__link" asp-external-controller="" asp-external-subdomain="relationships" asp-external-id="@providerId" >
+                                            View employers and manage permissions
+                                        </a>
+                                    </li>
+                                }
+                                @if (!suppressed.Contains(NavigationSection.StandardsAndTrainingVenues))
+                                {
+                                    <li class="govuk-service-navigation__item @(selected == NavigationSection.StandardsAndTrainingVenues ? "govuk-service-navigation__item--active" : "")">
+                                        <a class="govuk-service-navigation__link" asp-external-controller="review-your-details" asp-external-subdomain="roatp" asp-external-id="@providerId">
+                                            Your standards and training venues
+                                        </a>
+                                    </li>
+                                }
                             </ul>
-                        </li>
-                        <li class="das-user-navigation__list-item">
-                            <a asp-Route="provider-signout" class="das-user-navigation__link">Sign out</a>
-                        </li>
-                    </ul>
-                </nav>
+                        </nav>
+                    }
+                </div>
             </div>
-        </div>
-    }
-
-    if (!ViewData.HiddenNavigationLinks())
-    {
-        <nav class="das-navigation">
-            <div class="govuk-width-container">
-                <ul class="das-navigation__list" id="navigation">
-                    @if (!suppressed.Contains(NavigationSection.Home))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-controller="Account" class="das-navigation__link @(selected == NavigationSection.Home ? "das-navigation__link--current" : "")">Home</a>
-                        </li>
-                    }
-                    @if (!suppressed.Contains(NavigationSection.YourCohorts))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-subdomain="approvals" asp-external-controller="unapproved" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.YourCohorts ? "das-navigation__link--current" : "")">Apprentice requests</a>
-                        </li>
-                    }
-                    @if (!suppressed.Contains(NavigationSection.Reservations))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-subdomain="securefunding" asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Reservations ? "das-navigation__link--current" : "")">Manage funding</a>
-                        </li>
-                    }
-                    @if (!suppressed.Contains(NavigationSection.ManageApprentices))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-subdomain="approvals" asp-external-controller="apprentices" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.ManageApprentices ? "das-navigation__link--current" : "")">Manage your apprentices</a>
-                        </li>
-                    }
-                    @if (!suppressed.Contains(NavigationSection.Recruit))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-controller="" asp-external-subdomain="recruit" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Recruit ? "das-navigation__link--current" : "")">Recruit apprentices</a>
-                        </li>
-                    }
-                    @if (!suppressed.Contains(NavigationSection.Relationships))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-controller="" asp-external-subdomain="relationships" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Relationships ? "das-navigation__link--current" : "")">View employers and manage permissions</a>
-                        </li>
-                    }
-                    @if (!suppressed.Contains(NavigationSection.StandardsAndTrainingVenues))
-                    {
-                        <li class="das-navigation__list-item">
-                            <a asp-external-controller="review-your-details" asp-external-subdomain="roatp" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.StandardsAndTrainingVenues ? "das-navigation__link--current" : "")">Your standards and training venues</a>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </nav>
+        </section>
+        
     }
 }
 
