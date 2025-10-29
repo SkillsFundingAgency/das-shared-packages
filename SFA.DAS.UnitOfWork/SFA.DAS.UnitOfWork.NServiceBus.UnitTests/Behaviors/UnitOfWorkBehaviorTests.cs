@@ -17,7 +17,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Behaviors
         [Test]
         public Task Invoke_WhenHandlingAnIncomingLogicalMessage_ThenShouldCommitUnitsOfWork()
         {
-            return RunAsync(f => f.Invoke(), f => f.UnitsOfWork.ForEach(u => u.Verify(u2 => u2.CommitAsync(It.IsAny<Func<Task>>()), Times.Once())));
+            return TestAsync(f => f.Invoke(), f => f.UnitsOfWork.ForEach(u => u.Verify(u2 => u2.CommitAsync(It.IsAny<Func<Task>>()), Times.Once())));
         }
     }
 

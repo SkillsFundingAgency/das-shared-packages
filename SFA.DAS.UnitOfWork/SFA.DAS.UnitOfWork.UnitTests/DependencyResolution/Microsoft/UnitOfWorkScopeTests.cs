@@ -16,43 +16,43 @@ namespace SFA.DAS.UnitOfWork.UnitTests.DependencyResolution.Microsoft
         [Test]
         public Task RunAsync_WhenScopingAnOperation_ThenShouldCreateNestedServiceScope()
         {
-            return RunAsync(f => f.RunAsync(), f => f.ServiceScopeFactory.Verify(s => s.CreateScope(), Times.Once));
+            return TestAsync(f => f.RunAsync(), f => f.ServiceScopeFactory.Verify(s => s.CreateScope(), Times.Once));
         }
         
         [Test]
         public Task RunAsync_WhenScopingAnOperation_ThenShouldBeginUnitOfWorkManager()
         {
-            return RunAsync(f => f.RunAsync(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once));
+            return TestAsync(f => f.RunAsync(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once));
         }
         
         [Test]
         public Task RunAsync_WhenScopingAnOperation_ThenShouldInvokeOperation()
         {
-            return RunAsync(f => f.RunAsync(), f => f.Operation.Verify(o => o(f.NestedServiceProvider.Object), Times.Once));
+            return TestAsync(f => f.RunAsync(), f => f.Operation.Verify(o => o(f.NestedServiceProvider.Object), Times.Once));
         }
         
         [Test]
         public Task RunAsync_WhenScopingAnOperation_ThenShouldEndUnitOfWorkManager()
         {
-            return RunAsync(f => f.RunAsync(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
+            return TestAsync(f => f.RunAsync(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
         }
         
         [Test]
         public Task RunAsync_WhenScopingAnOperationAndOperationThrowsException_ThenShouldEndUnitOfWorkManager()
         {
-            return RunAsync(f => f.SetException(), f => f.RunAsyncAndSwallowException(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
+            return TestAsync(f => f.SetException(), f => f.RunAsyncAndSwallowException(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
         }
         
         [Test]
         public Task RunAsync_WhenScopingAnOperationAndOperationThrowsException_ThenShouldThrowException()
         {
-            return RunAsync(f => f.SetException(), f => f.RunAsync(), (f, r) => r.Should().Throw<Exception>());
+            return TestExceptionAsync(f => Task.FromResult(f.SetException()), f => f.RunAsync(), (f, r) => Assert.ThrowsAsync<Exception>(() => r()));
         }
         
         [Test]
         public Task RunAsync_WhenScopingAnOperation_ThenShouldDisposeNestedServiceScope()
         {
-            return RunAsync(f => f.RunAsync(), f => f.NestedServiceScope.Verify(s => s.Dispose(), Times.Once));
+            return TestAsync(f => f.RunAsync(), f => f.NestedServiceScope.Verify(s => s.Dispose(), Times.Once));
         }
     }
 

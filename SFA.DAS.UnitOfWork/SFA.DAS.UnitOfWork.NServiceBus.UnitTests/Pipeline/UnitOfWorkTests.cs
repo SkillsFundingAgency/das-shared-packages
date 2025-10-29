@@ -16,7 +16,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Pipeline
         [Test]
         public Task CommitAsync_WhenCommittingUnitOfWork_ThenShouldPublishEventsAfterNextTask()
         {
-            return RunAsync(f => f.CommitAsync(), f =>
+            return TestAsync(f => f.CommitAsync(), f =>
             {
                 f.UniformSession.Verify(s => s.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Exactly(f.Events.Count));
                 f.Events.ForEach(e => f.UniformSession.Verify(s => s.Publish(e, It.IsAny<PublishOptions>()), Times.Once));
@@ -26,7 +26,7 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Pipeline
         [Test]
         public Task CommitAsync_WhenCommittingUnitOfWork_ThenShouldPublishCommandsAfterNextTask()
         {
-            return RunAsync(f => f.CommitAsync(), f =>
+            return TestAsync(f => f.CommitAsync(), f =>
             {
                 f.UniformSession.Verify(s => s.Send(It.IsAny<object>(), It.IsAny<SendOptions>()), Times.Exactly(f.Commands.Count));
                 f.Commands.ForEach(e => f.UniformSession.Verify(s => s.Send(e, It.IsAny<SendOptions>()), Times.Once));

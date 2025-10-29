@@ -2,8 +2,14 @@
 
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <EmbedUntrackedSources>false</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
+
+
 
 </Project>

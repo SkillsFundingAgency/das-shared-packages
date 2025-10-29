@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_0
+﻿//#if net_core_8
 using Microsoft.AspNetCore.Builder;
 using SFA.DAS.UnitOfWork.Mvc.Middleware;
 
@@ -12,4 +12,4 @@ namespace SFA.DAS.UnitOfWork.Mvc.Extensions
         }
     }
 }
-#endif
+//#endif
