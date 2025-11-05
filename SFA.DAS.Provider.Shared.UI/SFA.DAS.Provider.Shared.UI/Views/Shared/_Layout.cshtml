@@ -53,7 +53,10 @@
                             />
                         </a>
                     </div>
-                   
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <partial name="_UserMenu" />
+                    }
                 </div>
             </div>
             <partial name="_ProviderMenu" view-data="ViewData" />
