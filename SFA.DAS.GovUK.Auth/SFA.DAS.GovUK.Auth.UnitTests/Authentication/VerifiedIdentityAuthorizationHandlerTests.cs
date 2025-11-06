@@ -9,7 +9,7 @@ using SFA.DAS.GovUK.Auth.Authentication;
 namespace SFA.DAS.GovUK.Auth.UnitTests.Authentication
 {
     [TestFixture]
-    public class WhenHandlingVerifiedIdentityAuthorization
+    public class VerifiedIdentityAuthorizationHandlerTests
     {
         private VerifiedIdentityAuthorizationHandler _handler;
         private VerifiedIdentityRequirement _requirement;
@@ -41,7 +41,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.Authentication
         }
 
         [Test]
-        public async Task Then_If_Vot_Missing_Or_Does_Not_Contain_P2_Then_Fail_And_Redirect()
+        public async Task Then_If_Vot_Missing_Or_Does_Not_Contain_P2_Then_Fail_With_Reason()
         {
             var context = new DefaultHttpContext();
             context.Request.Path = "/secure/resource";
@@ -59,9 +59,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.Authentication
 
             await _handler.HandleAsync(authContext);
 
+            authContext.HasSucceeded.Should().BeFalse();
             authContext.HasFailed.Should().BeTrue();
-            context.Response.Headers["Location"].ToString().Should()
-                .Be("/service/verify-identity?returnUrl=%2Fsecure%2Fresource%3Fx%3D1");
+            authContext.FailureReasons.Should().ContainSingle(r =>
+                r.Message == AuthorizationFailureMessages.NotVerified);
         }
 
         [Test]

@@ -32,18 +32,20 @@ public static class AddServiceRegistrationExtension
             options.AddPolicy(
                 PolicyNames.IsAuthenticated, policy =>
                 {
-                    policy.Requirements.Add(new AccountActiveRequirement());
                     policy.RequireAuthenticatedUser();
                 });
+
             options.AddPolicy(
                 PolicyNames.IsActiveAccount, policy =>
                 {
                     policy.Requirements.Add(new AccountActiveRequirement());
                     policy.RequireAuthenticatedUser();
                 });
+
             options.AddPolicy(
                 PolicyNames.IsVerified, policy =>
                 {
+                    policy.Requirements.Add(new AccountActiveRequirement());
                     policy.Requirements.Add(new VerifiedIdentityRequirement());
                     policy.RequireAuthenticatedUser();
                 });

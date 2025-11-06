@@ -1,45 +1,25 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace SFA.DAS.GovUK.Auth.Authentication
 {
     public class VerifiedIdentityAuthorizationHandler : AuthorizationHandler<VerifiedIdentityRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, VerifiedIdentityRequirement req)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, VerifiedIdentityRequirement requirement)
         {
-            HttpContext currentContext;
-            switch (context.Resource)
+            var httpContext = context.GetHttpContext();
+            var vot = httpContext?.User.Claims.FirstOrDefault(c => c.Type == "vot")?.Value;
+
+            if (!string.IsNullOrEmpty(vot) && vot.Contains("P2"))
             {
-                case HttpContext resource:
-                    currentContext = resource;
-                    break;
-                case AuthorizationFilterContext authorizationFilterContext:
-                    currentContext = authorizationFilterContext.HttpContext;
-                    break;
-                default:
-                    currentContext = null;
-                    break;
+                context.Succeed(requirement);
+            }
+            else
+            {
+                context.Fail(new AuthorizationFailureReason(this, AuthorizationFailureMessages.NotVerified));
             }
 
-            if (currentContext != null)
-            {
-                var vot = currentContext.User.Claims.FirstOrDefault(c => c.Type == "vot")?.Value;
-                if (!string.IsNullOrEmpty(vot) && vot.Contains("P2"))
-                {
-                    context.Succeed(req);
-                    return Task.CompletedTask;
-                }
-
-                var originalUrl = currentContext.Request.Path + currentContext.Request.QueryString;
-                var target = $"/service/verify-identity?returnUrl={Uri.EscapeDataString(originalUrl)}";
-                currentContext.Response.Redirect(target);
-            }
-
-            context.Fail();
             return Task.CompletedTask;
         }
     }

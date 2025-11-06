@@ -54,8 +54,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddTransient<IStubAuthenticationService, StubAuthenticationService>();
 
             services.AddSingleton<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationFailureHandler, AccountActiveFailureHandler>();
             services.AddSingleton<IAuthorizationHandler, VerifiedIdentityAuthorizationHandler>();
-            services.AddSingleton<IAuthorizationMiddlewareResultHandler, RedirectOnVerifiedIdentityFailedResultHandler>();
+            services.AddSingleton<IAuthorizationFailureHandler, VerifiedIdentityFailureHandler>();
+            services.AddSingleton<IAuthorizationMiddlewareResultHandler, ChainedAuthorizationResultHandler>();
 
             services.AddTransient<ValidateCoreIdentityJwtClaimAction>();
             services.AddSingleton<ITicketStore, AuthenticationTicketStore>();
