@@ -14,7 +14,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="FluentAssertions" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="NUnit" Version="3.14.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
@@ -23,9 +23,9 @@
         <PackageReference Include="SFA.DAS.Testing" Version="3.0.169" />
         <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-        <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
-        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+        <PackageReference Include="System.Drawing.Common" Version="8.0.22" />
+        <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.2" />
         <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     </ItemGroup>
