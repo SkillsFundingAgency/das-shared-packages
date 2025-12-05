@@ -6,87 +6,88 @@ using Microsoft.Extensions.Options;
 using Moq;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Services;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.Services
 {
     public class AuthenticationTicketStoreTests
     {
-        [Test, MoqAutoData]
-        public async Task Then_The_Ticket_Is_Added_To_The_Store(
-            AuthenticationTicket ticket,
-            int expiryTime,
-            [Frozen] Mock<IDistributedCache> distributedCache,
-            [Frozen] Mock<IOptions<GovUkOidcConfiguration>> config,
-            AuthenticationTicketStore authenticationTicketStore)
-        {
-            config.Object.Value.LoginSlidingExpiryTimeOutInMinutes = expiryTime;
-            
-            var result = await authenticationTicketStore.StoreAsync(ticket);
-            
-            Assert.That(Guid.TryParse(result, out var actualKey), Is.True);
-            distributedCache.Verify(x=>x.SetAsync(
-                actualKey.ToString(),
-                It.Is<byte[]>(c=>TicketSerializer.Default.Deserialize(c)!.AuthenticationScheme == ticket.AuthenticationScheme), 
-                It.Is<DistributedCacheEntryOptions>(c
-                    => c!.SlidingExpiration!.Value.Minutes == TimeSpan.FromMinutes(expiryTime).Minutes),
-                It.IsAny<CancellationToken>()
-                ), Times.Once);
-        }
-    
-        [Test, MoqAutoData]
-        public async Task Then_The_Ticket_Is_Retrieved_By_Id_From_The_Store(
-            AuthenticationTicket ticket,
-            string key,
-            [Frozen] Mock<IDistributedCache> distributedCache,
-            [Frozen] Mock<IOptions<GovUkOidcConfiguration>> config,
-            AuthenticationTicketStore authenticationTicketStore)
-        {
-            distributedCache.Setup(x => x.GetAsync(key, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(TicketSerializer.Default.Serialize(ticket));
-            
-            var result = await authenticationTicketStore.RetrieveAsync(key);
+        private Mock<IDistributedCache> _distributedCache = null!;
+        private Mock<IOptions<GovUkOidcConfiguration>> _config = null!;
+        private AuthenticationTicketStore _store = null!;
 
-            result.Should().BeEquivalentTo(ticket);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_Null_Is_Returned_If_The_Key_Does_Not_Exist(
-            AuthenticationTicket ticket,
-            string key,
-            [Frozen] Mock<IDistributedCache> distributedCache,
-            [Frozen] Mock<IOptions<GovUkOidcConfiguration>> config,
-            AuthenticationTicketStore authenticationTicketStore)
+        [SetUp]
+        public void SetUp()
         {
-            distributedCache.Setup(x => x.GetAsync(key, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((byte[]) null!);
-            
-            var result = await authenticationTicketStore.RetrieveAsync(key);
+            _distributedCache = new Mock<IDistributedCache>();
+            _config = new Mock<IOptions<GovUkOidcConfiguration>>();
+            _config.Setup(x => x.Value).Returns(new GovUkOidcConfiguration
+            {
+                LoginSlidingExpiryTimeOutInMinutes = 30
+            });
+
+            _store = new AuthenticationTicketStore(_distributedCache.Object, _config.Object);
+        }
+
+        [Test, AutoData]
+        public async Task Then_The_Ticket_Is_Added_To_The_Store_With_SessionId_Set(AuthenticationTicket ticket)
+        {
+            var key = await _store.StoreAsync(ticket);
+
+            Guid.TryParse(key, out _).Should().BeTrue();
+            ticket.Properties.Items[AuthenticationTicketStore.SessionId].Should().Be(key);
+
+            _distributedCache.Verify(x => x.SetAsync(
+                key,
+                It.Is<byte[]>(c => TicketSerializer.Default.Deserialize(c)!.AuthenticationScheme == ticket.AuthenticationScheme),
+                It.Is<DistributedCacheEntryOptions>(c => c.SlidingExpiration!.Value.Minutes == 30),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test, AutoData]
+        public async Task Then_The_Ticket_Is_Retrieved_And_Has_SessionId_Set(AuthenticationTicket ticket, string key)
+        {
+            var data = TicketSerializer.Default.Serialize(ticket);
+            _distributedCache.Setup(x => x.GetAsync(key, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(data);
+
+            var result = await _store.RetrieveAsync(key);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(ticket, options => options.Excluding(t => t.Properties.Items));
+            result!.Properties.Items.Should().ContainKey(AuthenticationTicketStore.SessionId).WhoseValue.Should().Be(key);
+        }
+
+        [Test, AutoData]
+        public async Task Then_Null_Is_Returned_If_The_Key_Does_Not_Exist(string key)
+        {
+            _distributedCache.Setup(x => x.GetAsync(key, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[])null!);
+
+            var result = await _store.RetrieveAsync(key);
 
             result.Should().BeNull();
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_The_Key_Is_Refreshed(
-            AuthenticationTicket ticket,
-            string key,
-            [Frozen] Mock<IDistributedCache> distributedCache,
-            AuthenticationTicketStore authenticationTicketStore)
+        [Test, AutoData]
+        public async Task Then_The_Ticket_Is_Rewritten_With_SessionId(AuthenticationTicket ticket, string key)
         {
-            await authenticationTicketStore.RenewAsync(key, ticket);
-            
-            distributedCache.Verify(x=>x.RefreshAsync(key, CancellationToken.None));
+            await _store.RenewAsync(key, ticket);
+
+            ticket.Properties.Items.Should().ContainKey(AuthenticationTicketStore.SessionId).WhoseValue.Should().Be(key);
+
+            _distributedCache.Verify(x => x.SetAsync(
+                key,
+                It.Is<byte[]>(c => TicketSerializer.Default.Deserialize(c)!.AuthenticationScheme == ticket.AuthenticationScheme),
+                It.Is<DistributedCacheEntryOptions>(c => c.SlidingExpiration!.Value.Minutes == 30),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_Key_Is_Removed(
-            string key,
-            [Frozen] Mock<IDistributedCache> distributedCache,
-            AuthenticationTicketStore authenticationTicketStore)
+
+        [Test, AutoData]
+        public async Task Then_The_Key_Is_Removed(string key)
         {
-            await authenticationTicketStore.RemoveAsync(key);
-            
-            distributedCache.Verify(x=>x.RemoveAsync(key, CancellationToken.None));
+            await _store.RemoveAsync(key);
+
+            _distributedCache.Verify(x => x.RemoveAsync(key, CancellationToken.None), Times.Once);
         }
-    }    
+    }
 }

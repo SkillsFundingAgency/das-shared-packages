@@ -14,7 +14,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart;
 
 public class WhenAddingServicesToTheContainer
 {
-    [TestCase(typeof(IOidcService))]
+    [TestCase(typeof(IGovUkAuthenticationService))]
     [TestCase(typeof(IAzureIdentityService))]
     [TestCase(typeof(IJwtSecurityTokenService))]
     [TestCase(typeof(ICustomClaims))]
@@ -41,8 +41,9 @@ public class WhenAddingServicesToTheContainer
         var type = provider.GetServices(typeof(IAuthorizationHandler)).ToList();
             
         Assert.That(type, Is.Not.Null);
-        type.Count.Should().Be(1);
-        type.Should().ContainSingle(c => c!.GetType() == typeof(AccountActiveAuthorizationHandler));
+        type.Count.Should().Be(2);
+        type.Should().Contain(c => c!.GetType() == typeof(AccountActiveAuthorizationHandler));
+        type.Should().Contain(c => c!.GetType() == typeof(VerifiedIdentityAuthorizationHandler));
     }
     
 
@@ -74,6 +75,11 @@ public class WhenAddingServicesToTheContainer
     public class TestCustomClaims : ICustomClaims
     {
         public Task<IEnumerable<Claim?>> GetClaims(TokenValidatedContext tokenValidatedContext)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Claim>> GetClaims(ClaimsPrincipal principal)
         {
             throw new NotImplementedException();
         }
