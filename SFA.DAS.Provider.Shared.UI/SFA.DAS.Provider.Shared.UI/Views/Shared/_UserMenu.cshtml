@@ -1,0 +1,56 @@
+@using SFA.DAS.Provider.Shared.UI.Extensions
+
+@if (Context.User.Identity.IsAuthenticated)
+{
+  if (!ViewData.HiddenAccountHeader())
+  {
+    <button
+      type="button"
+      aria-controls="one-login-header__nav"
+      aria-label="Show account menu"
+      data-open-class="rebranded-cross-service-header__toggle--open"
+      data-label-for-show="Show account menu"
+      data-label-for-hide="Hide account menu"
+      aria-expanded="false"
+      class="rebranded-cross-service-header__toggle js-x-header-toggle das-header__toggle">
+      <span class="rebranded-cross-service-header__toggle-content-wrapper">
+        <span class="rebranded-cross-service-header__toggle-content">Account</span>
+      </span>
+    </button>
+    <nav
+      aria-label="DfE Sign In"
+      class="rebranded-one-login-header__nav"
+      data-open-class="rebranded-one-login-header__nav--open"
+      id="one-login-header__nav">
+      <ul class="rebranded-one-login-header__nav__list">
+        <li class="rebranded-one-login-header__nav__list-item das-header__nav__list-item">
+          <a
+            class="rebranded-one-login-header__nav__link das-header__nav__link--has-menu"
+            href="#provider-settings"
+            aria-controls="provider-settings">
+            <span
+              class="rebranded-one-login-header__nav__link-content das-header__nav__link-content">Settings</span
+            >
+          </a>
+          <ul class="das-header__sub-menu" id="provider-settings">
+            <li class="das-header__sub-menu-item">
+              <a asp-external-controller="change-signin-details" class="das-header__sub-menu-link">Change your sign-in details</a
+              >
+            </li>
+            <li class="das-header__sub-menu-item">
+              <a asp-external-controller="notification-settings" class="das-header__sub-menu-link">Notification settings</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li class="rebranded-one-login-header__nav__list-item das-header__nav__list-item">
+          <a class="rebranded-one-login-header__nav__link" asp-Route="provider-signout">
+            <span
+              class="rebranded-one-login-header__nav__link-content das-header__nav__link-content">Sign out</span
+            >
+          </a>
+        </li>
+      </ul>
+    </nav>
+  }
+}
