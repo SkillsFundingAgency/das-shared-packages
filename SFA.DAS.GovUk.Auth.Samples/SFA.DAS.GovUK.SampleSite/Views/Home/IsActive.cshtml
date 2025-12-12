@@ -1,12 +1,14 @@
 @using System.Security.Claims
 @{
     Layout = "_Layout";
+    ViewBag.Title = "GOV.UK One Login Sample Service";
 }
 
-<h1 class="govuk-heading-xl">POC Auth - Active check</h1>
+<h1 class="govuk-heading-xl">@ViewBag.Title - Active check</h1>
 
 <p>Name: @Context.User.Identity?.Name</p>
 <p>Email: @Context.User.Claims.FirstOrDefault(c=>c.Type.Equals(ClaimTypes.Email))?.Value</p>
 <p>Sub: @Context.User.Claims.FirstOrDefault(c=>c.Type.Equals(ClaimTypes.NameIdentifier))?.Value</p>
-<p>CustomClaim AccountId: @Context.User.Claims.FirstOrDefault(c=>c.Type.Equals("EmployerAccountId"))?.Value</p>
+<p>CustomClaim AccountId: @Context.User.Claims.FirstOrDefault(c => c.Type.Equals("CustomClaimId"))?.Value</p>
+
 <a asp-action="SigningOut" asp-controller="Home" class="govuk-button">Sign Out</a>
