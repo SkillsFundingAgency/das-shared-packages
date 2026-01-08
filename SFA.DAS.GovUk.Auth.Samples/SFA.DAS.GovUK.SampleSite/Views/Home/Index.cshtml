@@ -1,7 +1,78 @@
+@using SFA.DAS.GovUK.Auth.Configuration
+@using SFA.DAS.GovUK.Auth.Models
+@inject IConfiguration Configuration
+@inject GovUkOidcConfiguration GovUkOidcConfiguration
+
 @{
     Layout = "_Layout";
+    ViewBag.Title = "GOV.UK One Login Sample Service";
+    var enableVerify = bool.Parse(GovUkOidcConfiguration.EnableVerify ?? "false");
+    var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var stubAuth = bool.Parse(Configuration["StubAuth"] ?? "false");
 }
 
-<h1 class="govuk-heading-xl">POC Auth</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
 
-<a class="govuk-button" asp-controller="Home" asp-action="Authenticated">Log me in</a>
+        <p class="govuk-body">
+            This sample service uses the GOV Uk One Login to authenticate.
+        </p>
+
+        @if (requestedClaims?.Any() == true)
+        {
+            <p class="govuk-body">
+                The service is configured to require the following verified identity information via GOV.UK One Login:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                @foreach (var claim in requestedClaims)
+                {
+                    <li>@claim</li>
+                }
+            </ul>
+            @if (stubAuth)
+            {
+                <p class="govuk-body">
+                    The stub is enabled, allowing you you to enter an Id and an email, you can upload a JSON file that includes your verified identity information.
+                </p>
+            }
+            else if(enableVerify)
+            {
+                <p class="govuk-body">
+                    After sign-in, you will either start the verify journey or be shown a confirmation of your previous verification.
+                </p>
+            }
+        }
+        else
+        {
+            <p class="govuk-body">
+                You have not configured any required verified identity information.
+            </p>
+
+            @if (stubAuth)
+            {
+                <p class="govuk-body">
+                    The stub is enabled, allowing you you to enter an Id and an email.
+                </p>
+            }
+        }
+
+        <form method="post" asp-controller="Home" asp-action="Start" class="govuk-!-margin-top-6">
+            <div class="govuk-form-group">
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="suspend" name="suspend" type="checkbox" value="true">
+                        <label class="govuk-label govuk-checkboxes__label" for="suspend">
+                            Mark this sign-in as <strong>Suspended</strong>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button class="govuk-button" data-module="govuk-button" type="submit">
+                Start
+            </button>
+        </form>
+
+    </div>
+</div>

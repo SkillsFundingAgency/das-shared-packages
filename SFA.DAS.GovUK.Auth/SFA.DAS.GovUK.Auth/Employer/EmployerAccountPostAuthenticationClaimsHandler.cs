@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Newtonsoft.Json;
+using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.Employer;
@@ -17,13 +18,18 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
 
     public async Task<IEnumerable<Claim>> GetClaims(TokenValidatedContext tokenValidatedContext)
     {
+        return await GetClaims(tokenValidatedContext.Principal);
+    }
+
+    public async Task<IEnumerable<Claim>> GetClaims(ClaimsPrincipal principal)
+    {
         var claims = new List<Claim>();
 
-        var userId = tokenValidatedContext.Principal.Claims
+        var userId = principal.Claims
             .First(c => c.Type.Equals(ClaimTypes.NameIdentifier))
             .Value;
 
-        var email = tokenValidatedContext.Principal.Claims
+        var email = principal.Claims
             .First(c => c.Type.Equals(ClaimTypes.Email))
             .Value;
 
@@ -31,7 +37,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler(IGovAuthEmployerAcco
 
         if (result.IsSuspended)
         {
-            claims.Add(new Claim(ClaimTypes.AuthorizationDecision, "Suspended"));
+            claims.Add(new Claim(ClaimTypes.AuthorizationDecision, AuthorizationDecisions.Suspended));
         }
 
         if (!string.IsNullOrEmpty(result.FirstName) && !string.IsNullOrEmpty(result.LastName))

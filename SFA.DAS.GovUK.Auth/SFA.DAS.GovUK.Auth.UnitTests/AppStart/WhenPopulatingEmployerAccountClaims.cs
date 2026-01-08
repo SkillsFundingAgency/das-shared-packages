@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Newtonsoft.Json;
+using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Employer;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -141,7 +142,7 @@ public class WhenPopulatingAccountClaims
         var actual = await handler.GetClaims(tokenValidatedContext);
 
         accountService.Verify(x => x.GetUserAccounts(nameIdentifier, emailAddress), Times.Once);
-        actual.First(c => c.Type.Equals(ClaimTypes.AuthorizationDecision)).Value.Should().Be("Suspended");
+        actual.First(c => c.Type.Equals(ClaimTypes.AuthorizationDecision)).Value.Should().Be(AuthorizationDecisions.Suspended);
     }
 
     [Test, MoqAutoData]
@@ -188,8 +189,8 @@ public class WhenPopulatingAccountClaims
 
         var actualClaimValue = actual.First(c => c.Type.Equals(EmployerClaims.AccountsClaimsTypeIdentifier)).Value;
         var action = () => JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(actualClaimValue)
-            .Select(x => x.Value)
-            .ToList();
+            ?.Select(x => x.Value)
+            ?.ToList();
 
         action.Should().NotThrow();
     }

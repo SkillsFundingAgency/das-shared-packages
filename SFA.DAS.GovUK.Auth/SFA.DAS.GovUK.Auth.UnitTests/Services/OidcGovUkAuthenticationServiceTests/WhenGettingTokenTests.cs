@@ -2,6 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 using FluentAssertions;
+using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
@@ -11,9 +12,9 @@ using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
+namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcGovUkAuthenticationServiceTests;
 
-public class WhenGettingToken
+public class WhenGettingTokenTests
 {
     [Test, MoqAutoData]
     public async Task Then_The_Endpoint_Is_Called_And_Token_Returned(
@@ -33,11 +34,19 @@ public class WhenGettingToken
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
+
+        var signingKey = new KeyVaultSecurityKey(config.KeyVaultIdentifier, (authority, resource, scope) => Task.FromResult(string.Empty));
+        var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.RsaSha512);
+        var signingProviderMock = new Mock<ISigningCredentialsProvider>();
+        signingProviderMock
+            .Setup(p => p.GetSigningCredentials())
+            .Returns(signingCredentials);
+
         jwtService.Setup(x => x.CreateToken(config.ClientId, $"{config.BaseUrl}/token", 
                 It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
-                It.Is<SigningCredentials>(c=>c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
+                It.Is<SigningCredentials>(c=>c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals(SecurityAlgorithms.RsaSha512))))
             .Returns(clientAssertion);
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config, Mock.Of<ICustomClaims>());
+        var service = new OidcGovUkAuthenticationService(client, signingProviderMock.Object, jwtService.Object, config, Mock.Of<ICustomClaims>());
         
         //Act
         var actual = await service.GetToken(openIdConnectMessage);
@@ -78,11 +87,19 @@ public class WhenGettingToken
         var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, HttpMethod.Post);
         var client = new HttpClient(httpMessageHandler.Object);
         var jwtService = new Mock<IJwtSecurityTokenService>();
+
+        var signingKey = new KeyVaultSecurityKey(config.KeyVaultIdentifier, (authority, resource, scope) => Task.FromResult(string.Empty));
+        var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.RsaSha512);
+        var signingProviderMock = new Mock<ISigningCredentialsProvider>();
+        signingProviderMock
+            .Setup(p => p.GetSigningCredentials())
+            .Returns(signingCredentials);
+
         jwtService.Setup(x => x.CreateToken(config.ClientId, $"{config.BaseUrl}/token", 
                 It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), jwtService.Object, config, Mock.Of<ICustomClaims>());
+        var service = new OidcGovUkAuthenticationService(client, signingProviderMock.Object, jwtService.Object, config, Mock.Of<ICustomClaims>());
         
         //Act
         await service.GetToken(openIdConnectMessage);

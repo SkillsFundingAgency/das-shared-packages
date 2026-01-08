@@ -1,9 +1,14 @@
-namespace SFA.DAS.GovUK.Auth.Models;
+using System.Diagnostics.CodeAnalysis;
 
-public class AuthRedirects
+namespace SFA.DAS.GovUK.Auth.Models
 {
-    public string SignedOutRedirectUrl { get; set; } = "";
-    public string LocalStubLoginPath { get; set; } = "";
-    public string CookieDomain { get; set; } = "";
-    public string LoginRedirect { get; set; } = "";
+    [ExcludeFromCodeCoverage]
+    public class AuthRedirects
+    {
+        public string SuspendedRedirectUrl { get; set; } = "";
+        public string SignedOutRedirectUrl { get; set; } = "";
+        public string LoginRedirect { get; set; } = ""; 
+        public string LocalStubLoginPath { get; set; } = "";
+        public string CookieDomain { get; set; } = "";
+    }
 }

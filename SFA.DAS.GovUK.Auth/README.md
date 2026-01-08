@@ -30,8 +30,34 @@ Library to enable employer/citizen facing service to use [Gov One Login](https:/
 }
 ```
 
-The above is the minimum required configuration, in the employer apprenticeship service, this configuration is stored in a shared configuration key `SFA.DAS.Employer.GovSignIn_1.0` and using the Azure Table storage package, can be included in the config names required for the application. It 
+The above is the minimum required configuration; for the employer apprenticeship service it is stored in a shared configuration key `SFA.DAS.Employer.GovSignIn_1.0` and using the Azure Table storage package, can be included in the config names required for the application. It 
 should be noted that leaving `GovLoginSessionConnectionString` empty will use `DistributedMemoryCache` instead of `RedisCache`.
+
+The above configuration can be used for any service which does not require the Verify level of confidence, i.e. access to the verified name and date of birth of the user.
+
+```json
+{
+  "GovUkOidcConfiguration": {
+    "BaseUrl": "https://{INTEGRATION_ENVIRONMENT_URL}.gov.uk",    //From gov uk one login 
+    "ClientId": "{CLIENT_ID}",    // From gov uk one login
+    "KeyVaultIdentifier": "https://{YOUR_KEYVAULT}.vault.azure.net/keys/{KEY_NAME}",
+    "LoginSlidingExpiryTimeOutInMinutes" : 30,
+    "GovLoginSessionConnectionString" : "RedisConnectionString",
+    "Disable2Fa" : "false", // Defaults to false if not set - disables 2fa on authentication
+    "EnableVerify": "false", // Default to false if not set - if set to true Disable2Fa must be set to false
+    "RequestedUserInfoClaims": "CoreIdentityJWT" // Must be present for verify to succeed
+  }
+}
+```
+
+The above is a minimum extended configuration which is used for a service which requires the verify level of confidence. The `VerifyEnabled` when set to true indicates that verify is required on first sign-in 
+to the service, when `VerifyEnabled` is false then verfiy can be requested later by marking an endpoint with the `IsVerifed` policy. The `RequestedUserInfoClaims` are the verify information which
+is set in the claims via the UserInfo endpoint; valid values are CoreIdentityJWT, Address, Passport and DrivingPermit. If `VerifyEnabled` is set to true or the `IsVerifed` policy is checked then
+at least CoreIdentityJWT must be specified in `RequestedUserInfoClaims` or the `IsVerifed` policy will fail.
+
+Note: The claims which are specified during the gov one login client reqistration must include atleast those in `RequestedUserInfoClaims` or these claims will not be present after a 
+verify level of confidence is requested and granted.
+
 
 ## ICustomClaims
 
@@ -114,70 +140,11 @@ It is necessary to pass the id_token which will exist as part of the authenticat
 
 It is also possible to enable stub authentication to be used in palce of gov one login. This is done by adding the `"StubAuth":true` config variable which will then expect a local authentication endpoint
 to be setup. The stub authentication service expects a user id and email address and it simply replaces the population of id and email from the gov uk one login. The Id and Email are then used as they would
-be in your service and the `GetClaims` method on the `ICustomClaims` interface is called to get any data for populating the claims. To implement the stub auth this should be called:
+be in your service and the `GetClaims` method on the `ICustomClaims` interface is called to get any data for populating the claims. An example of implementing a service with StubAuth enabled can seen at: 
+https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/SFA.DAS.GovUk.Auth.Samples/SFA.DAS.GovUK.SampleSite
 
-```csharp
-
-public class HomeController : Controller
-{
-    private readonly IStubAuthenticationService _stubAuthenticationService;
-
-    public HomeController(IStubAuthenticationService stubAuthenticationService)
-    {
-        _stubAuthenticationService = stubAuthenticationService;
-    }
-    
-    [HttpGet]
-    [Route("stub-account-details", Name = RouteNames.StubAccountDetailsGet)]
-    public IActionResult AccountDetails([FromQuery] string returnUrl)
-    {
-        if (configuration["ResourceEnvironmentName"].ToUpper() == "PRD")
-        {
-            return NotFound();
-        }
-
-        return View("AccountDetails", new StubAuthenticationViewModel
-        {
-            ReturnUrl = returnUrl
-        });
-    }
-
-    [HttpPost]
-    [Route("stub-account-details", Name = RouteNames.StubAccountDetailsPost)]
-    public async Task<IActionResult> AccountDetails(StubAuthenticationViewModel model)
-    {
-        if (configuration["ResourceEnvironmentName"].ToUpper() == "PRD")
-        {
-            return NotFound();
-        }
-
-        var claims = await stubAuthenticationService.GetStubSignInClaims(model);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
-            new AuthenticationProperties());
-
-        return RedirectToRoute(RouteNames.StubSignedIn, new { returnUrl = model.ReturnUrl });
-    }
-
-    [HttpGet]
-    [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
-    [Route("Stub-Auth", Name = RouteNames.StubSignedIn)]
-    public IActionResult StubSignedIn([FromQuery] string returnUrl)
-    {
-        if (configuration["ResourceEnvironmentName"].ToUpper() == "PRD")
-        {
-            return NotFound();
-        }
-        var viewModel = new AccountStubViewModel
-        {
-            Email = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value,
-            Id = User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value,
-            ReturnUrl = returnUrl
-        };
-        return View(viewModel);
-    }
-}    
-```
+When the `RequestedUserInfoClaims` are present in the extended configuration the sample site will prompt for a JSON file to be uploaded during a login which uses the StubAuth, the files in 
+https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/SFA.DAS.GovUk.Auth.Samples/SFA.DAS.GovUK.SampleSite/Verify are example JSON files which can be uploaded.
 
 To sign out the `SignOut` action result should be called, passing the `CookieAuthenticationDefaults.AuthenticationScheme` as the authentication scheme to sign out from. If using the redis cache session store
 this will end the session.

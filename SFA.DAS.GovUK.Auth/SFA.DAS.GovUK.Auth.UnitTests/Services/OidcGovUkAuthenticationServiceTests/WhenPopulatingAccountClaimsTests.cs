@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Moq;
 using Moq.Protected;
@@ -14,18 +13,19 @@ using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcService;
+namespace SFA.DAS.GovUK.Auth.UnitTests.Services.OidcGovUkAuthenticationServiceTests;
 
-public class WhenPopulatingAccountClaims
+public class WhenPopulatingAccountClaimsTests
 {
     [Test, MoqAutoData]
-    public async Task If_Token_TokenEndpointPrincipal_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config, string accessToken)
+    public async Task If_Token_TokenEndpointPrincipal_Is_Null_Then_Not_Updated(GovUkOidcConfiguration config, string accessToken)
     {
         //Arrange
+        var govUkUser = CreateGovUkUser();
         config.BaseUrl = $"https://{config.BaseUrl}";
         var response = new HttpResponseMessage
         {
-            Content = new StringContent(JsonSerializer.Serialize(user)),
+            Content = new StringContent(JsonSerializer.Serialize(govUkUser)),
             StatusCode = HttpStatusCode.Accepted
         };
         var mockPrincipal = new Mock<ClaimsPrincipal>();
@@ -41,7 +41,7 @@ public class WhenPopulatingAccountClaims
             },
             Principal = null
         };
-        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
+        var service = new OidcGovUkAuthenticationService(Mock.Of<HttpClient>(),Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -56,13 +56,14 @@ public class WhenPopulatingAccountClaims
     }
     
     [Test, MoqAutoData]
-    public async Task If_Token_TokenEndpointResponse_Is_Null_Then_Not_Updated(GovUkUser user, GovUkOidcConfiguration config)
+    public async Task If_Token_TokenEndpointResponse_Is_Null_Then_Not_Updated(GovUkOidcConfiguration config)
     {
         //Arrange
+        var govUkUser = CreateGovUkUser();
         config.BaseUrl = $"https://{config.BaseUrl}";
         var response = new HttpResponseMessage
         {
-            Content = new StringContent(JsonSerializer.Serialize(user)),
+            Content = new StringContent(JsonSerializer.Serialize(govUkUser)),
             StatusCode = HttpStatusCode.Accepted
         };
         var mockPrincipal = new Mock<ClaimsPrincipal>();
@@ -73,7 +74,7 @@ public class WhenPopulatingAccountClaims
         {
             Principal = mockPrincipal.Object
         };
-        var service = new Auth.Services.OidcService(Mock.Of<HttpClient>(),Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
+        var service = new OidcGovUkAuthenticationService(Mock.Of<HttpClient>(), Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -89,18 +90,18 @@ public class WhenPopulatingAccountClaims
     
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_User_Endpoint_Is_Called_Using_AccessToken_From_TokenValidatedContext(
-        GovUkUser user,
         string accessToken,
         List<ClaimsIdentity> claimsIdentity,
         GovUkOidcConfiguration config)
     {
         //Arrange
+        var govUkUser = CreateGovUkUser();
         config.BaseUrl = $"https://{config.BaseUrl}";
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
         var response = new HttpResponseMessage
         {
-            Content = new StringContent(JsonSerializer.Serialize(user)),
+            Content = new StringContent(JsonSerializer.Serialize(govUkUser)),
             StatusCode = HttpStatusCode.Accepted
         };
         var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
@@ -116,7 +117,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
+        var service = new Auth.Services.OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -139,18 +140,18 @@ public class WhenPopulatingAccountClaims
     
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Populated(
-        GovUkUser user,
         string accessToken,
         List<ClaimsIdentity> claimsIdentity,
         GovUkOidcConfiguration config)
     {
         //Arrange
+        var govUkUser = CreateGovUkUser();
         config.BaseUrl = $"https://{config.BaseUrl}";
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
         var response = new HttpResponseMessage
         {
-            Content = new StringContent(JsonSerializer.Serialize(user)),
+            Content = new StringContent(JsonSerializer.Serialize(govUkUser)),
             StatusCode = HttpStatusCode.Accepted
         };
         var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
@@ -166,31 +167,31 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
+        var service = new Auth.Services.OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
         
         //Assert
         tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
-            .Be(user.Email);
+            .Be(govUkUser.Email);
     }
     
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_UserInfo_Endpoint_Is_Called_And_Email_Claim_Populated_And_Additional_Claims_From_Function(
-        GovUkUser user,
         string accessToken,
         string customClaimValue,
         List<ClaimsIdentity> claimsIdentity,
         GovUkOidcConfiguration config)
     {
         //Arrange
+        var govUkUser = CreateGovUkUser();
         config.BaseUrl = $"https://{config.BaseUrl}";
         var mockPrincipal = new Mock<ClaimsPrincipal>();
         mockPrincipal.Setup(x => x.Identities).Returns(claimsIdentity);
         var response = new HttpResponseMessage
         {
-            Content = new StringContent(JsonSerializer.Serialize(user)),
+            Content = new StringContent(JsonSerializer.Serialize(govUkUser)),
             StatusCode = HttpStatusCode.Accepted
         };
         var expectedUrl = new Uri($"{config.BaseUrl}/userinfo");
@@ -209,14 +210,14 @@ public class WhenPopulatingAccountClaims
         customClaims.Setup(x => x.GetClaims(tokenValidatedContext))
             .ReturnsAsync(new List<Claim> {new Claim("CustomClaim", customClaimValue)});
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, customClaims.Object);
+        var service = new OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, customClaims.Object);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
         
         //Assert
         tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value.Should()
-            .Be(user.Email);
+            .Be(govUkUser.Email);
         tokenValidatedContext.Principal.Identities.First().Claims.First(c => c.Type.Equals("CustomClaim")).Value.Should()
             .Be(customClaimValue);
     }
@@ -249,7 +250,7 @@ public class WhenPopulatingAccountClaims
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcService(client,Mock.Of<IAzureIdentityService>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
+        var service = new Auth.Services.OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -257,6 +258,15 @@ public class WhenPopulatingAccountClaims
         //Assert
         tokenValidatedContext.Principal.Identities.First().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email)).Should().BeNull();
     }
+
+    private GovUkUser CreateGovUkUser()
+    {
+        return new GovUkUser
+        {
+            Email = ""
+        };
+    }
+
     private class TestAuthHandler : IAuthenticationHandler
     {
         public Task InitializeAsync(AuthenticationScheme scheme, HttpContext context)
