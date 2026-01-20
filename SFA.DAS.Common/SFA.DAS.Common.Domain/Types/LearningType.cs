@@ -6,6 +6,6 @@ namespace SFA.DAS.Common.Domain.Types
     {
         [Description("Apprenticeship")] Apprenticeship = 0,
         [Description("Foundation Apprenticeship")] FoundationApprenticeship = 1,
-        [Description("ApprenticeshipUnit")] ApprenticeshipUnit = 2
+        [Description("Apprenticeship Unit")] ApprenticeshipUnit = 2
     }
 }
