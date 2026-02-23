@@ -12,6 +12,7 @@
         RedundancyServiceEmployerReference,
         PledgeId,
         TransferRequestId,
-        PledgeApplicationId
+        PledgeApplicationId,
+        ShortCode
     }
 }
