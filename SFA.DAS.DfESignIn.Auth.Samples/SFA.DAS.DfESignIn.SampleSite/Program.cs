@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.SampleSite.AppStart;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = builder.Configuration.BuildConfiguration();
+var configuration = builder.Configuration;
 
 builder.Services.AddProviderUiServiceRegistration(builder.Configuration);
 
