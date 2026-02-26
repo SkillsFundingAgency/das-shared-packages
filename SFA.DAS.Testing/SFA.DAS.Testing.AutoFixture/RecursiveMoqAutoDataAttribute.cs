@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 
 namespace SFA.DAS.Testing.AutoFixture
 {
