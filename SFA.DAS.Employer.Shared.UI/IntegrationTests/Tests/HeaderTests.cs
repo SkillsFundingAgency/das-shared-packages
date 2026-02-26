@@ -16,7 +16,7 @@ public class HeaderTests : TestBase
         // Act
         var response = await client.GetAsync("/ABC123");
         var content = await HtmlHelpers.GetDocumentAsync(response);
-        var headerLink = content.QuerySelector(".mu-header");
+        var headerLink = content.QuerySelector(".mu-signin");
 
         // Assert
         headerLink.Attributes["href"].Value.Should().Be("https://accounts.at-eas.apprenticeships.education.gov.uk/"); 

@@ -1,20 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="12.0.0" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-        <PackageReference Include="SFA.DAS.Employer.Shared.UI" Version="17.1.109" />
+        <PackageReference Include="SFA.DAS.Employer.Shared.UI" Version="17.1.163" />
         <PackageReference Include="SFA.DAS.Validation" Version="6.0.31" />
         <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.31" />
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.2" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.3" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.15" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.3" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth\SFA.DAS.GovUK.Auth.csproj" />

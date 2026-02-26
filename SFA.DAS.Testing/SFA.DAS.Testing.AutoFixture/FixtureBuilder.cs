@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 
@@ -9,10 +10,10 @@ public static class FixtureBuilder
     public static IFixture MoqFixtureFactory()
     {
         var fixture = new Fixture();
-        fixture
-            .Customize(new AutoMoqCustomization { ConfigureMembers = true });
-        fixture
-            .Customize(new ValidVacancyReferenceCustomization());
+        fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+        fixture.Customize(new ValidVacancyReferenceCustomization());
+        fixture.Customize<DateOnly>(o => o.FromFactory((DateTime dt) => DateOnly.FromDateTime(dt)));
+        fixture.Customize<TimeOnly>(o => o.FromFactory((DateTime dt) => TimeOnly.FromDateTime(dt)));
 
         return fixture;
     }
