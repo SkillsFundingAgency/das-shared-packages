@@ -13,6 +13,6 @@
         PledgeId,
         TransferRequestId,
         PledgeApplicationId,
-        ShortCode
+        SupportReference
     }
 }
