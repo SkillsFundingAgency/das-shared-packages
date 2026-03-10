@@ -54,7 +54,11 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 {
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(config.LoginSlidingExpiryTimeOutInMinutes);
                     options.SlidingExpiration = true;
-                    options.SessionStore = ticketStore;
+                    
+                    // removed temporarily to investigate whether
+                    // not using redis prevents authentication
+                    // loop issue
+                    //options.SessionStore = ticketStore;
                 });
         }
     }
