@@ -33,6 +33,6 @@ stages:
   - template: ../pipeline-templates/job/code-build.yml
     parameters:
       WorkingDirectory: SFA.DAS.Apim.Shared
-      DotNetStandardPackagesToPack: SFA.DAS.Apim.Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj
+      DotNetStandardPackagesToPack: SFA.DAS.Apim.Shared/SFA.DAS.Apim.Shared/SFA.DAS.Apim.Shared.csproj
       SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.Apim.Shared
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
