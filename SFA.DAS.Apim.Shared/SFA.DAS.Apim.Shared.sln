@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi", "SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{02125626-B5CB-4F46-B281-D00F9BC785C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Apim.Shared", "SFA.DAS.Apim.Shared\SFA.DAS.Apim.Shared.csproj", "{02125626-B5CB-4F46-B281-D00F9BC785C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.UnitTests", "SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{D8161DB0-B28F-4C15-980E-6D3FC9D28FFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Apim.Shared.UnitTests", "SFA.DAS.Apim.Shared.UnitTests\SFA.DAS.Apim.Shared.UnitTests.csproj", "{D8161DB0-B28F-4C15-980E-6D3FC9D28FFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
