@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Apim.Shared", "SFA.DAS.Apim.Shared\SFA.DAS.Apim.Shared.csproj", "{02125626-B5CB-4F46-B281-D00F9BC785C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Apim.Shared.UnitTests", "SFA.DAS.Apim.Shared.UnitTests\SFA.DAS.Apim.Shared.UnitTests.csproj", "{D8161DB0-B28F-4C15-980E-6D3FC9D28FFE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02125626-B5CB-4F46-B281-D00F9BC785C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02125626-B5CB-4F46-B281-D00F9BC785C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02125626-B5CB-4F46-B281-D00F9BC785C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02125626-B5CB-4F46-B281-D00F9BC785C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8161DB0-B28F-4C15-980E-6D3FC9D28FFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8161DB0-B28F-4C15-980E-6D3FC9D28FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8161DB0-B28F-4C15-980E-6D3FC9D28FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8161DB0-B28F-4C15-980E-6D3FC9D28FFE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
