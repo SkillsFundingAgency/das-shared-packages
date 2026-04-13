@@ -110,23 +110,29 @@ namespace SFA.DAS.GovUK.Auth.Models
                     .Where(p => p.From < sliceUntil && p.Until > sliceFrom)
                     .ToList();
 
-                var givenNames = activeParts
+                var givenName = activeParts
                     .Where(p => p.Type == "GivenName")
+                    .OrderByDescending(p => p.From)
+                    .ThenByDescending(p => p.Until)
                     .Select(p => p.Value)
-                    .ToList();
+                    .FirstOrDefault();
 
-                var familyNames = activeParts
+                var familyName = activeParts
                     .Where(p => p.Type == "FamilyName")
+                    .OrderByDescending(p => p.From)
+                    .ThenByDescending(p => p.Until)
                     .Select(p => p.Value)
-                    .ToList();
+                    .FirstOrDefault();
 
-                if (givenNames.Count == 0 && familyNames.Count == 0)
+                if (string.IsNullOrWhiteSpace(givenName) && string.IsNullOrWhiteSpace(familyName))
+                {
                     continue;
+                }
 
                 slices.Add(new GovUkHistoricalName
                 {
-                    GivenNames = string.Join(" ", givenNames),
-                    FamilyNames = string.Join(" ", familyNames),
+                    GivenNames = givenName,
+                    FamilyNames = familyName,
                     ValidFrom = sliceFrom,
                     ValidUntil = sliceUntil
                 });

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Extensions;
+using SFA.DAS.GovUK.Auth.Helper;
 using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 
@@ -58,47 +59,66 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 context.Response.Redirect(_loginRedirect + "?ReturnUrl=" + redirectQuery);
                 return Task.CompletedTask;
             }
-            
+
             return base.RedirectToLogin(context);
         }
 
         public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
         {
-            var enableVerify = AuthenticationExtension.EnableVerify(_config, context.Properties);
             var identity = (ClaimsIdentity)context.Principal.Identity;
-            var existingVot = identity.FindFirst("vot");
+            var ticketUpdated = false;
 
-            if (existingVot == null)
+            var enableVerify = AuthenticationExtension.EnableVerify(_config, context.Properties);
+            if (!enableVerify)
             {
-                // verify is being enabled on first sign in 
-                var vot = enableVerify ? "Cl.Cm.P2" : "Cl.Cm";
-                identity.AddClaim(new Claim("vot", vot));
-                AddStubUserInfoClaims(enableVerify, identity);
-                context.ShouldRenew = true;
+                ticketUpdated |= identity.AddOrReplaceClaim("vot", "Cl.Cm", existing => existing.Value == "Cl.Cm");
             }
-            else if (enableVerify && !existingVot.Value.Contains("P2"))
+            else
             {
-                // verify is being enabled on subsequent sign in
-                identity.RemoveClaim(existingVot);
-                identity.AddClaim(new Claim("vot", "Cl.Cm.P2"));
-                AddStubUserInfoClaims(enableVerify, identity);
-                context.ShouldRenew = true;
+                ticketUpdated |= identity.AddOrReplaceClaim("vot", "Cl.Cm.P2", existing => existing.Value.Contains("P2"));
+                ticketUpdated |= AddStubUserInfoClaims(identity);
+
+                var coreIdentityJwtClaim = identity.FindFirst(UserInfoClaims.CoreIdentityJWT.GetDescription());
+                if (coreIdentityJwtClaim != null)
+                {
+                    var latestName = CoreIdentityJwtClaimHelper.GetLatestNameFromJwtClaim(coreIdentityJwtClaim.Value);
+                    if (latestName != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(latestName.FullName))
+                        {
+                            ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.Name, latestName.FullName, existing => existing.Value == latestName.FullName);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(latestName.FamilyName))
+                        {
+                            ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.Surname, latestName.FamilyName, existing => existing.Value == latestName.FamilyName);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(latestName.GivenName))
+                        {
+                            ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.GivenName, latestName.GivenName, existing => existing.Value == latestName.GivenName);
+                        }
+                    }
+                }
             }
 
-            if (context.ShouldRenew && context.Properties.Items.TryGetValue(AuthenticationTicketStore.SessionId, out var sessionId))
+            if (ticketUpdated && context.Properties.Items.TryGetValue(AuthenticationTicketStore.SessionId, out var sessionId))
             {
                 var updatedTicket = new AuthenticationTicket(context.Principal, context.Properties, context.Scheme.Name);
                 await _ticketStore.RenewAsync(sessionId, updatedTicket);
+                context.ShouldRenew = true;
             }
         }
 
-        private void AddStubUserInfoClaims(bool enableVerify, ClaimsIdentity identity)
+        private bool AddStubUserInfoClaims(ClaimsIdentity identity)
         {
-            if (!enableVerify) return;
-
             var userJson = identity.FindFirst(StubAuthenticationService.StubGovUkUserClaimType)?.Value;
-            if (userJson == null) return;
+            if (userJson == null)
+            {
+                return false;
+            }
 
+            var ticketUpdated = false;
             var user = JsonSerializer.Deserialize<GovUkUser>(userJson);
 
             var keys = _config.RequestedUserInfoClaims
@@ -106,7 +126,10 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             foreach (var key in keys)
             {
-                if (!Enum.TryParse<UserInfoClaims>(key, out var userInfoClaim)) continue;
+                if (!Enum.TryParse<UserInfoClaims>(key, out var userInfoClaim))
+                {
+                    continue;
+                }
 
                 string value = userInfoClaim switch
                 {
@@ -119,8 +142,12 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 };
 
                 if (value != null)
-                    identity.AddClaim(new Claim(userInfoClaim.GetDescription(), value));
+                {
+                    ticketUpdated |= identity.AddOrReplaceClaim(userInfoClaim.GetDescription(), value, existing => existing.Value == value);
+                }
             }
+
+            return ticketUpdated;
         }
     }
 }
