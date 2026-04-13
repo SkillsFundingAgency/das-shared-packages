@@ -1,0 +1,636 @@
+<Project>
+
+    <!--
+        Imported automatically by NuGet at the END of consuming project evaluation.
+        Defines the GenerateApiContracts target which runs in two steps:
+
+            Step 1 — Response DTOs  (NSwag)
+                Produces Generated/Responses.g.cs: plain C# POCOs matching the shapes
+                the inner API returns.
+
+            Step 2 — Inner API Request Wrappers  (inline MSBuild task)
+                Produces Generated/Requests.g.cs: records/classes implementing
+                IGetApiRequest, IPostApiRequest, IPutApiRequest, IDeleteApiRequest,
+                IPatchApiRequest from SFA.DAS.Apim.Shared.
+                Class names are derived from the HTTP method and URL path.
+
+        Both generated files are automatically included in compilation.
+
+        USAGE in a contracts .csproj:
+            <PropertyGroup>
+                <ApiContractsSwaggerJsonPath>$(MSBuildThisFileDirectory)..\MyApi\swagger.json</ApiContractsSwaggerJsonPath>
+                <ApiContractsNamespace>SFA.DAS.MyApi.Contracts</ApiContractsNamespace>
+            </PropertyGroup>
+    -->
+
+    <!--
+        Inline MSBuild task: GenerateApiRequestWrappers
+        Uses a self-contained minimal JSON parser (no external libraries) so it
+        compiles cleanly inside RoslynCodeTaskFactory without any extra assembly
+        references beyond the default BCL types.
+    -->
+    <UsingTask TaskName="GenerateApiRequestWrappers"
+               TaskFactory="RoslynCodeTaskFactory"
+               AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <SwaggerPath        ParameterType="System.String" Required="true" />
+            <Namespace          ParameterType="System.String" Required="true" />
+            <ResponsesNamespace ParameterType="System.String" Required="true" />
+            <OutputPath         ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System" />
+            <Using Namespace="System.Collections.Generic" />
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.Text" />
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[
+
+                // ═══════════════════════════════════════════════════════════════════
+                // Minimal recursive-descent JSON parser
+                // Returns: Dictionary<string,object> | List<object> | string | bool | null
+                // ═══════════════════════════════════════════════════════════════════
+
+                void SkipWs(string s, ref int i)
+                {
+                    while (i < s.Length && (s[i] == ' ' || s[i] == '\n' || s[i] == '\r' || s[i] == '\t'))
+                        i++;
+                }
+
+                string ParseStr(string s, ref int i)
+                {
+                    i++; // skip opening "
+                    var sb2 = new StringBuilder();
+                    while (i < s.Length && s[i] != '"')
+                    {
+                        if (s[i] == '\\' && i + 1 < s.Length)
+                        {
+                            i++;
+                            if      (s[i] == '"')  sb2.Append('"');
+                            else if (s[i] == '\\') sb2.Append('\\');
+                            else if (s[i] == '/')  sb2.Append('/');
+                            else if (s[i] == 'n')  sb2.Append('\n');
+                            else if (s[i] == 'r')  sb2.Append('\r');
+                            else if (s[i] == 't')  sb2.Append('\t');
+                            else sb2.Append(s[i]);
+                        }
+                        else sb2.Append(s[i]);
+                        i++;
+                    }
+                    if (i < s.Length) i++; // skip closing "
+                    return sb2.ToString();
+                }
+
+                Dictionary<string, object> ParseObj(string s, ref int i)
+                {
+                    var dict = new Dictionary<string, object>();
+                    i++; // skip {
+                    SkipWs(s, ref i);
+                    while (i < s.Length && s[i] != '}')
+                    {
+                        SkipWs(s, ref i);
+                        if (s[i] != '"') break;
+                        string key = ParseStr(s, ref i);
+                        SkipWs(s, ref i);
+                        if (i < s.Length && s[i] == ':') i++;
+                        SkipWs(s, ref i);
+                        dict[key] = ParseVal(s, ref i);
+                        SkipWs(s, ref i);
+                        if (i < s.Length && s[i] == ',') i++;
+                        SkipWs(s, ref i);
+                    }
+                    if (i < s.Length) i++; // skip }
+                    return dict;
+                }
+
+                List<object> ParseArr(string s, ref int i)
+                {
+                    var list = new List<object>();
+                    i++; // skip [
+                    SkipWs(s, ref i);
+                    while (i < s.Length && s[i] != ']')
+                    {
+                        list.Add(ParseVal(s, ref i));
+                        SkipWs(s, ref i);
+                        if (i < s.Length && s[i] == ',') i++;
+                        SkipWs(s, ref i);
+                    }
+                    if (i < s.Length) i++; // skip ]
+                    return list;
+                }
+
+                object ParseVal(string s, ref int i)
+                {
+                    SkipWs(s, ref i);
+                    if (i >= s.Length) return null;
+                    char c = s[i];
+                    if (c == '{') return ParseObj(s, ref i);
+                    if (c == '[') return ParseArr(s, ref i);
+                    if (c == '"') return ParseStr(s, ref i);
+                    if (i + 4 <= s.Length && s.Substring(i, 4) == "true")  { i += 4; return (object)true;  }
+                    if (i + 5 <= s.Length && s.Substring(i, 5) == "false") { i += 5; return (object)false; }
+                    if (i + 4 <= s.Length && s.Substring(i, 4) == "null")  { i += 4; return null; }
+                    // number or unknown — consume until delimiter
+                    int start = i;
+                    while (i < s.Length && s[i] != ',' && s[i] != '}' && s[i] != ']') i++;
+                    return s.Substring(start, i - start).Trim();
+                }
+
+                // Convenience helpers for the parsed document
+                Dictionary<string,object> AsObj(object o)  => o as Dictionary<string,object>;
+                List<object>              AsArr(object o)  => o as List<object>;
+                string                    AsStr(object o)  => o as string ?? "";
+                bool                      AsBool(object o) => o is bool b && b;
+
+                string GetStr(Dictionary<string,object> d, string key)
+                    => d != null && d.ContainsKey(key) ? AsStr(d[key]) : "";
+
+                // Resolve the request body data type for POST/PUT/PATCH operations.
+                // Returns a C# type name: a $ref component name, a List<T>, or "object".
+                string GetDataType(Dictionary<string,object> op)
+                {
+                    if (op == null || !op.ContainsKey("requestBody")) return "object";
+                    var rb = AsObj(op["requestBody"]);
+                    if (rb == null) return "object";
+                    var content = rb.ContainsKey("content") ? AsObj(rb["content"]) : null;
+                    if (content == null) return "object";
+
+                    // Prefer application/json; fall back to first content type
+                    Dictionary<string,object> media = null;
+                    if (content.ContainsKey("application/json"))
+                        media = AsObj(content["application/json"]);
+                    else foreach (var kv in content) { media = AsObj(kv.Value); break; }
+                    if (media == null) return "object";
+
+                    var schema = media.ContainsKey("schema") ? AsObj(media["schema"]) : null;
+                    if (schema == null) return "object";
+
+                    // Named schema via $ref: "#/components/schemas/SomeType" → "SomeType"
+                    if (schema.ContainsKey("$ref"))
+                    {
+                        string refStr = AsStr(schema["$ref"]);
+                        int lastSlash = refStr.LastIndexOf('/');
+                        return lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                    }
+
+                    // Inline array type → List<ItemType>
+                    if (GetStr(schema, "type") == "array")
+                    {
+                        var items = schema.ContainsKey("items") ? AsObj(schema["items"]) : null;
+                        string itemType = items != null
+                            ? MapType(GetStr(items, "type"), GetStr(items, "format"))
+                            : "object";
+                        return "System.Collections.Generic.List<" + itemType + ">";
+                    }
+
+                    return "object";
+                }
+
+                // ═══════════════════════════════════════════════════════════════════
+                // Helpers for class-name and type mapping
+                // ═══════════════════════════════════════════════════════════════════
+
+                string MapType(string type, string format)
+                {
+                    if (format == "uuid")      return "System.Guid";
+                    if (format == "int32")     return "int";
+                    if (format == "int64")     return "long";
+                    if (format == "float")     return "float";
+                    if (format == "double")    return "double";
+                    if (format == "date-time") return "System.DateTimeOffset";
+                    if (format == "date")      return "System.DateOnly";
+                    if (type   == "integer")   return "int";
+                    if (type   == "number")    return "double";
+                    if (type   == "boolean")   return "bool";
+                    return "string";
+                }
+
+                bool IsValueType(string t)
+                    => t == "int" || t == "long" || t == "float" || t == "double" ||
+                       t == "bool" || t == "System.Guid" ||
+                       t == "System.DateTimeOffset" || t == "System.DateOnly";
+
+                string PascalCase(string s)
+                {
+                    if (string.IsNullOrEmpty(s)) return s;
+                    string[] words = s.Split('-');
+                    var result = new StringBuilder();
+                    foreach (string w in words)
+                    {
+                        if (!string.IsNullOrEmpty(w))
+                            result.Append(char.ToUpper(w[0])).Append(w.Substring(1));
+                    }
+                    return result.ToString();
+                }
+
+                // Derive class name: GET /api/vacancies/{vacancyId} → GetVacanciesByVacancyIdApiRequest
+                string MakeClassName(string method, string path)
+                {
+                    string rel = path.TrimStart('/');
+                    if (rel.Length >= 4 && rel.Substring(0, 4).ToLower() == "api/")
+                        rel = rel.Substring(4);
+
+                    string[] segs = rel.Split('/');
+                    var name = new StringBuilder(char.ToUpper(method[0]) + method.Substring(1).ToLower());
+                    foreach (string seg in segs)
+                    {
+                        if (string.IsNullOrEmpty(seg)) continue;
+                        if (seg.StartsWith("{") && seg.EndsWith("}"))
+                        {
+                            string p = seg.Substring(1, seg.Length - 2);
+                            name.Append("By").Append(char.ToUpper(p[0])).Append(p.Substring(1));
+                        }
+                        else name.Append(PascalCase(seg));
+                    }
+                    name.Append("ApiRequest");
+                    return name.ToString();
+                }
+
+                // ═══════════════════════════════════════════════════════════════════
+                // Parse swagger.json and emit Requests.g.cs
+                // ═══════════════════════════════════════════════════════════════════
+
+                string json = File.ReadAllText(SwaggerPath);
+                int pos = 0;
+                var doc = AsObj(ParseVal(json, ref pos));
+                var output = new StringBuilder();
+
+                output.AppendLine("// <auto-generated/>");
+                output.AppendLine("// Generated by SFA.DAS.ApiContracts.Build from swagger.json — do not edit.");
+                output.AppendLine();
+                output.AppendLine("#nullable enable");
+                output.AppendLine("#pragma warning disable CS1591 // Missing XML comment");
+                output.AppendLine("#pragma warning disable CS8618 // Non-nullable property uninitialized");
+                output.AppendLine("#pragma warning disable CS8767 // Nullability mismatch on interface implementation");
+                output.AppendLine();
+                output.AppendLine("namespace " + Namespace + ";");
+                output.AppendLine();
+                output.AppendLine("using SFA.DAS.Apim.Shared.Interfaces;");
+                output.AppendLine("using " + ResponsesNamespace + ";"  );
+                output.AppendLine();
+
+                // Extract and normalise the API version from info.version.
+                // "v1" → "1.0", "v2" → "2.0", "1.0" → "1.0" (unchanged), "2" → "2.0"
+                // If version == "1.0" no override is emitted because IBaseApiRequest already
+                // returns "1.0" as its default; only non-default versions get an explicit property.
+                string apiVersion = "1.0";
+                {
+                    var infoObj = doc != null && doc.ContainsKey("info") ? AsObj(doc["info"]) : null;
+                    if (infoObj != null && infoObj.ContainsKey("version"))
+                    {
+                        string rawVer = AsStr(infoObj["version"]).Trim();
+                        if (rawVer.Length > 0 && (rawVer[0] == 'v' || rawVer[0] == 'V'))
+                            rawVer = rawVer.Substring(1);
+                        if (rawVer.Length > 0 && !rawVer.Contains('.'))
+                            rawVer += ".0";
+                        if (!string.IsNullOrEmpty(rawVer))
+                            apiVersion = rawVer;
+                    }
+                }
+
+                var paths = doc != null ? AsObj(doc.ContainsKey("paths") ? doc["paths"] : null) : null;
+                if (paths != null)
+                {
+                    string[] httpMethods = { "get", "post", "put", "delete", "patch" };
+
+                    foreach (var pathKv in paths)
+                    {
+                        string rawPath = pathKv.Key;
+                        var pathItem = AsObj(pathKv.Value);
+                        if (pathItem == null) continue;
+
+                        foreach (string httpMethod in httpMethods)
+                        {
+                            if (!pathItem.ContainsKey(httpMethod)) continue;
+                            var op = AsObj(pathItem[httpMethod]);
+                            if (op == null) continue;
+
+                            var pathParams  = new List<string[]>(); // [propName, csType]
+                            var queryParams = new List<string[]>(); // [propName, csType, "true"/"false"]
+
+                            var parameters = op.ContainsKey("parameters") ? AsArr(op["parameters"]) : null;
+                            if (parameters != null)
+                            {
+                                foreach (object paramObj in parameters)
+                                {
+                                    var param = AsObj(paramObj);
+                                    if (param == null) continue;
+
+                                    string paramIn   = GetStr(param, "in");
+                                    string paramName = GetStr(param, "name");
+
+                                    // Skip header params — handled by the framework
+                                    if (paramIn != "path" && paramIn != "query") continue;
+                                    if (string.IsNullOrEmpty(paramName)) continue;
+
+                                    bool required = param.ContainsKey("required") && AsBool(param["required"]);
+                                    string csType = "string";
+                                    var schema = param.ContainsKey("schema") ? AsObj(param["schema"]) : null;
+                                    if (schema != null)
+                                    {
+                                        if (schema.ContainsKey("$ref"))
+                                        {
+                                            // Enum or complex type referenced from components/schemas
+                                            string refStr = AsStr(schema["$ref"]);
+                                            int lastSlash = refStr.LastIndexOf('/');
+                                            csType = lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                                            // Treat $ref types as value types so they get ? when optional
+                                            if (!required) csType += "?";
+                                        }
+                                        else
+                                        {
+                                            csType = MapType(GetStr(schema, "type"), GetStr(schema, "format"));
+                                            if (!required && IsValueType(csType))
+                                                csType += "?";
+                                        }
+                                    }
+
+                                    string propName = char.ToUpper(paramName[0]) + paramName.Substring(1);
+                                    if (paramIn == "path")
+                                        pathParams.Add(new string[] { propName, csType });
+                                    else
+                                        queryParams.Add(new string[] { propName, csType, required ? "true" : "false" });
+                                }
+                            }
+
+                            // Build URL template — replace {lowerCamel} with {PascalCase}
+                            string urlTemplate = rawPath.TrimStart('/');
+                            foreach (string[] p in pathParams)
+                            {
+                                string orig = "{" + char.ToLower(p[0][0]) + p[0].Substring(1) + "}";
+                                urlTemplate = urlTemplate.Replace(orig, "{" + p[0] + "}");
+                            }
+                            if (queryParams.Count > 0)
+                            {
+                                bool firstQs = true;
+                                urlTemplate += "?";
+                                foreach (string[] q in queryParams)
+                                {
+                                    if (!firstQs) urlTemplate += "&";
+                                    string qn = char.ToLower(q[0][0]) + q[0].Substring(1);
+                                    urlTemplate += qn + "={" + q[0] + "}";
+                                    firstQs = false;
+                                }
+                            }
+
+                            string className = MakeClassName(httpMethod, rawPath);
+                            output.AppendLine("// " + httpMethod.ToUpper() + " " + rawPath);
+
+                            if (httpMethod == "get" || httpMethod == "delete")
+                            {
+                                string iface   = httpMethod == "get" ? "IGetApiRequest" : "IDeleteApiRequest";
+                                string urlProp = httpMethod == "get" ? "GetUrl"         : "DeleteUrl";
+
+                                // Constructor args: path params, then required query, then optional query
+                                var ctorArgs = new StringBuilder();
+                                bool firstArg = true;
+                                foreach (string[] p in pathParams)
+                                {
+                                    if (!firstArg) ctorArgs.Append(", ");
+                                    ctorArgs.Append(p[1]).Append(" ").Append(p[0]);
+                                    firstArg = false;
+                                }
+                                foreach (string[] q in queryParams)
+                                {
+                                    if (q[2] != "true") continue;
+                                    if (!firstArg) ctorArgs.Append(", ");
+                                    ctorArgs.Append(q[1]).Append(" ").Append(q[0]);
+                                    firstArg = false;
+                                }
+                                foreach (string[] q in queryParams)
+                                {
+                                    if (q[2] != "false") continue;
+                                    if (!firstArg) ctorArgs.Append(", ");
+                                    ctorArgs.Append(q[1]).Append(" ").Append(q[0]);
+                                    firstArg = false;
+                                }
+
+                                output.AppendLine("public record " + className + "(" + ctorArgs + ") : " + iface);
+                                output.AppendLine("{");
+                                output.AppendLine("    public string " + urlProp + " => $\"" + urlTemplate + "\";");
+                                if (apiVersion != "1.0")
+                                    output.AppendLine("    public string Version => \"" + apiVersion + "\";");
+                                output.AppendLine("}");
+                            }
+                            else
+                            {
+                                string dataType = GetDataType(op);
+                                string iface = httpMethod == "post"  ? "IPostApiRequest<"  + dataType + ">"
+                                             : httpMethod == "put"   ? "IPutApiRequest<"   + dataType + ">"
+                                             :                         "IPatchApiRequest<"  + dataType + ">";
+                                string urlProp = httpMethod == "post"  ? "PostUrl"
+                                              : httpMethod == "put"   ? "PutUrl"
+                                              :                          "PatchUrl";
+
+                                output.AppendLine("public class " + className + " : " + iface);
+                                output.AppendLine("{");
+                                foreach (string[] p in pathParams)
+                                    output.AppendLine("    public required " + p[1] + " " + p[0] + " { get; init; }");
+                                // Query params on write operations are exposed as optional properties
+                                foreach (string[] q in queryParams)
+                                    output.AppendLine("    public " + q[1] + " " + q[0] + " { get; set; }");
+                                output.AppendLine("    public string " + urlProp + " => $\"" + urlTemplate + "\";");
+                                output.AppendLine("    public " + dataType + " Data { get; set; } = default!;");
+                                if (apiVersion != "1.0")
+                                    output.AppendLine("    public string Version => \"" + apiVersion + "\";");
+                                output.AppendLine("}");
+                            }
+
+                            output.AppendLine();
+                        }
+                    }
+                }
+
+                output.AppendLine("#pragma warning restore CS8767");
+                output.AppendLine("#pragma warning restore CS8618");
+                output.AppendLine("#pragma warning restore CS1591");
+
+                string generated = output.ToString();
+                if (!File.Exists(OutputPath) || File.ReadAllText(OutputPath) != generated)
+                    File.WriteAllText(OutputPath, generated);
+
+                return true;
+                ]]>
+            </Code>
+        </Task>
+    </UsingTask>
+
+    <Target Name="GenerateApiContracts"
+            BeforeTargets="BeforeBuild"
+            Condition="'$(ApiContractsGenerationEnabled)' == 'true'
+                       and '$(ApiContractsSwaggerJsonPath)' != ''
+                       and Exists('$(ApiContractsSwaggerJsonPath)')">
+
+        <MakeDir Directories="$(ApiContractsOutputDirectory)" />
+
+        <Message Text="[ApiContracts] Generating from $(ApiContractsSwaggerJsonPath)" Importance="high" />
+
+        <!-- ================================================================
+             Step 1: Response DTOs via NSwag
+             ================================================================ -->
+        <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(ApiContractsSwaggerJsonPath)&quot; /namespace:$(ApiContractsNamespace).ApiResponses /output:&quot;$(ApiContractsOutputDirectory)/Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true"
+              WorkingDirectory="$(MSBuildProjectDirectory)" />
+
+        <!-- ================================================================
+             Step 2: Request wrappers via inline task
+             ================================================================ -->
+        <GenerateApiRequestWrappers
+            SwaggerPath="$(ApiContractsSwaggerJsonPath)"
+            Namespace="$(ApiContractsNamespace).ApiRequests"
+            ResponsesNamespace="$(ApiContractsNamespace).ApiResponses"
+            OutputPath="$(ApiContractsOutputDirectory)/Requests.g.cs" />
+
+        <Message Text="[ApiContracts] Generation complete → $(ApiContractsOutputDirectory)" Importance="high" />
+
+    </Target>
+
+    <Target Name="RegenerateApiContracts" DependsOnTargets="GenerateApiContracts" />
+
+    <!--
+        Inline MSBuild task: GenerateApiClientWrapper
+        Emits Client.g.cs containing a typed configuration class, a client interface,
+        and a concrete client that delegates every IInternalApiClient<T> method to
+        the injected inner client.  No swagger parsing needed — names are driven
+        entirely by the ApiContractsClientName property.
+
+        USAGE in a contracts .csproj:
+            <ApiContractsClientName>MyApiV2</ApiContractsClientName>
+
+        Produces (in $(ApiContractsOutputDirectory)/Client.g.cs):
+            MyApiV2Configuration          : IInternalApiConfiguration
+            IMyApiV2Client<T>             : IInternalApiClient<T>
+            MyApiV2Client                 : IMyApiV2Client<MyApiV2Configuration>
+            AddMyApiV2ClientExtension     IServiceCollection extension to register the client
+    -->
+    <UsingTask TaskName="GenerateApiClientWrapper"
+               TaskFactory="RoslynCodeTaskFactory"
+               AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <ClientName ParameterType="System.String" Required="true" />
+            <Namespace  ParameterType="System.String" Required="true" />
+            <OutputPath ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System" />
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.Text" />
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[
+
+                string configClass   = ClientName + "Configuration";
+                string ifaceName     = "I" + ClientName + "Client";
+                string clientClass   = ClientName + "Client";
+                string clientNs      = Namespace + ".Client";
+
+                var sb = new StringBuilder();
+                sb.AppendLine("// <auto-generated/>");
+                sb.AppendLine("// Generated by SFA.DAS.ApiContracts.Build — do not edit.");
+                sb.AppendLine();
+                sb.AppendLine("#nullable enable");
+                sb.AppendLine("#pragma warning disable CS1591 // Missing XML comment");
+                sb.AppendLine();
+                sb.AppendLine("namespace " + clientNs + ";");
+                sb.AppendLine();
+                sb.AppendLine("using System;");
+                sb.AppendLine("using System.Collections.Generic;");
+                sb.AppendLine("using System.Linq;");
+                sb.AppendLine("using System.Net;");
+                sb.AppendLine("using System.Threading.Tasks;");
+                sb.AppendLine("using Microsoft.Extensions.Configuration;");
+                sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+                sb.AppendLine("using Microsoft.Extensions.Options;");
+                sb.AppendLine("using SFA.DAS.Apim.Shared.Interfaces;");
+                sb.AppendLine("using SFA.DAS.Apim.Shared.Models;");
+                sb.AppendLine();
+                sb.AppendLine("public class " + configClass + " : IInternalApiConfiguration");
+                sb.AppendLine("{");
+                sb.AppendLine("    public required string Url { get; set; }");
+                sb.AppendLine("    public required string Identifier { get; set; }");
+                sb.AppendLine("}");
+                sb.AppendLine();
+                sb.AppendLine("public interface " + ifaceName + "<T> : IInternalApiClient<T>;");
+                sb.AppendLine();
+                sb.AppendLine("public class " + clientClass + "(IInternalApiClient<" + configClass + "> apiClient)");
+                sb.AppendLine("    : " + ifaceName + "<" + configClass + ">");
+                sb.AppendLine("{");
+                sb.AppendLine("    public Task<TResponse> Get<TResponse>(IGetApiRequest request) => apiClient.Get<TResponse>(request);");
+                sb.AppendLine("    public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request) => apiClient.GetResponseCode(request);");
+                sb.AppendLine("    public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request) => apiClient.GetWithResponseCode<TResponse>(request);");
+                sb.AppendLine("    public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request) => apiClient.GetAll<TResponse>(request);");
+                sb.AppendLine("    public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request) => apiClient.GetPaged<TResponse>(request);");
+                sb.AppendLine("    public Task<TResponse> Post<TResponse>(IPostApiRequest request) => apiClient.Post<TResponse>(request);");
+                sb.AppendLine("    public Task Post<TData>(IPostApiRequest<TData> request) => apiClient.Post(request);");
+                sb.AppendLine("    public Task Delete(IDeleteApiRequest request) => apiClient.Delete(request);");
+                sb.AppendLine("    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false) => apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);");
+                sb.AppendLine("    public Task Patch<TData>(IPatchApiRequest<TData> request) => apiClient.Patch(request);");
+                sb.AppendLine("    public Task Put(IPutApiRequest request) => apiClient.Put(request);");
+                sb.AppendLine("    public Task Put<TData>(IPutApiRequest<TData> request) => apiClient.Put(request);");
+                sb.AppendLine("    public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true) => apiClient.PostWithResponseCode<TResponse>(request, includeResponse);");
+                sb.AppendLine("    public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request) => apiClient.PatchWithResponseCode<TData>(request);");
+                sb.AppendLine("    public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class => apiClient.PutWithResponseCode<TResponse>(request);");
+                sb.AppendLine("    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true) => apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);");
+                sb.AppendLine("    public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request) => apiClient.PutWithResponseCode<TData, TResponse>(request);");
+                sb.AppendLine("}");
+                sb.AppendLine();
+                sb.AppendLine("public static class Add" + clientClass + "Extension");
+                sb.AppendLine("{");
+                sb.AppendLine("    public static IServiceCollection Add" + clientClass + "(this IServiceCollection services, IConfiguration configuration)");
+                sb.AppendLine("    {");
+                sb.AppendLine("        if (!configuration.GetSection(nameof(" + configClass + ")).GetChildren().Any())");
+                sb.AppendLine("            throw new ArgumentException(");
+                sb.AppendLine("                $\"Cannot find {nameof(" + configClass + ")} in configuration. \" +");
+                sb.AppendLine("                $\"Please add a section called {nameof(" + configClass + ")} with Url and Identifier properties.\");");
+                sb.AppendLine();
+                sb.AppendLine("        services.AddTransient<" + ifaceName + "<" + configClass + ">, " + clientClass + ">();");
+                sb.AppendLine("        services.Configure<" + configClass + ">(configuration.GetSection(nameof(" + configClass + ")));");
+                sb.AppendLine("        services.AddSingleton(cfg => cfg.GetService<IOptions<" + configClass + ">>()!.Value);");
+                sb.AppendLine("        return services;");
+                sb.AppendLine("    }");
+                sb.AppendLine("}");
+                sb.AppendLine();
+                sb.AppendLine("#pragma warning restore CS1591");
+
+                string generated = sb.ToString();
+                if (!File.Exists(OutputPath) || File.ReadAllText(OutputPath) != generated)
+                    File.WriteAllText(OutputPath, generated);
+
+                return true;
+                ]]>
+            </Code>
+        </Task>
+    </UsingTask>
+
+    <Target Name="GenerateApiClient"
+            BeforeTargets="BeforeBuild"
+            Condition="'$(ApiContractsGenerationEnabled)' == 'true'
+                       and '$(ApiContractsClientName)' != ''">
+
+        <MakeDir Directories="$(ApiContractsOutputDirectory)" />
+
+        <Message Text="[ApiContracts] Generating client wrapper for $(ApiContractsClientName)" Importance="high" />
+
+        <GenerateApiClientWrapper
+            ClientName="$(ApiContractsClientName)"
+            Namespace="$(ApiContractsNamespace)"
+            OutputPath="$(ApiContractsOutputDirectory)/Client.g.cs" />
+
+        <Message Text="[ApiContracts] Client generation complete → $(ApiContractsOutputDirectory)/Client.g.cs" Importance="high" />
+
+    </Target>
+
+    <!--
+        Static Compile Include — evaluated at project load time (not inside a target),
+        so IDEs recognise the generated files for IntelliSense and design-time builds.
+
+        The .props file already removes *.g.cs from the SDK default glob, so this
+        re-adds them once without causing a duplicate CS2002 warning.
+
+        A glob Include that matches no files is a no-op, so this is safe on a clean
+        checkout before the first build (the committed Generated/ files satisfy it
+        in normal development; the generation target creates them when they are absent).
+    -->
+    <ItemGroup>
+        <Compile Include="$(ApiContractsOutputDirectory)/*.g.cs" />
+    </ItemGroup>
+
+</Project>

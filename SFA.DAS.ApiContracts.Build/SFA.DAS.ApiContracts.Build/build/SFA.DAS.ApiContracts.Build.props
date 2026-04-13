@@ -1,0 +1,93 @@
+<Project>
+
+    <!--
+        Imported automatically by NuGet at the START of consuming project evaluation.
+        Establishes default property values that the consuming .csproj can override
+        before the .targets file runs.
+    -->
+
+    <PropertyGroup>
+        <!--
+            Path to the swagger.json produced by Microsoft.Extensions.ApiDescription.Server
+            on the inner API project. Consuming projects set this to the relative or absolute
+            path of the swagger file.
+
+            Example (in SFA.DAS.Recruit.Contracts.csproj):
+                <ApiContractsSwaggerJsonPath>$(MSBuildThisFileDirectory)\..\Recruit.Api\obj\swagger.json</ApiContractsSwaggerJsonPath>
+        -->
+        <ApiContractsSwaggerJsonPath Condition="'$(ApiContractsSwaggerJsonPath)' == ''" />
+
+        <!--
+            Root namespace for generated code. Defaults to the project's own RootNamespace.
+            Override if you want a different namespace in generated files.
+
+            Example:
+                <ApiContractsNamespace>SFA.DAS.Recruit.Contracts.Generated</ApiContractsNamespace>
+        -->
+        <ApiContractsNamespace Condition="'$(ApiContractsNamespace)' == ''">$(RootNamespace).Generated</ApiContractsNamespace>
+
+        <!--
+            Where generated .g.cs files are written. Defaults to a Generated/ subfolder
+            next to the .csproj. These files should be committed to source control so the
+            project builds without needing to run code generation in CI.
+        -->
+        <ApiContractsOutputDirectory Condition="'$(ApiContractsOutputDirectory)' == ''">$(MSBuildProjectDirectory)\Generated</ApiContractsOutputDirectory>
+
+        <!--
+            Set to false to disable generation entirely (e.g. in a pipeline where the
+            generated files are already committed and NSwag is not installed).
+        -->
+        <ApiContractsGenerationEnabled Condition="'$(ApiContractsGenerationEnabled)' == ''">true</ApiContractsGenerationEnabled>
+
+        <!--
+            Optional. When set, generates Client.g.cs containing a typed configuration
+            class, a client interface, and a concrete pass-through client class.
+
+            The value becomes the base name for all three generated types:
+                MyApiV2  →  MyApiV2Configuration
+                             IMyApiV2Client<T>
+                             MyApiV2Client
+
+            Leave empty (the default) to skip client generation.
+        -->
+        <ApiContractsClientName Condition="'$(ApiContractsClientName)' == ''"></ApiContractsClientName>
+
+        <!--
+            Resolved path to the templates shipped inside this package.
+            Used by the .targets file to point NSwag at our Client.liquid template.
+            Do not override this unless you need fully custom templates.
+        -->
+        <ApiContractsTemplateDirectory>$(MSBuildThisFileDirectory)..\templates\</ApiContractsTemplateDirectory>
+
+    </PropertyGroup>
+
+    <!--
+        Prevent the SDK default glob from auto-including generated .g.cs files.
+        The GenerateApiContracts target adds them explicitly after generation,
+        so without this Remove they would be compiled twice (CS2002 warning).
+    -->
+    <ItemGroup>
+        <Compile Remove="$(ApiContractsOutputDirectory)\**\*.g.cs" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <!--
+            Resolved NSwag executable path.
+            NSwag.MSBuild exposes $(NSwagExe_Net80), $(NSwagExe_Net90) etc. as paths to the
+            NSwag DLL inside the package. We pick the highest available version.
+            These are DLL paths, so the invocation command always prefixes with 'dotnet'.
+            Override $(ApiContractsNSwagExe) to point at a different DLL, or override
+            $(ApiContractsNSwagCommand) entirely to use the global 'nswag' tool.
+        -->
+        <!--
+            Prefer Net80 over Net90 — NSwag ships both but .NET 8 is more widely installed
+            than .NET 9. $(NSwagExe_Net80) and $(NSwagExe_Net90) are already full invocation
+            commands of the form: dotnet "/path/to/dotnet-nswag.dll"
+            Do NOT wrap these in an extra dotnet "..." — they already include the prefix.
+        -->
+        <ApiContractsNSwagCommand Condition="'$(ApiContractsNSwagCommand)' == '' and '$(NSwagExe_Net80)' != ''">$(NSwagExe_Net80)</ApiContractsNSwagCommand>
+        <ApiContractsNSwagCommand Condition="'$(ApiContractsNSwagCommand)' == '' and '$(NSwagExe_Net90)' != ''">$(NSwagExe_Net90)</ApiContractsNSwagCommand>
+        <ApiContractsNSwagCommand Condition="'$(ApiContractsNSwagCommand)' == ''">nswag</ApiContractsNSwagCommand>
+    </PropertyGroup>
+
+</Project>

@@ -1,0 +1,217 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Test API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/das-requests/{dasRequestId}": {
+      "get": {
+        "operationId": "GetDasRequestById",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "put": {
+        "operationId": "PutDasRequest",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PutDasRequest" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "operationId": "DeleteDasRequest",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": { "204": { "description": "No Content" } }
+      },
+      "patch": {
+        "operationId": "PatchDasRequest",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/das-requests": {
+      "get": {
+        "operationId": "GetDasRequests",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": { "$ref": "#/components/schemas/DasRequestSortOrder" }
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "post": {
+        "operationId": "PostDasRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PostDasRequest" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/api/das-requests/{dasRequestId}/sub-items/{itemId}": {
+      "get": {
+        "operationId": "GetDasRequestSubItem",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/das-requests/batch": {
+      "post": {
+        "operationId": "PostDasRequestBatch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": { "type": "string", "format": "uuid" }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/das-requests/{dasRequestId}/status": {
+      "get": {
+        "operationId": "GetDasRequestStatus",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "asOf",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/accounts/{accountId}/das-requests": {
+      "get": {
+        "operationId": "GetAccountDasRequests",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DasRequestSortOrder": {
+        "enum": [ "Name", "Created", "Updated" ],
+        "type": "string"
+      },
+      "PostDasRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true }
+        }
+      },
+      "PutDasRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "nullable": true },
+          "description": { "type": "string", "nullable": true }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "runtime": "Net80",
+  "defaultVariables": null,
+  "documentGenerator": {
+    "fromDocument": {
+      "json": "",
+      "url": "$(ApiContractsSwaggerJsonPath)",
+      "output": null,
+      "newLineBehavior": "Auto"
+    }
+  },
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "__NOTE__": [
+        "This file is a reference template. In practice, generation is driven by the",
+        "MSBuild targets in SFA.DAS.ApiContracts.Build rather than this file directly.",
+        "Copy and adapt it if you want to run NSwag manually or tweak generation options."
+      ],
+
+      "clientBaseClass": null,
+      "configurationClass": null,
+      "generateClientClasses": false,
+      "generateClientInterfaces": false,
+      "injectHttpClient": false,
+      "disposeHttpClient": false,
+
+      "generateDtoTypes": true,
+      "generateOptionalParameters": false,
+      "generateDefaultValues": true,
+      "generateDataAnnotations": false,
+      "generateNullableReferenceTypes": true,
+      "nullHandling": "Swagger",
+      "generateJsonMethods": false,
+      "enforceFlagEnums": false,
+      "classStyle": "POCO",
+      "jsonLibrary": "SystemTextJson",
+      "generateUpdateableModel": false,
+
+      "namespace": "$(ApiContractsNamespace)",
+      "operationGenerationMode": "MultipleClientsFromFirstTagAndPath",
+      "additionalNamespaceUsages": [
+        "SFA.DAS.Apim.Shared.Interfaces"
+      ],
+
+      "templateDirectory": "$(ApiContractsTemplateDirectory)",
+
+      "output": "$(ApiContractsOutputDirectory)/Responses.g.cs",
+      "newLineBehavior": "Auto"
+    }
+  }
+}

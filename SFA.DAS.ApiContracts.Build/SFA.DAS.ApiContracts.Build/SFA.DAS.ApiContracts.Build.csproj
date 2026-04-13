@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
+        <Description>MSBuild tooling and NSwag templates for generating typed API contracts from OpenAPI specifications, following SFA.DAS conventions. Produces IGetApiRequest / IPostApiRequest etc. wrappers and response DTOs for use with SFA.DAS.APIM.Endpoints.</Description>
+        <License>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</License>
+        <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-shared-packages</PackageProjectUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedUntrackedSources>false</EmbedUntrackedSources>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <!--
+            This is a build-tooling package — it ships no compiled DLL of its own.
+            The value it delivers is the MSBuild targets (build/) and NSwag templates (templates/).
+        -->
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
+        <ContentTargetFolders>content</ContentTargetFolders>
+        <!--
+            Disable the GenerateOpenApiDocuments target from Microsoft.Extensions.ApiDescription.Server.
+            This is a pure MSBuild tooling package with no entry point; that target attempts to boot
+            the assembly to extract an OpenAPI description and will always fail here.
+        -->
+        <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!--
+            NSwag.MSBuild is a transitive dependency so that consuming contracts projects
+            have access to the NSwag executable path properties without needing to reference
+            it directly. Our .props file resolves the right exe path via $(ApiContractsNSwagExe).
+        -->
+        <PackageReference Include="NSwag.MSBuild" Version="14.2.0" />
+        <!--
+            Microsoft.Extensions.ApiDescription.Server enables swagger.json generation
+            at build time on the inner API project (no running server required).
+            Declared here as a transitive dep so inner API projects get it automatically.
+        -->
+        <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--
+            MSBuild props and targets are auto-imported by NuGet from the build/ folder.
+            - SFA.DAS.ApiContracts.Build.props  → imported at the start of the consuming project
+            - SFA.DAS.ApiContracts.Build.targets → imported at the end (where our generation target lives)
+        -->
+        <None Include="build\**" Pack="true" PackagePath="build\%(RecursiveDir)%(Filename)%(Extension)" />
+
+        <!--
+            NSwag Liquid templates are distributed under templates/ in the package root.
+            The .targets file references them via $(ApiContractsTemplateDirectory).
+            Client.liquid  — custom template that generates IGetApiRequest / IPostApiRequest wrappers
+        -->
+        <None Include="templates\**" Pack="true" PackagePath="templates\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+
+</Project>
