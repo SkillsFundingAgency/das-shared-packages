@@ -265,6 +265,8 @@
                 output.AppendLine();
                 output.AppendLine("namespace " + Namespace + ";");
                 output.AppendLine();
+                output.AppendLine("using Microsoft.AspNetCore.WebUtilities;");
+                output.AppendLine("using System.Collections.Generic;");
                 output.AppendLine("using SFA.DAS.Apim.Shared.Interfaces;");
                 output.AppendLine("using " + ResponsesNamespace + ";"  );
                 output.AppendLine();
@@ -288,6 +290,22 @@
                     }
                 }
 
+                // Build a set of schema names that are [Flags] enums (marked with x-enumFlags: true)
+                var flagsSchemas = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+                {
+                    var components = doc != null && doc.ContainsKey("components") ? AsObj(doc["components"]) : null;
+                    var schemas = components != null && components.ContainsKey("schemas") ? AsObj(components["schemas"]) : null;
+                    if (schemas != null)
+                    {
+                        foreach (var sKv in schemas)
+                        {
+                            var sDef = AsObj(sKv.Value);
+                            if (sDef != null && sDef.ContainsKey("x-enumFlags") && AsBool(sDef["x-enumFlags"]))
+                                flagsSchemas.Add(sKv.Key);
+                        }
+                    }
+                }
+
                 var paths = doc != null ? AsObj(doc.ContainsKey("paths") ? doc["paths"] : null) : null;
                 if (paths != null)
                 {
@@ -306,7 +324,7 @@
                             if (op == null) continue;
 
                             var pathParams  = new List<string[]>(); // [propName, csType]
-                            var queryParams = new List<string[]>(); // [propName, csType, "true"/"false"]
+                            var queryParams = new List<string[]>(); // [propName, csType, "true"/"false", "flags"/""]
 
                             var parameters = op.ContainsKey("parameters") ? AsArr(op["parameters"]) : null;
                             if (parameters != null)
@@ -325,6 +343,7 @@
 
                                     bool required = param.ContainsKey("required") && AsBool(param["required"]);
                                     string csType = "string";
+                                    bool isFlags = false;
                                     var schema = param.ContainsKey("schema") ? AsObj(param["schema"]) : null;
                                     if (schema != null)
                                     {
@@ -333,7 +352,9 @@
                                             // Enum or complex type referenced from components/schemas
                                             string refStr = AsStr(schema["$ref"]);
                                             int lastSlash = refStr.LastIndexOf('/');
-                                            csType = lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                                            string refName = lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                                            csType = refName;
+                                            isFlags = flagsSchemas.Contains(refName);
                                             // Treat $ref types as value types so they get ? when optional
                                             if (!required) csType += "?";
                                         }
@@ -349,28 +370,42 @@
                                     if (paramIn == "path")
                                         pathParams.Add(new string[] { propName, csType });
                                     else
-                                        queryParams.Add(new string[] { propName, csType, required ? "true" : "false" });
+                                        queryParams.Add(new string[] { propName, csType, required ? "true" : "false", isFlags ? "flags" : "" });
                                 }
                             }
 
-                            // Build URL template — replace {lowerCamel} with {PascalCase}
+                            // Build URL template (path params only) — replace {lowerCamel} with {PascalCase}
                             string urlTemplate = rawPath.TrimStart('/');
                             foreach (string[] p in pathParams)
                             {
                                 string orig = "{" + char.ToLower(p[0][0]) + p[0].Substring(1) + "}";
                                 urlTemplate = urlTemplate.Replace(orig, "{" + p[0] + "}");
                             }
+
+                            // Build URL property expression using QueryHelpers for query params
+                            string urlPropertyExpression;
                             if (queryParams.Count > 0)
                             {
-                                bool firstQs = true;
-                                urlTemplate += "?";
+                                var dictEntries = new StringBuilder();
+                                bool firstEntry = true;
                                 foreach (string[] q in queryParams)
                                 {
-                                    if (!firstQs) urlTemplate += "&";
+                                    if (!firstEntry) dictEntries.Append(", ");
                                     string qn = char.ToLower(q[0][0]) + q[0].Substring(1);
-                                    urlTemplate += qn + "={" + q[0] + "}";
-                                    firstQs = false;
+                                    bool qIsFlags = q.Length > 3 && q[3] == "flags";
+                                    string valExpr = (q[1] == "string") ? q[0]
+                                                   : qIsFlags && q[1].EndsWith("?") ? q[0] + "?.ToString()?.Replace(\" \", \"\")"
+                                                   : qIsFlags                       ? q[0] + ".ToString().Replace(\" \", \"\")"
+                                                   : q[1].EndsWith("?")             ? q[0] + "?.ToString()"
+                                                   :                                  q[0] + ".ToString()";
+                                    dictEntries.Append("[\"" + qn + "\"] = " + valExpr);
+                                    firstEntry = false;
                                 }
+                                urlPropertyExpression = "QueryHelpers.AddQueryString($\"" + urlTemplate + "\", new Dictionary<string, string?> { " + dictEntries + " })";
+                            }
+                            else
+                            {
+                                urlPropertyExpression = "$\"" + urlTemplate + "\"";
                             }
 
                             string className = MakeClassName(httpMethod, rawPath);
@@ -407,7 +442,7 @@
 
                                 output.AppendLine("public record " + className + "(" + ctorArgs + ") : " + iface);
                                 output.AppendLine("{");
-                                output.AppendLine("    public string " + urlProp + " => $\"" + urlTemplate + "\";");
+                                output.AppendLine("    public string " + urlProp + " => " + urlPropertyExpression + ";");
                                 if (apiVersion != "1.0")
                                     output.AppendLine("    public string Version => \"" + apiVersion + "\";");
                                 output.AppendLine("}");
@@ -429,7 +464,7 @@
                                 // Query params on write operations are exposed as optional properties
                                 foreach (string[] q in queryParams)
                                     output.AppendLine("    public " + q[1] + " " + q[0] + " { get; set; }");
-                                output.AppendLine("    public string " + urlProp + " => $\"" + urlTemplate + "\";");
+                                output.AppendLine("    public string " + urlProp + " => " + urlPropertyExpression + ";");
                                 output.AppendLine("    public " + dataType + " Data { get; set; } = default!;");
                                 if (apiVersion != "1.0")
                                     output.AppendLine("    public string Version => \"" + apiVersion + "\";");

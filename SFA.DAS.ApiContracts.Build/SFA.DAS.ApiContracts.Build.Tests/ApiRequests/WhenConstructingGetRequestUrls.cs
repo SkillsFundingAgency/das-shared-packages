@@ -41,17 +41,17 @@ public class WhenConstructingGetRequestUrls
     }
 
     [Test]
-    public void GetDasRequests_NullOptionalParamsProduceEmptySegments()
+    public void GetDasRequests_NullParamsAreOmittedFromUrl()
     {
         var request = new GetDasRequestsApiRequest(null, null, null, null!);
-        request.GetUrl.Should().Be("api/das-requests?page=&pageSize=&sortOrder=&searchTerm=");
+        request.GetUrl.Should().Be("api/das-requests");
     }
 
     [Test]
     public void GetDasRequests_MixedNullAndValueParams()
     {
         var request = new GetDasRequestsApiRequest(1, null, DasRequestSortOrder.Name, null!);
-        request.GetUrl.Should().Be("api/das-requests?page=1&pageSize=&sortOrder=Name&searchTerm=");
+        request.GetUrl.Should().Be("api/das-requests?page=1&sortOrder=Name");
     }
 
     [Test]
@@ -95,11 +95,11 @@ public class WhenConstructingGetRequestUrls
     }
 
     [Test]
-    public void GetDasRequestsByDasRequestIdStatus_NullOptionalDateAndBoolProduceEmptySegments()
+    public void GetDasRequestsByDasRequestIdStatus_NullOptionalParamsAreOmittedFromUrl()
     {
         var dasRequestId = Guid.Parse("44444444-4444-4444-4444-444444444444");
         var request = new GetDasRequestsByDasRequestIdStatusApiRequest(dasRequestId, null, null);
-        request.GetUrl.Should().Be($"api/das-requests/{dasRequestId}/status?asOf=&includeArchived=");
+        request.GetUrl.Should().Be($"api/das-requests/{dasRequestId}/status");
     }
 
     [Test]

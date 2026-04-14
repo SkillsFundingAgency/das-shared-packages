@@ -41,6 +41,26 @@ namespace SFA.DAS.ApiContracts.Build.Tests.ApiResponses
 
     }
 
+    /// <summary>
+    /// Flags enum — pass comma-separated names (e.g. Name,Description).
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.Flags]
+    public enum DasRequestRuleSet : long
+    {
+
+        None = 0,
+
+        Name = 1,
+
+        Description = 2,
+
+        Status = 4,
+
+        All = -1,
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PostDasRequest
     {

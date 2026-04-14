@@ -8,6 +8,8 @@
 
 namespace SFA.DAS.ApiContracts.Build.Tests.V2;
 
+using Microsoft.AspNetCore.WebUtilities;
+using System.Collections.Generic;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApiContracts.Build.Tests.ApiResponses;
 
@@ -46,7 +48,7 @@ public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.
 // GET /api/das-requests
 public record GetDasRequestsApiRequest(int? Page, int? PageSize, DasRequestSortOrder? SortOrder, string SearchTerm) : IGetApiRequest
 {
-    public string GetUrl => $"api/das-requests?page={Page}&pageSize={PageSize}&sortOrder={SortOrder}&searchTerm={SearchTerm}";
+    public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests", new Dictionary<string, string?> { ["page"] = Page?.ToString(), ["pageSize"] = PageSize?.ToString(), ["sortOrder"] = SortOrder?.ToString(), ["searchTerm"] = SearchTerm });
     public string Version => "2.0";
 }
 
@@ -76,14 +78,14 @@ public class PostDasRequestsBatchApiRequest : IPostApiRequest<System.Collections
 // GET /api/das-requests/{dasRequestId}/status
 public record GetDasRequestsByDasRequestIdStatusApiRequest(System.Guid DasRequestId, System.DateTimeOffset? AsOf, bool? IncludeArchived) : IGetApiRequest
 {
-    public string GetUrl => $"api/das-requests/{DasRequestId}/status?asOf={AsOf}&includeArchived={IncludeArchived}";
+    public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/status", new Dictionary<string, string?> { ["asOf"] = AsOf?.ToString(), ["includeArchived"] = IncludeArchived?.ToString() });
     public string Version => "2.0";
 }
 
 // GET /api/accounts/{accountId}/das-requests
 public record GetAccountsByAccountIdDasRequestsApiRequest(long AccountId, string UserId) : IGetApiRequest
 {
-    public string GetUrl => $"api/accounts/{AccountId}/das-requests?userId={UserId}";
+    public string GetUrl => QueryHelpers.AddQueryString($"api/accounts/{AccountId}/das-requests", new Dictionary<string, string?> { ["userId"] = UserId });
     public string Version => "2.0";
 }
 

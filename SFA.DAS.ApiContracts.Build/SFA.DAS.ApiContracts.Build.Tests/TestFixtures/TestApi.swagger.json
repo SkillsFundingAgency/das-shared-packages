@@ -190,6 +190,37 @@
         ],
         "responses": { "200": { "description": "OK" } }
       }
+    },
+    "/api/das-requests/{dasRequestId}/validate": {
+      "put": {
+        "operationId": "ValidateDasRequest",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "ruleSet",
+            "in": "query",
+            "schema": { "$ref": "#/components/schemas/DasRequestRuleSet" }
+          },
+          {
+            "name": "validateOnly",
+            "in": "query",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PutDasRequest" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
     }
   },
   "components": {
@@ -197,6 +228,14 @@
       "DasRequestSortOrder": {
         "enum": [ "Name", "Created", "Updated" ],
         "type": "string"
+      },
+      "DasRequestRuleSet": {
+        "type": "integer",
+        "format": "int64",
+        "x-enumFlags": true,
+        "x-enumNames": [ "None", "Name", "Description", "Status", "All" ],
+        "enum": [ 0, 1, 2, 4, -1 ],
+        "description": "Flags enum — pass comma-separated names (e.g. Name,Description)."
       },
       "PostDasRequest": {
         "type": "object",

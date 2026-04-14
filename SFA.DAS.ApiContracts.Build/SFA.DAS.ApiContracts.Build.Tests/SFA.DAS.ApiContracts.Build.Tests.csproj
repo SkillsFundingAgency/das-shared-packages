@@ -30,6 +30,10 @@
   <Import Project="$(_ApiContractsBuildDir)build\SFA.DAS.ApiContracts.Build.props" />
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="7.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
