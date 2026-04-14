@@ -35,14 +35,13 @@ namespace SFA.DAS.GovUK.Auth.Helper
 
             var latestName = historicalNames
                 .Where(n =>
-                    (n.ValidFrom == null || n.ValidFrom <= now) &&
-                    (n.ValidUntil == null || n.ValidUntil >= now))
-                .OrderByDescending(n => n.ValidFrom ?? DateTime.MinValue)
-                .ThenByDescending(n => n.ValidUntil ?? DateTime.MaxValue)
+                    n.ValidFrom <= now && n.ValidUntil >= now)
+                .OrderByDescending(n => n.ValidFrom)
+                .ThenByDescending(n => n.ValidUntil)
                 .FirstOrDefault()
                 ?? historicalNames
-                    .OrderByDescending(n => n.ValidFrom ?? DateTime.MinValue)
-                    .ThenByDescending(n => n.ValidUntil ?? DateTime.MaxValue)
+                    .OrderByDescending(n => n.ValidFrom)
+                    .ThenByDescending(n => n.ValidUntil)
                     .FirstOrDefault();
 
             var givenName = latestName?.GivenNames?.Trim() ?? string.Empty;

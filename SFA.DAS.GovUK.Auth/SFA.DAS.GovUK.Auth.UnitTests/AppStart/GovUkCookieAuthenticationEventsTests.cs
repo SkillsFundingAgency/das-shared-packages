@@ -222,31 +222,6 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         }
 
         [Test]
-        public async Task ValidatePrincipal_Uses_Most_Recent_Valid_Name_When_Multiple_Are_Currently_Valid()
-        {
-            // Arrange
-            _config.EnableVerify = "true";
-
-            var claimsIdentity = new ClaimsIdentity();
-            claimsIdentity.AddClaim(new Claim(
-                UserInfoClaims.CoreIdentityJWT.GetDescription(),
-                CreateCoreIdentityJwtClaim(
-                    CreateHistoricalName("Earlier", "Valid", "2020-01-01T00:00:00Z", null),
-                    CreateHistoricalName("Later", "Valid", "2024-01-01T00:00:00Z", null))));
-            claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
-
-            var validateContext = CreateContext(claimsIdentity, null);
-
-            // Act
-            await _sut.ValidatePrincipal(validateContext);
-
-            // Assert
-            claimsIdentity.FindFirst(ClaimTypes.Name)!.Value.Should().Be("Later Valid");
-            claimsIdentity.FindFirst(ClaimTypes.GivenName)!.Value.Should().Be("Later");
-            claimsIdentity.FindFirst(ClaimTypes.Surname)!.Value.Should().Be("Valid");
-        }
-
-        [Test]
         public async Task ValidatePrincipal_Falls_Back_To_Latest_Overall_Name_When_No_Name_Is_Currently_Valid()
         {
             // Arrange

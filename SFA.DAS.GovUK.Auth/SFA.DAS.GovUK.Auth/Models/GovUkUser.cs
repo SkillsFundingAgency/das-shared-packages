@@ -110,29 +110,23 @@ namespace SFA.DAS.GovUK.Auth.Models
                     .Where(p => p.From < sliceUntil && p.Until > sliceFrom)
                     .ToList();
 
-                var givenName = activeParts
+                var givenNames = activeParts
                     .Where(p => p.Type == "GivenName")
-                    .OrderByDescending(p => p.From)
-                    .ThenByDescending(p => p.Until)
                     .Select(p => p.Value)
-                    .FirstOrDefault();
+                    .ToList();
 
-                var familyName = activeParts
+                var familyNames = activeParts
                     .Where(p => p.Type == "FamilyName")
-                    .OrderByDescending(p => p.From)
-                    .ThenByDescending(p => p.Until)
                     .Select(p => p.Value)
-                    .FirstOrDefault();
+                    .ToList();
 
-                if (string.IsNullOrWhiteSpace(givenName) && string.IsNullOrWhiteSpace(familyName))
-                {
+                if (givenNames.Count == 0 && familyNames.Count == 0)
                     continue;
-                }
 
                 slices.Add(new GovUkHistoricalName
                 {
-                    GivenNames = givenName,
-                    FamilyNames = familyName,
+                    GivenNames = string.Join(" ", givenNames),
+                    FamilyNames = string.Join(" ", familyNames),
                     ValidFrom = sliceFrom,
                     ValidUntil = sliceUntil
                 });
@@ -226,8 +220,8 @@ namespace SFA.DAS.GovUK.Auth.Models
     {
         public string GivenNames { get; set; }
         public string FamilyNames { get; set; }
-        public DateTime? ValidFrom { get; set; }
-        public DateTime? ValidUntil { get; set; }
+        public DateTime ValidFrom { get; set; }
+        public DateTime ValidUntil { get; set; }
     }
 
 
