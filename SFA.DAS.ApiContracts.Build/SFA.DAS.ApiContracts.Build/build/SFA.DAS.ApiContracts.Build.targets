@@ -42,6 +42,7 @@
             <Using Namespace="System" />
             <Using Namespace="System.Collections.Generic" />
             <Using Namespace="System.IO" />
+            <Using Namespace="System.Linq" />
             <Using Namespace="System.Text" />
             <Code Type="Fragment" Language="cs">
                 <![CDATA[
@@ -267,6 +268,7 @@
                 output.AppendLine();
                 output.AppendLine("using Microsoft.AspNetCore.WebUtilities;");
                 output.AppendLine("using System.Collections.Generic;");
+                output.AppendLine("using System.Linq;");
                 output.AppendLine("using SFA.DAS.Apim.Shared.Interfaces;");
                 output.AppendLine("using " + ResponsesNamespace + ";"  );
                 output.AppendLine();
@@ -324,7 +326,7 @@
                             if (op == null) continue;
 
                             var pathParams  = new List<string[]>(); // [propName, csType]
-                            var queryParams = new List<string[]>(); // [propName, csType, "true"/"false", "flags"/""]
+                            var queryParams = new List<string[]>(); // [propName, csType, "true"/"false", "flags"/"", itemType/""]
 
                             var parameters = op.ContainsKey("parameters") ? AsArr(op["parameters"]) : null;
                             if (parameters != null)
@@ -344,6 +346,8 @@
                                     bool required = param.ContainsKey("required") && AsBool(param["required"]);
                                     string csType = "string";
                                     bool isFlags = false;
+                                    bool isArray = false;
+                                    string arrayItemType = "string";
                                     var schema = param.ContainsKey("schema") ? AsObj(param["schema"]) : null;
                                     if (schema != null)
                                     {
@@ -358,6 +362,25 @@
                                             // Treat $ref types as value types so they get ? when optional
                                             if (!required) csType += "?";
                                         }
+                                        else if (GetStr(schema, "type") == "array")
+                                        {
+                                            isArray = true;
+                                            var items = schema.ContainsKey("items") ? AsObj(schema["items"]) : null;
+                                            if (items != null)
+                                            {
+                                                if (items.ContainsKey("$ref"))
+                                                {
+                                                    string itemRefStr = AsStr(items["$ref"]);
+                                                    int itemLastSlash = itemRefStr.LastIndexOf('/');
+                                                    arrayItemType = itemLastSlash >= 0 ? itemRefStr.Substring(itemLastSlash + 1) : itemRefStr;
+                                                }
+                                                else
+                                                {
+                                                    arrayItemType = MapType(GetStr(items, "type"), GetStr(items, "format"));
+                                                }
+                                            }
+                                            csType = "List<" + arrayItemType + ">?";
+                                        }
                                         else
                                         {
                                             csType = MapType(GetStr(schema, "type"), GetStr(schema, "format"));
@@ -370,7 +393,7 @@
                                     if (paramIn == "path")
                                         pathParams.Add(new string[] { propName, csType });
                                     else
-                                        queryParams.Add(new string[] { propName, csType, required ? "true" : "false", isFlags ? "flags" : "" });
+                                        queryParams.Add(new string[] { propName, csType, required ? "true" : "false", isFlags ? "flags" : "", isArray ? arrayItemType : "" });
                                 }
                             }
 
@@ -386,22 +409,69 @@
                             string urlPropertyExpression;
                             if (queryParams.Count > 0)
                             {
-                                var dictEntries = new StringBuilder();
-                                bool firstEntry = true;
-                                foreach (string[] q in queryParams)
+                                bool hasArrayParams = queryParams.Any(q => q.Length > 4 && !string.IsNullOrEmpty(q[4]));
+
+                                if (!hasArrayParams)
                                 {
-                                    if (!firstEntry) dictEntries.Append(", ");
-                                    string qn = char.ToLower(q[0][0]) + q[0].Substring(1);
-                                    bool qIsFlags = q.Length > 3 && q[3] == "flags";
-                                    string valExpr = (q[1] == "string") ? q[0]
-                                                   : qIsFlags && q[1].EndsWith("?") ? q[0] + "?.ToString()?.Replace(\" \", \"\")"
-                                                   : qIsFlags                       ? q[0] + ".ToString().Replace(\" \", \"\")"
-                                                   : q[1].EndsWith("?")             ? q[0] + "?.ToString()"
-                                                   :                                  q[0] + ".ToString()";
-                                    dictEntries.Append("[\"" + qn + "\"] = " + valExpr);
-                                    firstEntry = false;
+                                    // Fast path: no array params — use Dictionary<string, string?>
+                                    var dictEntries = new StringBuilder();
+                                    bool firstEntry = true;
+                                    foreach (string[] q in queryParams)
+                                    {
+                                        if (!firstEntry) dictEntries.Append(", ");
+                                        string qn = char.ToLower(q[0][0]) + q[0].Substring(1);
+                                        bool qIsFlags = q.Length > 3 && q[3] == "flags";
+                                        string valExpr = (q[1] == "string") ? q[0]
+                                                       : qIsFlags && q[1].EndsWith("?") ? q[0] + "?.ToString()?.Replace(\" \", \"\")"
+                                                       : qIsFlags                       ? q[0] + ".ToString().Replace(\" \", \"\")"
+                                                       : q[1].EndsWith("?")             ? q[0] + "?.ToString()"
+                                                       :                                  q[0] + ".ToString()";
+                                        dictEntries.Append("[\"" + qn + "\"] = " + valExpr);
+                                        firstEntry = false;
+                                    }
+                                    urlPropertyExpression = "QueryHelpers.AddQueryString($\"" + urlTemplate + "\", new Dictionary<string, string?> { " + dictEntries + " })";
                                 }
-                                urlPropertyExpression = "QueryHelpers.AddQueryString($\"" + urlTemplate + "\", new Dictionary<string, string?> { " + dictEntries + " })";
+                                else
+                                {
+                                    // Array params present — use IEnumerable<KeyValuePair<string, string?>> to support repeated keys
+                                    var scalars = new List<string>();
+                                    var arrays  = new List<string>();
+                                    foreach (string[] q in queryParams)
+                                    {
+                                        bool qIsArray = q.Length > 4 && !string.IsNullOrEmpty(q[4]);
+                                        string qn = char.ToLower(q[0][0]) + q[0].Substring(1);
+                                        if (!qIsArray)
+                                        {
+                                            bool qIsFlags = q.Length > 3 && q[3] == "flags";
+                                            string valExpr = (q[1] == "string") ? q[0]
+                                                           : qIsFlags && q[1].EndsWith("?") ? q[0] + "?.ToString()?.Replace(\" \", \"\")"
+                                                           : qIsFlags                       ? q[0] + ".ToString().Replace(\" \", \"\")"
+                                                           : q[1].EndsWith("?")             ? q[0] + "?.ToString()"
+                                                           :                                  q[0] + ".ToString()";
+                                            scalars.Add("new(\"" + qn + "\", " + valExpr + ")");
+                                        }
+                                        else
+                                        {
+                                            string itemType = q[4];
+                                            string vExpr = (itemType == "string") ? "v" : "v.ToString()";
+                                            arrays.Add("(" + q[0] + " ?? []).Select(v => new KeyValuePair<string, string?>(\"" + qn + "\", " + vExpr + "))");
+                                        }
+                                    }
+                                    string kpExpr;
+                                    if (scalars.Count > 0)
+                                    {
+                                        kpExpr = "new KeyValuePair<string, string?>[] { " + string.Join(", ", scalars) + " }";
+                                        foreach (string ap in arrays)
+                                            kpExpr += "\n        .Concat(" + ap + ")";
+                                    }
+                                    else
+                                    {
+                                        kpExpr = arrays[0];
+                                        for (int ai = 1; ai < arrays.Count; ai++)
+                                            kpExpr += "\n        .Concat(" + arrays[ai] + ")";
+                                    }
+                                    urlPropertyExpression = "QueryHelpers.AddQueryString($\"" + urlTemplate + "\",\n        " + kpExpr + ")";
+                                }
                             }
                             else
                             {

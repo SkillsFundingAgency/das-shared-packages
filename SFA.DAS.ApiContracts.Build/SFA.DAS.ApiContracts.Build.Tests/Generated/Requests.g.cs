@@ -10,6 +10,7 @@ namespace SFA.DAS.ApiContracts.Build.Tests.ApiRequests;
 
 using Microsoft.AspNetCore.WebUtilities;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApiContracts.Build.Tests.ApiResponses;
 
@@ -87,6 +88,15 @@ public class PutDasRequestsByDasRequestIdValidateApiRequest : IPutApiRequest<Put
     public bool? ValidateOnly { get; set; }
     public string PutUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/validate", new Dictionary<string, string?> { ["ruleSet"] = RuleSet?.ToString()?.Replace(" ", ""), ["validateOnly"] = ValidateOnly?.ToString() });
     public PutDasRequest Data { get; set; } = default!;
+}
+
+// GET /api/das-requests/{dasRequestId}/items
+public record GetDasRequestsByDasRequestIdItemsApiRequest(System.Guid DasRequestId, List<DasRequestSortOrder>? Status, List<string>? Tags, int? Page) : IGetApiRequest
+{
+    public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/items",
+        new KeyValuePair<string, string?>[] { new("page", Page?.ToString()) }
+        .Concat((Status ?? []).Select(v => new KeyValuePair<string, string?>("status", v.ToString())))
+        .Concat((Tags ?? []).Select(v => new KeyValuePair<string, string?>("tags", v))));
 }
 
 #pragma warning restore CS8767

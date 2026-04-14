@@ -13,10 +13,17 @@
             "name": "dasRequestId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       },
       "put": {
         "operationId": "PutDasRequest",
@@ -25,17 +32,26 @@
             "name": "dasRequestId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/PutDasRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/PutDasRequest"
+              }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       },
       "delete": {
         "operationId": "DeleteDasRequest",
@@ -44,10 +60,17 @@
             "name": "dasRequestId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
-        "responses": { "204": { "description": "No Content" } }
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
       },
       "patch": {
         "operationId": "PatchDasRequest",
@@ -56,7 +79,10 @@
             "name": "dasRequestId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "requestBody": {
@@ -64,12 +90,18 @@
             "application/json": {
               "schema": {
                 "type": "array",
-                "items": { "type": "string" }
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/das-requests": {
@@ -79,36 +111,56 @@
           {
             "name": "page",
             "in": "query",
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           },
           {
             "name": "pageSize",
             "in": "query",
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           },
           {
             "name": "sortOrder",
             "in": "query",
-            "schema": { "$ref": "#/components/schemas/DasRequestSortOrder" }
+            "schema": {
+              "$ref": "#/components/schemas/DasRequestSortOrder"
+            }
           },
           {
             "name": "searchTerm",
             "in": "query",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       },
       "post": {
         "operationId": "PostDasRequest",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/PostDasRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/PostDasRequest"
+              }
             }
           }
         },
-        "responses": { "201": { "description": "Created" } }
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
       }
     },
     "/api/das-requests/{dasRequestId}/sub-items/{itemId}": {
@@ -119,16 +171,26 @@
             "name": "dasRequestId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           {
             "name": "itemId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/das-requests/batch": {
@@ -139,12 +201,19 @@
             "application/json": {
               "schema": {
                 "type": "array",
-                "items": { "type": "string", "format": "uuid" }
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
               }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/das-requests/{dasRequestId}/status": {
@@ -155,20 +224,32 @@
             "name": "dasRequestId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           {
             "name": "asOf",
             "in": "query",
-            "schema": { "type": "string", "format": "date-time" }
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
           },
           {
             "name": "includeArchived",
             "in": "query",
-            "schema": { "type": "boolean" }
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/accounts/{accountId}/das-requests": {
@@ -179,16 +260,25 @@
             "name": "accountId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "userId",
             "in": "query",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/das-requests/{dasRequestId}/validate": {
@@ -199,56 +289,155 @@
             "name": "dasRequestId",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           {
             "name": "ruleSet",
             "in": "query",
-            "schema": { "$ref": "#/components/schemas/DasRequestRuleSet" }
+            "schema": {
+              "$ref": "#/components/schemas/DasRequestRuleSet"
+            }
           },
           {
             "name": "validateOnly",
             "in": "query",
-            "schema": { "type": "boolean" }
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/PutDasRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/PutDasRequest"
+              }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/das-requests/{dasRequestId}/items": {
+      "get": {
+        "tags": [
+          "DasRequests"
+        ],
+        "operationId": "GetDasRequestsByDasRequestIdItems",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/DasRequestSortOrder"
+              }
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "X-Version",
+            "in": "header",
+            "required": true,
+            "example": "1.0"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     }
   },
   "components": {
     "schemas": {
       "DasRequestSortOrder": {
-        "enum": [ "Name", "Created", "Updated" ],
+        "enum": [
+          "Name",
+          "Created",
+          "Updated"
+        ],
         "type": "string"
       },
       "DasRequestRuleSet": {
         "type": "integer",
         "format": "int64",
         "x-enumFlags": true,
-        "x-enumNames": [ "None", "Name", "Description", "Status", "All" ],
-        "enum": [ 0, 1, 2, 4, -1 ],
-        "description": "Flags enum — pass comma-separated names (e.g. Name,Description)."
+        "x-enumNames": [
+          "None",
+          "Name",
+          "Description",
+          "Status",
+          "All"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          4,
+          -1
+        ],
+        "description": "Flags enum \u2014 pass comma-separated names (e.g. Name,Description)."
       },
       "PostDasRequest": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "nullable": true },
-          "description": { "type": "string", "nullable": true }
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
         }
       },
       "PutDasRequest": {
         "type": "object",
         "properties": {
-          "name": { "type": "string", "nullable": true },
-          "description": { "type": "string", "nullable": true }
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
         }
       }
     }

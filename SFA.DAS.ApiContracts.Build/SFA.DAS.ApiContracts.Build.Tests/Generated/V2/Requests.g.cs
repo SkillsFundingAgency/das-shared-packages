@@ -10,6 +10,7 @@ namespace SFA.DAS.ApiContracts.Build.Tests.V2;
 
 using Microsoft.AspNetCore.WebUtilities;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApiContracts.Build.Tests.ApiResponses;
 
