@@ -88,7 +88,7 @@ public class WhenConstructingGetRequestUrls
     public void GetDasRequestsByDasRequestIdStatus_BuildsUrlWithDateTimeOffsetAndBoolParams()
     {
         var dasRequestId = Guid.Parse("33333333-3333-3333-3333-333333333333");
-        var asOf = new DateTimeOffset(2025, 1, 15, 0, 0, 0, TimeSpan.Zero);
+        var asOf = new DateTime(2025, 1, 15, 0, 0, 0);
         var request = new GetDasRequestsByDasRequestIdStatusApiRequest(dasRequestId, asOf, true);
         request.GetUrl.Should().StartWith($"api/das-requests/{dasRequestId}/status?asOf=");
         request.GetUrl.Should().EndWith("&includeArchived=True");

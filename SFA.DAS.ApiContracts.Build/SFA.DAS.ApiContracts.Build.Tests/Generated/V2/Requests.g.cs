@@ -77,9 +77,9 @@ public class PostDasRequestsBatchApiRequest : IPostApiRequest<System.Collections
 }
 
 // GET /api/das-requests/{dasRequestId}/status
-public record GetDasRequestsByDasRequestIdStatusApiRequest(System.Guid DasRequestId, System.DateTimeOffset? AsOf, bool? IncludeArchived) : IGetApiRequest
+public record GetDasRequestsByDasRequestIdStatusApiRequest(System.Guid DasRequestId, System.DateTime? AsOf, bool? IncludeArchived) : IGetApiRequest
 {
-    public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/status", new Dictionary<string, string?> { ["asOf"] = AsOf?.ToString(), ["includeArchived"] = IncludeArchived?.ToString() });
+    public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/status", new Dictionary<string, string?> { ["asOf"] = AsOf?.ToString("s"), ["includeArchived"] = IncludeArchived?.ToString() });
     public string Version => "2.0";
 }
 
