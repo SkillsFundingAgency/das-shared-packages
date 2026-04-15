@@ -7,6 +7,7 @@ namespace SFA.DAS.GovUK.Auth.Configuration
         public string KeyVaultIdentifier { get; set; }
         public int LoginSlidingExpiryTimeOutInMinutes { get; set; } = 30;
         public string GovLoginSessionConnectionString { get; set; }
+        public bool UseStubRedisTicketStore { get; set; }
         public string Disable2Fa { get; set; }
         public string EnableVerify { get; set; }
         public string RequestedUserInfoClaims { get; set; }

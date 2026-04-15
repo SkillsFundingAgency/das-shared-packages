@@ -54,7 +54,14 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 {
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(config.LoginSlidingExpiryTimeOutInMinutes);
                     options.SlidingExpiration = true;
-                    options.SessionStore = ticketStore;
+
+                    if (config.UseStubRedisTicketStore)
+                    {
+                        // if the stub needs to escalate the vot for a verify session after initial 
+                        // login then redis must be used as a backing store for the claims to allow the 
+                        // claims to be re-issued
+                        options.SessionStore = ticketStore;
+                    }
                 });
         }
     }
