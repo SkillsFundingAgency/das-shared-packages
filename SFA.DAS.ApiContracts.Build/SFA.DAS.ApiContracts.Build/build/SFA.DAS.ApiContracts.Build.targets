@@ -198,7 +198,7 @@
                     if (format == "int64")     return "long";
                     if (format == "float")     return "float";
                     if (format == "double")    return "double";
-                    if (format == "date-time") return "System.DateTimeOffset";
+                    if (format == "date-time") return "System.DateTime";
                     if (format == "date")      return "System.DateOnly";
                     if (type   == "integer")   return "int";
                     if (type   == "number")    return "double";
@@ -209,7 +209,7 @@
                 bool IsValueType(string t)
                     => t == "int" || t == "long" || t == "float" || t == "double" ||
                        t == "bool" || t == "System.Guid" ||
-                       t == "System.DateTimeOffset" || t == "System.DateOnly";
+                       t == "System.DateTime" || t == "System.DateOnly";
 
                 string PascalCase(string s)
                 {
@@ -421,9 +421,12 @@
                                         if (!firstEntry) dictEntries.Append(", ");
                                         string qn = char.ToLower(q[0][0]) + q[0].Substring(1);
                                         bool qIsFlags = q.Length > 3 && q[3] == "flags";
+                                        bool qIsDateTime = q[1] == "System.DateTime" || q[1] == "System.DateTime?";
                                         string valExpr = (q[1] == "string") ? q[0]
                                                        : qIsFlags && q[1].EndsWith("?") ? q[0] + "?.ToString()?.Replace(\" \", \"\")"
                                                        : qIsFlags                       ? q[0] + ".ToString().Replace(\" \", \"\")"
+                                                       : qIsDateTime && q[1].EndsWith("?") ? q[0] + "?.ToString(\"s\")"
+                                                       : qIsDateTime                    ? q[0] + ".ToString(\"s\")"
                                                        : q[1].EndsWith("?")             ? q[0] + "?.ToString()"
                                                        :                                  q[0] + ".ToString()";
                                         dictEntries.Append("[\"" + qn + "\"] = " + valExpr);
@@ -443,9 +446,12 @@
                                         if (!qIsArray)
                                         {
                                             bool qIsFlags = q.Length > 3 && q[3] == "flags";
+                                            bool qIsDateTime = q[1] == "System.DateTime" || q[1] == "System.DateTime?";
                                             string valExpr = (q[1] == "string") ? q[0]
                                                            : qIsFlags && q[1].EndsWith("?") ? q[0] + "?.ToString()?.Replace(\" \", \"\")"
                                                            : qIsFlags                       ? q[0] + ".ToString().Replace(\" \", \"\")"
+                                                           : qIsDateTime && q[1].EndsWith("?") ? q[0] + "?.ToString(\"s\")"
+                                                           : qIsDateTime                    ? q[0] + ".ToString(\"s\")"
                                                            : q[1].EndsWith("?")             ? q[0] + "?.ToString()"
                                                            :                                  q[0] + ".ToString()";
                                             scalars.Add("new(\"" + qn + "\", " + valExpr + ")");
