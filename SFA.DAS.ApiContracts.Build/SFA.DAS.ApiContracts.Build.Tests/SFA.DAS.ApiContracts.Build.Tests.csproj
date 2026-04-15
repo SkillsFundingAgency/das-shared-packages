@@ -1,0 +1,88 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <AssemblyName>SFA.DAS.ApiContracts.Build.Tests</AssemblyName>
+    <RootNamespace>SFA.DAS.ApiContracts.Build.Tests</RootNamespace>
+
+    <!--
+        LOCAL DEVELOPMENT: points directly at the sibling SFA.DAS.ApiContracts.Build project.
+        When promoted to a NuGet package replace both <Import> statements with:
+            <PackageReference Include="SFA.DAS.ApiContracts.Build" Version="x.x.x" />
+    -->
+    <_ApiContractsBuildDir>$(MSBuildThisFileDirectory)..\SFA.DAS.ApiContracts.Build\</_ApiContractsBuildDir>
+
+    <!--
+        Swagger fixture bundled inside the test project.
+        Covers every scenario exercised by the code-generation task:
+        path params, optional/required query params, all HTTP verbs, enum refs,
+        hyphenated path segments, inline array body types, and primitive type mappings.
+    -->
+    <ApiContractsSwaggerJsonPath>$(MSBuildThisFileDirectory)TestFixtures\TestApi.swagger.json</ApiContractsSwaggerJsonPath>
+    <ApiContractsNamespace>SFA.DAS.ApiContracts.Build.Tests</ApiContractsNamespace>
+    <ApiContractsOutputDirectory>$(MSBuildThisFileDirectory)Generated</ApiContractsOutputDirectory>
+  </PropertyGroup>
+
+  <Import Project="$(_ApiContractsBuildDir)build\SFA.DAS.ApiContracts.Build.props" />
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="7.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
+    <PackageReference Include="NSwag.MSBuild" Version="14.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit" Version="4.*" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit3TestAdapter" Version="4.*" />
+    <PackageReference Include="SFA.DAS.Apim.Shared" Version="*" />
+    <PackageReference Include="coverlet.collector" Version="6.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <!-- Import generation targets — registers the GenerateApiContracts build target -->
+  <Import Project="$(_ApiContractsBuildDir)build\SFA.DAS.ApiContracts.Build.targets" />
+
+  <!--
+      Second generation pass for the v2 swagger fixture.
+      Produces Generated/V2/Requests.g.cs in the V2 sub-namespace so both sets
+      of request types coexist without class-name collisions.
+      Runs after the main GenerateApiContracts target so the task definition is
+      already loaded.
+  -->
+  <Target Name="GenerateApiContractsV2"
+          BeforeTargets="BeforeBuild"
+          AfterTargets="GenerateApiContracts"
+          Condition="Exists('$(MSBuildThisFileDirectory)TestFixtures\TestApiV2.swagger.json')">
+    <MakeDir Directories="$(MSBuildThisFileDirectory)Generated\V2" />
+    <GenerateApiRequestWrappers
+        SwaggerPath="$(MSBuildThisFileDirectory)TestFixtures\TestApiV2.swagger.json"
+        Namespace="SFA.DAS.ApiContracts.Build.Tests.V2"
+        ResponsesNamespace="SFA.DAS.ApiContracts.Build.Tests.ApiResponses"
+        OutputPath="$(MSBuildThisFileDirectory)Generated\V2\Requests.g.cs" />
+  </Target>
+
+  <!-- Include the V2 generated file in compilation (top-level glob only covers Generated/*.g.cs) -->
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Generated\V2\*.g.cs" />
+  </ItemGroup>
+
+</Project>
