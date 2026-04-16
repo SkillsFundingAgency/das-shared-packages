@@ -14,13 +14,13 @@ using System.Linq;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApiContracts.Build.Tests.ApiResponses;
 
-// GET /api/das-requests/{dasRequestId}
+/// <summary>GET /api/das-requests/{dasRequestId} &#x2192; <see cref="DasRequestResponse"/></summary>
 public record GetDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId) : IGetApiRequest
 {
     public string GetUrl => $"api/das-requests/{DasRequestId}";
 }
 
-// PUT /api/das-requests/{dasRequestId}
+/// <summary>PUT /api/das-requests/{dasRequestId}</summary>
 public class PutDasRequestsByDasRequestIdApiRequest : IPutApiRequest<PutDasRequest>
 {
     public required System.Guid DasRequestId { get; init; }
@@ -28,13 +28,13 @@ public class PutDasRequestsByDasRequestIdApiRequest : IPutApiRequest<PutDasReque
     public PutDasRequest Data { get; set; } = default!;
 }
 
-// DELETE /api/das-requests/{dasRequestId}
+/// <summary>DELETE /api/das-requests/{dasRequestId}</summary>
 public record DeleteDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId) : IDeleteApiRequest
 {
     public string DeleteUrl => $"api/das-requests/{DasRequestId}";
 }
 
-// PATCH /api/das-requests/{dasRequestId}
+/// <summary>PATCH /api/das-requests/{dasRequestId}</summary>
 public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.Collections.Generic.List<string>>
 {
     public required System.Guid DasRequestId { get; init; }
@@ -42,45 +42,45 @@ public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.
     public System.Collections.Generic.List<string> Data { get; set; } = default!;
 }
 
-// GET /api/das-requests
+/// <summary>GET /api/das-requests &#x2192; List&lt;<see cref="DasRequestResponse"/>&gt;</summary>
 public record GetDasRequestsApiRequest(int? Page, int? PageSize, DasRequestSortOrder? SortOrder, string SearchTerm) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests", new Dictionary<string, string?> { ["page"] = Page?.ToString(), ["pageSize"] = PageSize?.ToString(), ["sortOrder"] = SortOrder?.ToString(), ["searchTerm"] = SearchTerm });
 }
 
-// POST /api/das-requests
+/// <summary>POST /api/das-requests &#x2192; <see cref="DasRequestResponse"/></summary>
 public class PostDasRequestsApiRequest : IPostApiRequest<PostDasRequest>
 {
     public string PostUrl => $"api/das-requests";
     public PostDasRequest Data { get; set; } = default!;
 }
 
-// GET /api/das-requests/{dasRequestId}/sub-items/{itemId}
+/// <summary>GET /api/das-requests/{dasRequestId}/sub-items/{itemId}</summary>
 public record GetDasRequestsByDasRequestIdSubItemsByItemIdApiRequest(System.Guid DasRequestId, long ItemId) : IGetApiRequest
 {
     public string GetUrl => $"api/das-requests/{DasRequestId}/sub-items/{ItemId}";
 }
 
-// POST /api/das-requests/batch
+/// <summary>POST /api/das-requests/batch</summary>
 public class PostDasRequestsBatchApiRequest : IPostApiRequest<System.Collections.Generic.List<System.Guid>>
 {
     public string PostUrl => $"api/das-requests/batch";
     public System.Collections.Generic.List<System.Guid> Data { get; set; } = default!;
 }
 
-// GET /api/das-requests/{dasRequestId}/status
+/// <summary>GET /api/das-requests/{dasRequestId}/status</summary>
 public record GetDasRequestsByDasRequestIdStatusApiRequest(System.Guid DasRequestId, System.DateTime? AsOf, bool? IncludeArchived) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/status", new Dictionary<string, string?> { ["asOf"] = AsOf?.ToString("s"), ["includeArchived"] = IncludeArchived?.ToString() });
 }
 
-// GET /api/accounts/{accountId}/das-requests
+/// <summary>GET /api/accounts/{accountId}/das-requests</summary>
 public record GetAccountsByAccountIdDasRequestsApiRequest(long AccountId, string UserId) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/accounts/{AccountId}/das-requests", new Dictionary<string, string?> { ["userId"] = UserId });
 }
 
-// PUT /api/das-requests/{dasRequestId}/validate
+/// <summary>PUT /api/das-requests/{dasRequestId}/validate</summary>
 public class PutDasRequestsByDasRequestIdValidateApiRequest : IPutApiRequest<PutDasRequest>
 {
     public required System.Guid DasRequestId { get; init; }
@@ -90,7 +90,7 @@ public class PutDasRequestsByDasRequestIdValidateApiRequest : IPutApiRequest<Put
     public PutDasRequest Data { get; set; } = default!;
 }
 
-// GET /api/das-requests/{dasRequestId}/items
+/// <summary>GET /api/das-requests/{dasRequestId}/items</summary>
 public record GetDasRequestsByDasRequestIdItemsApiRequest(System.Guid DasRequestId, List<DasRequestSortOrder>? Status, List<string>? Tags, int? Page) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/items",

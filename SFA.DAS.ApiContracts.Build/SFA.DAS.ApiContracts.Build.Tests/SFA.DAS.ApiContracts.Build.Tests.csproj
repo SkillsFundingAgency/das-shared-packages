@@ -25,6 +25,7 @@
     <ApiContractsSwaggerJsonPath>$(MSBuildThisFileDirectory)TestFixtures\TestApi.swagger.json</ApiContractsSwaggerJsonPath>
     <ApiContractsNamespace>SFA.DAS.ApiContracts.Build.Tests</ApiContractsNamespace>
     <ApiContractsOutputDirectory>$(MSBuildThisFileDirectory)Generated</ApiContractsOutputDirectory>
+    <ApiContractsClientName>TestApi</ApiContractsClientName>
   </PropertyGroup>
 
   <Import Project="$(_ApiContractsBuildDir)build\SFA.DAS.ApiContracts.Build.props" />
@@ -83,6 +84,27 @@
   <!-- Include the V2 generated file in compilation (top-level glob only covers Generated/*.g.cs) -->
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Generated\V2\*.g.cs" />
+  </ItemGroup>
+
+  <!--
+      Second client generation pass: exercises ApiContractsClientConfigurationNameOverride.
+      Uses the same ClientName ("TestApi") but overrides the configuration class name,
+      so the generated ClientOverride.g.cs contains "OverriddenApiConfiguration" instead of
+      "TestApiConfiguration".  A different namespace prevents class-name collisions.
+  -->
+  <Target Name="GenerateApiClientWithOverride"
+          BeforeTargets="BeforeBuild"
+          AfterTargets="GenerateApiClient">
+    <MakeDir Directories="$(MSBuildThisFileDirectory)Generated\ClientOverride" />
+    <GenerateApiClientWrapper
+        ClientName="TestApi"
+        ConfigurationName="OverriddenApiConfiguration"
+        Namespace="SFA.DAS.ApiContracts.Build.Tests.Override"
+        OutputPath="$(MSBuildThisFileDirectory)Generated\ClientOverride\Client.g.cs" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Generated\ClientOverride\*.g.cs" />
   </ItemGroup>
 
 </Project>

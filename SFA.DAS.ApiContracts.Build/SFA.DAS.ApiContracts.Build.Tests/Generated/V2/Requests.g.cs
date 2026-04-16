@@ -14,14 +14,14 @@ using System.Linq;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApiContracts.Build.Tests.ApiResponses;
 
-// GET /api/das-requests/{dasRequestId}
+/// <summary>GET /api/das-requests/{dasRequestId}</summary>
 public record GetDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId) : IGetApiRequest
 {
     public string GetUrl => $"api/das-requests/{DasRequestId}";
     public string Version => "2.0";
 }
 
-// PUT /api/das-requests/{dasRequestId}
+/// <summary>PUT /api/das-requests/{dasRequestId}</summary>
 public class PutDasRequestsByDasRequestIdApiRequest : IPutApiRequest<PutDasRequest>
 {
     public required System.Guid DasRequestId { get; init; }
@@ -30,14 +30,14 @@ public class PutDasRequestsByDasRequestIdApiRequest : IPutApiRequest<PutDasReque
     public string Version => "2.0";
 }
 
-// DELETE /api/das-requests/{dasRequestId}
+/// <summary>DELETE /api/das-requests/{dasRequestId}</summary>
 public record DeleteDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId) : IDeleteApiRequest
 {
     public string DeleteUrl => $"api/das-requests/{DasRequestId}";
     public string Version => "2.0";
 }
 
-// PATCH /api/das-requests/{dasRequestId}
+/// <summary>PATCH /api/das-requests/{dasRequestId}</summary>
 public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.Collections.Generic.List<string>>
 {
     public required System.Guid DasRequestId { get; init; }
@@ -46,14 +46,14 @@ public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.
     public string Version => "2.0";
 }
 
-// GET /api/das-requests
+/// <summary>GET /api/das-requests</summary>
 public record GetDasRequestsApiRequest(int? Page, int? PageSize, DasRequestSortOrder? SortOrder, string SearchTerm) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests", new Dictionary<string, string?> { ["page"] = Page?.ToString(), ["pageSize"] = PageSize?.ToString(), ["sortOrder"] = SortOrder?.ToString(), ["searchTerm"] = SearchTerm });
     public string Version => "2.0";
 }
 
-// POST /api/das-requests
+/// <summary>POST /api/das-requests</summary>
 public class PostDasRequestsApiRequest : IPostApiRequest<PostDasRequest>
 {
     public string PostUrl => $"api/das-requests";
@@ -61,14 +61,14 @@ public class PostDasRequestsApiRequest : IPostApiRequest<PostDasRequest>
     public string Version => "2.0";
 }
 
-// GET /api/das-requests/{dasRequestId}/sub-items/{itemId}
+/// <summary>GET /api/das-requests/{dasRequestId}/sub-items/{itemId}</summary>
 public record GetDasRequestsByDasRequestIdSubItemsByItemIdApiRequest(System.Guid DasRequestId, long ItemId) : IGetApiRequest
 {
     public string GetUrl => $"api/das-requests/{DasRequestId}/sub-items/{ItemId}";
     public string Version => "2.0";
 }
 
-// POST /api/das-requests/batch
+/// <summary>POST /api/das-requests/batch</summary>
 public class PostDasRequestsBatchApiRequest : IPostApiRequest<System.Collections.Generic.List<System.Guid>>
 {
     public string PostUrl => $"api/das-requests/batch";
@@ -76,14 +76,14 @@ public class PostDasRequestsBatchApiRequest : IPostApiRequest<System.Collections
     public string Version => "2.0";
 }
 
-// GET /api/das-requests/{dasRequestId}/status
+/// <summary>GET /api/das-requests/{dasRequestId}/status</summary>
 public record GetDasRequestsByDasRequestIdStatusApiRequest(System.Guid DasRequestId, System.DateTime? AsOf, bool? IncludeArchived) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests/{DasRequestId}/status", new Dictionary<string, string?> { ["asOf"] = AsOf?.ToString("s"), ["includeArchived"] = IncludeArchived?.ToString() });
     public string Version => "2.0";
 }
 
-// GET /api/accounts/{accountId}/das-requests
+/// <summary>GET /api/accounts/{accountId}/das-requests</summary>
 public record GetAccountsByAccountIdDasRequestsApiRequest(long AccountId, string UserId) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/accounts/{AccountId}/das-requests", new Dictionary<string, string?> { ["userId"] = UserId });
