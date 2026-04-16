@@ -187,6 +187,70 @@
                     return "object";
                 }
 
+                // Builds the XML doc return annotation for an operation from its 2xx response schema.
+                // Tries "200" first, then the first 2xx status code found.
+                // Named $ref types get a <see cref="..."/> link; primitives and List<T> are plain text.
+                // Returns "" when there is no typed response body.
+                string GetResponseTypeXmlAnnotation(Dictionary<string,object> op)
+                {
+                    if (op == null || !op.ContainsKey("responses")) return "";
+                    var responses = AsObj(op["responses"]);
+                    if (responses == null) return "";
+
+                    // Prefer 200; fall back to first 2xx code
+                    Dictionary<string,object> responseObj = null;
+                    if (responses.ContainsKey("200"))
+                        responseObj = AsObj(responses["200"]);
+                    else
+                    {
+                        foreach (var kv in responses)
+                        {
+                            if (kv.Key.Length == 3 && kv.Key[0] == '2')
+                            { responseObj = AsObj(kv.Value); break; }
+                        }
+                    }
+                    if (responseObj == null) return "";
+
+                    var content = responseObj.ContainsKey("content") ? AsObj(responseObj["content"]) : null;
+                    if (content == null) return "";
+
+                    Dictionary<string,object> media = null;
+                    if (content.ContainsKey("application/json"))
+                        media = AsObj(content["application/json"]);
+                    else foreach (var kv in content) { media = AsObj(kv.Value); break; }
+                    if (media == null) return "";
+
+                    var schema = media.ContainsKey("schema") ? AsObj(media["schema"]) : null;
+                    if (schema == null) return "";
+
+                    // Named schema — emit a clickable cref link
+                    if (schema.ContainsKey("$ref"))
+                    {
+                        string refStr = AsStr(schema["$ref"]);
+                        int lastSlash = refStr.LastIndexOf('/');
+                        string typeName = lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                        return " &#x2192; <see cref=\"" + typeName + "\"/>";
+                    }
+
+                    if (GetStr(schema, "type") == "array")
+                    {
+                        var items = schema.ContainsKey("items") ? AsObj(schema["items"]) : null;
+                        if (items != null && items.ContainsKey("$ref"))
+                        {
+                            string itemRefStr = AsStr(items["$ref"]);
+                            int itemLastSlash = itemRefStr.LastIndexOf('/');
+                            string itemName = itemLastSlash >= 0 ? itemRefStr.Substring(itemLastSlash + 1) : itemRefStr;
+                            return " &#x2192; List&lt;<see cref=\"" + itemName + "\"/>&gt;";
+                        }
+                        string primitiveItem = items != null
+                            ? MapType(GetStr(items, "type"), GetStr(items, "format"))
+                            : "object";
+                        return " &#x2192; List&lt;" + primitiveItem + "&gt;";
+                    }
+
+                    return " &#x2192; " + MapType(GetStr(schema, "type"), GetStr(schema, "format"));
+                }
+
                 // ═══════════════════════════════════════════════════════════════════
                 // Helpers for class-name and type mapping
                 // ═══════════════════════════════════════════════════════════════════
@@ -485,7 +549,8 @@
                             }
 
                             string className = MakeClassName(httpMethod, rawPath);
-                            output.AppendLine("// " + httpMethod.ToUpper() + " " + rawPath);
+                            string xmlAnnotation = GetResponseTypeXmlAnnotation(op);
+                            output.AppendLine("/// <summary>" + httpMethod.ToUpper() + " " + rawPath + xmlAnnotation + "</summary>");
 
                             if (httpMethod == "get" || httpMethod == "delete")
                             {
@@ -618,6 +683,7 @@
                AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
         <ParameterGroup>
             <ClientName ParameterType="System.String" Required="true" />
+            <ConfigurationName ParameterType="System.String" Required="true" />
             <Namespace  ParameterType="System.String" Required="true" />
             <OutputPath ParameterType="System.String" Required="true" />
         </ParameterGroup>
@@ -628,7 +694,7 @@
             <Code Type="Fragment" Language="cs">
                 <![CDATA[
 
-                string configClass   = ClientName + "Configuration";
+                string configClass   = ConfigurationName;
                 string ifaceName     = "I" + ClientName + "Client";
                 string clientClass   = ClientName + "Client";
                 string clientNs      = Namespace + ".Client";
@@ -720,8 +786,14 @@
 
         <Message Text="[ApiContracts] Generating client wrapper for $(ApiContractsClientName)" Importance="high" />
 
+        <PropertyGroup>
+            <_ApiContractsResolvedConfigName Condition="'$(ApiContractsClientConfigurationNameOverride)' != ''">$(ApiContractsClientConfigurationNameOverride)</_ApiContractsResolvedConfigName>
+            <_ApiContractsResolvedConfigName Condition="'$(ApiContractsClientConfigurationNameOverride)' == ''">$(ApiContractsClientName)Configuration</_ApiContractsResolvedConfigName>
+        </PropertyGroup>
+
         <GenerateApiClientWrapper
             ClientName="$(ApiContractsClientName)"
+            ConfigurationName="$(_ApiContractsResolvedConfigName)"
             Namespace="$(ApiContractsNamespace)"
             OutputPath="$(ApiContractsOutputDirectory)/Client.g.cs" />
 

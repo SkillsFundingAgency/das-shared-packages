@@ -21,7 +21,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DasRequestResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -141,7 +148,17 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DasRequestResponse"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -158,7 +175,14 @@
         },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DasRequestResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -386,6 +410,19 @@
   },
   "components": {
     "schemas": {
+      "DasRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "DasRequestSortOrder": {
         "enum": [
           "Name",

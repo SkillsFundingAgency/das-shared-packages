@@ -51,6 +51,7 @@
             Leave empty (the default) to skip client generation.
         -->
         <ApiContractsClientName Condition="'$(ApiContractsClientName)' == ''"></ApiContractsClientName>
+        <ApiContractsClientConfigurationNameOverride Condition="'$(ApiContractsClientConfigurationNameOverride)' == ''"></ApiContractsClientConfigurationNameOverride>
 
         <!--
             Resolved path to the templates shipped inside this package.
