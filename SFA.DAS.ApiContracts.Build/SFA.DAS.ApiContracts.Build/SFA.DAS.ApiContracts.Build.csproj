@@ -11,11 +11,6 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <!--
-            This is a build-tooling package — it ships no compiled DLL of its own.
-            The value it delivers is the MSBuild targets (build/) and NSwag templates (templates/).
-        -->
-        <IncludeBuildOutput>false</IncludeBuildOutput>
         <NoWarn>$(NoWarn);NU5128</NoWarn>
         <ContentTargetFolders>content</ContentTargetFolders>
         <!--
