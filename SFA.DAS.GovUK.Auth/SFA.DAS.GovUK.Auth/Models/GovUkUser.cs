@@ -220,8 +220,8 @@ namespace SFA.DAS.GovUK.Auth.Models
     {
         public string GivenNames { get; set; }
         public string FamilyNames { get; set; }
-        public DateTime? ValidFrom { get; set; }
-        public DateTime? ValidUntil { get; set; }
+        public DateTime ValidFrom { get; set; }
+        public DateTime ValidUntil { get; set; }
     }
 
 
