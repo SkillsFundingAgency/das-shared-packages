@@ -33,6 +33,35 @@ Add the package reference and point it at the inner API's `swagger.json`:
 </Project>
 ```
 
+To generate the swagger on the API project you need to add the following to the project file:
+
+```xml
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+..
+..  
+..
+    <Target Name="GenerateSwaggerJson" AfterTargets="Build">
+        <Exec Command="dotnet &quot;$([System.IO.Path]::Combine($(NuGetPackageRoot), 'swashbuckle.aspnetcore.cli', '8.1.4', 'tools', 'net8.0', 'any', 'dotnet-swagger.dll'))&quot; tofile --output &quot;$(MSBuildThisFileDirectory)swagger.json&quot; &quot;$(OutputPath)$(AssemblyName).dll&quot; v1"
+              WorkingDirectory="$(MSBuildThisFileDirectory)"
+            ContinueOnError="true" />
+    </Target>
+</Project>
+```
+
+This will create a swagger.json file locally that will then be used by the contracts project. You also need to make sure you have swashbuckle.aspnetcore.cli installed globally by doing:
+
+```
+dotnet tool install -g swashbuckle.aspnetcore.cli --version 8.1.4
+```
+then
+```
+dotnet tool restore
+```
+
 On the next build, two files are written to the `Generated/` folder alongside your `.csproj`:
 
 | File | Contents |
@@ -177,3 +206,48 @@ To build a contracts project without running code generation (for example, in a 
   <ApiContractsGenerationEnabled>false</ApiContractsGenerationEnabled>
 </PropertyGroup>
 ```
+
+## Build server configuration to publish nuget
+
+To publish the client nuget package from the API project, you need to make the following changes:
+
+The project should look this:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>SFA.DAS.{Project}.Contracts</RootNamespace>
+    <AssemblyName>SFA.DAS.{Project}.Contracts</AssemblyName>
+    <ApiContractsSwaggerJsonPath>$(MSBuildThisFileDirectory)..\{Project}.Api\swagger.json</ApiContractsSwaggerJsonPath>
+    <ApiContractsNamespace>SFA.DAS.{Project}.Contracts</ApiContractsNamespace>
+    <ApiContractsOutputDirectory>$(MSBuildThisFileDirectory)Generated</ApiContractsOutputDirectory>
+    <ApiContractsClientName>{Project}</ApiContractsClientName>
+    <IsPackable>true</IsPackable>
+    <Authors>GOV.UK Education and Skills Funding Agency (ESFA) Digital Apprenticeship Service (DAS)</Authors>
+    <Description>{Project} inner API request and response for use with APIM.</Description>
+    <License>https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE</License>
+    <PackageProjectUrl>https://github.com/SkillsFundingAgency/{project_repo}</PackageProjectUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+```
+
+The pipeline then needs changing so the code-build.yml has the following defined:
+
+```yaml
+
+  - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+    parameters:
+      DotNetStandardPackagesToPack: |
+        src/SFA.DAS.{project}.Contracts/SFA.DAS.{project}.Contracts.csproj;
+```
+azure-pipelines needs the following added before the deploy to AT stage
+
+```yaml
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
+```
+
+gitversion.yml needs the `tag-prefix: SFA.DAS.{project}.Contracts\` adding to it. Once done you'll need platform approval for it to publish the nuget package
