@@ -41,7 +41,6 @@ public class TestApiClient(IInternalApiClient<TestApiConfiguration> apiClient)
     public Task Put(IPutApiRequest request) => apiClient.Put(request);
     public Task Put<TData>(IPutApiRequest<TData> request) => apiClient.Put(request);
     public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true) => apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
-    public Task<ApiResponse<TResponse>> PostWithResponseCode<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true) => apiClient.PostWithResponseCode<TData, TResponse>(request, includeResponse);
     public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request) => apiClient.PatchWithResponseCode<TData>(request);
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class => apiClient.PutWithResponseCode<TResponse>(request);
     public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true) => apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
