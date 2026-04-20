@@ -83,7 +83,7 @@ public class WhenConstructingVersionedRequests
     public void V2_PostRequest_ImplementsIPostApiRequest()
     {
         var request = new V2.PostDasRequestsApiRequest();
-        request.Should().BeAssignableTo<IPostApiRequest<PostDasRequest>>();
+        request.Should().BeAssignableTo<IPostApiRequest>();
     }
 
     [Test]

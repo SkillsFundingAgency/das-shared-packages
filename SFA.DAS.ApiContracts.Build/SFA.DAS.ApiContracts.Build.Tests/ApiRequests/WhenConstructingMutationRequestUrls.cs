@@ -74,7 +74,7 @@ public class WhenConstructingMutationRequestUrls
     public void PostDasRequests_ImplementsIPostApiRequest()
     {
         var request = new PostDasRequestsApiRequest();
-        request.Should().BeAssignableTo<IPostApiRequest<PostDasRequest>>();
+        request.Should().BeAssignableTo<IPostApiRequest>();
     }
 
     [Test]
@@ -85,11 +85,11 @@ public class WhenConstructingMutationRequestUrls
     }
 
     [Test]
-    public void PostDasRequests_DataPropertyIsCorrectType()
+    public void PostDasRequests_RequestDataPropertyIsStronglyTyped()
     {
-        var request = new PostDasRequestsApiRequest { Data = new PostDasRequest { Name = "DasRequest A" } };
-        request.Data.Should().BeOfType<PostDasRequest>();
-        request.Data.Name.Should().Be("DasRequest A");
+        var request = new PostDasRequestsApiRequest { RequestData = new PostDasRequest { Name = "DasRequest A" } };
+        request.RequestData.Should().BeOfType<PostDasRequest>();
+        request.RequestData.Name.Should().Be("DasRequest A");
     }
 
     [Test]
