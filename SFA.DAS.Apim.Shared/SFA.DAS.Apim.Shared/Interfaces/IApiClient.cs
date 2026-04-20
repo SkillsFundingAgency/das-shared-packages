@@ -9,9 +9,9 @@ public interface IApiClient<T> : IGetApiClient<T>
 {
     Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request);
     Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request);
-    [Obsolete("Use PostWithResponseCode<TResponse>")]
+    [Obsolete("Use PostWithResponseCode")]
     Task<TResponse> Post<TResponse>(IPostApiRequest request);
-    [Obsolete("Use PostWithResponseCode<TResponse>")]
+    [Obsolete("Use PostWithResponseCode")]
     Task Post<TData>(IPostApiRequest<TData> request);
     Task Delete(IDeleteApiRequest request);
 
@@ -21,8 +21,10 @@ public interface IApiClient<T> : IGetApiClient<T>
     Task Put(IPutApiRequest request);
     Task Put<TData>(IPutApiRequest<TData> request);
     Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true);
-    [Obsolete("Use PostWithResponseCode<TResponse>")]
-    Task<ApiResponse<TResponse>> PostWithResponseCode<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true);
+    Task<ApiResponse<TResponse>> PostWithResponseCode<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new System.NotImplementedException();
+    }
     Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request);
     Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true);
     /// <summary>
