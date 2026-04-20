@@ -83,6 +83,7 @@ All properties have defaults and are optional except `ApiContractsSwaggerJsonPat
 | `ApiContractsGenerationEnabled` | `true` | Set to `false` to skip generation entirely (e.g. in CI where files are already committed) |
 | `ApiContractsClientName` | *(empty)* | When set, also generates a typed client — see [Client Generation](#client-generation) |
 | `ApiContractsClientConfigurationNameOverride` | *(empty)* | Override the generated configuration class name — see [Configuration Name Override](#configuration-name-override) |
+| `ApiContractsJsonLibrary` | `SystemTextJson` | Serialiser attributes on generated response DTOs — see [JSON Serialiser Attributes](#json-serialiser-attributes) |
 
 ## Generated Requests
 
@@ -126,7 +127,7 @@ public record GetVacanciesByVacancyIdApiRequest(System.Guid VacancyId) : IGetApi
 * **Enum query parameters** — `$ref` enum types mapped to the generated enum name
 * **Flags enums** — detected via `x-enumFlags: true`; serialised with spaces stripped
 * **`DateTime` query parameters** — formatted as `"s"` (sortable ISO 8601)
-* **POST / PUT / PATCH request bodies** — typed via the `Data` property; `$ref` and inline array bodies both supported
+* **POST / PUT / PATCH request bodies** — typed via the `Data` property; `$ref` and inline array bodies both supported. For POST operations with a named schema body (`$ref`), the class implements the non-generic `IPostApiRequest` with `object Data` and a strongly-typed `RequestData` property
 * **API versioning** — when `info.version` is anything other than `1.0`, a `Version` property override is emitted
 
 ## Client Generation
@@ -196,6 +197,35 @@ If the configuration section in your config store uses a name that differs from 
 ```
 
 The generated configuration class and all DI registration calls will use `MyApiV2Configuration` instead of `MyApiConfiguration`. The client interface and concrete class names are unaffected — they are always derived from `ApiContractsClientName`.
+
+## JSON Serialiser Attributes
+
+The `ApiContractsJsonLibrary` property controls which serialiser attributes are emitted on the generated response DTOs in `Responses.g.cs`.
+
+| Value | Attributes emitted | Use when |
+|---|---|---|
+| `SystemTextJson` *(default)* | `[System.Text.Json.Serialization.JsonPropertyName]` | New projects using `System.Text.Json` |
+| `NewtonsoftJson` | `[Newtonsoft.Json.JsonProperty]` | Projects already using `Newtonsoft.Json` |
+| `Both` | Both attribute sets on every property | Migrating between serialisers, or sharing DTOs across projects with different serialisers |
+
+```xml
+<PropertyGroup>
+  <!-- Choose one: SystemTextJson (default) | NewtonsoftJson | Both -->
+  <ApiContractsJsonLibrary>Both</ApiContractsJsonLibrary>
+</PropertyGroup>
+```
+
+With `Both`, each property gets both attributes:
+
+```csharp
+[System.Text.Json.Serialization.JsonPropertyName("name")]
+[Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+public string? Name { get; set; }
+```
+
+`[JsonExtensionData]` is also doubled up on the `AdditionalProperties` dictionary when `Both` is used.
+
+> When using `NewtonsoftJson` or `Both`, add `<PackageReference Include="Newtonsoft.Json" />` to your contracts project.
 
 ## Disabling Generation
 
