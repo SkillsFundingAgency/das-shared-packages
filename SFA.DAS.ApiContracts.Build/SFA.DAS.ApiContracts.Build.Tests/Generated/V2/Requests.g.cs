@@ -54,10 +54,16 @@ public record GetDasRequestsApiRequest(int? Page, int? PageSize, DasRequestSortO
 }
 
 /// <summary>POST /api/das-requests</summary>
-public class PostDasRequestsApiRequest : IPostApiRequest<PostDasRequest>
+public class PostDasRequestsApiRequest : IPostApiRequest
 {
+    public PostDasRequestsApiRequest()
+    {
+        Data = RequestData;
+    }
+
     public string PostUrl => $"api/das-requests";
-    public PostDasRequest Data { get; set; } = default!;
+    public object Data { get; set; }
+    public PostDasRequest RequestData { get; set; } = default!;
     public string Version => "2.0";
 }
 

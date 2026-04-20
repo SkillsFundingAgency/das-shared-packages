@@ -591,22 +591,46 @@
                             else
                             {
                                 string dataType = GetDataType(op);
-                                string iface = httpMethod == "post"  ? "IPostApiRequest<"  + dataType + ">"
-                                             : httpMethod == "put"   ? "IPutApiRequest<"   + dataType + ">"
-                                             :                         "IPatchApiRequest<"  + dataType + ">";
+
+                                // For POST with a named schema type, implement non-generic IPostApiRequest
+                                // and expose a strongly-typed RequestData property alongside object Data.
+                                bool isPostWithNamedType = httpMethod == "post"
+                                    && dataType != "object"
+                                    && !dataType.Contains("<");
+
+                                string iface = isPostWithNamedType      ? "IPostApiRequest"
+                                             : httpMethod == "post"     ? "IPostApiRequest<"  + dataType + ">"
+                                             : httpMethod == "put"      ? "IPutApiRequest<"   + dataType + ">"
+                                             :                            "IPatchApiRequest<"  + dataType + ">";
                                 string urlProp = httpMethod == "post"  ? "PostUrl"
-                                              : httpMethod == "put"   ? "PutUrl"
+                                              : httpMethod == "put"    ? "PutUrl"
                                               :                          "PatchUrl";
 
                                 output.AppendLine("public class " + className + " : " + iface);
                                 output.AppendLine("{");
+                                if (isPostWithNamedType)
+                                {
+                                    output.AppendLine("    public " + className + "()");
+                                    output.AppendLine("    {");
+                                    output.AppendLine("        Data = RequestData;");
+                                    output.AppendLine("    }");
+                                    output.AppendLine();
+                                }
                                 foreach (string[] p in pathParams)
                                     output.AppendLine("    public required " + p[1] + " " + p[0] + " { get; init; }");
                                 // Query params on write operations are exposed as optional properties
                                 foreach (string[] q in queryParams)
                                     output.AppendLine("    public " + q[1] + " " + q[0] + " { get; set; }");
                                 output.AppendLine("    public string " + urlProp + " => " + urlPropertyExpression + ";");
-                                output.AppendLine("    public " + dataType + " Data { get; set; } = default!;");
+                                if (isPostWithNamedType)
+                                {
+                                    output.AppendLine("    public object Data { get; set; }");
+                                    output.AppendLine("    public " + dataType + " RequestData { get; set; } = default!;");
+                                }
+                                else
+                                {
+                                    output.AppendLine("    public " + dataType + " Data { get; set; } = default!;");
+                                }
                                 if (apiVersion != "1.0")
                                     output.AppendLine("    public string Version => \"" + apiVersion + "\";");
                                 output.AppendLine("}");
