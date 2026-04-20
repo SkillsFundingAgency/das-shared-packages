@@ -26,6 +26,7 @@
     <ApiContractsNamespace>SFA.DAS.ApiContracts.Build.Tests</ApiContractsNamespace>
     <ApiContractsOutputDirectory>$(MSBuildThisFileDirectory)Generated</ApiContractsOutputDirectory>
     <ApiContractsClientName>TestApi</ApiContractsClientName>
+    <ApiContractsJsonLibrary>Both</ApiContractsJsonLibrary>
   </PropertyGroup>
 
   <Import Project="$(_ApiContractsBuildDir)build\SFA.DAS.ApiContracts.Build.props" />

@@ -655,21 +655,97 @@
         </Task>
     </UsingTask>
 
+    <!--
+        Inline MSBuild task: AddSystemTextJsonAttributes
+        Post-processes a Newtonsoft-generated Responses.g.cs file to prepend a
+        [System.Text.Json.Serialization.JsonPropertyName] attribute alongside every
+        [Newtonsoft.Json.JsonProperty] attribute, and a
+        [System.Text.Json.Serialization.JsonExtensionData] alongside every
+        [Newtonsoft.Json.JsonExtensionData].  Used when ApiContractsJsonLibrary=Both.
+    -->
+    <UsingTask TaskName="AddSystemTextJsonAttributes"
+               TaskFactory="RoslynCodeTaskFactory"
+               AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <FilePath ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System" />
+            <Using Namespace="System.Collections.Generic" />
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.Text" />
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[
+                string content = File.ReadAllText(FilePath);
+                string[] lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                var outLines = new List<string>();
+
+                foreach (string line in lines)
+                {
+                    string trimmed = line.TrimStart();
+                    string indent  = line.Substring(0, line.Length - trimmed.Length);
+
+                    if (trimmed.StartsWith("[Newtonsoft.Json.JsonProperty(\""))
+                    {
+                        // Extract the JSON property name (first quoted token)
+                        int nameStart = trimmed.IndexOf('"') + 1;
+                        int nameEnd   = trimmed.IndexOf('"', nameStart);
+                        if (nameEnd > nameStart)
+                        {
+                            string propName = trimmed.Substring(nameStart, nameEnd - nameStart);
+                            outLines.Add(indent + "[System.Text.Json.Serialization.JsonPropertyName(\"" + propName + "\")]");
+                        }
+                    }
+                    else if (trimmed.StartsWith("[Newtonsoft.Json.JsonExtensionData]"))
+                    {
+                        outLines.Add(indent + "[System.Text.Json.Serialization.JsonExtensionData]");
+                    }
+
+                    outLines.Add(line);
+                }
+
+                string result = string.Join("\n", outLines);
+                File.WriteAllText(FilePath, result);
+                return true;
+                ]]>
+            </Code>
+        </Task>
+    </UsingTask>
+
     <Target Name="GenerateApiContracts"
             BeforeTargets="BeforeBuild"
             Condition="'$(ApiContractsGenerationEnabled)' == 'true'
                        and '$(ApiContractsSwaggerJsonPath)' != ''
                        and Exists('$(ApiContractsSwaggerJsonPath)')">
 
+        <!--
+            ApiContractsJsonLibrary controls which JSON serialiser attributes are emitted
+            on the generated response DTOs.
+              NewtonsoftJson  — [Newtonsoft.Json.JsonProperty] only  (original behaviour)
+              SystemTextJson  — [System.Text.Json.Serialization.JsonPropertyName] only  (default)
+              Both            — both attribute sets on every property
+        -->
+        <PropertyGroup>
+            <ApiContractsJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == ''">SystemTextJson</ApiContractsJsonLibrary>
+            <!-- For Both, NSwag runs with Newtonsoft and we post-process to add STJ attributes -->
+            <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == 'Both'">NewtonsoftJson</_ApiContractsNSwagJsonLibrary>
+            <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' != 'Both'">$(ApiContractsJsonLibrary)</_ApiContractsNSwagJsonLibrary>
+        </PropertyGroup>
+
         <MakeDir Directories="$(ApiContractsOutputDirectory)" />
 
-        <Message Text="[ApiContracts] Generating from $(ApiContractsSwaggerJsonPath)" Importance="high" />
+        <Message Text="[ApiContracts] Generating from $(ApiContractsSwaggerJsonPath) (JsonLibrary=$(ApiContractsJsonLibrary))" Importance="high" />
 
         <!-- ================================================================
              Step 1: Response DTOs via NSwag
              ================================================================ -->
-        <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(ApiContractsSwaggerJsonPath)&quot; /namespace:$(ApiContractsNamespace).ApiResponses /output:&quot;$(ApiContractsOutputDirectory)/Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true"
+        <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(ApiContractsSwaggerJsonPath)&quot; /namespace:$(ApiContractsNamespace).ApiResponses /output:&quot;$(ApiContractsOutputDirectory)/Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true /jsonLibrary:$(_ApiContractsNSwagJsonLibrary)"
               WorkingDirectory="$(MSBuildProjectDirectory)" />
+
+        <!-- Step 1b: When Both is requested, add STJ attributes alongside Newtonsoft ones -->
+        <AddSystemTextJsonAttributes
+            Condition="'$(ApiContractsJsonLibrary)' == 'Both'"
+            FilePath="$(ApiContractsOutputDirectory)/Responses.g.cs" />
 
         <!-- ================================================================
              Step 2: Request wrappers via inline task
