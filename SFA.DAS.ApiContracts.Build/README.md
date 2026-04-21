@@ -127,7 +127,7 @@ public record GetVacanciesByVacancyIdApiRequest(System.Guid VacancyId) : IGetApi
 * **Enum query parameters** — `$ref` enum types mapped to the generated enum name
 * **Flags enums** — detected via `x-enumFlags: true`; serialised with spaces stripped
 * **`DateTime` query parameters** — formatted as `"s"` (sortable ISO 8601)
-* **POST / PUT / PATCH request bodies** — typed via the `Data` property; `$ref` and inline array bodies both supported. For POST operations with a named schema body (`$ref`), the class implements the non-generic `IPostApiRequest` with `object Data` and a strongly-typed `RequestData` property
+* **POST / PUT / PATCH request bodies** — typed via the `Data` property; `$ref` and inline array bodies both supported. For POST operations with a named schema body (`$ref`), a primary constructor is generated so the strongly-typed body is passed at construction time: `new PostVacanciesApiRequest(new PostVacancyRequest { ... })`
 * **API versioning** — when `info.version` is anything other than `1.0`, a `Version` property override is emitted
 
 ## Client Generation
@@ -226,6 +226,64 @@ public string? Name { get; set; }
 `[JsonExtensionData]` is also doubled up on the `AdditionalProperties` dictionary when `Both` is used.
 
 > When using `NewtonsoftJson` or `Both`, add `<PackageReference Include="Newtonsoft.Json" />` to your contracts project.
+
+## Multiple API Versions
+
+When an inner API exposes more than one version (e.g. `v1` and `v2`), each version may have response types with the same name but different shapes. The standard `GenerateApiContracts` target handles the primary version. For additional versions, add a custom target that runs NSwag and `GenerateApiRequestWrappers` into a version-specific sub-directory and namespace, preventing class-name collisions.
+
+```xml
+<!-- In your contracts .csproj, after importing SFA.DAS.ApiContracts.Build.targets -->
+
+<Target Name="GenerateApiContractsV2"
+        BeforeTargets="BeforeBuild"
+        AfterTargets="GenerateApiContracts"
+        Condition="Exists('$(MSBuildThisFileDirectory)..\MyApi\swagger.v2.json')">
+
+  <MakeDir Directories="$(MSBuildThisFileDirectory)Generated\V2" />
+
+  <!-- Step 1: Generate V2 response DTOs into their own namespace -->
+  <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient
+      /input:&quot;$(MSBuildThisFileDirectory)..\MyApi\swagger.v2.json&quot;
+      /namespace:SFA.DAS.MyApi.Contracts.V2.ApiResponses
+      /output:&quot;$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs&quot;
+      /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true
+      /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true
+      /jsonLibrary:$(_ApiContractsNSwagJsonLibrary)"
+        WorkingDirectory="$(MSBuildProjectDirectory)" />
+
+  <!-- Step 1b: Add STJ attributes when Both is requested -->
+  <AddSystemTextJsonAttributes
+      Condition="'$(ApiContractsJsonLibrary)' == 'Both'"
+      FilePath="$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs" />
+
+  <!-- Step 2: Generate V2 request wrappers referencing the V2 responses namespace -->
+  <GenerateApiRequestWrappers
+      SwaggerPath="$(MSBuildThisFileDirectory)..\MyApi\swagger.v2.json"
+      Namespace="SFA.DAS.MyApi.Contracts.V2"
+      ResponsesNamespace="SFA.DAS.MyApi.Contracts.V2.ApiResponses"
+      OutputPath="$(MSBuildThisFileDirectory)Generated\V2\Requests.g.cs" />
+</Target>
+
+<!-- Include V2 generated files in compilation -->
+<ItemGroup>
+  <Compile Include="$(MSBuildThisFileDirectory)Generated\V2\*.g.cs" />
+</ItemGroup>
+```
+
+This produces the following layout:
+
+```
+Generated/
+  Responses.g.cs        → namespace SFA.DAS.MyApi.Contracts.ApiResponses      (v1)
+  Requests.g.cs         → namespace SFA.DAS.MyApi.Contracts.ApiRequests        (v1)
+  V2/
+    Responses.g.cs      → namespace SFA.DAS.MyApi.Contracts.V2.ApiResponses   (v2)
+    Requests.g.cs       → namespace SFA.DAS.MyApi.Contracts.V2                (v2)
+```
+
+Both `$(ApiContractsNSwagCommand)` and `$(_ApiContractsNSwagJsonLibrary)` are set by the package at project load time, so the secondary target picks up the correct NSwag executable path and JSON library mode automatically.
+
+> The V2 generated files must exist on disk before the first build compiles them (the `Compile Include` glob is evaluated at project load time). Commit the initially-generated files to source control just as you would the V1 files.
 
 ## Disabling Generation
 

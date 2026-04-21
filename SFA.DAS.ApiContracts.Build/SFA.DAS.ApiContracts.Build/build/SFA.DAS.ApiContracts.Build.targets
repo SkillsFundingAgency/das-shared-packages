@@ -718,29 +718,31 @@
         </Task>
     </UsingTask>
 
+    <!--
+        Top-level property defaults for JSON library selection.
+        Evaluated at project load time so they are available to any target in
+        consuming projects (e.g. a secondary version-specific generation target).
+
+        ApiContractsJsonLibrary  — NewtonsoftJson | SystemTextJson (default) | Both
+        _ApiContractsNSwagJsonLibrary — the value passed to NSwag's /jsonLibrary flag;
+            for Both we run NSwag with Newtonsoft and post-process to add STJ attributes.
+    -->
+    <PropertyGroup>
+        <ApiContractsJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == ''">SystemTextJson</ApiContractsJsonLibrary>
+        <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == 'Both'">NewtonsoftJson</_ApiContractsNSwagJsonLibrary>
+        <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' != 'Both'">$(ApiContractsJsonLibrary)</_ApiContractsNSwagJsonLibrary>
+    </PropertyGroup>
+
     <Target Name="GenerateApiContracts"
             BeforeTargets="BeforeBuild"
             Condition="'$(ApiContractsGenerationEnabled)' == 'true'
                        and '$(ApiContractsSwaggerJsonPath)' != ''
                        and Exists('$(ApiContractsSwaggerJsonPath)')">
 
-        <!--
-            ApiContractsJsonLibrary controls which JSON serialiser attributes are emitted
-            on the generated response DTOs.
-              NewtonsoftJson  — [Newtonsoft.Json.JsonProperty] only  (original behaviour)
-              SystemTextJson  — [System.Text.Json.Serialization.JsonPropertyName] only  (default)
-              Both            — both attribute sets on every property
-        -->
-        <PropertyGroup>
-            <ApiContractsJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == ''">SystemTextJson</ApiContractsJsonLibrary>
-            <!-- For Both, NSwag runs with Newtonsoft and we post-process to add STJ attributes -->
-            <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == 'Both'">NewtonsoftJson</_ApiContractsNSwagJsonLibrary>
-            <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' != 'Both'">$(ApiContractsJsonLibrary)</_ApiContractsNSwagJsonLibrary>
-        </PropertyGroup>
-
         <MakeDir Directories="$(ApiContractsOutputDirectory)" />
 
         <Message Text="[ApiContracts] Generating from $(ApiContractsSwaggerJsonPath) (JsonLibrary=$(ApiContractsJsonLibrary))" Importance="high" />
+
 
         <!-- ================================================================
              Step 1: Response DTOs via NSwag

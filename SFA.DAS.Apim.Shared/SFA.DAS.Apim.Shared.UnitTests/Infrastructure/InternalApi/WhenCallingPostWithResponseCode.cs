@@ -64,14 +64,14 @@ namespace SFA.DAS.Apim.Shared.UnitTests.Infrastructure.InternalApi
             string authToken,
             string postContent,
             int id,
-            string responseContent,
+            TestResponse responseContent,
             TestInternalApiConfiguration config)
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
             azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync(config.Identifier)).ReturnsAsync(authToken);
             config.Url = "https://test.local";
-            var testObject = JsonSerializer.Serialize(new TestResponse{MyResponse = responseContent});
+            var testObject = JsonSerializer.Serialize(responseContent);
             var response = new HttpResponseMessage
             {
                 Content = new StringContent(testObject),
@@ -87,7 +87,7 @@ namespace SFA.DAS.Apim.Shared.UnitTests.Infrastructure.InternalApi
             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, azureClientCredentialHelper.Object);
 
             //Act
-            var actualResult = await actual.PostWithResponseCode<TestResponse>(postTestRequest, false);
+            var actualResult = await actual.PostWithResponseCode<TestResponse>(postTestRequest, true);
 
             //Assert
             httpMessageHandler.Protected()
@@ -167,9 +167,16 @@ namespace SFA.DAS.Apim.Shared.UnitTests.Infrastructure.InternalApi
             public string PostUrl => $"/test-url/get{_id}";
         }
 
-        private class TestResponse
+        public class TestResponse
         {
             public string MyResponse { get; set; }
+            public MyEnum MyEnum { get; set; }
+        }
+        
+        public enum MyEnum
+        {
+            Value1,
+            Value2
         }
     }
 }

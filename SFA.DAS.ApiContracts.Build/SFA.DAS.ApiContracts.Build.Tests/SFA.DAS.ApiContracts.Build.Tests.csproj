@@ -75,10 +75,21 @@
           AfterTargets="GenerateApiContracts"
           Condition="Exists('$(MSBuildThisFileDirectory)TestFixtures\TestApiV2.swagger.json')">
     <MakeDir Directories="$(MSBuildThisFileDirectory)Generated\V2" />
+
+    <!-- Step 1: Generate V2 response DTOs into their own namespace -->
+    <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(MSBuildThisFileDirectory)TestFixtures\TestApiV2.swagger.json&quot; /namespace:SFA.DAS.ApiContracts.Build.Tests.V2.ApiResponses /output:&quot;$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true /jsonLibrary:$(_ApiContractsNSwagJsonLibrary)"
+          WorkingDirectory="$(MSBuildProjectDirectory)" />
+
+    <!-- Step 1b: Add STJ attributes when Both is requested -->
+    <AddSystemTextJsonAttributes
+        Condition="'$(ApiContractsJsonLibrary)' == 'Both'"
+        FilePath="$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs" />
+
+    <!-- Step 2: Generate V2 request wrappers referencing the V2 responses namespace -->
     <GenerateApiRequestWrappers
         SwaggerPath="$(MSBuildThisFileDirectory)TestFixtures\TestApiV2.swagger.json"
         Namespace="SFA.DAS.ApiContracts.Build.Tests.V2"
-        ResponsesNamespace="SFA.DAS.ApiContracts.Build.Tests.ApiResponses"
+        ResponsesNamespace="SFA.DAS.ApiContracts.Build.Tests.V2.ApiResponses"
         OutputPath="$(MSBuildThisFileDirectory)Generated\V2\Requests.g.cs" />
   </Target>
 

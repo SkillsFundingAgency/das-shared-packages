@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.ApiContracts.Build.Tests.ApiResponses;
+using SFA.DAS.ApiContracts.Build.Tests.V2.ApiResponses;
 
-/// <summary>GET /api/das-requests/{dasRequestId}</summary>
+/// <summary>GET /api/das-requests/{dasRequestId} &#x2192; <see cref="DasRequestResponse"/></summary>
 public record GetDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId) : IGetApiRequest
 {
     public string GetUrl => $"api/das-requests/{DasRequestId}";
