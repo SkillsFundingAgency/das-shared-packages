@@ -593,7 +593,8 @@
                                 string dataType = GetDataType(op);
 
                                 // For POST with a named schema type, implement non-generic IPostApiRequest
-                                // and expose a strongly-typed RequestData property alongside object Data.
+                                // using a primary constructor so the caller passes the strongly-typed body
+                                // at construction time and Data is initialised directly from it.
                                 bool isPostWithNamedType = httpMethod == "post"
                                     && dataType != "object"
                                     && !dataType.Contains("<");
@@ -606,16 +607,17 @@
                                               : httpMethod == "put"    ? "PutUrl"
                                               :                          "PatchUrl";
 
-                                output.AppendLine("public class " + className + " : " + iface);
+                                // Camel-case the data type name for the primary constructor parameter
+                                string dataParamName = isPostWithNamedType && dataType.Length > 0
+                                    ? char.ToLower(dataType[0]) + dataType.Substring(1)
+                                    : "";
+
+                                string classDecl = isPostWithNamedType
+                                    ? "public class " + className + "(" + dataType + " " + dataParamName + ") : " + iface
+                                    : "public class " + className + " : " + iface;
+
+                                output.AppendLine(classDecl);
                                 output.AppendLine("{");
-                                if (isPostWithNamedType)
-                                {
-                                    output.AppendLine("    public " + className + "()");
-                                    output.AppendLine("    {");
-                                    output.AppendLine("        Data = RequestData;");
-                                    output.AppendLine("    }");
-                                    output.AppendLine();
-                                }
                                 foreach (string[] p in pathParams)
                                     output.AppendLine("    public required " + p[1] + " " + p[0] + " { get; init; }");
                                 // Query params on write operations are exposed as optional properties
@@ -624,8 +626,7 @@
                                 output.AppendLine("    public string " + urlProp + " => " + urlPropertyExpression + ";");
                                 if (isPostWithNamedType)
                                 {
-                                    output.AppendLine("    public object Data { get; set; }");
-                                    output.AppendLine("    public " + dataType + " RequestData { get; set; } = default!;");
+                                    output.AppendLine("    public object Data { get; set; } = " + dataParamName + ";");
                                 }
                                 else
                                 {

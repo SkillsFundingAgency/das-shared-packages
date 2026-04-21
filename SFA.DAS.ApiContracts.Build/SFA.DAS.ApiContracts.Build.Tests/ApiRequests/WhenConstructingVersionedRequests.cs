@@ -12,7 +12,7 @@ public class WhenConstructingVersionedRequests
     [Test]
     public void V1_PostRequest_HasVersion1()
     {
-        IBaseApiRequest request = new PostDasRequestsApiRequest();
+        IBaseApiRequest request = new PostDasRequestsApiRequest(new PostDasRequest());
         request.Version.Should().Be("1.0");
     }
 
@@ -47,7 +47,7 @@ public class WhenConstructingVersionedRequests
     [Test]
     public void V2_PostRequest_HasVersion2()
     {
-        var request = new V2.PostDasRequestsApiRequest();
+        var request = new V2.PostDasRequestsApiRequest(new PostDasRequest());
         request.Version.Should().Be("2.0");
     }
 
@@ -82,7 +82,7 @@ public class WhenConstructingVersionedRequests
     [Test]
     public void V2_PostRequest_ImplementsIPostApiRequest()
     {
-        var request = new V2.PostDasRequestsApiRequest();
+        var request = new V2.PostDasRequestsApiRequest(new PostDasRequest());
         request.Should().BeAssignableTo<IPostApiRequest>();
     }
 
@@ -97,7 +97,7 @@ public class WhenConstructingVersionedRequests
     [Test]
     public void V2_PostRequest_UrlIsUnchanged()
     {
-        var request = new V2.PostDasRequestsApiRequest();
+        var request = new V2.PostDasRequestsApiRequest(new PostDasRequest());
         request.PostUrl.Should().Be("api/das-requests");
     }
 }

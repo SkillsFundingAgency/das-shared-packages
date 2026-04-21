@@ -49,16 +49,10 @@ public record GetDasRequestsApiRequest(int? Page, int? PageSize, DasRequestSortO
 }
 
 /// <summary>POST /api/das-requests &#x2192; <see cref="DasRequestResponse"/></summary>
-public class PostDasRequestsApiRequest : IPostApiRequest
+public class PostDasRequestsApiRequest(PostDasRequest postDasRequest) : IPostApiRequest
 {
-    public PostDasRequestsApiRequest()
-    {
-        Data = RequestData;
-    }
-
     public string PostUrl => $"api/das-requests";
-    public object Data { get; set; }
-    public PostDasRequest RequestData { get; set; } = default!;
+    public object Data { get; set; } = postDasRequest;
 }
 
 /// <summary>GET /api/das-requests/{dasRequestId}/sub-items/{itemId}</summary>
