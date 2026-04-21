@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Apim.Shared.Interfaces;
@@ -16,7 +17,8 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
 {
     public static readonly JsonSerializerOptions JsonSerializationOptions = new()
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
     };
 
     public ApiClient(
