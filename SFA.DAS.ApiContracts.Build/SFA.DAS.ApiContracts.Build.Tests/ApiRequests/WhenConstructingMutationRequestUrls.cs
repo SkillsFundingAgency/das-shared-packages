@@ -73,23 +73,23 @@ public class WhenConstructingMutationRequestUrls
     [Test]
     public void PostDasRequests_ImplementsIPostApiRequest()
     {
-        var request = new PostDasRequestsApiRequest();
+        var request = new PostDasRequestsApiRequest(new PostDasRequest());
         request.Should().BeAssignableTo<IPostApiRequest>();
     }
 
     [Test]
     public void PostDasRequests_UrlIsBaseResourcePath()
     {
-        var request = new PostDasRequestsApiRequest();
+        var request = new PostDasRequestsApiRequest(new PostDasRequest());
         request.PostUrl.Should().Be("api/das-requests");
     }
 
     [Test]
-    public void PostDasRequests_RequestDataPropertyIsStronglyTyped()
+    public void PostDasRequests_DataIsInitialisedFromConstructorArgument()
     {
-        var request = new PostDasRequestsApiRequest { RequestData = new PostDasRequest { Name = "DasRequest A" } };
-        request.RequestData.Should().BeOfType<PostDasRequest>();
-        request.RequestData.Name.Should().Be("DasRequest A");
+        var data = new PostDasRequest { Name = "DasRequest A" };
+        var request = new PostDasRequestsApiRequest(data);
+        request.Data.Should().BeSameAs(data);
     }
 
     [Test]
