@@ -1,5 +1,7 @@
 namespace SFA.DAS.ApiContracts.Build.Tests.ApiRequests;
 
+using V2Responses = SFA.DAS.ApiContracts.Build.Tests.V2.ApiResponses;
+
 public class WhenConstructingVersionedRequests
 {
     [Test]
@@ -47,7 +49,7 @@ public class WhenConstructingVersionedRequests
     [Test]
     public void V2_PostRequest_HasVersion2()
     {
-        var request = new V2.PostDasRequestsApiRequest(new PostDasRequest());
+        var request = new V2.PostDasRequestsApiRequest(new V2Responses.PostDasRequest());
         request.Version.Should().Be("2.0");
     }
 
@@ -82,7 +84,7 @@ public class WhenConstructingVersionedRequests
     [Test]
     public void V2_PostRequest_ImplementsIPostApiRequest()
     {
-        var request = new V2.PostDasRequestsApiRequest(new PostDasRequest());
+        var request = new V2.PostDasRequestsApiRequest(new V2Responses.PostDasRequest());
         request.Should().BeAssignableTo<IPostApiRequest>();
     }
 
@@ -97,7 +99,7 @@ public class WhenConstructingVersionedRequests
     [Test]
     public void V2_PostRequest_UrlIsUnchanged()
     {
-        var request = new V2.PostDasRequestsApiRequest(new PostDasRequest());
+        var request = new V2.PostDasRequestsApiRequest(new V2Responses.PostDasRequest());
         request.PostUrl.Should().Be("api/das-requests");
     }
 }

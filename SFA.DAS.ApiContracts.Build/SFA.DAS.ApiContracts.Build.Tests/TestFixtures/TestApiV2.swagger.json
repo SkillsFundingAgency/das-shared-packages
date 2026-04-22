@@ -16,7 +16,16 @@
             "schema": { "type": "string", "format": "uuid" }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DasRequestResponse" }
+              }
+            }
+          }
+        }
       },
       "put": {
         "operationId": "PutDasRequest",
@@ -194,6 +203,14 @@
   },
   "components": {
     "schemas": {
+      "DasRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string", "nullable": true },
+          "version": { "type": "integer", "format": "int32" }
+        }
+      },
       "DasRequestSortOrder": {
         "enum": [ "Name", "Created", "Updated" ],
         "type": "string"
