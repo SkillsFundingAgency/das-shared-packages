@@ -7,26 +7,26 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Extensions;
 
 public static class ServiceBusEndpointFactory
 {
-    public static ServiceBusTriggeredEndpointConfiguration CreateSingleQueueConfiguration(string endpointAndQueueName, IConfiguration appConfiguration, bool useManagedIdentity)
+    public static EndpointConfiguration CreateSingleQueueConfiguration(string endpointAndQueueName, IConfiguration appConfiguration, bool useManagedIdentity)
     {
-        var configuration = new ServiceBusTriggeredEndpointConfiguration(
-            endpointName: endpointAndQueueName,
-            configuration: appConfiguration);
+        var configuration = new EndpointConfiguration("SFA.DAS.NServiceBus.AzureFunction");
 
-        configuration.AdvancedConfiguration.SendFailedMessagesTo($"{endpointAndQueueName}-error");
-        configuration.AdvancedConfiguration.Pipeline.Register(new LogIncomingBehaviour(), nameof(LogIncomingBehaviour));
-        configuration.AdvancedConfiguration.Pipeline.Register(new LogOutgoingBehaviour(), nameof(LogOutgoingBehaviour));
+        var transport = configuration.UseTransport<AzureServiceBusTransport>();
+
+        configuration.SendFailedMessagesTo($"{endpointAndQueueName}-error");
+        configuration.Pipeline.Register(new LogIncomingBehaviour(), nameof(LogIncomingBehaviour));
+        configuration.Pipeline.Register(new LogOutgoingBehaviour(), nameof(LogOutgoingBehaviour));
 
         if (useManagedIdentity)
         {
-            configuration.Transport.ConnectionString(appConfiguration.NServiceBusFullNamespace());
-            configuration.Transport.CustomTokenCredential(new DefaultAzureCredential());
-            configuration.AdvancedConfiguration.License(appConfiguration.NServiceBusLicense());
+            transport.ConnectionString(appConfiguration.NServiceBusFullNamespace());
+            transport.CustomTokenCredential(appConfiguration.NServiceBusFullNamespace(), new DefaultAzureCredential());
+            // LICENSE?
         }
 
-        configuration.Transport.SubscriptionRuleNamingConvention(AzureRuleNameShortener.Shorten);
+        transport.SubscriptionRuleNamingConvention(AzureRuleNameShortener.Shorten);
 
-        var persistence = configuration.AdvancedConfiguration.UsePersistence<AzureTablePersistence>();
+        var persistence = configuration.UsePersistence<AzureTablePersistence>();
         persistence.ConnectionString(appConfiguration.GetConnectionStringOrSetting("AzureWebJobsStorage"));
 
         return configuration;
