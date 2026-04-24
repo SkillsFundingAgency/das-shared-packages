@@ -43,7 +43,7 @@ public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.
 }
 
 /// <summary>GET /api/das-requests &#x2192; List&lt;<see cref="DasRequestResponse"/>&gt;</summary>
-public record GetDasRequestsApiRequest(int? Page, int? PageSize, DasRequestSortOrder? SortOrder, string SearchTerm) : IGetApiRequest
+public record GetDasRequestsApiRequest(int? Page, int? PageSize, DasRequestSortOrder? SortOrder, string? SearchTerm) : IGetApiRequest
 {
     public string GetUrl => QueryHelpers.AddQueryString($"api/das-requests", new Dictionary<string, string?> { ["page"] = Page?.ToString(), ["pageSize"] = PageSize?.ToString(), ["sortOrder"] = SortOrder?.ToString(), ["searchTerm"] = SearchTerm });
 }

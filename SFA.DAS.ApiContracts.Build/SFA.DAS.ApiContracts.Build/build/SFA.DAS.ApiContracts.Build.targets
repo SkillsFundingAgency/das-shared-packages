@@ -448,7 +448,7 @@
                                         else
                                         {
                                             csType = MapType(GetStr(schema, "type"), GetStr(schema, "format"));
-                                            if (!required && IsValueType(csType))
+                                            if (!required && (IsValueType(csType) || csType == "string"))
                                                 csType += "?";
                                         }
                                     }
@@ -486,7 +486,7 @@
                                         string qn = char.ToLower(q[0][0]) + q[0].Substring(1);
                                         bool qIsFlags = q.Length > 3 && q[3] == "flags";
                                         bool qIsDateTime = q[1] == "System.DateTime" || q[1] == "System.DateTime?";
-                                        string valExpr = (q[1] == "string") ? q[0]
+                                        string valExpr = (q[1] == "string" || q[1] == "string?") ? q[0]
                                                        : qIsFlags && q[1].EndsWith("?") ? q[0] + "?.ToString()?.Replace(\" \", \"\")"
                                                        : qIsFlags                       ? q[0] + ".ToString().Replace(\" \", \"\")"
                                                        : qIsDateTime && q[1].EndsWith("?") ? q[0] + "?.ToString(\"s\")"
@@ -747,7 +747,7 @@
         <!-- ================================================================
              Step 1: Response DTOs via NSwag
              ================================================================ -->
-        <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(ApiContractsSwaggerJsonPath)&quot; /namespace:$(ApiContractsNamespace).ApiResponses /output:&quot;$(ApiContractsOutputDirectory)/Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true /jsonLibrary:$(_ApiContractsNSwagJsonLibrary)"
+        <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(ApiContractsSwaggerJsonPath)&quot; /namespace:$(ApiContractsNamespace).ApiResponses /output:&quot;$(ApiContractsOutputDirectory)/Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true /jsonLibrary:$(_ApiContractsNSwagJsonLibrary) /dateTimeType:DateTime"
               WorkingDirectory="$(MSBuildProjectDirectory)" />
 
         <!-- Step 1b: When Both is requested, add STJ attributes alongside Newtonsoft ones -->
