@@ -29,7 +29,7 @@ public class WhenConstructingGetRequestUrls
     [Test]
     public void GetDasRequests_ImplementsIGetApiRequest()
     {
-        var request = new GetDasRequestsApiRequest(null, null, null, null!);
+        var request = new GetDasRequestsApiRequest(null, null, null, null);
         request.Should().BeAssignableTo<IGetApiRequest>();
     }
 
@@ -43,14 +43,14 @@ public class WhenConstructingGetRequestUrls
     [Test]
     public void GetDasRequests_NullParamsAreOmittedFromUrl()
     {
-        var request = new GetDasRequestsApiRequest(null, null, null, null!);
+        var request = new GetDasRequestsApiRequest(null, null, null, null);
         request.GetUrl.Should().Be("api/das-requests");
     }
 
     [Test]
     public void GetDasRequests_MixedNullAndValueParams()
     {
-        var request = new GetDasRequestsApiRequest(1, null, DasRequestSortOrder.Name, null!);
+        var request = new GetDasRequestsApiRequest(1, null, DasRequestSortOrder.Name, null);
         request.GetUrl.Should().Be("api/das-requests?page=1&sortOrder=Name");
     }
 
@@ -85,7 +85,7 @@ public class WhenConstructingGetRequestUrls
     }
 
     [Test]
-    public void GetDasRequestsByDasRequestIdStatus_BuildsUrlWithDateTimeOffsetAndBoolParams()
+    public void GetDasRequestsByDasRequestIdStatus_BuildsUrlWithDateTimeAndBoolParams()
     {
         var dasRequestId = Guid.Parse("33333333-3333-3333-3333-333333333333");
         var asOf = new DateTime(2025, 1, 15, 0, 0, 0);

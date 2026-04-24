@@ -208,7 +208,8 @@
         "properties": {
           "id": { "type": "string", "format": "uuid" },
           "name": { "type": "string", "nullable": true },
-          "version": { "type": "integer", "format": "int32" }
+          "version": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" }
         }
       },
       "DasRequestSortOrder": {

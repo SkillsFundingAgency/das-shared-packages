@@ -77,7 +77,7 @@
     <MakeDir Directories="$(MSBuildThisFileDirectory)Generated\V2" />
 
     <!-- Step 1: Generate V2 response DTOs into their own namespace -->
-    <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(MSBuildThisFileDirectory)TestFixtures\TestApiV2.swagger.json&quot; /namespace:SFA.DAS.ApiContracts.Build.Tests.V2.ApiResponses /output:&quot;$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true /jsonLibrary:$(_ApiContractsNSwagJsonLibrary)"
+    <Exec Command="$(ApiContractsNSwagCommand) $(ApiContractsNSwagDtoFlags) /input:&quot;$(MSBuildThisFileDirectory)TestFixtures\TestApiV2.swagger.json&quot; /namespace:SFA.DAS.ApiContracts.Build.Tests.V2.ApiResponses /output:&quot;$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs&quot;"
           WorkingDirectory="$(MSBuildProjectDirectory)" />
 
     <!-- Step 1b: Add STJ attributes when Both is requested -->
