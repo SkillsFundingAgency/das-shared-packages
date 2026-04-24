@@ -731,6 +731,14 @@
         <ApiContractsJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == ''">SystemTextJson</ApiContractsJsonLibrary>
         <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' == 'Both'">NewtonsoftJson</_ApiContractsNSwagJsonLibrary>
         <_ApiContractsNSwagJsonLibrary Condition="'$(ApiContractsJsonLibrary)' != 'Both'">$(ApiContractsJsonLibrary)</_ApiContractsNSwagJsonLibrary>
+        <!--
+            Common NSwag flags shared by every response DTO generation step.
+            Consuming projects that add secondary generation targets (e.g. for a v2 swagger)
+            should reference this property rather than duplicating the flags, so any future
+            changes (e.g. /dateTimeType, /classStyle) only need to be made here.
+            Variable parts — /input, /namespace, /output — are supplied per call-site.
+        -->
+        <ApiContractsNSwagDtoFlags>openapi2csclient /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true /dateTimeType:System.DateTime /jsonLibrary:$(_ApiContractsNSwagJsonLibrary)</ApiContractsNSwagDtoFlags>
     </PropertyGroup>
 
     <Target Name="GenerateApiContracts"
@@ -747,7 +755,7 @@
         <!-- ================================================================
              Step 1: Response DTOs via NSwag
              ================================================================ -->
-        <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient /input:&quot;$(ApiContractsSwaggerJsonPath)&quot; /namespace:$(ApiContractsNamespace).ApiResponses /output:&quot;$(ApiContractsOutputDirectory)/Responses.g.cs&quot; /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true /jsonLibrary:$(_ApiContractsNSwagJsonLibrary) /dateTimeType:DateTime"
+        <Exec Command="$(ApiContractsNSwagCommand) $(ApiContractsNSwagDtoFlags) /input:&quot;$(ApiContractsSwaggerJsonPath)&quot; /namespace:$(ApiContractsNamespace).ApiResponses /output:&quot;$(ApiContractsOutputDirectory)/Responses.g.cs&quot;"
               WorkingDirectory="$(MSBuildProjectDirectory)" />
 
         <!-- Step 1b: When Both is requested, add STJ attributes alongside Newtonsoft ones -->

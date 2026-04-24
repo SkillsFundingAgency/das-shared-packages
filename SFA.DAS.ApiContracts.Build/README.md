@@ -84,6 +84,7 @@ All properties have defaults and are optional except `ApiContractsSwaggerJsonPat
 | `ApiContractsClientName` | *(empty)* | When set, also generates a typed client — see [Client Generation](#client-generation) |
 | `ApiContractsClientConfigurationNameOverride` | *(empty)* | Override the generated configuration class name — see [Configuration Name Override](#configuration-name-override) |
 | `ApiContractsJsonLibrary` | `SystemTextJson` | Serialiser attributes on generated response DTOs — see [JSON Serialiser Attributes](#json-serialiser-attributes) |
+| `ApiContractsNSwagDtoFlags` | *(set by package)* | The complete set of NSwag flags used when generating response DTOs. Reference this in secondary generation targets (e.g. for a v2 swagger) instead of repeating the flags — see [Multiple API Versions](#multiple-api-versions) |
 
 ## Generated Requests
 
@@ -242,13 +243,10 @@ When an inner API exposes more than one version (e.g. `v1` and `v2`), each versi
   <MakeDir Directories="$(MSBuildThisFileDirectory)Generated\V2" />
 
   <!-- Step 1: Generate V2 response DTOs into their own namespace -->
-  <Exec Command="$(ApiContractsNSwagCommand) openapi2csclient
+  <Exec Command="$(ApiContractsNSwagCommand) $(ApiContractsNSwagDtoFlags)
       /input:&quot;$(MSBuildThisFileDirectory)..\MyApi\swagger.v2.json&quot;
       /namespace:SFA.DAS.MyApi.Contracts.V2.ApiResponses
-      /output:&quot;$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs&quot;
-      /generateClientClasses:false /generateDtoTypes:true /generateDefaultValues:true
-      /generateDataAnnotations:false /classStyle:POCO /generateNullableReferenceTypes:true
-      /jsonLibrary:$(_ApiContractsNSwagJsonLibrary)"
+      /output:&quot;$(MSBuildThisFileDirectory)Generated\V2\Responses.g.cs&quot;"
         WorkingDirectory="$(MSBuildProjectDirectory)" />
 
   <!-- Step 1b: Add STJ attributes when Both is requested -->
@@ -281,7 +279,7 @@ Generated/
     Requests.g.cs       → namespace SFA.DAS.MyApi.Contracts.V2                (v2)
 ```
 
-Both `$(ApiContractsNSwagCommand)` and `$(_ApiContractsNSwagJsonLibrary)` are set by the package at project load time, so the secondary target picks up the correct NSwag executable path and JSON library mode automatically.
+`$(ApiContractsNSwagCommand)` and `$(ApiContractsNSwagDtoFlags)` are both set by the package at project load time. `$(ApiContractsNSwagDtoFlags)` includes all fixed generation flags (DTO shape, nullable types, `DateTime` mapping, JSON library mode), so the secondary target stays in sync with the primary generation automatically.
 
 > The V2 generated files must exist on disk before the first build compiles them (the `Compile Include` glob is evaluated at project load time). Commit the initially-generated files to source control just as you would the V1 files.
 
