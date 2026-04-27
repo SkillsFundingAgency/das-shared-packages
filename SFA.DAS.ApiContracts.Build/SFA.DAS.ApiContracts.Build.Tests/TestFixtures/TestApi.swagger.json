@@ -349,6 +349,23 @@
         }
       }
     },
+    "/api/das-requests/{dasRequestId}/archive": {
+      "post": {
+        "operationId": "ArchiveDasRequest",
+        "parameters": [
+          {
+            "name": "dasRequestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": { "204": { "description": "No Content" } }
+      }
+    },
     "/api/das-requests/{dasRequestId}/items": {
       "get": {
         "tags": [

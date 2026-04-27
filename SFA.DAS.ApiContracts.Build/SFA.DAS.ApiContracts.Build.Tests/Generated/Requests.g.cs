@@ -90,6 +90,14 @@ public class PutDasRequestsByDasRequestIdValidateApiRequest : IPutApiRequest<Put
     public PutDasRequest Data { get; set; } = default!;
 }
 
+/// <summary>POST /api/das-requests/{dasRequestId}/archive</summary>
+public class PostDasRequestsByDasRequestIdArchiveApiRequest : IPostApiRequest
+{
+    public required System.Guid DasRequestId { get; init; }
+    public string PostUrl => $"api/das-requests/{DasRequestId}/archive";
+    public object Data { get; set; } = default!;
+}
+
 /// <summary>GET /api/das-requests/{dasRequestId}/items</summary>
 public record GetDasRequestsByDasRequestIdItemsApiRequest(System.Guid DasRequestId, List<DasRequestSortOrder>? Status, List<string>? Tags, int? Page) : IGetApiRequest
 {
