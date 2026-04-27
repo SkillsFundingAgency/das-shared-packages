@@ -592,14 +592,20 @@
                             {
                                 string dataType = GetDataType(op);
 
+                                // A POST with no requestBody at all uses the non-generic IPostApiRequest.
+                                // GetDataType returns "object" for both absent and unrecognised bodies, so
+                                // we inspect the swagger directly to tell them apart.
+                                bool isPostWithNoBody = httpMethod == "post" && !op.ContainsKey("requestBody");
+
                                 // For POST with a named schema type, implement non-generic IPostApiRequest
                                 // using a primary constructor so the caller passes the strongly-typed body
                                 // at construction time and Data is initialised directly from it.
                                 bool isPostWithNamedType = httpMethod == "post"
+                                    && !isPostWithNoBody
                                     && dataType != "object"
                                     && !dataType.Contains("<");
 
-                                string iface = isPostWithNamedType      ? "IPostApiRequest"
+                                string iface = (isPostWithNamedType || isPostWithNoBody) ? "IPostApiRequest"
                                              : httpMethod == "post"     ? "IPostApiRequest<"  + dataType + ">"
                                              : httpMethod == "put"      ? "IPutApiRequest<"   + dataType + ">"
                                              :                            "IPatchApiRequest<"  + dataType + ">";

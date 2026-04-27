@@ -119,6 +119,28 @@ public class WhenConstructingMutationRequestUrls
     }
 
     [Test]
+    public void PostDasRequestsByDasRequestIdArchive_ImplementsIPostApiRequest()
+    {
+        var request = new PostDasRequestsByDasRequestIdArchiveApiRequest { DasRequestId = Guid.NewGuid() };
+        request.Should().BeAssignableTo<IPostApiRequest>();
+    }
+
+    [Test]
+    public void PostDasRequestsByDasRequestIdArchive_DoesNotImplementGenericIPostApiRequestOfObject()
+    {
+        var request = new PostDasRequestsByDasRequestIdArchiveApiRequest { DasRequestId = Guid.NewGuid() };
+        request.Should().NotBeAssignableTo<IPostApiRequest<object>>();
+    }
+
+    [Test]
+    public void PostDasRequestsByDasRequestIdArchive_UrlInterpolatesDasRequestId()
+    {
+        var dasRequestId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+        var request = new PostDasRequestsByDasRequestIdArchiveApiRequest { DasRequestId = dasRequestId };
+        request.PostUrl.Should().Be($"api/das-requests/{dasRequestId}/archive");
+    }
+
+    [Test]
     public void PutDasRequestsByDasRequestId_IsClassNotRecord()
     {
         typeof(PutDasRequestsByDasRequestIdApiRequest).IsClass.Should().BeTrue();
