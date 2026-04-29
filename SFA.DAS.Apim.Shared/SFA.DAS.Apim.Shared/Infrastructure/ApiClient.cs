@@ -6,10 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.Apim.Shared.Infrastructure;
 
@@ -187,7 +185,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
 
     public async Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
     {
-        var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
+        var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
         var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
         requestMessage.AddVersion(request.Version);
         requestMessage.Content = stringContent;
