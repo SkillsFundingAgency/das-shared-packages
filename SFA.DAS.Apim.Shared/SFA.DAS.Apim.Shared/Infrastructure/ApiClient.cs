@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -139,10 +141,9 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
     [Obsolete("Use PatchWithResponseCode")]
     public async Task Patch<TData>(IPatchApiRequest<TData> request)
     {
-        var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
         var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
         requestMessage.AddVersion(request.Version);
-        requestMessage.Content = stringContent;
+        requestMessage.Content = request.Data != null ? JsonContent.Create(request.Data, new MediaTypeHeaderValue("application/json-patch+json"), JsonSerializationOptions) : null;
         await AddAuthenticationHeader(requestMessage);
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
@@ -153,11 +154,9 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
 
     public async Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
     {
-        var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
-
         var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
         requestMessage.AddVersion(request.Version);
-        requestMessage.Content = stringContent;
+        requestMessage.Content = request.Data != null ? JsonContent.Create(request.Data,  new MediaTypeHeaderValue("application/json-patch+json"), JsonSerializationOptions) : null;
         await AddAuthenticationHeader(requestMessage);
         requestMessage.AddCorrelationId();
 
