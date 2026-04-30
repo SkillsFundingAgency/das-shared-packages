@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -23,12 +23,14 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             {
                 var config = sp.GetRequiredService<IOptions<GovUkOidcConfiguration>>();
                 var govUkAuthenticationService = sp.GetRequiredService<IGovUkAuthenticationService>();
-                var coreIdentityJwtValidator = sp.GetRequiredService <ICoreIdentityJwtValidator>();
+                var coreIdentityJwtValidator = sp.GetRequiredService<ICoreIdentityJwtValidator>();
+                var signingCredentialsProvider = sp.GetRequiredService<ISigningCredentialsProvider>();
 
                 return new GovUkOpenIdConnectEvents(
                     config,
                     govUkAuthenticationService,
                     coreIdentityJwtValidator,
+                    signingCredentialsProvider,
                     signedOutRedirectUrl,
                     suspendedRedirectUrl);
             });

@@ -25,6 +25,13 @@ namespace SFA.DAS.GovUK.Auth.Configuration
             return $"{baseUrl}/".Replace("oidc", "identity");
         }
 
+        internal static string GetJarAudience(string baseUrl)
+        {
+            ArgumentNullException.ThrowIfNull(baseUrl);
+
+            return $"{baseUrl}/authorize";
+        }
+
         internal static string GetDidEndpoint(string baseUrl)
         {
             ArgumentNullException.ThrowIfNull(baseUrl);
