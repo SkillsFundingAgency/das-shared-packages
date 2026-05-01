@@ -26,7 +26,6 @@ namespace SFA.DAS.Employer.Shared.UI.TagHelpers
         [HtmlAttributeName("asp-external-relativeroute")]
         public string RelativeRoute { get; set; }
 
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             base.Process(context, output);
