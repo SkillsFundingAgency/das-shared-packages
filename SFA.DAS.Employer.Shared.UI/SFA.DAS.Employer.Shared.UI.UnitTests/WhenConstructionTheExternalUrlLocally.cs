@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Moq;
 using SFA.DAS.Employer.Shared.UI.Extensions;
 using SFA.DAS.Employer.Shared.UI.Models;
@@ -9,19 +8,22 @@ namespace SFA.DAS.Employer.Shared.UI.UnitTests;
 public class WhenConstructionTheExternalUrlLocally
 {
     private Mock<IOptions<EmployerSharedUIConfiguration>> _sharedUiConfiguration;
-    private Mock<IConfiguration> _configuration;
-    private ExternalUrlHelper _helper;
+    private ExternalUrlHelper? _helper;
 
     [SetUp]
     public void Arrange()
     {
         var config = new EmployerSharedUIConfiguration
         {
-            DashboardUrl = "https://test.local"
+            DashboardUrl = "https://test.local",
+            LocalPorts = new Dictionary<string, string>
+             {
+                 { "testDomain", "7123" }
+             },
+            ResourceEnvironmentName = "LOCAL"
         };
         _sharedUiConfiguration = new Mock<IOptions<EmployerSharedUIConfiguration>>();
         _sharedUiConfiguration.Setup(x => x.Value).Returns(config);
-        _configuration = new Mock<IConfiguration>();
     }
 
     [Test]
@@ -30,12 +32,8 @@ public class WhenConstructionTheExternalUrlLocally
         //Arrange
         var controller = "test-controller";
         var subDomain = "testDomain";
-        var localPort = "7123";
 
-        _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns("LOCAL");
-        _configuration.Setup(x => x.GetSection("LocalPorts")[subDomain]).Returns(localPort);
-
-        _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object, _configuration.Object);
+        _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object);
 
         //Act
         var actual = _helper.GenerateUrl(new UrlParameters
@@ -46,7 +44,7 @@ public class WhenConstructionTheExternalUrlLocally
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://localhost:{localPort}/{controller}", actual);
+        Assert.AreEqual($"https://testDomain.test.local/{controller}", actual);
     }
 
     [Test]
@@ -56,10 +54,7 @@ public class WhenConstructionTheExternalUrlLocally
         var controller = "test-controller";
         var subDomain = "testDomain";
 
-        _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns("LOCAL");
-        _configuration.Setup(x => x.GetSection("LocalPorts")[subDomain]).Returns("");
-
-        _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object, _configuration.Object);
+        _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object);
 
         //Act
         var actual = _helper.GenerateUrl(new UrlParameters

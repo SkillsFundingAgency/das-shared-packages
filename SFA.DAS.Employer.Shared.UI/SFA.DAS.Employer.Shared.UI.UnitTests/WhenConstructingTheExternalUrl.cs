@@ -16,11 +16,15 @@ public class WhenConstructingTheExternalUrl
     {
         var config = new EmployerSharedUIConfiguration
         {
-            DashboardUrl = "https://test.local"
+            DashboardUrl = "https://test.local",
+             LocalPorts = new Dictionary<string, string>
+             {
+                 { "testDomain", "1234" }
+             }
         };
         _sharedUiConfiguration = new Mock<IOptions<EmployerSharedUIConfiguration>>();
         _sharedUiConfiguration.Setup(x => x.Value).Returns(config);
-        _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object, Mock.Of<IConfiguration>());
+        _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object);
     }
 
     [TestCase("https://test.local")]
