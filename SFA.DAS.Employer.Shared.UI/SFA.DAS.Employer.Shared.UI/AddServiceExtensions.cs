@@ -12,13 +12,11 @@ namespace SFA.DAS.Employer.Shared.UI
     {
         public static void AddEmployerUiServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
-            if (!configuration.GetSection("EmployerSharedUIConfiguration").GetChildren().Any())
-            {
-                throw new Exception("Cannot find EmployerSharedUIConfiguration in configuration. Please add a section called EmployerSharedUIConfiguration with DashboardUrl property");
-            }
+           services.AddOptions<EmployerSharedUIConfiguration>()
+                .Bind(configuration.GetSection("EmployerSharedUIConfiguration"))
+                .Validate(config => !string.IsNullOrEmpty(config.DashboardUrl), "DashboardUrl must be supplied in configuration")
+                .ValidateOnStart();
 
-            services.Configure<EmployerSharedUIConfiguration>(configuration.GetSection("EmployerSharedUIConfiguration"));
-            services.AddSingleton((IServiceProvider cfg) => cfg.GetService<IOptions<EmployerSharedUIConfiguration>>().Value);
             services.AddSingleton<IExternalUrlHelper, ExternalUrlHelper>();
         }
     }
