@@ -6,8 +6,8 @@ namespace SFA.DAS.Employer.Shared.UI.Models
     {
         public string DashboardUrl { get; set; }
 
-        public Dictionary<string, string> LocalPorts { get; set; }
+        public Dictionary<string, string> LocalPorts { get; set; } = new Dictionary<string, string>();
 
-        public string ResourceEnvironmentName { get; set; }
+        public string ResourceEnvironmentName { get; set; } = string.Empty;
     }
 }
