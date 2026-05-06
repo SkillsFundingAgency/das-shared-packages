@@ -74,7 +74,7 @@ public class ExtendedAnchorTagHelperTests
     public void Process_CallsGenerateUrl_WithCorrectParameters()
     {
         //Arrange
-        UrlParameters parameters = null;
+        UrlParameters? parameters = null;
 
         _htmlGenerator.Setup(x => x.GenerateActionLink(
           It.IsAny<Microsoft.AspNetCore.Mvc.Rendering.ViewContext>(),
