@@ -15,6 +15,7 @@ namespace SFA.DAS.Employer.Shared.UI.Extensions
     {
         private readonly EmployerSharedUIConfiguration _options;
         private readonly bool _isLocal;
+        private const char _slash = '/';
 
         public ExternalUrlHelper(IOptions<EmployerSharedUIConfiguration> options)
         {
@@ -72,14 +73,14 @@ namespace SFA.DAS.Employer.Shared.UI.Extensions
                 return $"{urlString.ToString().TrimEnd('/')}{urlParameters.QueryString}";
             }
 
-            return urlString.ToString().TrimEnd('/');
+            return urlString.ToString().TrimEnd(_slash);
         }
 
         private static string FormatBaseUrl(string url, string subDomain = "", string folder = "")
         {
-            var returnUrl = url.EndsWith("/")
+            var returnUrl = url.EndsWith(_slash.ToString())
                 ? url
-                : url + "/";
+                : $"{url}{_slash}";
 
             if (!string.IsNullOrEmpty(subDomain))
             {
