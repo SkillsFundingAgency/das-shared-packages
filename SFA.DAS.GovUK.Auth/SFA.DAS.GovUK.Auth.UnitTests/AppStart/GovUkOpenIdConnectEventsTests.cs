@@ -298,7 +298,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         }
 
 
-        private RedirectContext BuildRedirectContext(
+        private static RedirectContext BuildRedirectContext(
             AuthenticationProperties? properties = null,
             OpenIdConnectMessage? protocolMessage = null,
             ISecureDataFormat<AuthenticationProperties>? stateDataFormat = null,
