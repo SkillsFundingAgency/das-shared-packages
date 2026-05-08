@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Newtonsoft.Json.Linq;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Models;
@@ -19,6 +21,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
         private readonly GovUkOidcConfiguration _config;
         private readonly IGovUkAuthenticationService _govUkAuthenticationService;
         private readonly ICoreIdentityJwtValidator _jwtValidator;
+        private readonly ISigningCredentialsProvider _signingCredentialsProvider;
         private readonly string _signedOutRedirectUrl;
         private readonly string _suspendedRedirectUrl;
 
@@ -26,12 +29,14 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             IOptions<GovUkOidcConfiguration> config,
             IGovUkAuthenticationService govUkAuthenticationService,
             ICoreIdentityJwtValidator coreIdentityJwtValidator,
+            ISigningCredentialsProvider signingCredentialsProvider,
             string signedOutRedirectUrl,
             string suspendedRedirectUrl)
         {
             _config = config.Value;
             _govUkAuthenticationService = govUkAuthenticationService;
             _jwtValidator = coreIdentityJwtValidator;
+            _signingCredentialsProvider = signingCredentialsProvider;
             _signedOutRedirectUrl = signedOutRedirectUrl;
             _suspendedRedirectUrl = suspendedRedirectUrl;
         }
@@ -90,12 +95,60 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 context.ProtocolMessage.Parameters.Add("claims", JsonSerializer.Serialize(claims));
             }
 
-            if (context.ProtocolMessage.State == null)
+            var jarState = context.Options.StateDataFormat.Protect(
+                new AuthenticationProperties(new Dictionary<string, string>(context.Properties.Items))
             {
-                context.ProtocolMessage.State = context.Options.StateDataFormat.Protect(context.Properties);
+                Items =
+                {
+                    [OpenIdConnectDefaults.RedirectUriForCodePropertiesKey] = context.ProtocolMessage.RedirectUri
+                }
+            });
+
+            context.ProtocolMessage.Parameters["request"] = CreateJarRequestObject(context, jarState);
+            return Task.CompletedTask;
+        }
+
+        private string CreateJarRequestObject(RedirectContext context, string state)
+        {
+            var msg = context.ProtocolMessage;
+            var now = DateTime.UtcNow;
+
+            var payload = new JwtPayload(
+                issuer: _config.ClientId,
+                audience: OneLoginUrlHelper.GetJarAudience(_config.BaseUrl),
+                claims: null,
+                notBefore: now,
+                expires: now.AddMinutes(5),
+                issuedAt: now)
+            {
+                ["response_type"] = msg.ResponseType,
+                ["client_id"] = msg.ClientId,
+                ["redirect_uri"] = msg.RedirectUri,
+                ["scope"] = msg.Scope,
+                ["state"] = state,
+                ["nonce"] = msg.Nonce,
+                ["ui_locales"] = "en"
+            };
+
+            if (msg.Parameters.TryGetValue("vtr", out var vtrJson))
+            {
+                payload["vtr"] = JArray.Parse(vtrJson);
+            }
+            if (msg.Parameters.TryGetValue("claims", out var claimsJson))
+            {
+                payload["claims"] = JObject.Parse(claimsJson);
+            }
+            if (msg.Parameters.TryGetValue("code_challenge", out var codeChallenge))
+            {
+                payload["code_challenge"] = codeChallenge;
+            }
+            if (msg.Parameters.TryGetValue("code_challenge_method", out var codeChallengeMethod))
+            {
+                payload["code_challenge_method"] = codeChallengeMethod;
             }
 
-            return Task.CompletedTask;
+            var header = new JwtHeader(_signingCredentialsProvider.GetSigningCredentials());
+            return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(header, payload));
         }
 
         public override async Task TokenResponseReceived(TokenResponseReceivedContext context)
