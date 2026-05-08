@@ -38,11 +38,11 @@ public record DeleteDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId
 }
 
 /// <summary>PATCH /api/das-requests/{dasRequestId}</summary>
-public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.Collections.Generic.List<string>>
+public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<object>
 {
     public required System.Guid DasRequestId { get; init; }
     public string PatchUrl => $"api/das-requests/{DasRequestId}";
-    public System.Collections.Generic.List<string> Data { get; set; } = default!;
+    public object Data { get; set; } = default!;
     public string Version => "2.0";
 }
 

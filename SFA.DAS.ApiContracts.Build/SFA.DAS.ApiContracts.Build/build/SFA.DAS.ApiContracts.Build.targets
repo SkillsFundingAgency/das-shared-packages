@@ -187,6 +187,41 @@
                     return "object";
                 }
 
+                // For PATCH operations: if the request body is a named $ref use it directly;
+                // otherwise (inline array = JsonPatchDocument<T>) infer the type from the 200 response schema.
+                string GetPatchDataType(Dictionary<string,object> op)
+                {
+                    string bodyType = GetDataType(op);
+                    if (bodyType != "object" && !bodyType.StartsWith("System.Collections.Generic.List<"))
+                        return bodyType;
+
+                    if (op == null || !op.ContainsKey("responses")) return "object";
+                    var responses = AsObj(op["responses"]);
+                    if (responses == null || !responses.ContainsKey("200")) return "object";
+                    var responseObj = AsObj(responses["200"]);
+                    if (responseObj == null) return "object";
+                    var content = responseObj.ContainsKey("content") ? AsObj(responseObj["content"]) : null;
+                    if (content == null) return "object";
+
+                    Dictionary<string,object> media = null;
+                    if (content.ContainsKey("application/json"))
+                        media = AsObj(content["application/json"]);
+                    else foreach (var kv in content) { media = AsObj(kv.Value); break; }
+                    if (media == null) return "object";
+
+                    var schema = media.ContainsKey("schema") ? AsObj(media["schema"]) : null;
+                    if (schema == null) return "object";
+
+                    if (schema.ContainsKey("$ref"))
+                    {
+                        string refStr = AsStr(schema["$ref"]);
+                        int lastSlash = refStr.LastIndexOf('/');
+                        return lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                    }
+
+                    return "object";
+                }
+
                 // Builds the XML doc return annotation for an operation from its 2xx response schema.
                 // Tries "200" first, then the first 2xx status code found.
                 // Named $ref types get a <see cref="..."/> link; primitives and List<T> are plain text.
@@ -590,7 +625,7 @@
                             }
                             else
                             {
-                                string dataType = GetDataType(op);
+                                string dataType = httpMethod == "patch" ? GetPatchDataType(op) : GetDataType(op);
 
                                 // A POST with no requestBody at all uses the non-generic IPostApiRequest.
                                 // GetDataType returns "object" for both absent and unrecognised bodies, so

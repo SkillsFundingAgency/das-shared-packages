@@ -34,12 +34,12 @@ public record DeleteDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId
     public string DeleteUrl => $"api/das-requests/{DasRequestId}";
 }
 
-/// <summary>PATCH /api/das-requests/{dasRequestId}</summary>
-public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<System.Collections.Generic.List<string>>
+/// <summary>PATCH /api/das-requests/{dasRequestId} &#x2192; <see cref="DasRequestResponse"/></summary>
+public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<DasRequestResponse>
 {
     public required System.Guid DasRequestId { get; init; }
     public string PatchUrl => $"api/das-requests/{DasRequestId}";
-    public System.Collections.Generic.List<string> Data { get; set; } = default!;
+    public DasRequestResponse Data { get; set; } = default!;
 }
 
 /// <summary>GET /api/das-requests &#x2192; List&lt;<see cref="DasRequestResponse"/>&gt;</summary>
