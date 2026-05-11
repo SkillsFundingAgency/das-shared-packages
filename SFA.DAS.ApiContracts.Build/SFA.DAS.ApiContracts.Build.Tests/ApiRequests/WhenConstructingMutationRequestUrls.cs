@@ -48,7 +48,7 @@ public class WhenConstructingMutationRequestUrls
     public void PatchDasRequestsByDasRequestId_ImplementsIPatchApiRequest()
     {
         var request = new PatchDasRequestsByDasRequestIdApiRequest { DasRequestId = Guid.NewGuid() };
-        request.Should().BeAssignableTo<IPatchApiRequest<DasRequestResponse>>();
+        request.Should().BeAssignableTo<IPatchApiRequest<Microsoft.AspNetCore.JsonPatch.SystemTextJson.JsonPatchDocument<DasRequestResponse>>>();
     }
 
     [Test]
@@ -60,14 +60,11 @@ public class WhenConstructingMutationRequestUrls
     }
 
     [Test]
-    public void PatchDasRequestsByDasRequestId_DataTypeDerivedFromResponseSchema()
+    public void PatchDasRequestsByDasRequestId_DataTypeIsJsonPatchDocumentOfResponseType()
     {
-        var request = new PatchDasRequestsByDasRequestIdApiRequest
-        {
-            DasRequestId = Guid.NewGuid(),
-            Data = new DasRequestResponse()
-        };
-        request.Data.Should().BeOfType<DasRequestResponse>();
+        typeof(PatchDasRequestsByDasRequestIdApiRequest)
+            .GetProperty("Data")!.PropertyType
+            .Should().Be(typeof(Microsoft.AspNetCore.JsonPatch.SystemTextJson.JsonPatchDocument<DasRequestResponse>));
     }
 
     [Test]
