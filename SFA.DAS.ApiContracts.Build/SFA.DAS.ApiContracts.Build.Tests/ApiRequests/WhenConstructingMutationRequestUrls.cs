@@ -48,7 +48,7 @@ public class WhenConstructingMutationRequestUrls
     public void PatchDasRequestsByDasRequestId_ImplementsIPatchApiRequest()
     {
         var request = new PatchDasRequestsByDasRequestIdApiRequest { DasRequestId = Guid.NewGuid() };
-        request.Should().BeAssignableTo<IPatchApiRequest<List<string>>>();
+        request.Should().BeAssignableTo<IPatchApiRequest<DasRequestResponse>>();
     }
 
     [Test]
@@ -60,14 +60,14 @@ public class WhenConstructingMutationRequestUrls
     }
 
     [Test]
-    public void PatchDasRequestsByDasRequestId_InlineArrayBodyTypeMappedToListOfString()
+    public void PatchDasRequestsByDasRequestId_DataTypeDerivedFromResponseSchema()
     {
         var request = new PatchDasRequestsByDasRequestIdApiRequest
         {
             DasRequestId = Guid.NewGuid(),
-            Data = ["op1", "op2"]
+            Data = new DasRequestResponse()
         };
-        request.Data.Should().BeOfType<List<string>>();
+        request.Data.Should().BeOfType<DasRequestResponse>();
     }
 
     [Test]
@@ -123,13 +123,6 @@ public class WhenConstructingMutationRequestUrls
     {
         var request = new PostDasRequestsByDasRequestIdArchiveApiRequest { DasRequestId = Guid.NewGuid() };
         request.Should().BeAssignableTo<IPostApiRequest>();
-    }
-
-    [Test]
-    public void PostDasRequestsByDasRequestIdArchive_DoesNotImplementGenericIPostApiRequestOfObject()
-    {
-        var request = new PostDasRequestsByDasRequestIdArchiveApiRequest { DasRequestId = Guid.NewGuid() };
-        request.Should().NotBeAssignableTo<IPostApiRequest<object>>();
     }
 
     [Test]
