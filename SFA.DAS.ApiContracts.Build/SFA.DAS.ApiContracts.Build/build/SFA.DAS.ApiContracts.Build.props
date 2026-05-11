@@ -71,6 +71,7 @@
         <Compile Remove="$(ApiContractsOutputDirectory)\**\*.g.cs" />
     </ItemGroup>
 
+
     <PropertyGroup>
         <!--
             Resolved NSwag executable path.

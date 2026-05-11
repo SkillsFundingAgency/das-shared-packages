@@ -187,13 +187,15 @@
                     return "object";
                 }
 
-                // For PATCH operations: if the request body is a named $ref use it directly;
-                // otherwise (inline array = JsonPatchDocument<T>) infer the type from the 200 response schema.
+                // For PATCH operations: wrap the inferred type in JsonPatchDocument<T>.
+                // If the request body is a named $ref, use that type.
+                // Otherwise infer the type from the 200 response schema.
+                // Always wraps a named type in JsonPatchDocument<T>; falls back to "object".
                 string GetPatchDataType(Dictionary<string,object> op)
                 {
                     string bodyType = GetDataType(op);
                     if (bodyType != "object" && !bodyType.StartsWith("System.Collections.Generic.List<"))
-                        return bodyType;
+                        return "Microsoft.AspNetCore.JsonPatch.SystemTextJson.JsonPatchDocument<" + bodyType + ">";
 
                     if (op == null || !op.ContainsKey("responses")) return "object";
                     var responses = AsObj(op["responses"]);
@@ -216,7 +218,8 @@
                     {
                         string refStr = AsStr(schema["$ref"]);
                         int lastSlash = refStr.LastIndexOf('/');
-                        return lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                        string typeName = lastSlash >= 0 ? refStr.Substring(lastSlash + 1) : refStr;
+                        return "Microsoft.AspNetCore.JsonPatch.SystemTextJson.JsonPatchDocument<" + typeName + ">";
                     }
 
                     return "object";

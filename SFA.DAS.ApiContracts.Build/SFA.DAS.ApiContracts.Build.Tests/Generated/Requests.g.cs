@@ -35,11 +35,11 @@ public record DeleteDasRequestsByDasRequestIdApiRequest(System.Guid DasRequestId
 }
 
 /// <summary>PATCH /api/das-requests/{dasRequestId} &#x2192; <see cref="DasRequestResponse"/></summary>
-public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<DasRequestResponse>
+public class PatchDasRequestsByDasRequestIdApiRequest : IPatchApiRequest<Microsoft.AspNetCore.JsonPatch.SystemTextJson.JsonPatchDocument<DasRequestResponse>>
 {
     public required System.Guid DasRequestId { get; init; }
     public string PatchUrl => $"api/das-requests/{DasRequestId}";
-    public DasRequestResponse Data { get; set; } = default!;
+    public Microsoft.AspNetCore.JsonPatch.SystemTextJson.JsonPatchDocument<DasRequestResponse> Data { get; set; } = default!;
 }
 
 /// <summary>GET /api/das-requests &#x2192; List&lt;<see cref="DasRequestResponse"/>&gt;</summary>

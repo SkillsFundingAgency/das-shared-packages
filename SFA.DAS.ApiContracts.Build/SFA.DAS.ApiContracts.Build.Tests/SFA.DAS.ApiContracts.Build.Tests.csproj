@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="7.*" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
     <PackageReference Include="NSwag.MSBuild" Version="14.2.0">
