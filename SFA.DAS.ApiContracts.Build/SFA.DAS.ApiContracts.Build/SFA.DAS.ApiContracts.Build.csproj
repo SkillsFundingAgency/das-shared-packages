@@ -29,6 +29,16 @@
         -->
         <PackageReference Include="NSwag.MSBuild" Version="14.2.0" />
         <!--
+            Generated PATCH request wrappers implement IPatchApiRequest<JsonPatchDocument<T>>.
+            Declared as a transitive dep so consuming contracts projects get it automatically.
+        -->
+        <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.*" />
+        <!--
+            Generated request wrappers implement IGetApiRequest, IPostApiRequest etc. from this package.
+            Declared as a transitive dep so consuming contracts projects get it automatically.
+        -->
+        <PackageReference Include="SFA.DAS.Apim.Shared" Version="*" />
+        <!--
             Microsoft.Extensions.ApiDescription.Server enables swagger.json generation
             at build time on the inner API project (no running server required).
             Declared here as a transitive dep so inner API projects get it automatically.

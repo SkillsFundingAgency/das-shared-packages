@@ -71,13 +71,6 @@
         <Compile Remove="$(ApiContractsOutputDirectory)\**\*.g.cs" />
     </ItemGroup>
 
-    <!--
-        Generated PATCH request wrappers implement IPatchApiRequest<JsonPatchDocument<T>>,
-        so consuming projects need this package available at compile time.
-    -->
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.*" />
-    </ItemGroup>
 
     <PropertyGroup>
         <!--
