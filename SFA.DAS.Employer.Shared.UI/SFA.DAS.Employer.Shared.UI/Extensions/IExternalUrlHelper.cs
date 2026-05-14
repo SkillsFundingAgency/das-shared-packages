@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Employer.Shared.UI.Models;
@@ -86,12 +87,20 @@ namespace SFA.DAS.Employer.Shared.UI.Extensions
             {
                 var uri = new Uri(returnUrl);
 
-                var hostparts = uri.Host.Split('.');
-                hostparts[0] = subDomain;
+                var hostparts = uri.Host.Split('.').ToList();
+
+                if (hostparts.Count >= 3)
+                {
+                    if (!hostparts[0].Contains("-"))
+                    {
+                        hostparts.RemoveAt(0);
+                    }
+                    hostparts.Insert(0, subDomain);
+                }               
 
                 var updatedhost = string.Join(".", hostparts);
 
-                returnUrl = $"{uri.Scheme}://{updatedhost}";
+                returnUrl = $"{uri.Scheme}://{updatedhost}/";
             }
 
             if (!string.IsNullOrEmpty(folder))

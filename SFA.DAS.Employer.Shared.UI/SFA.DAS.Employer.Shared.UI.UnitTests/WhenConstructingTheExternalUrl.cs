@@ -16,7 +16,7 @@ public class WhenConstructingTheExternalUrl
     {
         var config = new EmployerSharedUIConfiguration
         {
-            DashboardUrl = "https://test.local",
+            DashboardUrl = "https://accounts.test-abc.app.local",
              LocalPorts = new Dictionary<string, string>
              {
                  { "testDomain", "1234" }
@@ -27,13 +27,25 @@ public class WhenConstructingTheExternalUrl
         _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object);
     }
 
-    [TestCase("https://test.local")]
-    [TestCase("https://test.local/")]
+
+    [TestCase("https://test-abc.app.local")]
     public void Then_The_Url_Is_Built_From_Action_Controller_And_External_Url(string expectedBaseUrl)
     {
         //Arrange
         var action = "test-action";
         var controller = "test-controller";
+
+        var config = new EmployerSharedUIConfiguration
+        {
+            DashboardUrl = expectedBaseUrl,
+            LocalPorts = new Dictionary<string, string>
+             {
+                 { "testDomain", "1234" }
+             }
+        };
+        _sharedUiConfiguration = new Mock<IOptions<EmployerSharedUIConfiguration>>();
+        _sharedUiConfiguration.Setup(x => x.Value).Returns(config);
+       var _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object);
 
         //Act
         var actual = _helper.GenerateUrl(new UrlParameters
@@ -45,7 +57,7 @@ public class WhenConstructingTheExternalUrl
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://test.local/123/{controller}/{action}", actual);
+        Assert.AreEqual($"{expectedBaseUrl}/123/{controller}/{action}", actual);
     }
 
     [Test]
@@ -66,7 +78,7 @@ public class WhenConstructingTheExternalUrl
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://test.local/{id}/{controller}/{action}", actual);
+        Assert.AreEqual($"https://accounts.test-abc.app.local/{id}/{controller}/{action}", actual);
     }
 
     [Test]
@@ -85,7 +97,7 @@ public class WhenConstructingTheExternalUrl
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://test.local/{id}/{controller}", actual);
+        Assert.AreEqual($"https://accounts.test-abc.app.local/{id}/{controller}", actual);
     }
 
     [Test]
@@ -102,7 +114,7 @@ public class WhenConstructingTheExternalUrl
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://test.local/{controller}", actual);
+        Assert.AreEqual($"https://accounts.test-abc.app.local/{controller}", actual);
     }
 
     [Test]
@@ -118,10 +130,42 @@ public class WhenConstructingTheExternalUrl
             Controller = controller,
             SubDomain = subDomain
         });
+            
+        //Assert
+        Assert.IsNotNull(actual);
+        Assert.AreEqual($"https://{subDomain}.test-abc.app.local/{controller}", actual);
+    }
+
+
+    [TestCase("https://test-abc.app.local")]
+    public void Then_The_SubDomain_NotNested_Is_Set_If_Passed(string expectedBaseUrl)
+    {
+        //Arrange
+        var controller = "test-controller";
+        var subDomain = "testDomain";
+
+        var config = new EmployerSharedUIConfiguration
+        {
+            DashboardUrl = expectedBaseUrl,
+            LocalPorts = new Dictionary<string, string>
+             {
+                 { "testDomain", "1234" }
+             }
+        };
+        _sharedUiConfiguration = new Mock<IOptions<EmployerSharedUIConfiguration>>();
+        _sharedUiConfiguration.Setup(x => x.Value).Returns(config);
+        var _helper = new ExternalUrlHelper(_sharedUiConfiguration.Object);
+
+        //Act
+        var actual = _helper.GenerateUrl(new UrlParameters
+        {
+            Controller = controller,
+            SubDomain = subDomain
+        });
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://{subDomain}.test.local/{controller}", actual);
+        Assert.AreEqual($"https://{subDomain}.test-abc.app.local/{controller}", actual);
     }
 
     [Test]
@@ -142,7 +186,7 @@ public class WhenConstructingTheExternalUrl
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://{subDomain}.test.local/{controller}?test=12345", actual);
+        Assert.AreEqual($"https://{subDomain}.test-abc.app.local/{controller}?test=12345", actual);
     }
 
     [Test]
@@ -163,6 +207,6 @@ public class WhenConstructingTheExternalUrl
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://test.local/{relativeRoute}", actual);
+        Assert.AreEqual($"https://accounts.test-abc.app.local/{relativeRoute}", actual);
     }
 }

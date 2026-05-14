@@ -15,7 +15,7 @@ public class WhenConstructionTheExternalUrlLocally
     {
         var config = new EmployerSharedUIConfiguration
         {
-            DashboardUrl = "https://test.local",
+            DashboardUrl = "https://test-eas.local.com",
             LocalPorts = new Dictionary<string, string>
              {
                  { "testDomain", "7123" }
@@ -44,7 +44,7 @@ public class WhenConstructionTheExternalUrlLocally
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://testDomain.test.local/{controller}", actual);
+        Assert.AreEqual($"https://testDomain.test-eas.local.com/{controller}", actual);
     }
 
     [Test]
@@ -65,6 +65,6 @@ public class WhenConstructionTheExternalUrlLocally
 
         //Assert
         Assert.IsNotNull(actual);
-        Assert.AreEqual($"https://{subDomain}.test.local/{controller}", actual);
+        Assert.AreEqual($"https://{subDomain}.test-eas.local.com/{controller}", actual);
     }
 }
