@@ -84,7 +84,14 @@ namespace SFA.DAS.Employer.Shared.UI.Extensions
 
             if (!string.IsNullOrEmpty(subDomain))
             {
-                returnUrl = returnUrl.Replace("https://", $"https://{subDomain}.");
+                var uri = new Uri(returnUrl);
+
+                var hostparts = uri.Host.Split('.');
+                hostparts[0] = subDomain;
+
+                var updatedhost = string.Join(".", hostparts);
+
+                returnUrl = $"{uri.Scheme}://{updatedhost}";
             }
 
             if (!string.IsNullOrEmpty(folder))
