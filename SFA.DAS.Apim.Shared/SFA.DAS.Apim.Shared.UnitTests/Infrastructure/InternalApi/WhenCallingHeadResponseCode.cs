@@ -36,7 +36,7 @@ public class WhenCallingHeadResponseCode
         var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, azureClientCredentialHelper.Object);
 
         //Act
-        var actualResult = await actual.HeadResponseCode(headTestRequest);
+        var actualResult = await actual.Head(headTestRequest);
 
         //Assert
         httpMessageHandler.Protected()
@@ -77,7 +77,7 @@ public class WhenCallingHeadResponseCode
         var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, configuration, Mock.Of<IAzureClientCredentialHelper>());
 
         //Act
-        await actual.HeadResponseCode(headTestRequest);
+        await actual.Head(headTestRequest);
 
         //Assert
         httpMessageHandler.Protected()
