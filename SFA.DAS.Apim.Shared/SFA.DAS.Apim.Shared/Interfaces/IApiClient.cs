@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.Apim.Shared.Models;
 
@@ -14,6 +15,7 @@ public interface IApiClient<T> : IGetApiClient<T>
     [Obsolete("Use PostWithResponseCode")]
     Task Post<TData>(IPostApiRequest<TData> request);
     Task Delete(IDeleteApiRequest request);
+    Task<HttpStatusCode> Head(IHeadApiRequest request);
 
     Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false);
 

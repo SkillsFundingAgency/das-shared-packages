@@ -109,6 +109,18 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         await response.EnsureSuccessStatusCodeIncludeContentInException();
     }
 
+    public async Task<HttpStatusCode> Head(IHeadApiRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Head, request.HeadUrl);
+        requestMessage.AddVersion(request.Version);
+        await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
+
+        var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+
+        return response.StatusCode;
+    }
+
     public async Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
