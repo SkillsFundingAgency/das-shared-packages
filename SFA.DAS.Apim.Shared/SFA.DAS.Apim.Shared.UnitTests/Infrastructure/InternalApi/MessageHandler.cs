@@ -30,6 +30,10 @@ namespace SFA.DAS.Apim.Shared.UnitTests.Infrastructure.InternalApi
             {
                 method = HttpMethod.Put;
             }
+            else if (httpMethod.Equals("head", StringComparison.CurrentCultureIgnoreCase))
+            {
+                method = HttpMethod.Head;
+            }
 
             var httpMessageHandler = new Mock<HttpMessageHandler>();
             httpMessageHandler.Protected()
