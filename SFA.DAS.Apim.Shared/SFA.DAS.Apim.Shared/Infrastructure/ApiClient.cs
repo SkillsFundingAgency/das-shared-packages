@@ -109,7 +109,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         await response.EnsureSuccessStatusCodeIncludeContentInException();
     }
 
-    public async Task<HttpStatusCode> HeadResponseCode(IHeadApiRequest request)
+    public async Task<HttpStatusCode> Head(IHeadApiRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Head, request.HeadUrl);
         requestMessage.AddVersion(request.Version);
