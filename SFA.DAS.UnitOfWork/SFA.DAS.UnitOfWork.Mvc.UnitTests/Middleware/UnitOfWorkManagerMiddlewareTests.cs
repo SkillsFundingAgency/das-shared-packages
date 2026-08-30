@@ -1,5 +1,4 @@
-﻿#if NETCOREAPP2_0
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -17,25 +16,25 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests.Middleware
         [Test]
         public Task InvokeAsync_WhenInvokingMiddleware_ThenShouldBeginUnitOfWorkManagerBeforeNextTask()
         {
-            return RunAsync(f => f.InvokeAsync(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once));
+            return TestAsync(f => f.InvokeAsync(), f => f.UnitOfWorkManager.Verify(m => m.BeginAsync(), Times.Once));
         }
 
         [Test]
         public Task InvokeAsync_WhenInvokingMiddleware_ThenShouldEndUnitOfWorkManagerAfterNextTask()
         {
-            return RunAsync(f => f.InvokeAsync(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once));
+            return TestAsync(f => f.InvokeAsync(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(null), Times.Once));
         }
 
         [Test]
         public Task InvokeAsync_WhenInvokingMiddlewareAndAnExceptionIsThrown_ThenShouldEndUnitOfWorkManagerWithException()
         {
-            return RunAsync(f => f.SetException(), f => f.InvokeAsyncAndSwallowException(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
+            return TestAsync(f => f.SetException(), f => f.InvokeAsyncAndSwallowException(), f => f.UnitOfWorkManager.Verify(m => m.EndAsync(f.Exception), Times.Once));
         }
 
         [Test]
         public Task InvokeAsync_WhenInvokingMiddlewareAndAnExceptionIsThrown_ThenShouldThrowException()
         {
-            return RunAsync(f => f.SetException(), f => f.InvokeAsync(), (f, a) => a.Should().Throw<Exception>());
+            return TestExceptionAsync(f => Task.FromResult(f.SetException()), f => f.InvokeAsync(), (f, r) => Assert.ThrowsAsync<Exception>(() => r()));
         }
     }
 
@@ -96,4 +95,3 @@ namespace SFA.DAS.UnitOfWork.Mvc.UnitTests.Middleware
         }
     }
 }
-#endif

@@ -15,13 +15,13 @@ namespace SFA.DAS.UnitOfWork.UnitTests.Pipeline
         [Test]
         public Task CommitAsync_WhenCommittingUnitsOfWork_ThenShouldCommitUnitsOfWork()
         {
-            return RunAsync(f => f.UnitsOfWork.Select(u => u.Object).CommitAsync(), f => f.UnitsOfWork.ForEach(u => u.Verify(u2 => u2.CommitAsync(It.IsAny<Func<Task>>()), Times.Once)));
+            return TestAsync(f => f.UnitsOfWork.Select(u => u.Object).CommitAsync(), f => f.UnitsOfWork.ForEach(u => u.Verify(u2 => u2.CommitAsync(It.IsAny<Func<Task>>()), Times.Once)));
         }
 
         [Test]
         public Task CommitAsync_WhenCommittingUnitsOfWorkWithNextTask_ThenShouldInvokeNextTaskAfterCommittingUnitsOfWork()
         {
-            return RunAsync(f => f.UnitsOfWork.Select(u => u.Object).CommitAsync(f.NextTask.Object), f => f.NextTask.Verify(c => c(), Times.Once()));
+            return TestAsync(f => f.UnitsOfWork.Select(u => u.Object).CommitAsync(f.NextTask.Object), f => f.NextTask.Verify(c => c(), Times.Once()));
         }
     }
 

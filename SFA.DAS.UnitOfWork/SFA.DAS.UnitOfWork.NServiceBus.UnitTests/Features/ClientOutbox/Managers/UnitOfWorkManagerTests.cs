@@ -20,49 +20,49 @@ namespace SFA.DAS.UnitOfWork.NServiceBus.UnitTests.Features.ClientOutbox.Manager
         [Test]
         public Task BeginAsync_WhenBeginning_ThenShouldBeginTransaction()
         {
-            return RunAsync(f => f.BeginAsync(), f => f.ClientOutboxStorage.Verify(o => o.BeginTransactionAsync(), Times.Once));
+            return TestAsync(f => f.BeginAsync(), f => f.ClientOutboxStorage.Verify(o => o.BeginTransactionAsync(), Times.Once));
         }
 
         [Test]
         public Task BeginAsync_WhenBeginning_ThenShouldSetUnitOfWorkContextTransaction()
         {
-            return RunAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.ClientOutboxTransaction.Object), Times.Once));
+            return TestAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.ClientOutboxTransaction.Object), Times.Once));
         }
 
         [Test]
         public Task BeginAsync_WhenBeginning_ThenShouldSetUnitOfWorkContextSynchronizedStorageSession()
         {
-            return RunAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.SynchronizedStorageSession.Object)));
+            return TestAsync(f => f.BeginAsync(), f => f.UnitOfWorkContext.Verify(c => c.Set(f.SynchronizedStorageSession.Object)));
         }
 
         [Test]
         public Task EndAsync_WhenEnding_ThenShouldCommitUnitsOfWork()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsync(), f => f.UnitsOfWork.ForEach(u => u.Verify(u2 => u2.CommitAsync(It.IsAny<Func<Task>>()), Times.Once)));
+            return TestAsync(f => f.BeginAsyncThenEndAsync(), f => f.UnitsOfWork.ForEach(u => u.Verify(u2 => u2.CommitAsync(It.IsAny<Func<Task>>()), Times.Once)));
         }
 
         [Test]
         public Task EndAsync_WhenEnding_ThenShouldCommitTransactionAfterCommittingUnitsOfWork()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsync(), f => f.ClientOutboxTransaction.Verify(t => t.CommitAsync()));
+            return TestAsync(f => f.BeginAsyncThenEndAsync(), f => f.ClientOutboxTransaction.Verify(t => t.CommitAsync()));
         }
 
         [Test]
         public Task EndAsync_WhenEndingAfterAnException_ThenShouldNotCommitTransaction()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.ClientOutboxTransaction.Verify(t => t.CommitAsync(), Times.Never));
+            return TestAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.ClientOutboxTransaction.Verify(t => t.CommitAsync(), Times.Never));
         }
 
         [Test]
         public Task EndAsync_WhenEnding_ThenShouldDisposeTransaction()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsync(), f => f.ClientOutboxTransaction.Verify(t => t.Dispose(), Times.Once));
+            return TestAsync(f => f.BeginAsyncThenEndAsync(), f => f.ClientOutboxTransaction.Verify(t => t.Dispose(), Times.Once));
         }
 
         [Test]
         public Task EndAsync_WhenEndingAfterAnException_ThenShouldDisposeTransaction()
         {
-            return RunAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.ClientOutboxTransaction.Verify(t => t.Dispose(), Times.Once));
+            return TestAsync(f => f.BeginAsyncThenEndAsyncAfterException(), f => f.ClientOutboxTransaction.Verify(t => t.Dispose(), Times.Once));
         }
     }
 
