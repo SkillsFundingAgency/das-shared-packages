@@ -10,9 +10,9 @@ namespace SFA.DAS.NServiceBus.Features.ClientOutbox.Data
     public interface IClientOutboxStorage
     {
         Task<IClientOutboxTransaction> BeginTransactionAsync();
-        Task<ClientOutboxMessage> GetAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession);
+        Task<ClientOutboxMessage> GetAsync(Guid messageId, ISynchronizedStorageSession synchronizedStorageSession);
         Task<IEnumerable<IClientOutboxMessageAwaitingDispatch>> GetAwaitingDispatchAsync();
-        Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession);
+        Task SetAsDispatchedAsync(Guid messageId, ISynchronizedStorageSession synchronizedStorageSession);
         Task StoreAsync(ClientOutboxMessage clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction);
         Task RemoveEntriesOlderThanAsync(DateTime oldest, CancellationToken cancellationToken);
     }

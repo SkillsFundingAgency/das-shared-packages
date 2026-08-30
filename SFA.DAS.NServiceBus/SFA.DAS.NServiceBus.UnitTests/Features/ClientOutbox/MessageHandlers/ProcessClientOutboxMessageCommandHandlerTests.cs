@@ -36,7 +36,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Features.ClientOutbox.MessageHandlers
         public DateTime Now { get; set; }
         public Mock<IClientOutboxStorage> ClientOutboxStorage { get; set; }
         public ProcessClientOutboxMessageCommand Command { get; set; }
-        public Mock<SynchronizedStorageSession> SynchronizedStorageSession { get; set; }
+        public Mock<ISynchronizedStorageSession> SynchronizedStorageSession { get; set; }
         public TestableMessageHandlerContext Context { get; set; }
         public ProcessClientOutboxMessageCommandHandler Handler { get; set; }
         public ClientOutboxMessage ClientOutboxMessage { get; set; }
@@ -55,7 +55,7 @@ namespace SFA.DAS.NServiceBus.UnitTests.Features.ClientOutbox.MessageHandlers
             };
 
             ClientOutboxMessage = new ClientOutboxMessage(GuidComb.NewGuidComb(), EndpointName, Events);
-            SynchronizedStorageSession = new Mock<SynchronizedStorageSession>();
+            SynchronizedStorageSession = new Mock<ISynchronizedStorageSession>();
 
             Context = new TestableMessageHandlerContext
             {

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NServiceBus;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
@@ -14,17 +17,22 @@ namespace SFA.DAS.NServiceBus.TestEndpoint
 
         public static async Task Main()
         {
+            var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Environment.CurrentDirectory)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+
             var endpointConfiguration = new EndpointConfiguration(TestHarnessSettings.SampleQueueName)
                 .UseErrorQueue(TestHarnessSettings.SampleQueueName + "-error")
                 .UseInstallers()
                 .UseMessageConventions()
-                .UseNewtonsoftJsonSerializer()
-            ;
+                .UseNewtonsoftJsonSerializer();
            
             if (!string.IsNullOrEmpty(AzureServiceBusConnectionString))
             {
                 endpointConfiguration
-                    .UseAzureServiceBusTransport(AzureServiceBusConnectionString, _ => { });
+                    .UseAzureServiceBusTransport(configuration, AzureServiceBusConnectionString, _ => { });
             }
             else
             {

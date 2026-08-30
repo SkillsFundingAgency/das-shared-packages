@@ -12,7 +12,8 @@ namespace SFA.DAS.NServiceBus.AzureFunction.Configuration
                 throw new ArgumentException("NServiceBus license text must not be null or white space", nameof(licenseText));
             }
 
-            config.Settings.Set("LicenseText", licenseText);
+            // TODO: Set license text?
+            //config.Settings.Set("LicenseText", licenseText);
         }
     }
 }

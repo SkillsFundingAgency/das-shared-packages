@@ -1,18 +1,19 @@
 ﻿using System;
 using Azure.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
-using NServiceBus.ObjectBuilder.MSDependencyInjection;
 
 namespace SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 
 public static class EndpointConfigurationExtensions
 {
-    public static EndpointConfiguration UseAzureServiceBusTransport(this EndpointConfiguration config,
+    public static EndpointConfiguration UseAzureServiceBusTransport(this EndpointConfiguration config, IConfiguration appConfiguration,
         string connectionString, Action<RoutingSettings> routing = null)
     {
         var transport = config.UseTransport<AzureServiceBusTransport>();
-        transport.CustomTokenCredential(new DefaultAzureCredential());
+
+        transport.CustomTokenCredential(appConfiguration["AzureWebJobsServiceBus:fullyQualifiedNamespace"], new DefaultAzureCredential());
         transport.ConnectionString(connectionString.FormatConnectionString());
         transport.Transactions(TransportTransactionMode.ReceiveOnly);
         transport.SubscriptionRuleNamingConvention(RuleNameShortener.Shorten);
@@ -23,9 +24,9 @@ public static class EndpointConfigurationExtensions
 
     public static EndpointConfiguration UseEndpointWithExternallyManagedService(this EndpointConfiguration config, IServiceCollection services)
     {
-        var endpointWithExternallyManagedServiceProvider = EndpointWithExternallyManagedServiceProvider.Create(config, services);
-        endpointWithExternallyManagedServiceProvider.Start(new UpdateableServiceProvider(services));
-        services.AddSingleton(_ => endpointWithExternallyManagedServiceProvider.MessageSession.Value);
+        var endpointInstance = Endpoint.Start(config).GetAwaiter().GetResult();
+
+        services.AddSingleton<IEndpointInstance>(endpointInstance);
 
         return config;
     }
