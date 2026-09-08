@@ -34,7 +34,7 @@
                                 @if (!suppressed.Contains(NavigationSection.YourCohorts))
                                 {
                                     <li class="govuk-service-navigation__item @(selected == NavigationSection.YourCohorts ? "govuk-service-navigation__item--active" : "")">
-                                        <a class="govuk-service-navigation__link" asp-external-subdomain="approvals" asp-external-controller="unapproved" asp-external-id="@providerId"> Apprentice requests </a>
+                                        <a class="govuk-service-navigation__link" asp-external-subdomain="approvals" asp-external-controller="unapproved" asp-external-id="@providerId"> Learner requests </a>
                                     </li>
                                 }
                                 @if (!suppressed.Contains(NavigationSection.Reservations))
@@ -46,7 +46,7 @@
                                 @if (!suppressed.Contains(NavigationSection.ManageApprentices))
                                 {
                                     <li class="govuk-service-navigation__item @(selected == NavigationSection.ManageApprentices ? "govuk-service-navigation__item--active" : "")">
-                                        <a class="govuk-service-navigation__link" asp-external-subdomain="approvals" asp-external-controller="apprentices" asp-external-id="@providerId"> Manage your apprentices </a>
+                                        <a class="govuk-service-navigation__link" asp-external-subdomain="approvals" asp-external-controller="apprentices" asp-external-id="@providerId"> Manage learners </a>
                                     </li>
                                 }
                                 @if (!suppressed.Contains(NavigationSection.Recruit))
