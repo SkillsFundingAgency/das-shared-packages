@@ -80,8 +80,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         options.ResponseType = "code";
                         options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                         options.SignedOutRedirectUri = "/";
-                        options.SignedOutCallbackPath = OpenIdConnectRoutes.Paths.SignedOut;
-                        options.CallbackPath = OpenIdConnectRoutes.Paths.SignIn;
+                        options.SignedOutCallbackPath = OpenIdConnectRoutes.Paths.SignedOutCallback;
+                        options.CallbackPath = OpenIdConnectRoutes.Paths.SignInCallback;
                         options.ResponseMode = string.Empty;
                         options.SaveTokens = true;
                         options.GetClaimsFromUserInfoEndpoint = true;

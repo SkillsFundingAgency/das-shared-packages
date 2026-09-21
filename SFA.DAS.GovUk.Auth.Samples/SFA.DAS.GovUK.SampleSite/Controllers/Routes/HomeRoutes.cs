@@ -7,7 +7,7 @@
             public const string Home = nameof(Home);
             public const string Start = nameof(Start);
             public const string AccountDetails = nameof(AccountDetails);
-            public const string IsActive = nameof(IsActive);
+            public const string ActiveStatus = nameof(ActiveStatus);
             public const string VerifiedAccountDetails = nameof(VerifiedAccountDetails);
             public const string ExplainVerify = nameof(ExplainVerify);
             public const string SignOut = nameof(SignOut);
@@ -22,17 +22,17 @@
             public const string Home = "home";
             public const string Start = "start";
             public const string AccountDetails = "account-details";
-            public const string IsActive = "active";
+            public const string ActiveStatus = "active";
             public const string VerifiedAccountDetails = "verified-account-details";
             public const string ExplainVerify = "explain-verify";
             public const string SignOut = "sign-out";
-            public const string SignedOut = "signed-out";
-            public const string Suspended = "suspended";
+            public const string SignedOut = "user-signed-out";
+            public const string Suspended = "user-suspended";
         }
 
         public static string HomeControllerPath(this string path)
         {
-            return $"{Paths.Controller}/{path}";
+            return $"/{path}";
         }
     }
 }

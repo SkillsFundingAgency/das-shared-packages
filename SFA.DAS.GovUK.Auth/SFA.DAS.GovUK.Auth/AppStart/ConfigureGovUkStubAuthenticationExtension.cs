@@ -40,7 +40,6 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.Cookie.IsEssential = true;
                     options.Cookie.SameSite = SameSiteMode.None;
                     options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
-                    options.LogoutPath = "/";
 
                     if (!string.IsNullOrEmpty(cookieDomain))
                         options.Cookie.Domain = cookieDomain;

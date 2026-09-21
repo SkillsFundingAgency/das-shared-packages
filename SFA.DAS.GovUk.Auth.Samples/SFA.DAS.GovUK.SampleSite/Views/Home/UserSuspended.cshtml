@@ -1,3 +1,4 @@
+@using SFA.DAS.GovUK.SampleSite.Controllers.Routes
 @{
     ViewBag.Title = "Suspended";
     Layout = "_Layout";
@@ -8,5 +9,6 @@
         <h1 class="govuk-heading-xl">
             @ViewBag.Title
         </h1>
+        <a asp-route="@HomeRoutes.Names.ActiveStatus" class="govuk-button">Active Status</a>
     </div>
 </div>

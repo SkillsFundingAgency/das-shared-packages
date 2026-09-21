@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Controllers;
 using SFA.DAS.GovUK.SampleSite.AppStart;
@@ -19,8 +18,7 @@ builder.Services.AddSession(options =>
 builder.Services.Configure<GovUkOidcConfiguration>(builder.Configuration.GetSection(nameof(GovUkOidcConfiguration)));
 
 builder.Services.AddServiceRegistration(builder.Configuration);
-          
-builder.Services.AddMaMenuConfiguration("SignOut", "LOCAL");
+builder.Services.AddConfiguration(builder.Configuration);
 
 builder.Services
     .AddControllersWithViews()

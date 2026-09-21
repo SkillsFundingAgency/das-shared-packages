@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Controllers.Routes;
 using SFA.DAS.GovUK.Auth.Services;
+using SFA.DAS.GovUK.SampleSite.Controllers.Routes;
 
 namespace SFA.DAS.GovUK.SampleSite.Controllers
 {
 
-    [Route(Routes.HomeRoutes.Paths.Controller)]
+    [Route(HomeRoutes.Paths.Controller)]
     public class HomeController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -33,34 +34,34 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
         {
             if (HttpContext?.User?.Identity?.IsAuthenticated ?? false)
             {
-                return RedirectToRoute(Routes.HomeRoutes.Names.Home);
+                return RedirectToRoute(HomeRoutes.Names.Home);
             }
 
             return View();
         }
 
-        [HttpPost(Routes.HomeRoutes.Paths.Start, Name = Routes.HomeRoutes.Names.Start)]
+        [HttpPost(HomeRoutes.Paths.Start, Name = HomeRoutes.Names.Start)]
         [ValidateAntiForgeryToken]
         public IActionResult Start(bool suspend = false)
         {
             HttpContext.Session.SetString("user:suspended", suspend ? "1" : "0");
 
-            return RedirectToRoute(Routes.HomeRoutes.Names.Home);
+            return RedirectToRoute(HomeRoutes.Names.Home);
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.Home, Name = Routes.HomeRoutes.Names.Home)]
-        [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
+        [HttpGet(HomeRoutes.Paths.Home, Name = HomeRoutes.Names.Home)]
+        [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
         public IActionResult Home()
         {
             var returnUrl = _linkGenerator.GetPathByName(
                 HttpContext,
-                Routes.HomeRoutes.Names.VerifiedAccountDetails);
+                HomeRoutes.Names.VerifiedAccountDetails);
 
             return View(model: returnUrl ?? "/");
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.AccountDetails, Name = Routes.HomeRoutes.Names.AccountDetails)]
-        [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
+        [HttpGet(HomeRoutes.Paths.AccountDetails, Name = HomeRoutes.Names.AccountDetails)]
+        [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
         public async Task<IActionResult> AccountDetails()
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -69,21 +70,21 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
             return Content(JsonSerializer.Serialize(details), "application/json");
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.IsActive, Name = Routes.HomeRoutes.Names.IsActive)]
-        [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
-        public IActionResult IsActive()
+        [HttpGet(HomeRoutes.Paths.ActiveStatus, Name = HomeRoutes.Names.ActiveStatus)]
+        [Authorize(Policy = nameof(PolicyNames.IsAuthenticated))]
+        public IActionResult ActiveStatus()
         {
             return View();
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.VerifiedAccountDetails, Name = Routes.HomeRoutes.Names.VerifiedAccountDetails)]
+        [HttpGet(HomeRoutes.Paths.VerifiedAccountDetails, Name = HomeRoutes.Names.VerifiedAccountDetails)]
         [Authorize(Policy = nameof(PolicyNames.IsVerified))]
         public IActionResult VerifiedAccountDetails()
         {
             return RedirectToRoute(Routes.HomeRoutes.Names.AccountDetails);
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.ExplainVerify, Name = Routes.HomeRoutes.Names.ExplainVerify)]
+        [HttpGet(HomeRoutes.Paths.ExplainVerify, Name = HomeRoutes.Names.ExplainVerify)]
         [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
         public IActionResult ExplainVerify(string returnUrl = "/")
         {
@@ -108,7 +109,7 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
             return Redirect($"{ServiceRoutes.Paths.VerifyIdentity.ServiceControllerPath()}?returnUrl={Uri.EscapeDataString(returnUrl)}");
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.SignOut, Name = Routes.HomeRoutes.Names.SignOut)]
+        [HttpGet(HomeRoutes.Paths.SignOut, Name = HomeRoutes.Names.SignOut)]
         [AllowAnonymous]
         public async Task<IActionResult> SigningOut()
         {
@@ -116,7 +117,7 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
 
             var authenticationProperties = new AuthenticationProperties
             {
-                RedirectUri = Url.RouteUrl(Routes.HomeRoutes.Names.SignedOut)
+                RedirectUri = Url.RouteUrl(HomeRoutes.Names.SignedOut)
             };
 
             authenticationProperties.Parameters.Add("id_token", idToken);
@@ -135,14 +136,14 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
                 authenticationSchemes);
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.SignedOut, Name = Routes.HomeRoutes.Names.SignedOut)]
+        [HttpGet(HomeRoutes.Paths.SignedOut, Name = HomeRoutes.Names.SignedOut)]
         [AllowAnonymous]
         public IActionResult UserSignedOut()
         {
             return View();
         }
 
-        [HttpGet(Routes.HomeRoutes.Paths.Suspended, Name = Routes.HomeRoutes.Names.Suspended)]
+        [HttpGet(HomeRoutes.Paths.Suspended, Name = HomeRoutes.Names.Suspended)]
         public IActionResult UserSuspended()
         {
             return View();

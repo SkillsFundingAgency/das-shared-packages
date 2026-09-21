@@ -17,7 +17,7 @@
 
         public static string StubControllerPath(this string path)
         {
-            return $"{Paths.Controller}/{path}";
+            return $"/{Paths.Controller}/{path}";
         }
     }
 }

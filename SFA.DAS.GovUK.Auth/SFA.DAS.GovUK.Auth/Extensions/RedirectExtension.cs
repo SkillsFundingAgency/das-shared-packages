@@ -27,7 +27,7 @@ namespace SFA.DAS.GovUK.Auth.Extensions
                 return redirectUri;
             }
             
-            return $"https://employerprofiles.{"".GetEnvironmentAndDomain(environment)}/{ServiceRoutes.Paths.UserSignedOut.ServiceControllerPath()}";
+            return $"https://employerprofiles.{"".GetEnvironmentAndDomain(environment)}{ServiceRoutes.Paths.UserSignedOut.ServiceControllerPath()}";
         }
 
         public static string GetSuspendedRedirectUrl(this string suspendedRedirectUri, string environment)
@@ -37,7 +37,7 @@ namespace SFA.DAS.GovUK.Auth.Extensions
                 return suspendedRedirectUri;
             }
 
-            return $"https://employerprofiles.{"".GetEnvironmentAndDomain(environment)}/{ServiceRoutes.Paths.AccountUnavailable.ServiceControllerPath()}";
+            return $"https://employerprofiles.{"".GetEnvironmentAndDomain(environment)}{ServiceRoutes.Paths.AccountUnavailable.ServiceControllerPath()}";
         }
     
         public static string GetStubSignInRedirectUrl(this string redirectUrl, string environment)
@@ -52,7 +52,7 @@ namespace SFA.DAS.GovUK.Auth.Extensions
                 return redirectUrl;
             }
             
-            return $"https://employerprofiles.{environment.ToLower()}-eas.apprenticeships.education.gov.uk/{ServiceRoutes.Paths.AccountDetails.ServiceControllerPath()}";
+            return $"https://employerprofiles.{environment.ToLower()}-eas.apprenticeships.education.gov.uk{ServiceRoutes.Paths.AccountDetails.ServiceControllerPath()}";
         }
     }
 }

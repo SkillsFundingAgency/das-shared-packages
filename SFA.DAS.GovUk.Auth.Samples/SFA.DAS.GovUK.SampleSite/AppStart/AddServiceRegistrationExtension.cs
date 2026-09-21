@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.GovUK.Auth.AppStart;
 using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Models;
+using SFA.DAS.GovUK.SampleSite.Configuration;
 using SFA.DAS.GovUK.SampleSite.Controllers.Routes;
 using SFA.DAS.GovUK.SampleSite.Validators;
 

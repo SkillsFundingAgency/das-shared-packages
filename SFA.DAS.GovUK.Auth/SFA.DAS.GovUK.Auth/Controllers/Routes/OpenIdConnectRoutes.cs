@@ -8,8 +8,8 @@
         /// </summary>
         public static class Paths
         {
-            public const string SignedOut = "/signed-out";
-            public const string SignIn = "/sign-in";
+            public const string SignedOutCallback = "/signed-out";
+            public const string SignInCallback = "/sign-in";
         }
     }
 }

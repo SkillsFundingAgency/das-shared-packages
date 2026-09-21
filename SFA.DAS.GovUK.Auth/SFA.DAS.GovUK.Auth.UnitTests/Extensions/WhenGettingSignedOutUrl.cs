@@ -16,7 +16,7 @@ public class WhenGettingSignedOutUrl
     {
         var actual = "".GetSignedOutRedirectUrl(environment);
         
-        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/{ServiceRoutes.Paths.UserSignedOut.ServiceControllerPath()}"));
+        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/service/user-signed-out"));
     }
 
     [Test]

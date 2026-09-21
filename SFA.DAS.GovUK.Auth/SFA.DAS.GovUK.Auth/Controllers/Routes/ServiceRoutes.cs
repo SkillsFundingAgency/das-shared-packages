@@ -23,7 +23,7 @@
 
         public static string ServiceControllerPath(this string path)
         {
-            return $"{Paths.Controller}/{path}";
+            return $"/{Paths.Controller}/{path}";
         }
     }
 }

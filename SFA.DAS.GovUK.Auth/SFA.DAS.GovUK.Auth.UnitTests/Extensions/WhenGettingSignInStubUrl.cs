@@ -32,7 +32,7 @@ public class WhenGettingSignInStubUrl
     {
         var actual = "".GetStubSignInRedirectUrl(environment);
         
-        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/{ServiceRoutes.Paths.AccountDetails.ServiceControllerPath()}"));
+        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/service/account-details"));
     }
 
 }

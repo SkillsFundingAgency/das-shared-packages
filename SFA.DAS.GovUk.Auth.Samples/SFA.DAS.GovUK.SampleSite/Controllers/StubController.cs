@@ -12,7 +12,7 @@ using SFA.DAS.GovUK.SampleSite.Models;
 
 namespace SFA.DAS.GovUK.SampleSite.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [Route(StubRoutes.Paths.Controller)]
     public class StubController : Controller
     {
