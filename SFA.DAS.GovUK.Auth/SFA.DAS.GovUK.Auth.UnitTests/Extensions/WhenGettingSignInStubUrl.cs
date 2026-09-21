@@ -1,3 +1,4 @@
+using SFA.DAS.GovUK.Auth.Controllers.Routes;
 using SFA.DAS.GovUK.Auth.Extensions;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.Extensions;
@@ -31,7 +32,7 @@ public class WhenGettingSignInStubUrl
     {
         var actual = "".GetStubSignInRedirectUrl(environment);
         
-        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/service/account-details"));
+        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/{ServiceRoutes.Paths.AccountDetails.ServiceControllerPath()}"));
     }
 
 }

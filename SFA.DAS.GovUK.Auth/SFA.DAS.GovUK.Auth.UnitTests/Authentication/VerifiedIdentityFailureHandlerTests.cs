@@ -43,6 +43,7 @@ public class VerifiedIdentityFailureHandlerTests
         var handled = await _handler.HandleFailureAsync(httpContext, _policy, result);
 
         // Assert
+        // TO DO correct this for explain page
         handled.Should().BeTrue();
         httpContext.Response.Headers["Location"].ToString()
             .Should().Be("/service/verify-identity?returnUrl=%2Fsecure%2Fresource%3Fx%3D1");

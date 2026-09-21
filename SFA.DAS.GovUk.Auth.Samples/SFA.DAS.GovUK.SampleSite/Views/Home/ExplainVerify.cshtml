@@ -2,11 +2,14 @@
 @using SFA.DAS.GovUK.Auth.Models
 @inject IConfiguration Configuration
 @inject GovUkOidcConfiguration GovUkOidcConfiguration
+@model string
 @{
     Layout = "_Layout";
     ViewBag.Title = "GOV.UK One Login Sample Service";
+
     var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
         .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? new string[0];
+
     var stubAuth = bool.Parse(Configuration["StubAuth"] ?? "false");
 }
 
@@ -17,10 +20,10 @@
 
     @if (stubAuth)
     {
-        <p class="govuk-body"> By continuing, the following identity attributes will be used from your uploaded JSON file:</p>
+        <p class="govuk-body">By continuing, the following identity attributes will be used from your uploaded JSON file:</p>
         <div class="govuk-inset-text">
             <ul class="govuk-list govuk-list--bullet">
-            @foreach (var claim in requestedClaims)
+                @foreach (var claim in requestedClaims)
                 {
                     <li>@claim</li>
                 }
@@ -34,5 +37,11 @@
         </p>
     }
 
-    <a asp-action="VerifiedAccountDetails" asp-Controller="Home" class="govuk-button">Continue</a>
+    <form asp-action="ExplainVerifyContinue" asp-controller="Home" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="returnUrl" value="@Model" />
+        <button type="submit" class="govuk-button">
+            Continue
+        </button>
+    </form>
 </div>

@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -8,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.GovUK.Auth.Exceptions;
 using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
+using SFA.DAS.GovUK.SampleSite.Controllers.Routes;
 using SFA.DAS.GovUK.SampleSite.Extensions;
 using SFA.DAS.GovUK.SampleSite.Models;
 
-
 namespace SFA.DAS.GovUK.SampleSite.Controllers
 {
-    [Authorize]
-    [Route("stub", Name = "Stub", Order = 0)]
+    [AllowAnonymous]
+    [Route(StubRoutes.Paths.Controller)]
     public class StubController : Controller
     {
         private readonly IConfiguration _config;
@@ -30,11 +28,11 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
         }
 
         [HttpGet]
-        [Route("sign-in-stub", Name = "SignIn-Stub")]
+        [Route(StubRoutes.Paths.SignIn, Name = StubRoutes.Names.SignIn)]
         [AllowAnonymous]
         public IActionResult SignInStub(string returnUrl)
         {
-            return View("SignInStub", new SignInStubViewModel
+            return View(new SignInStubViewModel
             {
                 Id = ModelState.IsValid ? _config["StubId"] : ModelState[nameof(SignInStubViewModel.Id)]?.AttemptedValue,
                 Email = ModelState.IsValid ? _config["StubEmail"] : ModelState[nameof(SignInStubViewModel.Email)]?.AttemptedValue,
@@ -43,12 +41,12 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
         }
 
         [HttpPost]
-        [Route("sign-in-stub", Name = "SignIn-Stub")]
+        [Route(StubRoutes.Paths.SignIn, Name = StubRoutes.Names.SignIn)]
         [AllowAnonymous]
         public async Task<IActionResult> SignInStubPost(SignInStubViewModel model)
         {
             if(!await _signInStubViewModelValidator.ModelStateIsValid(model, ModelState))
-                return RedirectToRoute("SignIn-Stub", new { model.ReturnUrl });
+                return RedirectToRoute(StubRoutes.Names.SignIn, new { model.ReturnUrl });
 
             try
             {
@@ -67,14 +65,14 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
             catch (StubVerifyException ex)
             {
                 ModelState.AddModelError(nameof(model.UserFile), ex.Message);
-                return RedirectToRoute("SignIn-Stub", new { model.ReturnUrl });
+                return RedirectToRoute(StubRoutes.Names.SignIn, new { model.ReturnUrl });
             }
 
-            return RedirectToRoute("SignedIn-stub", new { model.ReturnUrl });
+            return RedirectToRoute(StubRoutes.Names.SignedIn, new { model.ReturnUrl });
         }
 
         [HttpGet]
-        [Route("signed-in-stub", Name = "SignedIn-stub")]
+        [Route(StubRoutes.Paths.SignedIn, Name = StubRoutes.Names.SignedIn)]
         public IActionResult SignedInStub(string returnUrl)
         {
             return View(model: returnUrl);

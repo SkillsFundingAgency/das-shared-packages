@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.GovUK.Auth.Configuration;
+using SFA.DAS.GovUK.Auth.Controllers.Routes;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.GovUK.Auth.Validation;
 
@@ -66,7 +67,6 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.Cookie.SameSite = SameSiteMode.Lax;
                     options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
-                    options.LogoutPath = "/home/signed-out";
                 });
 
             services
@@ -80,8 +80,8 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         options.ResponseType = "code";
                         options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                         options.SignedOutRedirectUri = "/";
-                        options.SignedOutCallbackPath = "/signed-out";
-                        options.CallbackPath = "/sign-in";
+                        options.SignedOutCallbackPath = OpenIdConnectRoutes.Paths.SignedOut;
+                        options.CallbackPath = OpenIdConnectRoutes.Paths.SignIn;
                         options.ResponseMode = string.Empty;
                         options.SaveTokens = true;
                         options.GetClaimsFromUserInfoEndpoint = true;

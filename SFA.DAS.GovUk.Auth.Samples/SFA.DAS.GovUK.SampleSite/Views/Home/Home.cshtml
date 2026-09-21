@@ -1,4 +1,6 @@
+@model string
 @using System.Security.Claims
+@using SFA.DAS.GovUK.SampleSite.Controllers.Routes
 @{
     Layout = "_Layout";
     ViewBag.Title = "GOV.UK One Login Sample Service";
@@ -17,9 +19,8 @@
         <p>Sub: @Context.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value</p>
         <p>CustomClaim AccountId: @Context.User.Claims.FirstOrDefault(c => c.Type.Equals("CustomClaimId"))?.Value</p>
 
-        <a asp-action="AccountDetails" asp-Controller="Home" class="govuk-button">Details</a>
-        <a asp-action="ExplainVerify" asp-controller="Home" class="govuk-button">Verified Details</a>
-        <a asp-action="SigningOut" asp-controller="Home" class="govuk-button">Sign Out</a>
-
+        <a asp-route="@HomeRoutes.Names.AccountDetails" class="govuk-button">Details</a>
+        <a asp-route="@HomeRoutes.Names.ExplainVerify" asp-route-returnUrl="@Model" class="govuk-button">Verified Details</a>
+        <a asp-route="@HomeRoutes.Names.SignOut" class="govuk-button">Sign Out</a>
     </div>
 </div>

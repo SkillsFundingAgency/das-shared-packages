@@ -1,3 +1,4 @@
+using SFA.DAS.GovUK.Auth.Controllers.Routes;
 using SFA.DAS.GovUK.Auth.Extensions;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.Extensions;
@@ -15,7 +16,7 @@ public class WhenGettingSignedOutUrl
     {
         var actual = "".GetSignedOutRedirectUrl(environment);
         
-        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/service/user-signed-out"));
+        Assert.That(actual, Is.EqualTo($"https://employerprofiles.{expectedUrlPart}.gov.uk/{ServiceRoutes.Paths.UserSignedOut.ServiceControllerPath()}"));
     }
 
     [Test]

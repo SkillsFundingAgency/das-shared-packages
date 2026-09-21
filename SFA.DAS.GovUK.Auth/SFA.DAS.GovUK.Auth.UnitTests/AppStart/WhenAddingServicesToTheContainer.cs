@@ -51,7 +51,7 @@ public class WhenAddingServicesToTheContainer
     {   
         var configuration = GenerateConfiguration();
         serviceCollection.AddSingleton<IConfiguration>(configuration);
-        serviceCollection.AddServiceRegistration(configuration,typeof(TestCustomClaims), typeof(GovAuthEmployerAccountService));
+        serviceCollection.AddServiceRegistration(configuration, new Auth.Models.AuthRedirects(), typeof(TestCustomClaims), typeof(GovAuthEmployerAccountService));
     }
 
     private static IConfigurationRoot GenerateConfiguration()
