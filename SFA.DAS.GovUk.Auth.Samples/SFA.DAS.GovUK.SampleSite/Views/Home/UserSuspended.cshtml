@@ -1,13 +1,14 @@
 @using SFA.DAS.GovUK.SampleSite.Controllers.Routes
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @{
-    ViewBag.Title = "Suspended";
+    ViewData[ViewDataKeys.Title] = "Suspended";
     Layout = "_Layout";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-            @ViewBag.Title
+            @ViewData[ViewDataKeys.Title]
         </h1>
         <a asp-route="@HomeRoutes.Names.ActiveStatus" class="govuk-button">Active Status</a>
     </div>

@@ -1,14 +1,15 @@
 @model string
 @using System.Security.Claims
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @using SFA.DAS.GovUK.SampleSite.Controllers.Routes
 @{
     Layout = "_Layout";
-    ViewBag.Title = "GOV.UK One Login Sample Service";
+    ViewData[ViewDataKeys.Title] = "GOV.UK One Login Sample Service";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+        <h1 class="govuk-heading-xl">@ViewData[ViewDataKeys.Title]</h1>
 
         <p class="govuk-body">
             This sample service uses the GOV Uk One Login to authenticate.

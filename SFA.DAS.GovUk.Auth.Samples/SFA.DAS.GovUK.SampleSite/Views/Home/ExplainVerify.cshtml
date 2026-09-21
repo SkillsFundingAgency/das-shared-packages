@@ -1,11 +1,11 @@
 @using SFA.DAS.GovUK.Auth.Configuration
-@using SFA.DAS.GovUK.Auth.Models
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @inject IConfiguration Configuration
 @inject GovUkOidcConfiguration GovUkOidcConfiguration
 @model string
 @{
     Layout = "_Layout";
-    ViewBag.Title = "GOV.UK One Login Sample Service";
+    ViewData[ViewDataKeys.Title] = "GOV.UK One Login Sample Service";
 
     var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
         .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? new string[0];

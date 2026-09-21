@@ -1,11 +1,11 @@
 @using SFA.DAS.GovUK.Auth.Configuration
-@using SFA.DAS.GovUK.Auth.Models
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @inject IConfiguration Configuration
 @inject GovUkOidcConfiguration GovUkOidcConfiguration
 
 @{
     Layout = "_Layout";
-    ViewBag.Title = "GOV.UK One Login Sample Service";
+    ViewData[ViewDataKeys.Title] = "GOV.UK One Login Sample Service";
     var enableVerify = bool.Parse(GovUkOidcConfiguration.EnableVerify ?? "false");
     var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
         .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -14,7 +14,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+        <h1 class="govuk-heading-xl">@ViewData[ViewDataKeys.Title]</h1>
 
         <p class="govuk-body">
             This sample service uses the GOV Uk One Login to authenticate.

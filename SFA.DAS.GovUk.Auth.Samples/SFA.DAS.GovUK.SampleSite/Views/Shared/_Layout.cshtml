@@ -20,7 +20,6 @@
 
     <!--[if !IE 8]><!-->
     <link href="css/main.css" rel="stylesheet" />
-    <link href="/css/app.css" rel="stylesheet" no-cdn />
     <!--<![endif]-->
 
     <meta property="og:image" content="assets/images/govuk-opengraph-image.png" cdn-prop="content" />
@@ -46,9 +45,11 @@
         </p>
     </div>
 
-    <div class="govuk-width-container">
-        @RenderBody()
-    </div>
+    <main class="govuk-main-wrapper" id="main-content">
+        <div class="govuk-width-container">
+            @RenderBody()
+        </div>
+    </main>
     <partial name="_Footer" />
 
     @* These javascripts are not included in the project they are loaded from the cdn *@
@@ -57,9 +58,6 @@
     <script src="libs/jquery/jquery.min.js"></script>
     <script src="js/das-all.js"></script>
     <script src="js/app.min.js"></script>
-
-    @* This javascript is included in the project it is not loaded from the cdn *@
-    <script src="/js/app.js" no-cdn></script>
 
     <script>
         window.GOVUKFrontend.initAll();
