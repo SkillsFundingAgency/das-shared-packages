@@ -4,6 +4,7 @@
     {
         public static class Names
         {
+            public const string Index = nameof(Index);
             public const string Home = nameof(Home);
             public const string Start = nameof(Start);
             public const string AccountDetails = nameof(AccountDetails);
@@ -19,6 +20,7 @@
         {
             public const string Controller = "";
 
+            public const string Index = "";
             public const string Home = "home";
             public const string Start = "start";
             public const string AccountDetails = "account-details";

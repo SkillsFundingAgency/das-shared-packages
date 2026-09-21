@@ -29,7 +29,7 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
             _linkGenerator = linkGenerator;
         }
 
-        [HttpGet]
+        [HttpGet(HomeRoutes.Paths.Index, Name = HomeRoutes.Names.Index)]
         public IActionResult Index()
         {
             if (HttpContext?.User?.Identity?.IsAuthenticated ?? false)
