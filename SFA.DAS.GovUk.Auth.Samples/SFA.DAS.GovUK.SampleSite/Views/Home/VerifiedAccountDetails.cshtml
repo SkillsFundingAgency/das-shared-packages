@@ -1,0 +1,195 @@
+﻿@using SFA.DAS.GovUK.Auth.Models
+@using SFA.DAS.GovUK.SampleSite.Controllers.Routes
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
+@model GovUkUser
+
+@{
+    Layout = "_Layout";
+    ViewData[ViewDataKeys.Title] = "Verified identity details";
+
+    var credentialSubject = Model.CoreIdentityJwt?.Vc?.CredentialSubject;
+
+    var currentName = credentialSubject?.Names?
+        .FirstOrDefault(name => name.ValidUntil is null)
+        ?? credentialSubject?.Names?.FirstOrDefault();
+
+    var name = currentName?.NameParts is { Count: > 0 }
+        ? string.Join(
+            " ",
+            currentName.NameParts
+                .Where(part => !string.IsNullOrWhiteSpace(part.Value))
+                .Select(part => part.Value))
+        : "Not returned";
+
+    var currentBirthDate = credentialSubject?.BirthDates?
+        .FirstOrDefault(date => date.ValidUntil is null)
+        ?? credentialSubject?.BirthDates?.FirstOrDefault();
+
+    var birthDate = DateOnly.TryParse(currentBirthDate?.Value, out var parsedBirthDate)
+        ? parsedBirthDate.ToString("d MMMM yyyy")
+        : currentBirthDate?.Value ?? "Not returned";
+
+    var currentAddress = Model.Addresses?
+        .FirstOrDefault(address => address.ValidUntil is null)
+        ?? Model.Addresses?.FirstOrDefault();
+
+    var street = string.Join(
+        " ",
+        new[] { currentAddress?.BuildingNumber, currentAddress?.StreetName }
+            .Where(value => !string.IsNullOrWhiteSpace(value)));
+
+    var addressLines = new[]
+    {
+        currentAddress?.OrganisationName,
+        currentAddress?.DepartmentName,
+        currentAddress?.SubBuildingName,
+        currentAddress?.BuildingName,
+        street,
+        currentAddress?.DependentStreetName,
+        currentAddress?.DoubleDependentAddressLocality,
+        currentAddress?.DependentAddressLocality,
+        currentAddress?.AddressLocality,
+        currentAddress?.AddressRegion,
+        currentAddress?.PostalCode,
+        currentAddress?.AddressCountry
+    }
+    .Where(value => !string.IsNullOrWhiteSpace(value))
+    .ToList();
+}
+
+<a asp-route="@HomeRoutes.Names.Home" class="govuk-back-link">Back</a>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-notification-banner govuk-notification-banner--success"
+             role="alert"
+             aria-labelledby="verified-title">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="verified-title">
+                    Identity verified
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    GOV.UK One Login has returned verified identity information.
+                </p>
+            </div>
+        </div>
+
+        <h1 class="govuk-heading-xl">Verified identity details</h1>
+
+        <p class="govuk-body-l">
+            This is the identity information made available to this sample service.
+        </p>
+
+        <h2 class="govuk-heading-l">Core identity</h2>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@name</dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date of birth</dt>
+                <dd class="govuk-summary-list__value">@birthDate</dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Vector of trust</dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.CoreIdentityJwt?.Vot ?? "Not returned")
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-l">Address</h2>
+
+        @if (addressLines.Count > 0)
+        {
+            <p class="govuk-body">
+                @foreach (var line in addressLines)
+                {
+                    @line
+                    <br />
+                }
+            </p>
+        }
+        else
+        {
+            <p class="govuk-body">No address was returned.</p>
+        }
+
+        @if (Model.Passports?.Any() == true)
+        {
+            <h2 class="govuk-heading-l">Passport details</h2>
+
+            @foreach (var passport in Model.Passports)
+            {
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Document number</dt>
+                        <dd class="govuk-summary-list__value">@passport.DocumentNumber</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Issuer</dt>
+                        <dd class="govuk-summary-list__value">@passport.IcaoIssuerCode</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Expiry date</dt>
+                        <dd class="govuk-summary-list__value">
+                            @(passport.ExpiryDate?.ToString("d MMMM yyyy") ?? "Not returned")
+                        </dd>
+                    </div>
+                </dl>
+            }
+        }
+
+        @if (Model.DrivingPermits?.Any() == true)
+        {
+            <h2 class="govuk-heading-l">Driving licence details</h2>
+
+            @foreach (var permit in Model.DrivingPermits)
+            {
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Personal number</dt>
+                        <dd class="govuk-summary-list__value">@permit.PersonalNumber</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Issue number</dt>
+                        <dd class="govuk-summary-list__value">@permit.IssueNumber</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Issued by</dt>
+                        <dd class="govuk-summary-list__value">@permit.IssuedBy</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Expiry date</dt>
+                        <dd class="govuk-summary-list__value">
+                            @(permit.ExpiryDate?.ToString("d MMMM yyyy") ?? "Not returned")
+                        </dd>
+                    </div>
+                </dl>
+            }
+        }
+
+        @if (Model.ReturnCodes?.Any() == true)
+        {
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-visually-hidden">Warning</span>
+                    One Login returned:
+                    @string.Join(", ", Model.ReturnCodes.Select(code => code.Code))
+                </strong>
+            </div>
+        }
+
+        <a asp-route="@HomeRoutes.Names.Home"
+           class="govuk-button"
+           data-module="govuk-button">
+            Return to sample service
+        </a>
+    </div>
+</div>

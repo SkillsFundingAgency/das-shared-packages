@@ -1,27 +1,126 @@
 @model string
 @using System.Security.Claims
-@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @using SFA.DAS.GovUK.SampleSite.Controllers.Routes
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
+
 @{
     Layout = "_Layout";
-    ViewData[ViewDataKeys.Title] = "GOV.UK One Login Sample Service";
+    ViewData[ViewDataKeys.Title] = "Authentication test complete";
+
+    string GetClaimValue(string claimType)
+    {
+        return Context.User.Claims
+            .FirstOrDefault(claim => claim.Type == claimType)
+            ?.Value ?? "Not returned";
+    }
+
+    var name = GetClaimValue(ClaimTypes.Name);
+    var email = GetClaimValue(ClaimTypes.Email);
+    var subject = GetClaimValue(ClaimTypes.NameIdentifier);
+    var accountId = GetClaimValue("CustomClaimId");
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">@ViewData[ViewDataKeys.Title]</h1>
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Authentication complete
+            </h1>
 
-        <p class="govuk-body">
-            This sample service uses the GOV Uk One Login to authenticate.
+            <div class="govuk-panel__body">
+                You are signed in to the sample service
+            </div>
+        </div>
+
+        <p class="govuk-body-l govuk-!-margin-top-6">
+            GOV.UK One Login has authenticated this test account.
         </p>
 
-        <p>Name: @Context.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Name))?.Value</p>
-        <p>Email: @Context.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value</p>
-        <p>Sub: @Context.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value</p>
-        <p>CustomClaim AccountId: @Context.User.Claims.FirstOrDefault(c => c.Type.Equals("CustomClaimId"))?.Value</p>
+        <h2 class="govuk-heading-l">Authentication claims</h2>
 
-        <a asp-route="@HomeRoutes.Names.AccountDetails" class="govuk-button">Details</a>
-        <a asp-route="@HomeRoutes.Names.ExplainVerify" asp-route-returnUrl="@Model" class="govuk-button">Explain Verify</a>
-        <a asp-route="@HomeRoutes.Names.VerifiedAccountDetails" class="govuk-button">Verified Details</a>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @name
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @email
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    One Login subject identifier
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @subject
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Custom account identifier
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @accountId
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-l">Choose what to test</h2>
+
+        <ul class="govuk-list govuk-list--spaced">
+            <li>
+                <a asp-route="@HomeRoutes.Names.AccountDetails"
+                   class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold">
+                    View One Login account details
+                </a>
+
+                <p class="govuk-body govuk-!-margin-top-1">
+                    View the email address, phone number and account identifier
+                    returned by GOV.UK One Login.
+                </p>
+            </li>
+
+            <li>
+                <a asp-route="@HomeRoutes.Names.ExplainVerify"
+                   asp-route-returnUrl="@Model"
+                   class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold">
+                    Read the identity check explanation
+                </a>
+
+                <p class="govuk-body govuk-!-margin-top-1">
+                    View the information shown before the identity-checking
+                    journey starts.
+                </p>
+            </li>
+
+            <li>
+                <a asp-route="@HomeRoutes.Names.VerifiedAccountDetails"
+                   class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold">
+                    View verified identity details
+                </a>
+
+                <p class="govuk-body govuk-!-margin-top-1">
+                    View the verified name, date of birth and any additional
+                    identity information returned to the service.
+                </p>
+            </li>
+        </ul>
+
+        <div class="govuk-inset-text">
+            If this account has not completed identity verification, selecting
+            “View verified identity details” will start the configured
+            explanation and verification journey.
+        </div>
     </div>
 </div>

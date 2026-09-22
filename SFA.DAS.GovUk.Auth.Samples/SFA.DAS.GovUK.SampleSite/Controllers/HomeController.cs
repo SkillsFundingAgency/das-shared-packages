@@ -67,7 +67,7 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
             var token = await HttpContext.GetTokenAsync("access_token");
             var details = await _govUkAuthenticationService.GetAccountDetails(token);
 
-            return Content(JsonSerializer.Serialize(details), "application/json");
+            return View(details);
         }
 
         [HttpGet(HomeRoutes.Paths.ActiveStatus, Name = HomeRoutes.Names.ActiveStatus)]
@@ -79,9 +79,12 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
 
         [HttpGet(HomeRoutes.Paths.VerifiedAccountDetails, Name = HomeRoutes.Names.VerifiedAccountDetails)]
         [Authorize(Policy = nameof(PolicyNames.IsVerified))]
-        public IActionResult VerifiedAccountDetails()
+        public async Task<IActionResult> VerifiedAccountDetails()
         {
-            return RedirectToRoute(Routes.HomeRoutes.Names.AccountDetails);
+            var token = await HttpContext.GetTokenAsync("access_token");
+            var details = await _govUkAuthenticationService.GetAccountDetails(token);
+
+            return View(details);
         }
 
         [HttpGet(HomeRoutes.Paths.ExplainVerify, Name = HomeRoutes.Names.ExplainVerify)]

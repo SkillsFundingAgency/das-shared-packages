@@ -1,47 +1,93 @@
 @using SFA.DAS.GovUK.Auth.Configuration
+@using SFA.DAS.GovUK.SampleSite.Controllers.Routes
 @using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @inject IConfiguration Configuration
 @inject GovUkOidcConfiguration GovUkOidcConfiguration
 @model string
+
 @{
     Layout = "_Layout";
-    ViewData[ViewDataKeys.Title] = "GOV.UK One Login Sample Service";
+    ViewData[ViewDataKeys.Title] = "Prove your identity";
 
     var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
-        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? new string[0];
+        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        ?? Array.Empty<string>();
 
-    var stubAuth = bool.Parse(Configuration["StubAuth"] ?? "false");
+    var stubAuth = bool.TryParse(Configuration["StubAuth"], out var configuredStub)
+        && configuredStub;
+
+    string GetClaimDescription(string claim) => claim switch
+    {
+        "CoreIdentityJWT" => "your verified name and date of birth",
+        "Address" => "your current or previous address",
+        "Passport" => "passport information",
+        "DrivingPermit" => "driving licence information",
+        _ => claim
+    };
 }
 
-<h1 class="govuk-heading-xl">Explain Verify</h1>
+<a asp-route="@HomeRoutes.Names.Home" class="govuk-back-link">Back</a>
 
-<div class="govuk-body">
-    <p>A page can be shown to explain that the Verify journey will confirm your identity.</p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">GOV.UK One Login sample service</span>
+        <h1 class="govuk-heading-xl">Prove your identity</h1>
 
-    @if (stubAuth)
-    {
-        <p class="govuk-body">By continuing, the following identity attributes will be used from your uploaded JSON file:</p>
-        <div class="govuk-inset-text">
-            <ul class="govuk-list govuk-list--bullet">
-                @foreach (var claim in requestedClaims)
-                {
-                    <li>@claim</li>
-                }
-            </ul>
-        </div>
-    }
-    else
-    {
-        <p class="govuk-body">
-            By continuing, you will be redirected to the integration server for GOV.UK One Login service to verify your identity.
+        <p class="govuk-body-l">
+            Before you can view the verified identity page, GOV.UK One Login
+            needs to check your identity.
         </p>
-    }
 
-    <form asp-action="ExplainVerifyContinue" asp-controller="Home" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="returnUrl" value="@Model" />
-        <button type="submit" class="govuk-button">
-            Continue
-        </button>
-    </form>
+        <h2 class="govuk-heading-m">Information this service may receive</h2>
+
+        <p class="govuk-body">
+            Depending on the information configured for this service, GOV.UK
+            One Login may provide:
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            @foreach (var claim in requestedClaims)
+            {
+                <li>@GetClaimDescription(claim)</li>
+            }
+        </ul>
+
+        @if (stubAuth)
+        {
+            <div class="govuk-inset-text">
+                The authentication stub is enabled. The sample will use the
+                identity information from the JSON file you selected when
+                signing in. It will not contact GOV.UK One Login.
+            </div>
+        }
+        else
+        {
+            <div class="govuk-inset-text">
+                You will leave this sample service and continue to GOV.UK One
+                Login. You will return here after completing or leaving the
+                identity-checking journey.
+            </div>
+        }
+
+        <form asp-action="ExplainVerifyContinue"
+              asp-controller="Home"
+              method="post">
+            <input type="hidden" name="returnUrl" value="@Model" />
+
+            <div class="govuk-button-group">
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    @(stubAuth
+                        ? "Continue with test identity"
+                        : "Continue to GOV.UK One Login")
+                </button>
+
+                <a asp-route="@HomeRoutes.Names.Home"
+                   class="govuk-link">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>

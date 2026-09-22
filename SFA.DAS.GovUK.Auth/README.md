@@ -115,19 +115,40 @@ public static class AddServiceRegistrationExtension
     {
         services.AddAndConfigureGovUkAuthentication(
             configuration, 
-            new AuthRedirects 
+            new AuthRedirects
             {
-                LoginRedirect = "/home/AccountDetails", //Where to redirect after login
-                CookieDomain = "employer.gov.uk", //If using subsites for a client this should be the same across all
-                LocalStubLoginPath = "/home/stub-account-details", // detailed below - stub auth action
-                SignedOutRedirectUrl = "/home/signout" //where user is redirected to after signout, this shouldnt be the same as configured in gov login
-            }, 
+                LoginRedirect = "/home/AccountDetails",
+                CookieDomain = "employer.gov.uk",
+                LocalStubLoginPath = "/home/stub-account-details",
+                SignedOutRedirectUrl = "/home/signout",
+                VerifyIdentityInformationUrl = "/explain-verify"
+            },
             typeof(CustomClaims), // Must implement ICustomClaims
             typeof(UserAccountService) ); // Must implement IGovAuthEmployerAccountService
              
     }
 }    
 ```
+### Identity check
+
+`VerifyIdentityInformationUrl` is optional in `AuthRedirects`. When it is configured, a user
+who accesses an endpoint protected by the `IsVerified` policy is redirected
+to that URL before the Verify journey starts.
+
+The requested protected URL is supplied as the `returnUrl` query-string
+value. The application should validate that it is a local URL before using it.
+
+When the user chooses to continue, redirect them to:
+
+`/service/verify-identity?returnUrl={encodedReturnUrl}` which is `ServiceRoutes.Paths.VerifyIndentity.ServiceControllerPath()`
+
+If `VerifyIdentityInformationUrl` is not configured, the authentication
+package starts the Verify journey directly.
+
+The explanation page is owned by the consuming application so that the
+service can explain why identity information is needed using wording
+appropriate to that service.
+
 After successful authentication and the access code being exchanged for a token, the **Email** and **NameIdentifier** claims are populated. An authentication cookie is created which has a sliding expiry set to `LoginSlidingExpiryTimeOutInMinutes`.
 
 To sign out the following should be called:
@@ -159,6 +180,9 @@ https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/SFA.DAS.G
 
 When the `RequestedUserInfoClaims` are present in the extended configuration the sample site will prompt for a JSON file to be uploaded during a login which uses the StubAuth, the files in 
 https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/SFA.DAS.GovUk.Auth.Samples/SFA.DAS.GovUK.SampleSite/Verify are example JSON files which can be uploaded.
+
+The sample site's stub sign-in page previews the supported identity attributes from the selected JSON file before the form is submitted. The preview is performed in the browser only. The server still validates
+and deserializes the uploaded file when the user signs in.
 
 To sign out the `SignOut` action result should be called, passing the `CookieAuthenticationDefaults.AuthenticationScheme` as the authentication scheme to sign out from. If using the redis cache session store
 this will end the session.
