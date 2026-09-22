@@ -12,7 +12,12 @@ namespace SFA.DAS.GovUK.Auth.Authentication
     {
         private readonly string _verifyIdentityInformationUrl;
 
-        public VerifiedIdentityFailureHandler(string verifyIdentityInformationUrl = null)
+        public VerifiedIdentityFailureHandler()
+            : this(null)
+        {
+        }
+
+        public VerifiedIdentityFailureHandler(string verifyIdentityInformationUrl)
         {
             _verifyIdentityInformationUrl = verifyIdentityInformationUrl;
         }

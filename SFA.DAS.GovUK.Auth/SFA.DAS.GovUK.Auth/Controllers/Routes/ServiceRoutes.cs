@@ -4,11 +4,13 @@
     {
         public static class Names
         {
-            public const string VerifyIdentity = nameof(VerifyIdentity);
-            public const string AccountUnavailable = nameof(AccountUnavailable);
-            public const string AccountDetails = nameof(AccountDetails);
-            public const string UserSignedOut = nameof(UserSignedOut);
-            public const string KeepAlive = nameof(KeepAlive);
+            public const string VerifyIdentity = UniqueName + nameof(VerifyIdentity);
+            public const string AccountUnavailable = UniqueName + nameof(AccountUnavailable);
+            public const string AccountDetails = UniqueName + nameof(AccountDetails);
+            public const string UserSignedOut = UniqueName + nameof(UserSignedOut);
+            public const string KeepAlive = UniqueName + nameof(KeepAlive);
+
+            private const string UniqueName = "GovUK.Auth.";
         }
 
         public static class Paths
