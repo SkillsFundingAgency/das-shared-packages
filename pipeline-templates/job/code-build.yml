@@ -20,6 +20,7 @@ jobs:
       - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
         parameters:
           ConfigFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
+
       - task: SonarCloudPrepare@4
         displayName: Prepare SonarCloud analysis configuration
         condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
@@ -29,15 +30,18 @@ jobs:
           scannerMode: dotnet
           projectName: "$(Build.DefinitionName)"
           projectKey: ${{ parameters.SonarCloudProjectKey }}
+
       - task: NuGetToolInstaller@0
         displayName: 'Use NuGet 5.x'
         inputs:
           versionSpec: 5.x
+
       - task: NuGetCommand@2
         displayName: 'NuGet restore'
         inputs:
           restoreSolution: ${{ parameters.WorkingDirectory }}/**/*.sln
           additionalArguments: "-p:TreatWarningsAsErrors=false"
+
       - task: VSBuild@1
         displayName: 'Build Solution'
         inputs:
@@ -46,26 +50,31 @@ jobs:
           configuration: '$(buildConfiguration)'
           clean: true
           vsVersion: '16.0'
+
       - task: VSTest@2
         displayName: 'Run NUnit Tests'
         inputs:
-          testAssemblyVer2: ${{parameters.WorkingDirectory }}/**/bin/$(buildConfiguration)/*UnitTests.dll
+          testAssemblyVer2: ${{ parameters.WorkingDirectory }}/**/bin/$(buildConfiguration)/*UnitTests.dll
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
+
       - task: SonarCloudAnalyze@4
         displayName: Run SonarCloud analysis
         condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
+
       - task: SonarCloudPublish@4
         displayName: Publish SonarCloud analysis results on build summary
         condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
         inputs:
           pollingTimeoutSec: '300'
+
       - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
         parameters:
           ${{ if eq(parameters.SdkStyleFrameworkProjects, true) }}:
             DotNetStandardPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
           ${{ else }}:
             DotNetFrameworkPackagesToPack: ${{ parameters.DotNetFrameworkPackagesToPack }}
+
 - ${{ elseif ne(parameters.DotNetStandardPackagesToPack, '') }}:
   - job: CliCodeBuild
     pool:
@@ -78,12 +87,16 @@ jobs:
       - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
         parameters:
           ConfigFilePath: ${{ parameters.WorkingDirectory }}/GitVersion.yml
+
       - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
         parameters:
           SonarCloudProjectKey: ${{ parameters.SonarCloudProjectKey }}
           TargetProjects: ${{ parameters.WorkingDirectory }}/**/*.csproj
-          UnitTestProjects: ${{parameters.WorkingDirectory }}/**/*UnitTests.csproj
+          UnitTestProjects: ${{ parameters.WorkingDirectory }}/**/*UnitTests.csproj
           ContinueOnVulnerablePackageScanError: true
+          SonarCloudExtraProperties: |
+            sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/CoverageResults/coverage*.opencover.xml
+
       - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
         parameters:
           DotNetStandardPackagesToPack: ${{ parameters.DotNetStandardPackagesToPack }}

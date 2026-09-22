@@ -1,78 +1,182 @@
 @using SFA.DAS.GovUK.Auth.Configuration
-@using SFA.DAS.GovUK.Auth.Models
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @inject IConfiguration Configuration
 @inject GovUkOidcConfiguration GovUkOidcConfiguration
 
 @{
     Layout = "_Layout";
-    ViewBag.Title = "GOV.UK One Login Sample Service";
-    var enableVerify = bool.Parse(GovUkOidcConfiguration.EnableVerify ?? "false");
+    ViewData[ViewDataKeys.Title] = "Test GOV.UK One Login authentication";
+
+    var enableVerify = bool.TryParse(
+        GovUkOidcConfiguration.EnableVerify,
+        out var configuredEnableVerify) && configuredEnableVerify;
+
+    var stubAuth = bool.TryParse(
+        Configuration["StubAuth"],
+        out var configuredStubAuth) && configuredStubAuth;
+
     var requestedClaims = GovUkOidcConfiguration.RequestedUserInfoClaims?
-        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-    var stubAuth = bool.Parse(Configuration["StubAuth"] ?? "false");
+        .Split(
+            ',',
+            StringSplitOptions.RemoveEmptyEntries |
+            StringSplitOptions.TrimEntries)
+        ?? Array.Empty<string>();
+
+    string GetClaimDescription(string claim) => claim switch
+    {
+        "CoreIdentityJWT" => "Verified name and date of birth",
+        "Address" => "Current or previous address",
+        "Passport" => "Passport information",
+        "DrivingPermit" => "Driving licence information",
+        _ => claim
+    };
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+        <span class="govuk-caption-xl">GOV.UK One Login sample service</span>
+        <h1 class="govuk-heading-xl">
+            Test GOV.UK One Login authentication
+        </h1>
 
-        <p class="govuk-body">
-            This sample service uses the GOV Uk One Login to authenticate.
+        <p class="govuk-body-l">
+            Use this sample service to test signing in, account status checks
+            and identity verification.
         </p>
 
-        @if (requestedClaims?.Any() == true)
+        <h2 class="govuk-heading-m">Authentication configuration</h2>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Authentication provider
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @if (stubAuth)
+                    {
+                        <strong class="govuk-tag govuk-tag--blue">
+                            Local stub
+                        </strong>
+                    }
+                    else
+                    {
+                        <strong class="govuk-tag govuk-tag--green">
+                            GOV.UK One Login
+                        </strong>
+                    }
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Verify during sign-in
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @if (enableVerify)
+                    {
+                        <strong class="govuk-tag govuk-tag--green">
+                            Enabled
+                        </strong>
+                    }
+                    else
+                    {
+                        <strong class="govuk-tag govuk-tag--grey">
+                            Not enabled
+                        </strong>
+                    }
+                </dd>
+            </div>
+        </dl>
+
+        @if (requestedClaims.Length > 0)
         {
+            <h2 class="govuk-heading-m">
+                Verified identity information
+            </h2>
+
             <p class="govuk-body">
-                The service is configured to require the following verified identity information via GOV.UK One Login:
+                This service is configured to request:
             </p>
+
             <ul class="govuk-list govuk-list--bullet">
                 @foreach (var claim in requestedClaims)
                 {
-                    <li>@claim</li>
+                    <li>@GetClaimDescription(claim)</li>
                 }
             </ul>
+
             @if (stubAuth)
             {
-                <p class="govuk-body">
-                    The stub is enabled, allowing you you to enter an Id and an email, you can upload a JSON file that includes your verified identity information.
-                </p>
+                <div class="govuk-inset-text">
+                    The local authentication stub is enabled. You can select a
+                    JSON file containing test identity information when you
+                    sign in.
+                </div>
             }
-            else if(enableVerify)
+            else if (enableVerify)
             {
-                <p class="govuk-body">
-                    After sign-in, you will either start the verify journey or be shown a confirmation of your previous verification.
-                </p>
+                <div class="govuk-inset-text">
+                    The identity-checking journey will start as part of the
+                    sign-in process.
+                </div>
+            }
+            else
+            {
+                <div class="govuk-inset-text">
+                    The identity-checking journey will start when you access
+                    a page that requires a verified identity.
+                </div>
             }
         }
         else
         {
-            <p class="govuk-body">
-                You have not configured any required verified identity information.
-            </p>
-
-            @if (stubAuth)
-            {
-                <p class="govuk-body">
-                    The stub is enabled, allowing you you to enter an Id and an email.
-                </p>
-            }
+            <div class="govuk-inset-text">
+                This service is not configured to request verified identity
+                information. Only the user's One Login account details will
+                be available.
+            </div>
         }
 
-        <form method="post" asp-controller="Home" asp-action="Start" class="govuk-!-margin-top-6">
+        <h2 class="govuk-heading-m">Start the test</h2>
+
+        <form method="post"
+              asp-controller="Home"
+              asp-action="Start">
             <div class="govuk-form-group">
-                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="suspend" name="suspend" type="checkbox" value="true">
-                        <label class="govuk-label govuk-checkboxes__label" for="suspend">
-                            Mark this sign-in as <strong>Suspended</strong>
-                        </label>
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        Account status
+                    </legend>
+
+                    <div id="suspend-hint" class="govuk-hint">
+                        Use this option to test what happens when the account
+                        is not allowed to access the service.
                     </div>
-                </div>
+
+                    <div class="govuk-checkboxes"
+                         data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input"
+                                   id="suspend"
+                                   name="suspend"
+                                   type="checkbox"
+                                   value="true"
+                                   aria-describedby="suspend-hint">
+
+                            <label class="govuk-label govuk-checkboxes__label"
+                                   for="suspend">
+                                Simulate a suspended account
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
-            <button class="govuk-button" data-module="govuk-button" type="submit">
-                Start
+
+            <button class="govuk-button"
+                    data-module="govuk-button"
+                    type="submit">
+                Start test sign in
             </button>
         </form>
-
     </div>
 </div>

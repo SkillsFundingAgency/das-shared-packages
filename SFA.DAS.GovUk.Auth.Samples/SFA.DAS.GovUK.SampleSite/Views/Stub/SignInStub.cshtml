@@ -1,9 +1,11 @@
 @inject GovUkOidcConfiguration GovUkOidcConfiguration
 @using SFA.DAS.GovUK.Auth.Configuration
 @using SFA.DAS.GovUK.SampleSite.Models
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @model SignInStubViewModel
 @{
-    ViewBag.Title = "GOV.UK One Login Sample Service";
+    ViewData[ViewDataKeys.Title] =
+        "Sign in stub - GOV.UK One Login Sample Service";
     Layout = "_Layout";
 }
 

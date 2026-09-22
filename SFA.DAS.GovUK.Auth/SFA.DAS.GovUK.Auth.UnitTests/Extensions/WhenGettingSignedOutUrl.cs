@@ -1,3 +1,4 @@
+using SFA.DAS.GovUK.Auth.Controllers.Routes;
 using SFA.DAS.GovUK.Auth.Extensions;
 
 namespace SFA.DAS.GovUK.Auth.UnitTests.Extensions;

@@ -1,0 +1,83 @@
+﻿@using SFA.DAS.GovUK.Auth.Models
+@using SFA.DAS.GovUK.SampleSite.Controllers.Routes
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
+@model GovUkUser
+
+@{
+    Layout = "_Layout";
+    ViewData[ViewDataKeys.Title] = "GOV.UK One Login account details";
+
+    var email = string.IsNullOrWhiteSpace(Model.Email)
+        ? "Not returned"
+        : Model.Email;
+
+    var phoneNumber = string.IsNullOrWhiteSpace(Model.PhoneNumber)
+        ? "Not returned"
+        : Model.PhoneNumber;
+
+    var subject = string.IsNullOrWhiteSpace(Model.Sub)
+        ? "Not returned"
+        : Model.Sub;
+}
+
+<a asp-route="@HomeRoutes.Names.Home" class="govuk-back-link">Back</a>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">GOV.UK One Login sample service</span>
+        <h1 class="govuk-heading-xl">Your account details</h1>
+
+        <p class="govuk-body-l">
+            These details were returned by GOV.UK One Login after you signed in.
+        </p>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">@email</dd>
+                <dd class="govuk-summary-list__actions">
+                    @if (Model.EmailVerified)
+                    {
+                        <strong class="govuk-tag govuk-tag--green">Verified</strong>
+                    }
+                    else
+                    {
+                        <strong class="govuk-tag govuk-tag--grey">Not verified</strong>
+                    }
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Phone number</dt>
+                <dd class="govuk-summary-list__value">@phoneNumber</dd>
+                <dd class="govuk-summary-list__actions">
+                    @if (Model.PhoneNumberVerified)
+                    {
+                        <strong class="govuk-tag govuk-tag--green">Verified</strong>
+                    }
+                    else
+                    {
+                        <strong class="govuk-tag govuk-tag--grey">Not verified</strong>
+                    }
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">One Login subject identifier</dt>
+                <dd class="govuk-summary-list__value">@subject</dd>
+            </div>
+        </dl>
+
+        <div class="govuk-inset-text">
+            Account details confirm the sign-in account. Verified identity details,
+            such as name, date of birth and address, are only available after the
+            identity-checking journey has been completed.
+        </div>
+
+        <a asp-route="@HomeRoutes.Names.VerifiedAccountDetails"
+           class="govuk-button"
+           data-module="govuk-button">
+            View verified identity details
+        </a>
+    </div>
+</div>

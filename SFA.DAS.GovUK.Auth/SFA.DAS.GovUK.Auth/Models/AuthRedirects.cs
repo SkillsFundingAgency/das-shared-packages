@@ -5,10 +5,11 @@ namespace SFA.DAS.GovUK.Auth.Models
     [ExcludeFromCodeCoverage]
     public class AuthRedirects
     {
-        public string SuspendedRedirectUrl { get; set; } = "";
-        public string SignedOutRedirectUrl { get; set; } = "";
-        public string LoginRedirect { get; set; } = ""; 
-        public string LocalStubLoginPath { get; set; } = "";
-        public string CookieDomain { get; set; } = "";
+        public string SuspendedRedirectUrl { get; set; } = string.Empty;
+        public string SignedOutRedirectUrl { get; set; } = string.Empty;
+        public string LoginRedirect { get; set; } = string.Empty; 
+        public string LocalStubLoginPath { get; set; } = string.Empty;
+        public string CookieDomain { get; set; } = string.Empty;
+        public string VerifyIdentityInformationUrl { get; set; } = string.Empty;
     }
 }
