@@ -2,6 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.KeyVaultExtensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -46,7 +47,9 @@ public class WhenGettingTokenTests
                 It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals(SecurityAlgorithms.RsaSha512))))
             .Returns(clientAssertion);
-        var service = new OidcGovUkAuthenticationService(client, signingProviderMock.Object, jwtService.Object, config, Mock.Of<ICustomClaims>());
+
+        var service = new OidcGovUkAuthenticationService(client, Mock.Of<IHttpContextAccessor>(),
+            signingProviderMock.Object, jwtService.Object, config, Mock.Of<ICustomClaims>());
         
         //Act
         var actual = await service.GetToken(openIdConnectMessage);
@@ -99,7 +102,9 @@ public class WhenGettingTokenTests
                 It.Is<ClaimsIdentity>(c=>c.HasClaim("sub",config.ClientId) && c.Claims.FirstOrDefault(f=>f.Type.Equals("jti"))!=null),
                 It.Is<SigningCredentials>(c=>c.Kid.Equals(config.KeyVaultIdentifier) && c.Algorithm.Equals("RS512"))))
             .Returns(clientAssertion);
-        var service = new OidcGovUkAuthenticationService(client, signingProviderMock.Object, jwtService.Object, config, Mock.Of<ICustomClaims>());
+        
+        var service = new OidcGovUkAuthenticationService(client, Mock.Of<IHttpContextAccessor>(),
+            signingProviderMock.Object, jwtService.Object, config, Mock.Of<ICustomClaims>());
         
         //Act
         await service.GetToken(openIdConnectMessage);

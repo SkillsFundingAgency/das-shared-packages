@@ -41,7 +41,9 @@ public class WhenPopulatingAccountClaimsTests
             },
             Principal = null
         };
-        var service = new OidcGovUkAuthenticationService(Mock.Of<HttpClient>(),Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
+        
+        var service = new OidcGovUkAuthenticationService(Mock.Of<HttpClient>(), Mock.Of<IHttpContextAccessor>(),
+            Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -74,7 +76,9 @@ public class WhenPopulatingAccountClaimsTests
         {
             Principal = mockPrincipal.Object
         };
-        var service = new OidcGovUkAuthenticationService(Mock.Of<HttpClient>(), Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
+
+        var service = new OidcGovUkAuthenticationService(Mock.Of<HttpClient>(), Mock.Of<IHttpContextAccessor>(),
+            Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, null);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -117,7 +121,8 @@ public class WhenPopulatingAccountClaimsTests
             Principal = mockPrincipal.Object
         };
         
-        var service = new Auth.Services.OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
+        var service = new OidcGovUkAuthenticationService(client, Mock.Of<IHttpContextAccessor>(),
+            Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -166,8 +171,9 @@ public class WhenPopulatingAccountClaimsTests
             },
             Principal = mockPrincipal.Object
         };
-        
-        var service = new Auth.Services.OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
+
+        var service = new OidcGovUkAuthenticationService(client, Mock.Of<IHttpContextAccessor>(),
+            Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -209,8 +215,9 @@ public class WhenPopulatingAccountClaimsTests
         var customClaims = new Mock<ICustomClaims>();
         customClaims.Setup(x => x.GetClaims(tokenValidatedContext))
             .ReturnsAsync(new List<Claim> {new Claim("CustomClaim", customClaimValue)});
-        
-        var service = new OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, customClaims.Object);
+
+        var service = new OidcGovUkAuthenticationService(client, Mock.Of<IHttpContextAccessor>(),
+            Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, customClaims.Object);
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);
@@ -249,8 +256,9 @@ public class WhenPopulatingAccountClaimsTests
             },
             Principal = mockPrincipal.Object
         };
-        
-        var service = new Auth.Services.OidcGovUkAuthenticationService(client, Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
+
+        var service = new OidcGovUkAuthenticationService(client, Mock.Of<IHttpContextAccessor>(),
+            Mock.Of<ISigningCredentialsProvider>(), Mock.Of<IJwtSecurityTokenService>(), config, Mock.Of<ICustomClaims>());
 
         //Act
         await service.PopulateAccountClaims(tokenValidatedContext);

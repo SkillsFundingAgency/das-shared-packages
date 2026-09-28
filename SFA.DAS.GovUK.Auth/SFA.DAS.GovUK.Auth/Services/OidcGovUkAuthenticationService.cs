@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SFA.DAS.GovUK.Auth.Configuration;
@@ -21,18 +22,21 @@ namespace SFA.DAS.GovUK.Auth.Services;
 internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
 {
     private readonly HttpClient _httpClient;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ISigningCredentialsProvider _signingProvider;
     private readonly IJwtSecurityTokenService _jwtSecurityTokenService;
     private readonly ICustomClaims _customClaims;
     private readonly GovUkOidcConfiguration _configuration;
 
     public OidcGovUkAuthenticationService(HttpClient httpClient,
-                       ISigningCredentialsProvider signingProvider,
-                       IJwtSecurityTokenService jwtSecurityTokenService,
-                       GovUkOidcConfiguration configuration,
-                       ICustomClaims customClaims)
+        IHttpContextAccessor httpContextAccessor,
+        ISigningCredentialsProvider signingProvider,
+        IJwtSecurityTokenService jwtSecurityTokenService,
+        GovUkOidcConfiguration configuration,
+        ICustomClaims customClaims)
     {
         _httpClient = httpClient;
+        _httpContextAccessor = httpContextAccessor;
         _signingProvider = signingProvider;
         _jwtSecurityTokenService = jwtSecurityTokenService;
         _customClaims = customClaims;
@@ -83,38 +87,25 @@ internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
             return;
         }
 
-        var accessToken = tokenValidatedContext.TokenEndpointResponse.Parameters["access_token"];
-
-        var content = await GetAccountDetails(accessToken);
-
-        if (content?.Email != null)
-        {
-            tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));
-        }
-
         tokenValidatedContext.Principal.Identities.First()
             .AddClaims(await _customClaims.GetClaims(tokenValidatedContext));
     }
 
-    public async Task<GovUkUser> GetAccountDetails(string accessToken)
+    public GovUkUser GetAccountDetails()
     {
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo")
-        {
-            Headers =
-            {
-                UserAgent = {new ProductInfoHeaderValue("DfEApprenticeships", "1")},
-                Authorization = new AuthenticationHeaderValue("Bearer", accessToken)
-            }
-        };
-
-        var response = await _httpClient.SendAsync(httpRequestMessage);
-        if (!response.IsSuccessStatusCode)
+        var principal = _httpContextAccessor.HttpContext?.User;
+        if (principal?.Identity?.IsAuthenticated != true)
         {
             return null;
         }
 
-        var valueString = response.Content.ReadAsStringAsync().Result;
-        return JsonSerializer.Deserialize<GovUkUser>(valueString);
+        var json = principal.FindFirstValue(GovUkUserClaimTypes.UserInfo);
+
+        var govUkUser = string.IsNullOrWhiteSpace(json)
+            ? null
+            : JsonSerializer.Deserialize<GovUkUser>(json);
+
+        return govUkUser;
     }
 
     public Task<IActionResult> ChallengeWithVerifyAsync(string returnUrl, Controller controller)

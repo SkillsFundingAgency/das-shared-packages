@@ -117,7 +117,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, true);
@@ -146,7 +146,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, null);
@@ -173,7 +173,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, false);
@@ -201,7 +201,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, false);
@@ -238,7 +238,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             };
 
             var claimsIdentity = new ClaimsIdentity();
-            claimsIdentity.AddClaim(new Claim(StubAuthenticationService.StubGovUkUserClaimType, JsonSerializer.Serialize(user)));
+            claimsIdentity.AddClaim(new Claim(GovUkUserClaimTypes.UserInfo, JsonSerializer.Serialize(user)));
 
             var validateContext = CreateContext(claimsIdentity, true);
 
@@ -274,7 +274,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm.P2"));
-            claimsIdentity.AddClaim(new Claim(StubAuthenticationService.StubGovUkUserClaimType, JsonSerializer.Serialize(user)));
+            claimsIdentity.AddClaim(new Claim(GovUkUserClaimTypes.UserInfo, JsonSerializer.Serialize(user)));
 
             var validateContext = CreateContext(claimsIdentity, null);
 
@@ -298,7 +298,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, null);
@@ -322,7 +322,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson(
                     CreateHistoricalName("Old", "Name", "2020-01-01T00:00:00Z", "2022-01-01T00:00:00Z"),
                     CreateHistoricalName("Current", "Name", "2022-01-01T00:00:00Z", null))));
@@ -348,7 +348,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson(
                     CreateHistoricalName("Cher", null, "2020-01-01T00:00:00Z", null))));
 
@@ -373,7 +373,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
             claimsIdentity.AddClaim(new Claim(
-                StubAuthenticationService.StubGovUkUserClaimType,
+                GovUkUserClaimTypes.UserInfo,
                 CreateStubGovUkUserJson(
                     CreateHistoricalName(null, "Madonna", "2020-01-01T00:00:00Z", null))));
 

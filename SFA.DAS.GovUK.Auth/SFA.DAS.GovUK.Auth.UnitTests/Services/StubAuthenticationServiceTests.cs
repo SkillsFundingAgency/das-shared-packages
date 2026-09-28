@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
+using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Controllers;
 using SFA.DAS.GovUK.Auth.Exceptions;
 using SFA.DAS.GovUK.Auth.Models;
@@ -19,22 +21,23 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.Services;
 public class StubAuthenticationServiceTests
 {
     private StubAuthenticationService _sut;
+
+    private GovUkOidcConfiguration _config;
+    private Mock<IOptions<GovUkOidcConfiguration>> _configMock;
     private Mock<ICustomClaims> _customClaimsMock;
     private Mock<IHttpContextAccessor> _httpContextAccessorMock;
-    private IConfiguration _configuration;
 
     [SetUp]
     public void SetUp()
     {
         _customClaimsMock = new Mock<ICustomClaims>();
         _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-        _configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                { "ResourceEnvironmentName", "dev" }
-            }).Build();
 
-        _sut = new StubAuthenticationService(_configuration, _customClaimsMock.Object, _httpContextAccessorMock.Object);
+        _config = new GovUkOidcConfiguration();
+        _configMock = new Mock<IOptions<GovUkOidcConfiguration>>();
+        _configMock.Setup(x => x.Value).Returns(_config);
+
+        _sut = new StubAuthenticationService(_configMock.Object, _customClaimsMock.Object, _httpContextAccessorMock.Object);
     }
 
     [Test]
@@ -60,25 +63,6 @@ public class StubAuthenticationServiceTests
         result.FindFirst(ClaimTypes.MobilePhone)?.Value.Should().Be("07123456789");
         result.FindFirst("sub")?.Value.Should().Be("abc-123");
         result.FindFirst("custom")?.Value.Should().Be("value");
-    }
-
-    [Test]
-    public async Task GetStubSignInClaims_ReturnsNull_IfEnvironmentIsPRD()
-    {
-        // Arrange
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                { "ResourceEnvironmentName", "PRD" }
-            }).Build();
-
-        var sut = new StubAuthenticationService(config, _customClaimsMock.Object, _httpContextAccessorMock.Object);
-
-        // Act
-        var result = await sut.GetStubSignInClaims(new StubAuthUserDetails());
-
-        // Assert
-        result.Should().BeNull();
     }
 
     [Test]
@@ -117,7 +101,7 @@ public class StubAuthenticationServiceTests
     }
 
     [Test]
-    public async Task GetAccountDetails_MapsClaimsFromHttpContext()
+    public void GetAccountDetails_MapsClaimsFromHttpContext()
     {
         // Arrange
         var identity = new ClaimsIdentity(new[]
@@ -133,7 +117,7 @@ public class StubAuthenticationServiceTests
         _httpContextAccessorMock.Setup(x => x.HttpContext).Returns(context);
 
         // Act
-        var result = await _sut.GetAccountDetails("any-token");
+        var result = _sut.GetAccountDetails();
 
         // Assert
         result.Sub.Should().Be("user-id");
