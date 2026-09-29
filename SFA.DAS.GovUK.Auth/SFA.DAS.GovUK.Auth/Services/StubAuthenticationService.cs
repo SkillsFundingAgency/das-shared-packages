@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SFA.DAS.GovUK.Auth.Configuration;
@@ -24,12 +25,14 @@ public class StubAuthenticationService : IStubAuthenticationService
     private readonly GovUkOidcConfiguration _config;
     private readonly ICustomClaims _customClaims;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly string _environment;
 
-    public StubAuthenticationService(IOptions<GovUkOidcConfiguration> config, ICustomClaims customClaims, IHttpContextAccessor httpContextAccessor)
+    public StubAuthenticationService(IConfiguration configuration, IOptions<GovUkOidcConfiguration> config, ICustomClaims customClaims, IHttpContextAccessor httpContextAccessor)
     {
         _config = config.Value;
         _customClaims = customClaims;
         _httpContextAccessor = httpContextAccessor;
+        _environment = configuration["ResourceEnvironmentName"]?.ToUpper();
     }
 
     public GovUkUser GetAccountDetails()
@@ -51,6 +54,11 @@ public class StubAuthenticationService : IStubAuthenticationService
 
     public async Task<ClaimsPrincipal> GetStubSignInClaims(StubAuthUserDetails model)
     {
+        if (_environment.Equals("PRD", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Stub sign-in is disabled in production.");
+        }
+
         var claims = new List<Claim>
         {
             new(ClaimTypes.Email, model.Email),
@@ -63,35 +71,37 @@ public class StubAuthenticationService : IStubAuthenticationService
             claims.Add(new Claim(ClaimTypes.MobilePhone, model.Mobile));
         }
 
-        if(model.GovUkUser != null)
+        var govUkUser = model.GovUkUser ?? new GovUkUser
         {
-            claims.Add(new Claim(GovUkUserClaimTypes.UserInfo, JsonSerializer.Serialize(model.GovUkUser)));
+            Sub = model.Id,
+            Email = model.Email,
+            EmailVerified = true,
+            PhoneNumber = model.Mobile,
+            PhoneNumberVerified = !string.IsNullOrWhiteSpace(model.Mobile)
+        };
 
-            var coreIdentity = model.GovUkUser.CoreIdentityJwt;
+        claims.Add(new Claim(GovUkUserClaimTypes.UserInfo, JsonSerializer.Serialize(govUkUser)));
 
-            if (coreIdentity?.Vc?.CredentialSubject != null)
-            {
-                claims.Add(new Claim(
-                    GovUkUserClaimTypes.VerifiedIdentity,
-                    "true"));
-            }
+        if (govUkUser.CoreIdentityJwt?.Vc?.CredentialSubject != null)
+        {
+            claims.Add(new Claim(GovUkUserClaimTypes.VerifiedIdentity, "true"));
         }
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(claimsIdentity);
 
-        var context = new TokenValidatedContext(
-            _httpContextAccessor.HttpContext!,
-            new AuthenticationScheme(
-                OpenIdConnectDefaults.AuthenticationScheme,
-                "Stub",
-                typeof(OpenIdConnectHandler)),
+        if (_customClaims != null)
+        {
+            var context = new TokenValidatedContext(
+                _httpContextAccessor.HttpContext!,
+                new AuthenticationScheme(
+                    OpenIdConnectDefaults.AuthenticationScheme,
+                    "Stub",
+                    typeof(OpenIdConnectHandler)),
                 new OpenIdConnectOptions(),
                 principal,
                 new AuthenticationProperties());
 
-        if (_customClaims != null)
-        {
             var additionalClaims = await _customClaims.GetClaims(context);
 
             if (context.Result != null)

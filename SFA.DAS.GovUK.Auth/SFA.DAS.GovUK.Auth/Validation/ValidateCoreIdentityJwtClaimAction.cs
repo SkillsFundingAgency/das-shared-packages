@@ -44,8 +44,11 @@ namespace SFA.DAS.GovUK.Auth.Validation
                 throw new SecurityTokenException("The core identity contains no credential subject.");
             }
 
-            var latestName = CoreIdentityJwtClaimHelper
-                .GetLatestNameFrom(coreIdentity);
+            var latestName = CoreIdentityJwtClaimHelper.GetLatestNameFrom(coreIdentity);
+            if (string.IsNullOrWhiteSpace(latestName?.FullName))
+            {
+                throw new SecurityTokenException("The core identity contains no usable name.");
+            }
 
             if (!string.IsNullOrWhiteSpace(latestName?.GivenName))
             {

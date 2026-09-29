@@ -27,6 +27,7 @@ public class StubAuthenticationServiceTests
     private Mock<IOptions<GovUkOidcConfiguration>> _configMock;
     private Mock<ICustomClaims> _customClaimsMock;
     private Mock<IHttpContextAccessor> _httpContextAccessorMock;
+    private IConfiguration _configuration;
 
     [SetUp]
     public void SetUp()
@@ -37,8 +38,13 @@ public class StubAuthenticationServiceTests
         _config = new GovUkOidcConfiguration();
         _configMock = new Mock<IOptions<GovUkOidcConfiguration>>();
         _configMock.Setup(x => x.Value).Returns(_config);
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                { "ResourceEnvironmentName", "DEV" }
+            }).Build();
 
-        _sut = new StubAuthenticationService(_configMock.Object, _customClaimsMock.Object, _httpContextAccessorMock.Object);
+        _sut = new StubAuthenticationService(_configuration, _configMock.Object, _customClaimsMock.Object, _httpContextAccessorMock.Object);
     }
 
     [Test]
