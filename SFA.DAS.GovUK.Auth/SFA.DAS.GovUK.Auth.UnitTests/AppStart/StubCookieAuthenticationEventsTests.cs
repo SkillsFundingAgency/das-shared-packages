@@ -76,7 +76,9 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             // Assert
             headers["Location"].ToString().Should().Be(SignedOutUrl);
-            cookiesMock.Verify(c => c.Delete(GovUkConstants.StubAuthCookieName), Times.Once);
+            cookiesMock.Verify(
+                c => c.Delete(GovUkConstants.StubAuthCookieName),
+                Times.Once);
         }
 
         [Test]
@@ -112,13 +114,9 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         {
             // Arrange
             _config.EnableVerify = null;
-            _config.RequestedUserInfoClaims = UserInfoClaims.CoreIdentityJWT.ToString();
 
-            var claimsIdentity = new ClaimsIdentity();
+            var claimsIdentity = CreateVerifiedIdentity("Jane", "Smith");
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
-            claimsIdentity.AddClaim(new Claim(
-                GovUkUserClaimTypes.UserInfo,
-                CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, true);
 
@@ -127,13 +125,14 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             // Assert
             claimsIdentity.FindFirst("vot")!.Value.Should().Be("Cl.Cm.P2");
-            claimsIdentity.FindFirst(UserInfoClaims.CoreIdentityJWT.GetDescription())!.Value.Should().NotBeNullOrWhiteSpace();
             claimsIdentity.FindFirst(ClaimTypes.Name)!.Value.Should().Be("Jane Smith");
             claimsIdentity.FindFirst(ClaimTypes.GivenName)!.Value.Should().Be("Jane");
             claimsIdentity.FindFirst(ClaimTypes.Surname)!.Value.Should().Be("Smith");
 
             validateContext.ShouldRenew.Should().BeTrue();
-            _ticketStoreMock.Verify(x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()), Times.Once);
+            _ticketStoreMock.Verify(
+                x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()),
+                Times.Once);
         }
 
         [Test]
@@ -141,13 +140,9 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         {
             // Arrange
             _config.EnableVerify = "true";
-            _config.RequestedUserInfoClaims = UserInfoClaims.CoreIdentityJWT.ToString();
 
-            var claimsIdentity = new ClaimsIdentity();
+            var claimsIdentity = CreateVerifiedIdentity("Jane", "Smith");
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
-            claimsIdentity.AddClaim(new Claim(
-                GovUkUserClaimTypes.UserInfo,
-                CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, null);
 
@@ -156,13 +151,14 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             // Assert
             claimsIdentity.FindFirst("vot")!.Value.Should().Be("Cl.Cm.P2");
-            claimsIdentity.FindFirst(UserInfoClaims.CoreIdentityJWT.GetDescription())!.Value.Should().NotBeNullOrWhiteSpace();
             claimsIdentity.FindFirst(ClaimTypes.Name)!.Value.Should().Be("Jane Smith");
             claimsIdentity.FindFirst(ClaimTypes.GivenName)!.Value.Should().Be("Jane");
             claimsIdentity.FindFirst(ClaimTypes.Surname)!.Value.Should().Be("Smith");
 
             validateContext.ShouldRenew.Should().BeTrue();
-            _ticketStoreMock.Verify(x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()), Times.Once);
+            _ticketStoreMock.Verify(
+                x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()),
+                Times.Once);
         }
 
         [Test]
@@ -183,13 +179,14 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             // Assert
             claimsIdentity.FindFirst("vot")!.Value.Should().Be("Cl.Cm");
-            claimsIdentity.FindFirst(UserInfoClaims.CoreIdentityJWT.GetDescription()).Should().BeNull();
             claimsIdentity.FindFirst(ClaimTypes.Name).Should().BeNull();
             claimsIdentity.FindFirst(ClaimTypes.GivenName).Should().BeNull();
             claimsIdentity.FindFirst(ClaimTypes.Surname).Should().BeNull();
 
             validateContext.ShouldRenew.Should().BeTrue();
-            _ticketStoreMock.Verify(x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()), Times.Once);
+            _ticketStoreMock.Verify(
+                x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()),
+                Times.Once);
         }
 
         [Test]
@@ -210,20 +207,22 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             await _sut.ValidatePrincipal(validateContext);
 
             // Assert
-            claimsIdentity.FindFirst("vot")!.Value.Should().Be("Cl.Cm");
-            claimsIdentity.FindFirst(UserInfoClaims.CoreIdentityJWT.GetDescription()).Should().BeNull();
+            claimsIdentity.FindFirst("vot").Value.Should().Be("Cl.Cm");
             claimsIdentity.FindFirst(ClaimTypes.Name).Should().BeNull();
 
             validateContext.ShouldRenew.Should().BeFalse();
-            _ticketStoreMock.Verify(x => x.RenewAsync(It.IsAny<string>(), It.IsAny<AuthenticationTicket>()), Times.Never);
+            _ticketStoreMock.Verify(
+                x => x.RenewAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<AuthenticationTicket>()),
+                Times.Never);
         }
 
         [Test]
-        public async Task ValidatePrincipal_Adds_UserInfoClaim_When_VerifyEnabled()
+        public async Task ValidatePrincipal_Keeps_Address_In_UserInfo_When_Verify_Enabled()
         {
             // Arrange
             _config.EnableVerify = null;
-            _config.RequestedUserInfoClaims = UserInfoClaims.Address.ToString();
 
             var user = new GovUkUser
             {
@@ -238,7 +237,12 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             };
 
             var claimsIdentity = new ClaimsIdentity();
-            claimsIdentity.AddClaim(new Claim(GovUkUserClaimTypes.UserInfo, JsonSerializer.Serialize(user)));
+            claimsIdentity.AddClaim(new Claim(
+                GovUkUserClaimTypes.UserInfo,
+                JsonSerializer.Serialize(user)));
+            claimsIdentity.AddClaim(new Claim(
+                GovUkUserClaimTypes.VerifiedIdentity,
+                "true"));
 
             var validateContext = CreateContext(claimsIdentity, true);
 
@@ -246,19 +250,25 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             await _sut.ValidatePrincipal(validateContext);
 
             // Assert
-            var claim = claimsIdentity.FindFirst(UserInfoClaims.Address.GetDescription());
-            claim.Should().NotBeNull();
+            var storedUser = JsonSerializer.Deserialize<GovUkUser>(
+                claimsIdentity.FindFirst(GovUkUserClaimTypes.UserInfo)!.Value);
+
+            storedUser!.Addresses.Single().StreetName.Should().Be("Test Lane");
+            claimsIdentity.FindFirst(UserInfoClaims.Address.GetDescription())
+                .Should().BeNull();
+            claimsIdentity.FindFirst("vot")!.Value.Should().Be("Cl.Cm.P2");
 
             validateContext.ShouldRenew.Should().BeTrue();
-            _ticketStoreMock.Verify(x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()), Times.Once);
+            _ticketStoreMock.Verify(
+                x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()),
+                Times.Once);
         }
 
         [Test]
-        public async Task ValidatePrincipal_Adds_UserInfoClaims_When_Vot_Already_Correct()
+        public async Task ValidatePrincipal_DoesNotAdd_Separate_Address_Claim_When_Vot_Already_Correct()
         {
             // Arrange
             _config.EnableVerify = "true";
-            _config.RequestedUserInfoClaims = UserInfoClaims.Address.ToString();
 
             var user = new GovUkUser
             {
@@ -274,7 +284,12 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm.P2"));
-            claimsIdentity.AddClaim(new Claim(GovUkUserClaimTypes.UserInfo, JsonSerializer.Serialize(user)));
+            claimsIdentity.AddClaim(new Claim(
+                GovUkUserClaimTypes.UserInfo,
+                JsonSerializer.Serialize(user)));
+            claimsIdentity.AddClaim(new Claim(
+                GovUkUserClaimTypes.VerifiedIdentity,
+                "true"));
 
             var validateContext = CreateContext(claimsIdentity, null);
 
@@ -282,10 +297,19 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             await _sut.ValidatePrincipal(validateContext);
 
             // Assert
-            claimsIdentity.FindFirst(UserInfoClaims.Address.GetDescription()).Should().NotBeNull();
+            var storedUser = JsonSerializer.Deserialize<GovUkUser>(
+                claimsIdentity.FindFirst(GovUkUserClaimTypes.UserInfo)!.Value);
 
-            validateContext.ShouldRenew.Should().BeTrue();
-            _ticketStoreMock.Verify(x => x.RenewAsync("session-123", It.IsAny<AuthenticationTicket>()), Times.Once);
+            storedUser!.Addresses.Single().StreetName.Should().Be("Test Lane");
+            claimsIdentity.FindFirst(UserInfoClaims.Address.GetDescription())
+                .Should().BeNull();
+
+            validateContext.ShouldRenew.Should().BeFalse();
+            _ticketStoreMock.Verify(
+                x => x.RenewAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<AuthenticationTicket>()),
+                Times.Never);
         }
 
         [Test]
@@ -293,13 +317,9 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         {
             // Arrange
             _config.EnableVerify = "true";
-            _config.RequestedUserInfoClaims = UserInfoClaims.CoreIdentityJWT.ToString();
 
-            var claimsIdentity = new ClaimsIdentity();
+            var claimsIdentity = CreateVerifiedIdentity("Jane", "Smith");
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
-            claimsIdentity.AddClaim(new Claim(
-                GovUkUserClaimTypes.UserInfo,
-                CreateStubGovUkUserJson("Jane", "Smith")));
 
             var validateContext = CreateContext(claimsIdentity, null);
 
@@ -317,15 +337,17 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         {
             // Arrange
             _config.EnableVerify = "true";
-            _config.RequestedUserInfoClaims = UserInfoClaims.CoreIdentityJWT.ToString();
 
-            var claimsIdentity = new ClaimsIdentity();
+            var claimsIdentity = CreateVerifiedIdentity(
+                CreateHistoricalName(
+                    "Old", "Name",
+                    "2020-01-01T00:00:00Z",
+                    "2022-01-01T00:00:00Z"),
+                CreateHistoricalName(
+                    "Current", "Name",
+                    "2022-01-01T00:00:00Z",
+                    null));
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
-            claimsIdentity.AddClaim(new Claim(
-                GovUkUserClaimTypes.UserInfo,
-                CreateStubGovUkUserJson(
-                    CreateHistoricalName("Old", "Name", "2020-01-01T00:00:00Z", "2022-01-01T00:00:00Z"),
-                    CreateHistoricalName("Current", "Name", "2022-01-01T00:00:00Z", null))));
 
             var validateContext = CreateContext(claimsIdentity, null);
 
@@ -343,14 +365,11 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         {
             // Arrange
             _config.EnableVerify = "true";
-            _config.RequestedUserInfoClaims = UserInfoClaims.CoreIdentityJWT.ToString();
 
-            var claimsIdentity = new ClaimsIdentity();
+            var claimsIdentity = CreateVerifiedIdentity(
+                CreateHistoricalName(
+                    "Cher", null, "2020-01-01T00:00:00Z", null));
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
-            claimsIdentity.AddClaim(new Claim(
-                GovUkUserClaimTypes.UserInfo,
-                CreateStubGovUkUserJson(
-                    CreateHistoricalName("Cher", null, "2020-01-01T00:00:00Z", null))));
 
             var validateContext = CreateContext(claimsIdentity, null);
 
@@ -368,14 +387,11 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         {
             // Arrange
             _config.EnableVerify = "true";
-            _config.RequestedUserInfoClaims = UserInfoClaims.CoreIdentityJWT.ToString();
 
-            var claimsIdentity = new ClaimsIdentity();
+            var claimsIdentity = CreateVerifiedIdentity(
+                CreateHistoricalName(
+                    null, "Madonna", "2020-01-01T00:00:00Z", null));
             claimsIdentity.AddClaim(new Claim("vot", "Cl.Cm"));
-            claimsIdentity.AddClaim(new Claim(
-                GovUkUserClaimTypes.UserInfo,
-                CreateStubGovUkUserJson(
-                    CreateHistoricalName(null, "Madonna", "2020-01-01T00:00:00Z", null))));
 
             var validateContext = CreateContext(claimsIdentity, null);
 
@@ -388,32 +404,74 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
             claimsIdentity.FindFirst(ClaimTypes.Surname)!.Value.Should().Be("Madonna");
         }
 
-        private CookieValidatePrincipalContext CreateContext(ClaimsIdentity claimsIdentity, bool? enableVerifyProperty)
+        private CookieValidatePrincipalContext CreateContext(
+            ClaimsIdentity claimsIdentity,
+            bool? enableVerifyProperty)
         {
             var principal = new ClaimsPrincipal(claimsIdentity);
 
-            var authProperties = new AuthenticationProperties(new Dictionary<string, string?>
-            {
-                [AuthenticationTicketStore.SessionId] = "session-123"
-            });
+            var authProperties = new AuthenticationProperties(
+                new Dictionary<string, string>
+                {
+                    [AuthenticationTicketStore.SessionId] = "session-123"
+                });
 
             if (enableVerifyProperty.HasValue)
             {
-                authProperties.Items["enableVerify"] = enableVerifyProperty.Value.ToString().ToLowerInvariant();
+                authProperties.Items["enableVerify"] =
+                    enableVerifyProperty.Value.ToString().ToLowerInvariant();
             }
 
-            var context = new DefaultHttpContext();
-
             return new CookieValidatePrincipalContext(
-                context,
-                new AuthenticationScheme("cookie", null, typeof(CookieAuthenticationHandler)),
+                new DefaultHttpContext(),
+                new AuthenticationScheme(
+                    "cookie",
+                    null,
+                    typeof(CookieAuthenticationHandler)),
                 new CookieAuthenticationOptions(),
-                new AuthenticationTicket(principal, authProperties, "cookie"));
+                new AuthenticationTicket(
+                    principal,
+                    authProperties,
+                    "cookie"));
         }
 
-        private static string CreateStubGovUkUserJson(string givenName, string familyName)
+        private static ClaimsIdentity CreateVerifiedIdentity(
+            string givenName,
+            string familyName)
         {
-            return CreateStubGovUkUserJson(CreateHistoricalName(givenName, familyName, "2020-01-01T00:00:00Z", null));
+            return CreateVerifiedIdentity(
+                CreateHistoricalName(
+                    givenName,
+                    familyName,
+                    "2020-01-01T00:00:00Z",
+                    null!));
+        }
+
+        private static ClaimsIdentity CreateVerifiedIdentity(params GovUkName[] names)
+        {
+            var identity = new ClaimsIdentity();
+
+            identity.AddClaim(new Claim(
+                GovUkUserClaimTypes.UserInfo,
+                CreateStubGovUkUserJson(names)));
+
+            identity.AddClaim(new Claim(
+                GovUkUserClaimTypes.VerifiedIdentity,
+                "true"));
+
+            return identity;
+        }
+
+        private static string CreateStubGovUkUserJson(
+            string givenName,
+            string familyName)
+        {
+            return CreateStubGovUkUserJson(
+                CreateHistoricalName(
+                    givenName,
+                    familyName,
+                    "2020-01-01T00:00:00Z",
+                    null!));
         }
 
         private static string CreateStubGovUkUserJson(params GovUkName[] names)
@@ -438,10 +496,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         }
 
         private static GovUkName CreateHistoricalName(
-            string? givenName,
-            string? familyName,
-            string? validFrom,
-            string? validUntil)
+            string givenName,
+            string familyName,
+            string validFrom,
+            string validUntil)
         {
             var nameParts = new List<GovUkNamePart>();
 
