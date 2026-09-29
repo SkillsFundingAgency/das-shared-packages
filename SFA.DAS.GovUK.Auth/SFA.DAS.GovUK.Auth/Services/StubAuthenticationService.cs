@@ -135,7 +135,7 @@ public class StubAuthenticationService : IStubAuthenticationService
 
         return new StubSignInResult
         {
-            Principal = null,
+            Principal = principal,
             ResponseHandled = false
         };
     }
