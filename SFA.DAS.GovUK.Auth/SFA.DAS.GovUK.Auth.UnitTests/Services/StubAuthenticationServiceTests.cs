@@ -65,11 +65,11 @@ public class StubAuthenticationServiceTests
         var result = await _sut.GetStubSignInClaims(details);
 
         // Assert
-        result.Identity!.Name.Should().BeNull(); // not set
-        result.FindFirst(ClaimTypes.Email)?.Value.Should().Be("test@example.com");
-        result.FindFirst(ClaimTypes.MobilePhone)?.Value.Should().Be("07123456789");
-        result.FindFirst("sub")?.Value.Should().Be("abc-123");
-        result.FindFirst("custom")?.Value.Should().Be("value");
+        result.Principal.Identity!.Name.Should().BeNull(); // not set
+        result.Principal.FindFirst(ClaimTypes.Email)?.Value.Should().Be("test@example.com");
+        result.Principal.FindFirst(ClaimTypes.MobilePhone)?.Value.Should().Be("07123456789");
+        result.Principal.FindFirst("sub")?.Value.Should().Be("abc-123");
+        result.Principal.FindFirst("custom")?.Value.Should().Be("value");
     }
 
     [Test]

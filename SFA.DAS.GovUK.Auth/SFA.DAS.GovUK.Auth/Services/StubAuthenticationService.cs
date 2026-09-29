@@ -52,7 +52,7 @@ public class StubAuthenticationService : IStubAuthenticationService
         return govUkUser;
     }
 
-    public async Task<ClaimsPrincipal> GetStubSignInClaims(StubAuthUserDetails model)
+    public async Task<StubSignInResult> GetStubSignInClaims(StubAuthUserDetails model)
     {
         if (_environment.Equals("PRD", StringComparison.OrdinalIgnoreCase))
         {
@@ -71,13 +71,18 @@ public class StubAuthenticationService : IStubAuthenticationService
             claims.Add(new Claim(ClaimTypes.MobilePhone, model.Mobile));
         }
 
-        var govUkUser = model.GovUkUser ?? new GovUkUser
+        var govUkUser = new GovUkUser
         {
             Sub = model.Id,
             Email = model.Email,
-            EmailVerified = true,
+            EmailVerified = model.GovUkUser?.EmailVerified ?? true,
             PhoneNumber = model.Mobile,
-            PhoneNumberVerified = !string.IsNullOrWhiteSpace(model.Mobile)
+            PhoneNumberVerified = model.GovUkUser?.PhoneNumberVerified ?? !string.IsNullOrWhiteSpace(model.Mobile),
+            CoreIdentityJwt = model.GovUkUser?.CoreIdentityJwt,
+            Addresses = model.GovUkUser?.Addresses,
+            DrivingPermits = model.GovUkUser?.DrivingPermits,
+            Passports = model.GovUkUser?.Passports,
+            ReturnCodes = model.GovUkUser?.ReturnCodes
         };
 
         claims.Add(new Claim(GovUkUserClaimTypes.UserInfo, JsonSerializer.Serialize(govUkUser)));
@@ -104,6 +109,16 @@ public class StubAuthenticationService : IStubAuthenticationService
 
             var additionalClaims = await _customClaims.GetClaims(context);
 
+            if (context.Result?.Handled == true)
+            {
+                // the custom handler has already written the response, e.g. Response.Redirect("/Home/AccessDenied")
+                return new StubSignInResult
+                {
+                    Principal = null,
+                    ResponseHandled = true
+                };
+            }
+
             if (context.Result != null)
             {
                 throw new InvalidOperationException("Custom claims handler stopped stub sign-in.");
@@ -112,10 +127,17 @@ public class StubAuthenticationService : IStubAuthenticationService
             principal = context.Principal
                 ?? throw new InvalidOperationException("Custom claims handler removed the principal.");
 
+            claimsIdentity = principal.Identity as ClaimsIdentity
+                ?? throw new InvalidOperationException("Custom claims handler returned a principal without a claims identity.");
+
             claimsIdentity.AddClaims(additionalClaims);
         }
 
-        return principal;
+        return new StubSignInResult
+        {
+            Principal = null,
+            ResponseHandled = false
+        };
     }
 
     public async Task<GovUkUser> GetStubVerifyGovUkUser(IFormFile formFile)
