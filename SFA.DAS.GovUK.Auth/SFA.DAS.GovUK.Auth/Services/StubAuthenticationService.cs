@@ -80,10 +80,29 @@ public class StubAuthenticationService : IStubAuthenticationService
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(claimsIdentity);
 
+        var context = new TokenValidatedContext(
+            _httpContextAccessor.HttpContext!,
+            new AuthenticationScheme(
+                OpenIdConnectDefaults.AuthenticationScheme,
+                "Stub",
+                typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                principal,
+                new AuthenticationProperties());
+
         if (_customClaims != null)
         {
-            claimsIdentity
-                .AddClaims(await _customClaims.GetClaims(principal));
+            var additionalClaims = await _customClaims.GetClaims(context);
+
+            if (context.Result != null)
+            {
+                throw new InvalidOperationException("Custom claims handler stopped stub sign-in.");
+            }
+
+            principal = context.Principal
+                ?? throw new InvalidOperationException("Custom claims handler removed the principal.");
+
+            claimsIdentity.AddClaims(additionalClaims);
         }
 
         return principal;

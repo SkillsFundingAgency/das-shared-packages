@@ -87,6 +87,15 @@ internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
             return;
         }
 
+        var accessToken = tokenValidatedContext.TokenEndpointResponse.AccessToken;
+        var content = await FetchUserInfoAsync(accessToken);
+
+        if (content?.Email != null)
+        {
+            tokenValidatedContext.Principal.Identities.First()
+                .AddClaim(new Claim(ClaimTypes.Email, content.Email));
+        }
+
         tokenValidatedContext.Principal.Identities.First()
             .AddClaims(await _customClaims.GetClaims(tokenValidatedContext));
     }
@@ -118,6 +127,27 @@ internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
         props.Items["enableVerify"] = true.ToString();
 
         return Task.FromResult<IActionResult>(controller.Challenge(props, OpenIdConnectDefaults.AuthenticationScheme));
+    }
+
+    private async Task<GovUkUser> FetchUserInfoAsync(string accessToken)
+    {
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo")
+        {
+            Headers =
+            {
+                UserAgent = {new ProductInfoHeaderValue("DfEApprenticeships", "1")},
+                Authorization = new AuthenticationHeaderValue("Bearer", accessToken)
+            }
+        };
+
+        var response = await _httpClient.SendAsync(httpRequestMessage);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+
+        var valueString = response.Content.ReadAsStringAsync().Result;
+        return JsonSerializer.Deserialize<GovUkUser>(valueString);
     }
 
     private string CreateJwtAssertion()

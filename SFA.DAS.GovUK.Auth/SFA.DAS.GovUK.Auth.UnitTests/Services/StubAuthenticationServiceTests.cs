@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -51,7 +52,7 @@ public class StubAuthenticationServiceTests
             Mobile = "07123456789"
         };
 
-        _customClaimsMock.Setup(x => x.GetClaims(It.IsAny<ClaimsPrincipal>()))
+        _customClaimsMock.Setup(x => x.GetClaims(It.IsAny<TokenValidatedContext>()))
             .ReturnsAsync(new List<Claim> { new("custom", "value") });
 
         // Act
