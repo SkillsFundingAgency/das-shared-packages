@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
@@ -75,18 +76,22 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             }
             else
             {
-                ticketUpdated |= identity.AddOrReplaceClaim("vot", "Cl.Cm.P2", existing => existing.Value.Contains("P2"));
-                ticketUpdated |= AddStubUserInfoClaims(identity);
-
-                var coreIdentityJwtClaim = identity.FindFirst(UserInfoClaims.CoreIdentityJWT.GetDescription());
-                if (coreIdentityJwtClaim != null)
+                if (identity.HasClaim(GovUkUserClaimTypes.VerifiedIdentity, "true"))
                 {
-                    var latestName = CoreIdentityJwtClaimHelper.GetLatestNameFromJwtClaim(coreIdentityJwtClaim.Value);
+                    ticketUpdated |= identity.AddOrReplaceClaim("vot", "Cl.Cm.P2", existing => existing.Value.Contains("P2"));
+
+                    var userInfoJson = identity.FindFirst(GovUkUserClaimTypes.UserInfo)?.Value;
+
+                    var latestName = string.IsNullOrWhiteSpace(userInfoJson)
+                        ? null
+                        : CoreIdentityJwtClaimHelper.GetLatestNameFrom(
+                            JsonSerializer.Deserialize<GovUkUser>(userInfoJson));
+
                     if (latestName != null)
                     {
-                        if (!string.IsNullOrWhiteSpace(latestName.FullName))
+                        if (!string.IsNullOrWhiteSpace(latestName.GivenName))
                         {
-                            ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.Name, latestName.FullName, existing => existing.Value == latestName.FullName);
+                            ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.GivenName, latestName.GivenName, existing => existing.Value == latestName.GivenName);
                         }
 
                         if (!string.IsNullOrWhiteSpace(latestName.FamilyName))
@@ -94,9 +99,9 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                             ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.Surname, latestName.FamilyName, existing => existing.Value == latestName.FamilyName);
                         }
 
-                        if (!string.IsNullOrWhiteSpace(latestName.GivenName))
+                        if (!string.IsNullOrWhiteSpace(latestName.FullName))
                         {
-                            ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.GivenName, latestName.GivenName, existing => existing.Value == latestName.GivenName);
+                            ticketUpdated |= identity.AddOrReplaceClaim(ClaimTypes.Name, latestName.FullName, existing => existing.Value == latestName.FullName);
                         }
                     }
                 }
@@ -108,46 +113,6 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                 await _ticketStore.RenewAsync(sessionId, updatedTicket);
                 context.ShouldRenew = true;
             }
-        }
-
-        private bool AddStubUserInfoClaims(ClaimsIdentity identity)
-        {
-            var userJson = identity.FindFirst(StubAuthenticationService.StubGovUkUserClaimType)?.Value;
-            if (userJson == null)
-            {
-                return false;
-            }
-
-            var ticketUpdated = false;
-            var user = JsonSerializer.Deserialize<GovUkUser>(userJson);
-
-            var keys = _config.RequestedUserInfoClaims
-                .Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-            foreach (var key in keys)
-            {
-                if (!Enum.TryParse<UserInfoClaims>(key, out var userInfoClaim))
-                {
-                    continue;
-                }
-
-                string value = userInfoClaim switch
-                {
-                    UserInfoClaims.CoreIdentityJWT => CoreIdentityJwtConverter.SerializeStubCoreIdentityJwt(user.CoreIdentityJwt),
-                    UserInfoClaims.Address => JsonSerializer.Serialize(user.Addresses),
-                    UserInfoClaims.Passport => JsonSerializer.Serialize(user.Passports),
-                    UserInfoClaims.DrivingPermit => JsonSerializer.Serialize(user.DrivingPermits),
-                    UserInfoClaims.ReturnCode => JsonSerializer.Serialize(user.ReturnCodes),
-                    _ => null
-                };
-
-                if (value != null)
-                {
-                    ticketUpdated |= identity.AddOrReplaceClaim(userInfoClaim.GetDescription(), value, existing => existing.Value == value);
-                }
-            }
-
-            return ticketUpdated;
         }
     }
 }

@@ -83,7 +83,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
                         options.SignedOutCallbackPath = OpenIdConnectRoutes.Paths.SignedOutCallback;
                         options.CallbackPath = OpenIdConnectRoutes.Paths.SignInCallback;
                         options.ResponseMode = string.Empty;
-                        options.SaveTokens = true;
+                        options.SaveTokens = false;
                         options.GetClaimsFromUserInfoEndpoint = true;
                         options.ClaimActions.Add(validateCoreIdentityJwtClaimAction);
 
