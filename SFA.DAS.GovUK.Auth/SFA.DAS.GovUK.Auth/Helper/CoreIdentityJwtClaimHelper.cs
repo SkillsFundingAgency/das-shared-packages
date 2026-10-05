@@ -14,16 +14,13 @@ namespace SFA.DAS.GovUK.Auth.Helper
             public string FamilyName { get; init; }
         }
 
-        public static LatestName GetLatestNameFromJwtClaim(string claimValue)
+        public static LatestName GetLatestNameFrom(GovUkUser govUkUser)
         {
-            if (string.IsNullOrWhiteSpace(claimValue))
-            {
-                return null;
-            }
+            return GetLatestNameFrom(govUkUser.CoreIdentityJwt);
+        }
 
-            var coreIdentityJwt = JsonSerializer.Deserialize<GovUkCoreIdentityJwt>(
-                JsonSerializer.Serialize(claimValue));
-
+        public static LatestName GetLatestNameFrom(GovUkCoreIdentityJwt coreIdentityJwt)
+        { 
             var historicalNames = coreIdentityJwt?.Vc?.CredentialSubject?.GetHistoricalNames();
 
             if (historicalNames == null || !historicalNames.Any())

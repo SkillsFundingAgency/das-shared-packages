@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using SFA.DAS.GovUK.Auth.Configuration;
@@ -21,18 +22,21 @@ namespace SFA.DAS.GovUK.Auth.Services;
 internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
 {
     private readonly HttpClient _httpClient;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ISigningCredentialsProvider _signingProvider;
     private readonly IJwtSecurityTokenService _jwtSecurityTokenService;
     private readonly ICustomClaims _customClaims;
     private readonly GovUkOidcConfiguration _configuration;
 
     public OidcGovUkAuthenticationService(HttpClient httpClient,
-                       ISigningCredentialsProvider signingProvider,
-                       IJwtSecurityTokenService jwtSecurityTokenService,
-                       GovUkOidcConfiguration configuration,
-                       ICustomClaims customClaims)
+        IHttpContextAccessor httpContextAccessor,
+        ISigningCredentialsProvider signingProvider,
+        IJwtSecurityTokenService jwtSecurityTokenService,
+        GovUkOidcConfiguration configuration,
+        ICustomClaims customClaims)
     {
         _httpClient = httpClient;
+        _httpContextAccessor = httpContextAccessor;
         _signingProvider = signingProvider;
         _jwtSecurityTokenService = jwtSecurityTokenService;
         _customClaims = customClaims;
@@ -83,20 +87,49 @@ internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
             return;
         }
 
-        var accessToken = tokenValidatedContext.TokenEndpointResponse.Parameters["access_token"];
-
-        var content = await GetAccountDetails(accessToken);
+        var accessToken = tokenValidatedContext.TokenEndpointResponse.AccessToken;
+        var content = await FetchUserInfoAsync(accessToken);
 
         if (content?.Email != null)
         {
-            tokenValidatedContext.Principal.Identities.First().AddClaim(new Claim(ClaimTypes.Email, content.Email));
+            tokenValidatedContext.Principal.Identities.First()
+                .AddClaim(new Claim(ClaimTypes.Email, content.Email));
         }
 
         tokenValidatedContext.Principal.Identities.First()
             .AddClaims(await _customClaims.GetClaims(tokenValidatedContext));
     }
 
-    public async Task<GovUkUser> GetAccountDetails(string accessToken)
+    public GovUkUser GetAccountDetails()
+    {
+        var principal = _httpContextAccessor.HttpContext?.User;
+        if (principal?.Identity?.IsAuthenticated != true)
+        {
+            return null;
+        }
+
+        var json = principal.FindFirstValue(GovUkUserClaimTypes.UserInfo);
+
+        var govUkUser = string.IsNullOrWhiteSpace(json)
+            ? null
+            : JsonSerializer.Deserialize<GovUkUser>(json);
+
+        return govUkUser;
+    }
+
+    public Task<IActionResult> ChallengeWithVerifyAsync(string returnUrl, Controller controller)
+    {
+        var props = new AuthenticationProperties
+        {
+            RedirectUri = returnUrl,
+            AllowRefresh = true
+        };
+        props.Items["enableVerify"] = true.ToString();
+
+        return Task.FromResult<IActionResult>(controller.Challenge(props, OpenIdConnectDefaults.AuthenticationScheme));
+    }
+
+    private async Task<GovUkUser> FetchUserInfoAsync(string accessToken)
     {
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo")
         {
@@ -115,18 +148,6 @@ internal class OidcGovUkAuthenticationService : IGovUkAuthenticationService
 
         var valueString = response.Content.ReadAsStringAsync().Result;
         return JsonSerializer.Deserialize<GovUkUser>(valueString);
-    }
-
-    public Task<IActionResult> ChallengeWithVerifyAsync(string returnUrl, Controller controller)
-    {
-        var props = new AuthenticationProperties
-        {
-            RedirectUri = returnUrl,
-            AllowRefresh = true
-        };
-        props.Items["enableVerify"] = true.ToString();
-
-        return Task.FromResult<IActionResult>(controller.Challenge(props, OpenIdConnectDefaults.AuthenticationScheme));
     }
 
     private string CreateJwtAssertion()
