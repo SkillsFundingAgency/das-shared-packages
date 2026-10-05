@@ -9,6 +9,7 @@ using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Employer;
 using SFA.DAS.GovUK.Auth.Helper;
+using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 using SFA.DAS.GovUK.Auth.Validation;
 
@@ -16,7 +17,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 {
     internal static class AddServiceRegistrationExtension
     {
-        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration,
+        internal static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration, AuthRedirects authRedirects,
             Type customClaims, Type employerAccountService)
         {
             if (!configuration.GetSection(nameof(GovUkOidcConfiguration)).GetChildren().Any())
@@ -56,7 +57,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             services.AddSingleton<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
             services.AddSingleton<IAuthorizationFailureHandler, AccountActiveFailureHandler>();
             services.AddSingleton<IAuthorizationHandler, VerifiedIdentityAuthorizationHandler>();
-            services.AddSingleton<IAuthorizationFailureHandler, VerifiedIdentityFailureHandler>();
+            services.AddSingleton<IAuthorizationFailureHandler>(new VerifiedIdentityFailureHandler(authRedirects.VerifyIdentityInformationUrl));
             services.AddSingleton<IAuthorizationMiddlewareResultHandler, ChainedAuthorizationResultHandler>();
 
             services.AddTransient<ValidateCoreIdentityJwtClaimAction>();

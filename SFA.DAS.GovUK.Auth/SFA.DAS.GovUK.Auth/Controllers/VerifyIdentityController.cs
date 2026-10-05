@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.GovUK.Auth.Controllers.Routes;
 using SFA.DAS.GovUK.Auth.Services;
 
 [assembly: Microsoft.AspNetCore.Mvc.ApplicationParts.ProvideApplicationPartFactory(
@@ -7,8 +8,7 @@ using SFA.DAS.GovUK.Auth.Services;
 
 namespace SFA.DAS.GovUK.Auth.Controllers
 {
-
-    [Route("service/verify-identity")]
+    [Route(ServiceRoutes.Paths.Controller)]
     public class VerifyIdentityController : Controller
     {
         private readonly IGovUkAuthenticationService _govUkAuthenticationService;
@@ -18,7 +18,7 @@ namespace SFA.DAS.GovUK.Auth.Controllers
             _govUkAuthenticationService = govUkAuthenticationService;
         }
 
-        [HttpGet]
+        [HttpGet(ServiceRoutes.Paths.VerifyIdentity, Name = ServiceRoutes.Names.VerifyIdentity)]
         public Task<IActionResult> Index(string returnUrl = "/")
         {
             return _govUkAuthenticationService.ChallengeWithVerifyAsync(returnUrl, this);

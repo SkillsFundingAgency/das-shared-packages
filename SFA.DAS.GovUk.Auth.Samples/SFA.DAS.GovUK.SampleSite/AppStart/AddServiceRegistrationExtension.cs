@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.GovUK.Auth.AppStart;
 using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Models;
+using SFA.DAS.GovUK.SampleSite.Configuration;
+using SFA.DAS.GovUK.SampleSite.Controllers.Routes;
 using SFA.DAS.GovUK.SampleSite.Validators;
 
 namespace SFA.DAS.GovUK.SampleSite.AppStart;
@@ -13,13 +15,13 @@ public static class AddServiceRegistrationExtension
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
-        services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
         services.AddAndConfigureGovUkAuthentication(configuration, new AuthRedirects
         {
-            SignedOutRedirectUrl = "/user-signed-out",
-            SuspendedRedirectUrl = "/user-suspended",
-            LocalStubLoginPath = "/stub/sign-in-Stub"
+            SignedOutRedirectUrl = HomeRoutes.Paths.SignedOut.HomeControllerPath(),
+            SuspendedRedirectUrl = HomeRoutes.Paths.Suspended.HomeControllerPath(),
+            LocalStubLoginPath = StubRoutes.Paths.SignIn.StubControllerPath(),
+            VerifyIdentityInformationUrl = HomeRoutes.Paths.ExplainVerify.HomeControllerPath()
         }, typeof(CustomClaims));
         services.AddGovUkAuthorization();
         services.AddValidatorsFromAssemblyContaining<SignInStubViewModelValidator>();

@@ -1,10 +1,11 @@
 @using System.Security.Claims
+@using SFA.DAS.GovUK.SampleSite.ViewDataKeys
 @{
     Layout = "_Layout";
-    ViewBag.Title = "GOV.UK One Login Sample Service";
+    ViewData[ViewDataKeys.Title] = "GOV.UK One Login Sample Service";
 }
 
-<h1 class="govuk-heading-xl">@ViewBag.Title - Active check</h1>
+<h1 class="govuk-heading-xl">@ViewData[ViewDataKeys.Title] - Active check</h1>
 
 <p>Name: @Context.User.Identity?.Name</p>
 <p>Email: @Context.User.Claims.FirstOrDefault(c=>c.Type.Equals(ClaimTypes.Email))?.Value</p>

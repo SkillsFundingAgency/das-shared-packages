@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.GovUK.Auth.Authentication;
 using SFA.DAS.GovUK.Auth.Extensions;
 using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
@@ -14,7 +13,7 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             IConfiguration configuration, AuthRedirects authRedirects, Type customClaims = null, Type employerAccountService = null)
         {
             bool.TryParse(configuration["StubAuth"], out var stubAuth);
-            services.AddServiceRegistration(configuration, customClaims, employerAccountService);
+            services.AddServiceRegistration(configuration, authRedirects, customClaims, employerAccountService);
             if (stubAuth && configuration["ResourceEnvironmentName"]!.ToUpper() != "PRD")
             {
                 services.AddTransient<IGovUkAuthenticationService, StubAuthenticationService>();
