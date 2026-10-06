@@ -1,19 +1,18 @@
 using System;
 using System.Linq;
 
-namespace SFA.DAS.Telemetry.RedactionService
+namespace SFA.DAS.Telemetry.RedactionService;
+
+internal static class UriRedactionOptionsFactory
 {
-    internal static class UriRedactionOptionsFactory
+    internal static UriRedactionOptions Create(string keysForRedaction)
     {
-        internal static UriRedactionOptions Create(string keysForRedaction)
+        return new UriRedactionOptions
         {
-            return new UriRedactionOptions
-            {
-                RedactionList = keysForRedaction
-                    .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => s.Trim())
-                    .ToList()
-            };
-        }
+            RedactionList = keysForRedaction
+                .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim())
+                .ToList()
+        };
     }
 }

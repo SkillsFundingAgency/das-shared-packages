@@ -2,19 +2,18 @@
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 
-namespace SFA.DAS.Telemetry.Telemetry
+namespace SFA.DAS.Telemetry.Telemetry;
+
+public class NotFoundAsSuccessfulResponseTelemetryInitializer : ITelemetryInitializer
 {
-    public class NotFoundAsSuccessfulResponseTelemetryInitializer : ITelemetryInitializer
+    public void Initialize(ITelemetry telemetry)
     {
-        public void Initialize(ITelemetry telemetry)
+        switch (telemetry)
         {
-            switch (telemetry)
-            {
-                case RequestTelemetry request
-                when request.ResponseCode == "404":
-                    request.Success = true;
-                    break;
-            }
+            case RequestTelemetry request
+            when request.ResponseCode == "404":
+                request.Success = true;
+                break;
         }
     }
 }

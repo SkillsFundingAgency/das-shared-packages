@@ -4,43 +4,42 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using SFA.DAS.Telemetry.RedactionService;
 
-namespace SFA.DAS.Telemetry.Telemetry
+namespace SFA.DAS.Telemetry.Telemetry;
+
+public class UriRedactionTelemetryInitializer : ITelemetryInitializer
 {
-    public class UriRedactionTelemetryInitializer : ITelemetryInitializer
+    private readonly IUriRedactionService _uriRedactionService;
+
+    public UriRedactionTelemetryInitializer(IUriRedactionService uriRedactionService)
     {
-        private readonly IUriRedactionService _uriRedactionService;
+        _uriRedactionService = uriRedactionService;
+    }
 
-        public UriRedactionTelemetryInitializer(IUriRedactionService uriRedactionService)
+    public void Initialize(ITelemetry telemetry)
+    {
+        switch (telemetry)
         {
-            _uriRedactionService = uriRedactionService;
-        }
+            case RequestTelemetry requestTelemetry:
+                requestTelemetry.Url = _uriRedactionService.GetRedactedUri(requestTelemetry.Url);
+                break;
+            case DependencyTelemetry dependencyTelemetry:
+                {
+                    if (Uri.TryCreate(dependencyTelemetry.Data, UriKind.Absolute, out var dependencyUrl))
+                    {
+                        dependencyTelemetry.Data = _uriRedactionService.GetRedactedUri(dependencyUrl).ToString();
+                    }
 
-        public void Initialize(ITelemetry telemetry)
-        {
-            switch (telemetry)
-            {
-                case RequestTelemetry requestTelemetry:
-                    requestTelemetry.Url = _uriRedactionService.GetRedactedUri(requestTelemetry.Url);
                     break;
-                case DependencyTelemetry dependencyTelemetry:
+                }
+            case TraceTelemetry traceTelemetry:
+                {
+                    traceTelemetry.Message = _uriRedactionService.GetRedactedString(traceTelemetry.Message);
+                    if (traceTelemetry.Properties.ContainsKey("OriginalFormat"))
                     {
-                        if (Uri.TryCreate(dependencyTelemetry.Data, UriKind.Absolute, out var dependencyUrl))
-                        {
-                            dependencyTelemetry.Data = _uriRedactionService.GetRedactedUri(dependencyUrl).ToString();
-                        }
-
-                        break;
+                        traceTelemetry.Properties["OriginalFormat"] = _uriRedactionService.GetRedactedString(traceTelemetry.Properties["OriginalFormat"]);
                     }
-                case TraceTelemetry traceTelemetry:
-                    {
-                        traceTelemetry.Message = _uriRedactionService.GetRedactedString(traceTelemetry.Message);
-                        if (traceTelemetry.Properties.ContainsKey("OriginalFormat"))
-                        {
-                            traceTelemetry.Properties["OriginalFormat"] = _uriRedactionService.GetRedactedString(traceTelemetry.Properties["OriginalFormat"]);
-                        }
-                        break;
-                    }
-            }
+                    break;
+                }
         }
     }
 }

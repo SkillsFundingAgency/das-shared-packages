@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Telemetry.RedactionService
+namespace SFA.DAS.Telemetry.RedactionService;
+
+public class UriRedactionOptions
 {
-    public class UriRedactionOptions
-    {
-        public List<string> RedactionList { get; set; } = new List<string>();
-        public string RedactionString { get; set; } = "REDACTED";
-    }
+    public List<string> RedactionList { get; set; } = new List<string>();
+    public string RedactionString { get; set; } = "REDACTED";
 }

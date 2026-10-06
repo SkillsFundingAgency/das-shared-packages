@@ -2,24 +2,23 @@
 using NUnit.Framework;
 using SFA.DAS.Telemetry.Telemetry;
 
-namespace SFA.DAS.Telemetry.UnitTests
+namespace SFA.DAS.Telemetry.UnitTests;
+
+public class NotFoundAsSuccessfulResponseTelemetryInitializerTests
 {
-    public class NotFoundAsSuccessfulResponseTelemetryInitializerTests
+    [Test]
+    public void NotFoundResponseIsLoggedAsSuccess()
     {
-        [Test]
-        public void NotFoundResponseIsLoggedAsSuccess()
+        var sut = new NotFoundAsSuccessfulResponseTelemetryInitializer();
+
+        var telemetry = new RequestTelemetry
         {
-            var sut = new NotFoundAsSuccessfulResponseTelemetryInitializer();
+            ResponseCode = "404",
+            Success = false
+        };
 
-            var telemetry = new RequestTelemetry
-            {
-                ResponseCode = "404",
-                Success = false
-            };
+        sut.Initialize(telemetry);
 
-            sut.Initialize(telemetry);
-
-            Assert.That(telemetry.Success, Is.True);
-        }
+        Assert.That(telemetry.Success, Is.True);
     }
 }
