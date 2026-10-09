@@ -4,6 +4,7 @@ namespace SFA.DAS.Telemetry;
 
 public class TelemetryOptions
 {
+    public string ApplicationInsightsConnectionString { get; set; } = "";
     public bool EnableNotFoundAsSuccessResponse { get; set; }
     public UriRedactionOptions UriRedactionOptions { get; set; } = new();
     public TelemetryOptions() { }

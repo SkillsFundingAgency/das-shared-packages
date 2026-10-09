@@ -14,8 +14,7 @@ public class StartUpExtensionsTests
     {
         ServiceCollection services = new();
 
-        IServiceCollection result = services.AddOpenTelemetry(
-            () => new TelemetryOptions());
+        IServiceCollection result = services.AddOpenTelemetry(new TelemetryOptions());
 
         Assert.That(result, Is.SameAs(services));
     }
@@ -25,8 +24,7 @@ public class StartUpExtensionsTests
     {
         ServiceCollection services = new();
 
-        services.AddOpenTelemetry(
-            () => new TelemetryOptions());
+        services.AddOpenTelemetry(new TelemetryOptions());
 
         using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
@@ -40,7 +38,7 @@ public class StartUpExtensionsTests
     {
         ServiceCollection services = new();
 
-        services.AddOpenTelemetry(() => new TelemetryOptions(true, false));
+        services.AddOpenTelemetry(new TelemetryOptions(true, false));
 
         using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
@@ -55,7 +53,7 @@ public class StartUpExtensionsTests
         ServiceCollection services = new();
 
         services.AddOpenTelemetry(
-            () => new TelemetryOptions
+            new TelemetryOptions
             {
                 UriRedactionOptions = new UriRedactionOptions
                 {
@@ -77,7 +75,7 @@ public class StartUpExtensionsTests
         ServiceCollection services = new();
 
         services.AddOpenTelemetry(
-            () => new TelemetryOptions
+            new TelemetryOptions
             {
                 EnableNotFoundAsSuccessResponse = true,
                 UriRedactionOptions = new UriRedactionOptions
