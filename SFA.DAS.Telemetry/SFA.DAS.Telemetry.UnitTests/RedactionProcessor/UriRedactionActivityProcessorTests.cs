@@ -51,4 +51,42 @@ public class UriRedactionActivityProcessorTests
 
         Assert.That(activity.GetTagItem(tag), Is.EqualTo(expectedValue));
     }
+
+    [Test]
+    public void OnEnd_RedactsQueryValuesFromDisplayNameAndAllStringTags()
+    {
+        const string requestUrl =
+            "https://example.com/search?email=test@example.com&keep=true";
+
+        using var activity = new Activity(
+            "GET /search?email=test@example.com&keep=true");
+
+        activity.SetTag("http.url", requestUrl);
+        activity.SetTag("trace.message", requestUrl);
+        activity.SetTag("unrelated", "no query string");
+
+        _sut.OnEnd(activity);
+
+        const string expectedUrl =
+            "https://example.com/search?email=[REDACTED]&keep=true";
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(
+                activity.DisplayName,
+                Is.EqualTo("GET /search?email=[REDACTED]&keep=true"));
+
+            Assert.That(
+                activity.GetTagItem("http.url"),
+                Is.EqualTo(expectedUrl));
+
+            Assert.That(
+                activity.GetTagItem("trace.message"),
+                Is.EqualTo(expectedUrl));
+
+            Assert.That(
+                activity.GetTagItem("unrelated"),
+                Is.EqualTo("no query string"));
+        }
+    }
 }

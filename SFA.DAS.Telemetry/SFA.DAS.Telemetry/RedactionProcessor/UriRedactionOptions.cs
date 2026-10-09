@@ -7,7 +7,7 @@ public class UriRedactionOptions
 {
     public bool EnableUriRedaction { get; set; }
     public List<string> RedactionList { get; set; } = [];
-    public string RedactionString { get; set; } = "REDACTED";
+    public string RedactionValue { get; set; } = "REDACTED";
     public UriRedactionOptions() { }
     public UriRedactionOptions(string? commaDelimitedRedactionList)
     {

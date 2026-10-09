@@ -13,7 +13,7 @@ public class TelemetryOptionsTests
             Assert.That(sut.EnableNotFoundAsSuccessResponse, Is.False);
             Assert.That(sut.UriRedactionOptions.EnableUriRedaction, Is.False);
             Assert.That(sut.UriRedactionOptions.RedactionList, Is.Empty);
-            Assert.That(sut.UriRedactionOptions.RedactionString, Is.EqualTo("REDACTED"));
+            Assert.That(sut.UriRedactionOptions.RedactionValue, Is.EqualTo("REDACTED"));
         }
     }
     [Test]
@@ -26,7 +26,7 @@ public class TelemetryOptionsTests
             Assert.That(sut.UriRedactionOptions.EnableUriRedaction, Is.False);
             Assert.That(sut.UriRedactionOptions.RedactionList, Contains.Item("email"));
             Assert.That(sut.UriRedactionOptions.RedactionList, Contains.Item("dateOfBirth"));
-            Assert.That(sut.UriRedactionOptions.RedactionString, Is.EqualTo("REDACTED"));
+            Assert.That(sut.UriRedactionOptions.RedactionValue, Is.EqualTo("REDACTED"));
         }
     }
 }

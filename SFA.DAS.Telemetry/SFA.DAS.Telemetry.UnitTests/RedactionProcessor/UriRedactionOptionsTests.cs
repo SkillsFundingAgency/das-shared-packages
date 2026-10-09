@@ -13,7 +13,7 @@ public class UriRedactionOptionsTests
         {
             Assert.That(sut.EnableUriRedaction, Is.False);
             Assert.That(sut.RedactionList, Is.Empty);
-            Assert.That(sut.RedactionString, Is.EqualTo("REDACTED"));
+            Assert.That(sut.RedactionValue, Is.EqualTo("REDACTED"));
         }
     }
 
@@ -24,14 +24,14 @@ public class UriRedactionOptionsTests
         {
             EnableUriRedaction = true,
             RedactionList = ["email", "dateOfBirth"],
-            RedactionString = "[REDACTED]"
+            RedactionValue = "[REDACTED]"
         };
         using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.EnableUriRedaction, Is.True);
             Assert.That(sut.RedactionList, Contains.Item("email"));
             Assert.That(sut.RedactionList, Contains.Item("dateOfBirth"));
-            Assert.That(sut.RedactionString, Is.EqualTo("[REDACTED]"));
+            Assert.That(sut.RedactionValue, Is.EqualTo("[REDACTED]"));
         }
     }
 }
