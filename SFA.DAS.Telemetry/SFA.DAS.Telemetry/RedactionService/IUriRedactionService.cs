@@ -10,5 +10,12 @@ namespace SFA.DAS.Telemetry.RedactionService
         /// <param name="uri">The original URI from which to redact sensitive information</param>
         /// <returns></returns>
         Uri GetRedactedUri(Uri uri);
+
+        /// <summary>
+        /// Returns a string with sensitive information redacted
+        /// </summary>
+        /// <param name="input">Trace message that may contain sensitive information</param>
+        /// <returns></returns>
+        string GetRedactedString(string input);
     }
 }

@@ -84,5 +84,19 @@ namespace SFA.DAS.Telemetry.UnitTests
                 result,
                 Is.EqualTo(new Uri("http://www.google.com?email=REDACTED")));
         }
+
+        [TestCase(
+            "Request started http://www.google.com?email=chris@private.com&isRobot=false",
+            "Request started http://www.google.com?email=REDACTED&isRobot=false")]
+        [TestCase(
+            "Request started http://www.google.com?EMAIL=chris@private.com&isRobot=false",
+            "Request started http://www.google.com?EMAIL=REDACTED&isRobot=false")]
+        public void GetRedactedString_ReturnsExpectedString(
+            string originalString,
+            string expectedString)
+        {
+            var result = _sut.GetRedactedString(originalString);
+            Assert.That(result, Is.EqualTo(expectedString));
+        }
     }
 }

@@ -31,6 +31,15 @@ namespace SFA.DAS.Telemetry.Telemetry
 
                         break;
                     }
+                case TraceTelemetry traceTelemetry:
+                    {
+                        traceTelemetry.Message = _uriRedactionService.GetRedactedString(traceTelemetry.Message);
+                        if (traceTelemetry.Properties.ContainsKey("OriginalFormat"))
+                        {
+                            traceTelemetry.Properties["OriginalFormat"] = _uriRedactionService.GetRedactedString(traceTelemetry.Properties["OriginalFormat"]);
+                        }
+                        break;
+                    }
             }
         }
     }

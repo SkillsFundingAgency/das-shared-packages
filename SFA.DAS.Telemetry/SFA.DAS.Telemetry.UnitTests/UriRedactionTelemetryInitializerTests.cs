@@ -19,6 +19,7 @@ namespace SFA.DAS.Telemetry.UnitTests
 
             _redactionService = new Mock<IUriRedactionService>();
             _redactionService.Setup(x => x.GetRedactedUri(It.IsAny<Uri>())).Returns(_redactedUri);
+            _redactionService.Setup(x => x.GetRedactedString(It.IsAny<string>())).Returns(_redactedUri.ToString());
 
             _telemetryInitializer = new UriRedactionTelemetryInitializer(_redactionService.Object);
         }
@@ -49,5 +50,31 @@ namespace SFA.DAS.Telemetry.UnitTests
             Assert.That(telemetry.Data, Is.EqualTo(_redactedUri.ToString()));
         }
 
+        [Test]
+        public void TraceTelemetryUriIsRedacted()
+        {
+            var telemetry = new TraceTelemetry
+            {
+                Message = "Request started http://www.request.com?email=chris@private.com&isRobot=false"
+            };
+
+            _telemetryInitializer.Initialize(telemetry);
+
+            Assert.That(telemetry.Message, Is.EqualTo(_redactedUri.ToString()));
+        }
+
+        [Test]
+        public void TraceTelemetryPropertiesAreRedacted()
+        {
+            var telemetry = new TraceTelemetry
+            {
+                Properties = { { "OriginalFormat", "Request started http://www.request.com?email=chris@private.com&isRobot=false" } },
+                Message = "Request started http://www.request.com?email=chris@private.com&isRobot=false"
+            };
+
+            _telemetryInitializer.Initialize(telemetry);
+
+            Assert.That(telemetry.Properties["OriginalFormat"], Is.EqualTo(_redactedUri.ToString()));
+        }
     }
 }
