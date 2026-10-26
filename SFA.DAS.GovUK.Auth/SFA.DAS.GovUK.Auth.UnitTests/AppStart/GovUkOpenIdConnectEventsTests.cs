@@ -66,14 +66,17 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RemoteFailure_CorrelationFailed_RedirectsAndHandles()
         {
+            // Arrange
             var context = new RemoteFailureContext(
                 new DefaultHttpContext(),
                 new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
                 new OpenIdConnectOptions(),
                 new Exception("Correlation failed"));
 
+            // Act
             await _sut.RemoteFailure(context);
 
+            // Assert
             context.Response.StatusCode.Should().Be(302);
             context.Response.Headers["Location"].ToString().Should().Be("/");
             context.Result.Handled.Should().BeTrue();
@@ -82,6 +85,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_AddsVtrAndClaims_WhenVerifyEnabled()
         {
+            // Arrange
             var properties = new AuthenticationProperties(new Dictionary<string, string?>
             {
                 ["enableVerify"] = "true"
@@ -89,8 +93,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var context = BuildRedirectContext(properties);
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             context.ProtocolMessage.Parameters["vtr"].Should().NotBeNull();
             context.ProtocolMessage.Parameters["claims"].Should().Contain("userinfo");
         }
@@ -98,6 +104,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_JarContainsVerifyVtrAndClaimsAsJsonObject_WhenVerifyEnabled()
         {
+            // Arrange
             var properties = new AuthenticationProperties(new Dictionary<string, string?>
             {
                 ["enableVerify"] = "true"
@@ -114,8 +121,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var context = BuildRedirectContext(properties, message);
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             using var payload = ReadJarPayload(context);
 
             var root = payload.RootElement;
@@ -138,6 +147,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_JarContainsStandardVtrAndNoClaims_WhenVerifyNotEnabled()
         {
+            // Arrange
             var message = new OpenIdConnectMessage
             {
                 ResponseType = "code",
@@ -149,8 +159,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var context = BuildRedirectContext(protocolMessage: message);
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             using var payload = ReadJarPayload(context);
 
             var root = payload.RootElement;
@@ -162,10 +174,13 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_SetsJarRequestParameter()
         {
+            // Arrange
             var context = BuildRedirectContext();
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             context.ProtocolMessage.Parameters.Should().ContainKey("request");
             context.ProtocolMessage.Parameters["request"].Should().NotBeNullOrEmpty();
         }
@@ -173,6 +188,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_JarContainsCoreAuthorizationClaims()
         {
+            // Arrange
             var message = new OpenIdConnectMessage
             {
                 ResponseType = "code",
@@ -185,8 +201,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var context = BuildRedirectContext(protocolMessage: message);
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             var jwt = ReadJar(context);
             jwt.Payload["response_type"].Should().Be("code");
             jwt.Payload["client_id"].Should().Be("test-client-id");
@@ -198,10 +216,13 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_JarStateMatchesProtectedProperties()
         {
+            // Arrange
             var context = BuildRedirectContext(stateFormatResult: "expected-protected-state");
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             var jwt = ReadJar(context);
             jwt.Payload["state"].Should().Be("expected-protected-state");
         }
@@ -209,6 +230,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_JarStateIsProtectedWithRedirectUriKeyInProperties()
         {
+            // Arrange
             const string callbackUri = "https://localhost/sign-in";
             AuthenticationProperties? capturedProperties = null;
 
@@ -223,8 +245,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var context = BuildRedirectContext(protocolMessage: message, stateDataFormat: mockStateFormat.Object);
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             capturedProperties.Should().NotBeNull();
             capturedProperties!.Items.Should().ContainKey(OpenIdConnectDefaults.RedirectUriForCodePropertiesKey);
             capturedProperties.Items[OpenIdConnectDefaults.RedirectUriForCodePropertiesKey].Should().Be(callbackUri);
@@ -233,16 +257,20 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_DoesNotSetProtocolMessageState_SoThatJARAndQueryStringStateAreIdentical()
         {
+            // Arrange
             var context = BuildRedirectContext();
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             context.ProtocolMessage.State.Should().BeNull();
         }
 
         [Test]
         public async Task RedirectToIdentityProvider_JarIncludesPkceClaimsWhenPresent()
         {
+            // Arrange
             var message = new OpenIdConnectMessage { RedirectUri = "https://localhost/sign-in" };
             message.Parameters.Add("vtr", "[\"Cl.Cm\"]");
             message.Parameters.Add("code_challenge", "abc123challenge");
@@ -250,8 +278,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
 
             var context = BuildRedirectContext(protocolMessage: message);
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             var jwt = ReadJar(context);
             jwt.Payload["code_challenge"].Should().Be("abc123challenge");
             jwt.Payload["code_challenge_method"].Should().Be("S256");
@@ -260,10 +290,13 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task RedirectToIdentityProvider_JarExcludesPkceClaimsWhenAbsent()
         {
+            // Arrange
             var context = BuildRedirectContext();
 
+            // Act
             await _sut.RedirectToIdentityProvider(context);
 
+            // Assert
             var jwt = ReadJar(context);
             jwt.Payload.ContainsKey("code_challenge").Should().BeFalse();
             jwt.Payload.ContainsKey("code_challenge_method").Should().BeFalse();
@@ -272,6 +305,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task TokenResponseReceived_StoresIdTokenAndLoadsDid_WhenVerifyEnabled()
         {
+            // Arrange
             var properties = new AuthenticationProperties(new Dictionary<string, string?>
             {
                 ["enableVerify"] = "true"
@@ -290,8 +324,10 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
                 }
             };
 
+            // Act
             await _sut.TokenResponseReceived(context);
 
+            // Assert
             _jwtValidatorMock.Verify(x => x.LoadDidDocument(), Times.Once);
             context.Properties!.GetTokenValue("id_token").Should().Be("id-token");
         }
@@ -299,6 +335,7 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
         [Test]
         public async Task AuthorizationCodeReceived_HandlesRedemption_WhenTokensPresent()
         {
+            // Arrange
             _authServiceMock.Setup(x => x.GetToken(It.IsAny<OpenIdConnectMessage>()))
                 .ReturnsAsync(new Token
                 {
@@ -306,7 +343,8 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
                     IdToken = "id-token"
                 });
 
-            var context = new AuthorizationCodeReceivedContext(new DefaultHttpContext(),
+            var context = new AuthorizationCodeReceivedContext(
+                new DefaultHttpContext(),
                 new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
                 new OpenIdConnectOptions(),
                 new AuthenticationProperties())
@@ -315,16 +353,21 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
                 Properties = new AuthenticationProperties()
             };
 
+            // Act
             await _sut.AuthorizationCodeReceived(context);
 
-            context.Properties.GetTokenValue("access_token").Should().Be("access-token");
-            context.Properties.GetTokenValue("id_token").Should().Be("id-token");
+            // Assert
             context.HandledCodeRedemption.Should().BeTrue();
+            context.TokenEndpointResponse!.AccessToken.Should().Be("access-token");
+            context.TokenEndpointResponse.IdToken.Should().Be("id-token");
+            context.Properties.GetTokenValue("id_token").Should().Be("id-token");
+            context.Properties.GetTokenValue("access_token").Should().BeNull();
         }
 
         [Test]
         public async Task SignedOutCallbackRedirect_DeletesCookieAndRedirects()
         {
+            // Arrange
             var cookiesMock = new Mock<IResponseCookies>();
             var responseMock = new Mock<HttpResponse>();
             var contextMock = new Mock<HttpContext>();
@@ -342,26 +385,99 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.AppStart
                 new OpenIdConnectOptions(),
                 new OpenIdConnectMessage());
 
+            // Act
             await _sut.SignedOutCallbackRedirect(context);
 
+            // Assert
             headers["Location"].ToString().Should().Be(RedirectUrl);
             cookiesMock.Verify(c => c.Delete(GovUkConstants.AuthCookieName), Times.Once);
+            context.Result.Handled.Should().BeTrue();
         }
 
         [Test]
         public async Task TokenValidated_CallsPopulateAccountClaims()
         {
+            // Arrange
             var context = new TokenValidatedContext(new DefaultHttpContext(),
                 new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
                 new OpenIdConnectOptions(),
                 new ClaimsPrincipal(),
                 new AuthenticationProperties());
 
+            // Act
             await _sut.TokenValidated(context);
 
+            // Assert
             _authServiceMock.Verify(x => x.PopulateAccountClaims(context), Times.Once);
+            context.Properties!.Items["suspended_redirect"].Should().Be(SuspendedUrl);
         }
 
+        [Test]
+        public async Task UserInformationReceived_ReplacesUserInfoClaim_WithCompleteUser()
+        {
+            // Arrange
+            var user = new GovUkUser
+            {
+                Sub = "user-123",
+                Email = "jane@example.com",
+                EmailVerified = true,
+                Addresses = new List<GovUkAddress>
+                {
+                    new GovUkAddress { StreetName = "Test Lane" }
+                },
+                CoreIdentityJwt = new GovUkCoreIdentityJwt
+                {
+                    Sub = "user-123",
+                    Vot = "Cl.Cm.P2",
+                    Vc = new GovUkCoreIdentityCredential
+                    {
+                        CredentialSubject = new GovUkCredentialSubject
+                        {
+                            Names = new List<GovUkName>
+                    {
+                        new GovUkName
+                        {
+                            NameParts = new List<GovUkNamePart>
+                            {
+                                new GovUkNamePart
+                                {
+                                    Type = "GivenName",
+                                    Value = "Jane"
+                                }
+                            }
+                        }
+                    }
+                        }
+                    }
+                }
+            };
+
+            var identity = new ClaimsIdentity();
+            identity.AddClaim(new Claim(GovUkUserClaimTypes.UserInfo, "{}"));
+
+            using var userDocument = JsonDocument.Parse(JsonSerializer.Serialize(user));
+
+            var context = new UserInformationReceivedContext(
+                new DefaultHttpContext(),
+                new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties())
+            {
+                User = userDocument
+            };
+
+            // Act
+            await _sut.UserInformationReceived(context);
+
+            // Assert
+            identity.FindAll(GovUkUserClaimTypes.UserInfo).Should().ContainSingle();
+
+            var storedUser = JsonSerializer.Deserialize<GovUkUser>(
+                identity.FindFirst(GovUkUserClaimTypes.UserInfo)!.Value);
+
+            storedUser.Should().BeEquivalentTo(user);
+        }
 
         private static RedirectContext BuildRedirectContext(
             AuthenticationProperties? properties = null,

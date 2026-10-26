@@ -52,14 +52,19 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
             {
                 GovUkUser? govUkUser = await _stubAuthenticationService.GetStubVerifyGovUkUser(model.UserFile);
 
-                var claims = await _stubAuthenticationService.GetStubSignInClaims(new StubAuthUserDetails
+                var result = await _stubAuthenticationService.GetStubSignInClaims(new StubAuthUserDetails
                 {
                     Id = model.Id,
                     Email = model.Email,
                     GovUkUser = govUkUser
                 });
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
+                if (result.ResponseHandled)
+                {
+                    return new EmptyResult();
+                }
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result.Principal,
                     new AuthenticationProperties());
             }
             catch (StubVerifyException ex)

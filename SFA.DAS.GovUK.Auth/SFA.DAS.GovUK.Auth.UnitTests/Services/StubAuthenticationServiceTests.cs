@@ -3,11 +3,15 @@ using System.Text;
 using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
+using SFA.DAS.GovUK.Auth.Configuration;
 using SFA.DAS.GovUK.Auth.Controllers;
 using SFA.DAS.GovUK.Auth.Exceptions;
 using SFA.DAS.GovUK.Auth.Models;
@@ -19,6 +23,8 @@ namespace SFA.DAS.GovUK.Auth.UnitTests.Services;
 public class StubAuthenticationServiceTests
 {
     private StubAuthenticationService _sut;
+    private GovUkOidcConfiguration _config;
+    private Mock<IOptions<GovUkOidcConfiguration>> _configMock;
     private Mock<ICustomClaims> _customClaimsMock;
     private Mock<IHttpContextAccessor> _httpContextAccessorMock;
     private IConfiguration _configuration;
@@ -28,13 +34,29 @@ public class StubAuthenticationServiceTests
     {
         _customClaimsMock = new Mock<ICustomClaims>();
         _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
+        _httpContextAccessorMock
+            .Setup(x => x.HttpContext)
+            .Returns(new DefaultHttpContext());
+
+        _config = new GovUkOidcConfiguration
+        {
+            RequestedUserInfoClaims = "CoreIdentityJWT,Address"
+        };
+
+        _configMock = new Mock<IOptions<GovUkOidcConfiguration>>();
+        _configMock.Setup(x => x.Value).Returns(_config);
+
         _configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                { "ResourceEnvironmentName", "dev" }
+                { "ResourceEnvironmentName", "DEV" }
             }).Build();
 
-        _sut = new StubAuthenticationService(_configuration, _customClaimsMock.Object, _httpContextAccessorMock.Object);
+        _sut = new StubAuthenticationService(
+            _configuration,
+            _configMock.Object,
+            _customClaimsMock.Object,
+            _httpContextAccessorMock.Object);
     }
 
     [Test]
@@ -48,37 +70,137 @@ public class StubAuthenticationServiceTests
             Mobile = "07123456789"
         };
 
-        _customClaimsMock.Setup(x => x.GetClaims(It.IsAny<ClaimsPrincipal>()))
+        _customClaimsMock
+            .Setup(x => x.GetClaims(It.IsAny<TokenValidatedContext>()))
             .ReturnsAsync(new List<Claim> { new("custom", "value") });
 
         // Act
         var result = await _sut.GetStubSignInClaims(details);
 
         // Assert
-        result.Identity!.Name.Should().BeNull(); // not set
-        result.FindFirst(ClaimTypes.Email)?.Value.Should().Be("test@example.com");
-        result.FindFirst(ClaimTypes.MobilePhone)?.Value.Should().Be("07123456789");
-        result.FindFirst("sub")?.Value.Should().Be("abc-123");
-        result.FindFirst("custom")?.Value.Should().Be("value");
+        result.ResponseHandled.Should().BeFalse();
+        result.Principal.Identity!.Name.Should().BeNull();
+        result.Principal.FindFirst(ClaimTypes.Email)?.Value
+            .Should().Be("test@example.com");
+        result.Principal.FindFirst(ClaimTypes.MobilePhone)?.Value
+            .Should().Be("07123456789");
+        result.Principal.FindFirst("sub")?.Value.Should().Be("abc-123");
+        result.Principal.FindFirst("custom")?.Value.Should().Be("value");
+
+        var userInfo = JsonSerializer.Deserialize<GovUkUser>(
+            result.Principal.FindFirst(GovUkUserClaimTypes.UserInfo)!.Value);
+
+        userInfo!.Sub.Should().Be("abc-123");
+        userInfo.Email.Should().Be("test@example.com");
+        userInfo.PhoneNumber.Should().Be("07123456789");
     }
 
     [Test]
-    public async Task GetStubSignInClaims_ReturnsNull_IfEnvironmentIsPRD()
+    public async Task GetStubSignInClaims_CombinesFormDetailsWithUploadedVerifyDetails()
     {
         // Arrange
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                { "ResourceEnvironmentName", "PRD" }
-            }).Build();
+        var uploadedUser = CreateGovUkUser();
+        uploadedUser.Addresses = new List<GovUkAddress>
+        {
+            new GovUkAddress { StreetName = "Test Lane" }
+        };
 
-        var sut = new StubAuthenticationService(config, _customClaimsMock.Object, _httpContextAccessorMock.Object);
+        var details = new StubAuthUserDetails
+        {
+            Id = "form-id",
+            Email = "form@example.com",
+            GovUkUser = uploadedUser
+        };
+
+        _customClaimsMock
+            .Setup(x => x.GetClaims(It.IsAny<TokenValidatedContext>()))
+            .ReturnsAsync(Array.Empty<Claim>());
 
         // Act
-        var result = await sut.GetStubSignInClaims(new StubAuthUserDetails());
+        var result = await _sut.GetStubSignInClaims(details);
 
         // Assert
-        result.Should().BeNull();
+        result.ResponseHandled.Should().BeFalse();
+        result.Principal.HasClaim(
+            GovUkUserClaimTypes.VerifiedIdentity, "true").Should().BeTrue();
+
+        var userInfo = JsonSerializer.Deserialize<GovUkUser>(
+            result.Principal.FindFirst(GovUkUserClaimTypes.UserInfo)!.Value);
+
+        userInfo!.Sub.Should().Be("form-id");
+        userInfo.Email.Should().Be("form@example.com");
+        userInfo.CoreIdentityJwt.Should().NotBeNull();
+        userInfo.Addresses.Single().StreetName.Should().Be("Test Lane");
+    }
+
+    [Test]
+    public async Task GetStubSignInClaims_AddsCustomClaimsToReplacementPrincipal()
+    {
+        // Arrange
+        var replacementPrincipal = new ClaimsPrincipal(
+            new ClaimsIdentity(
+                new[] { new Claim("replacement", "true") },
+                CookieAuthenticationDefaults.AuthenticationScheme));
+
+        _customClaimsMock
+            .Setup(x => x.GetClaims(It.IsAny<TokenValidatedContext>()))
+            .Returns((TokenValidatedContext context) =>
+            {
+                context.Principal = replacementPrincipal;
+
+                return Task.FromResult<IEnumerable<Claim>>(
+                    new[] { new Claim("custom", "value") });
+            });
+
+        var details = new StubAuthUserDetails
+        {
+            Id = "abc-123",
+            Email = "test@example.com"
+        };
+
+        // Act
+        var result = await _sut.GetStubSignInClaims(details);
+
+        // Assert
+        result.ResponseHandled.Should().BeFalse();
+        result.Principal.Should().BeSameAs(replacementPrincipal);
+        result.Principal.FindFirst("custom")?.Value.Should().Be("value");
+    }
+
+    [Test]
+    public async Task GetStubSignInClaims_ReturnsHandled_WhenCustomClaimsHandlesResponse()
+    {
+        // Arrange
+        var httpContext = new DefaultHttpContext();
+        _httpContextAccessorMock
+            .Setup(x => x.HttpContext)
+            .Returns(httpContext);
+
+        _customClaimsMock
+            .Setup(x => x.GetClaims(It.IsAny<TokenValidatedContext>()))
+            .Returns((TokenValidatedContext context) =>
+            {
+                context.Response.Redirect("/Home/AccessDenied");
+                context.HandleResponse();
+
+                return Task.FromResult<IEnumerable<Claim>>(
+                    Array.Empty<Claim>());
+            });
+
+        var details = new StubAuthUserDetails
+        {
+            Id = "abc-123",
+            Email = "test@example.com"
+        };
+
+        // Act
+        var result = await _sut.GetStubSignInClaims(details);
+
+        // Assert
+        result.ResponseHandled.Should().BeTrue();
+        result.Principal.Should().BeNull();
+        httpContext.Response.Headers.Location.ToString()
+            .Should().Be("/Home/AccessDenied");
     }
 
     [Test]
@@ -97,6 +219,7 @@ public class StubAuthenticationServiceTests
 
         // Assert
         result.Should().NotBeNull();
+        result.CoreIdentityJwt.Should().NotBeNull();
     }
 
     [Test]
@@ -109,7 +232,8 @@ public class StubAuthenticationServiceTests
         fileMock.Setup(f => f.Length).Returns(stream.Length);
 
         // Act
-        var act = async () => await _sut.GetStubVerifyGovUkUser(fileMock.Object);
+        var act = async () =>
+            await _sut.GetStubVerifyGovUkUser(fileMock.Object);
 
         // Assert
         await act.Should().ThrowAsync<StubVerifyException>()
@@ -117,28 +241,68 @@ public class StubAuthenticationServiceTests
     }
 
     [Test]
-    public async Task GetAccountDetails_MapsClaimsFromHttpContext()
+    public void GetAccountDetails_ReturnsUserInfoFromHttpContext()
     {
         // Arrange
-        var identity = new ClaimsIdentity(new[]
+        var storedUser = new GovUkUser
         {
-            new Claim("sub", "user-id"),
-            new Claim(ClaimTypes.Email, "user@email.com"),
-            new Claim(ClaimTypes.MobilePhone, "07123")
-        });
+            Sub = "user-id",
+            Email = "user@email.com",
+            PhoneNumber = "07123"
+        };
 
-        var claimsPrincipal = new ClaimsPrincipal(identity);
-        var context = new DefaultHttpContext { User = claimsPrincipal };
+        var identity = new ClaimsIdentity(
+            new[]
+            {
+                new Claim(
+                    GovUkUserClaimTypes.UserInfo,
+                    JsonSerializer.Serialize(storedUser))
+            },
+            CookieAuthenticationDefaults.AuthenticationScheme);
 
-        _httpContextAccessorMock.Setup(x => x.HttpContext).Returns(context);
+        var context = new DefaultHttpContext
+        {
+            User = new ClaimsPrincipal(identity)
+        };
+
+        _httpContextAccessorMock
+            .Setup(x => x.HttpContext)
+            .Returns(context);
 
         // Act
-        var result = await _sut.GetAccountDetails("any-token");
+        var result = _sut.GetAccountDetails();
 
         // Assert
+        result.Should().NotBeNull();
         result.Sub.Should().Be("user-id");
         result.Email.Should().Be("user@email.com");
         result.PhoneNumber.Should().Be("07123");
+    }
+
+    [Test]
+    public void GetAccountDetails_ReturnsNull_WhenPrincipalIsUnauthenticated()
+    {
+        // Arrange
+        var identity = new ClaimsIdentity(
+            new[]
+            {
+                new Claim(
+                    GovUkUserClaimTypes.UserInfo,
+                    JsonSerializer.Serialize(CreateGovUkUser()))
+            });
+
+        _httpContextAccessorMock
+            .Setup(x => x.HttpContext)
+            .Returns(new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(identity)
+            });
+
+        // Act
+        var result = _sut.GetAccountDetails();
+
+        // Assert
+        result.Should().BeNull();
     }
 
     [Test]
@@ -147,7 +311,9 @@ public class StubAuthenticationServiceTests
         // Arrange
         var context = new DefaultHttpContext();
 
-        var identity = new ClaimsIdentity(new[] { new Claim("foo", "bar") }, "stub");
+        var identity = new ClaimsIdentity(
+            new[] { new Claim("foo", "bar") },
+            "stub");
         context.User = new ClaimsPrincipal(identity);
 
         var authServiceMock = new Mock<IAuthenticationService>();
@@ -155,7 +321,8 @@ public class StubAuthenticationServiceTests
         services.AddSingleton(authServiceMock.Object);
         context.RequestServices = services.BuildServiceProvider();
 
-        var controller = new VerifyIdentityController(Mock.Of<IGovUkAuthenticationService>())
+        var controller = new VerifyIdentityController(
+            Mock.Of<IGovUkAuthenticationService>())
         {
             ControllerContext = new ControllerContext
             {
@@ -164,7 +331,8 @@ public class StubAuthenticationServiceTests
         };
 
         // Act
-        var result = await _sut.ChallengeWithVerifyAsync("/return-here", controller);
+        var result = await _sut.ChallengeWithVerifyAsync(
+            "/return-here", controller);
 
         // Assert
         result.Should().BeOfType<LocalRedirectResult>();
@@ -173,7 +341,7 @@ public class StubAuthenticationServiceTests
 
     private GovUkUser CreateGovUkUser()
     {
-        var govUkUser = new GovUkUser
+        return new GovUkUser
         {
             CoreIdentityJwt = new GovUkCoreIdentityJwt
             {
@@ -182,37 +350,35 @@ public class StubAuthenticationServiceTests
                     CredentialSubject = new GovUkCredentialSubject
                     {
                         Names = new List<GovUkName>
-                {
-                    new GovUkName
-                    {
-                        ValidFromRaw = "2020-03-01",
-                        NameParts = new List<GovUkNamePart>
                         {
-                            new GovUkNamePart
+                            new GovUkName
                             {
-                                Value = "Alice",
-                                Type = "GivenName"
-                            },
-                            new GovUkNamePart
+                                ValidFromRaw = "2020-03-01",
+                                NameParts = new List<GovUkNamePart>
+                                {
+                                    new GovUkNamePart
+                                    {
+                                        Value = "Alice",
+                                        Type = "GivenName"
+                                    },
+                                    new GovUkNamePart
+                                    {
+                                        Value = "Bobbin",
+                                        Type = "FamilyName"
+                                    }
+                                }
+                            }
+                        },
+                        BirthDates = new List<GovUkBirthDateEntry>
+                        {
+                            new GovUkBirthDateEntry
                             {
-                                Value = "Bobbin",
-                                Type = "FamilyName"
+                                Value = "1970-01-01"
                             }
                         }
-                    }
-                },
-                        BirthDates = new List<GovUkBirthDateEntry>
-                {
-                    new GovUkBirthDateEntry
-                    {
-                        Value = "1970-01-01"
-                    }
-                }
                     }
                 }
             }
         };
-
-        return govUkUser;
     }
 }

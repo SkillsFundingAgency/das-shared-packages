@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -180,7 +181,6 @@ namespace SFA.DAS.GovUK.Auth.AppStart
             {
                 context.Properties.StoreTokens(new[]
                 {
-                    new AuthenticationToken { Name = "access_token", Value = token.AccessToken },
                     new AuthenticationToken { Name = "id_token", Value = token.IdToken },
                 });
 
@@ -202,6 +202,20 @@ namespace SFA.DAS.GovUK.Auth.AppStart
 
             context.Properties ??= new AuthenticationProperties();
             context.Properties.Items["suspended_redirect"] = _suspendedRedirectUrl;
+        }
+
+        public override Task UserInformationReceived(
+            UserInformationReceivedContext context)
+        {
+            var identity = (ClaimsIdentity)context.Principal!.Identity!;
+            var user = context.User.RootElement.Deserialize<GovUkUser>();
+
+            identity.AddOrReplaceClaim(
+                GovUkUserClaimTypes.UserInfo,
+                JsonSerializer.Serialize(user),
+                _ => false);
+
+            return Task.CompletedTask;
         }
 
         private static JsonElement ToJsonElement<T>(T value)

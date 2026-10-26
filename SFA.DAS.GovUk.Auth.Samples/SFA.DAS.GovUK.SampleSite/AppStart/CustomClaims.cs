@@ -16,13 +16,8 @@ public class CustomClaims : ICustomClaims
 
     public async Task<IEnumerable<Claim?>> GetClaims(TokenValidatedContext tokenValidatedContext)
     {
-        return await GetClaims(tokenValidatedContext?.Principal);
-    }
-
-    public async Task<IEnumerable<Claim>> GetClaims(ClaimsPrincipal? principal)
-    {
-        var value = principal?.Identities.First().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-            ?.Value;
+        var value = tokenValidatedContext?.Principal?.Identities
+            .First().Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
 
         var claims = new List<Claim>
         {

@@ -64,9 +64,7 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
         [Authorize(Policy = nameof(PolicyNames.IsActiveAccount))]
         public async Task<IActionResult> AccountDetails()
         {
-            var token = await HttpContext.GetTokenAsync("access_token");
-            var details = await _govUkAuthenticationService.GetAccountDetails(token);
-
+            var details = _govUkAuthenticationService.GetAccountDetails();
             return View(details);
         }
 
@@ -81,9 +79,7 @@ namespace SFA.DAS.GovUK.SampleSite.Controllers
         [Authorize(Policy = nameof(PolicyNames.IsVerified))]
         public async Task<IActionResult> VerifiedAccountDetails()
         {
-            var token = await HttpContext.GetTokenAsync("access_token");
-            var details = await _govUkAuthenticationService.GetAccountDetails(token);
-
+            var details = _govUkAuthenticationService.GetAccountDetails();
             return View(details);
         }
 

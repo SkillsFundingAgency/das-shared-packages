@@ -72,7 +72,7 @@ namespace SFA.DAS.GovUK.Auth.Models
             var normalizedParts = new List<(DateTime From, DateTime Until, string Type, string Value)>();
 
             // normalize name parts
-            foreach (var name in Names)
+            foreach (var name in Names ?? Enumerable.Empty<GovUkName>())
             {
                 var nameFrom = name.ValidFrom ?? DateTime.MinValue;
                 var nameUntil = name.ValidUntil ?? DateTime.MaxValue;
