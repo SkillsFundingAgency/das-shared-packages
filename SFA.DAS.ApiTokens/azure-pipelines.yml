@@ -1,0 +1,40 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+      - pipeline-templates
+      - SFA.DAS.ApiTokens
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+      - pipeline-templates
+      - SFA.DAS.ApiTokens
+
+resources:
+  repositories:
+    - repository: self
+    - repository: das-platform-building-blocks
+      type: github
+      name: SkillsFundingAgency/das-platform-building-blocks
+      ref: refs/tags/2.2.2
+      endpoint: SkillsFundingAgency
+
+stages:
+  - stage: Build
+    jobs:
+      - template: ../pipeline-templates/job/code-build.yml
+        parameters:
+          WorkingDirectory: SFA.DAS.ApiTokens
+          DotNetStandardPackagesToPack: >
+            SFA.DAS.ApiTokens/SFA.DAS.ApiTokens.Lib/SFA.DAS.ApiTokens.Lib.csproj;
+            SFA.DAS.ApiTokens/SFA.DAS.ApiTokens.Console/SFA.DAS.ApiTokens.Console.csproj
+          SonarCloudProjectKey: SkillsFundingAgency_das-shared-packages_SFA.DAS.ApiTokens
+  - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
