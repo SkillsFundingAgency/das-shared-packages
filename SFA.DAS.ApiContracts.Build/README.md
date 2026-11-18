@@ -83,6 +83,8 @@ All properties have defaults and are optional except `ApiContractsSwaggerJsonPat
 | `ApiContractsGenerationEnabled` | `true` | Set to `false` to skip generation entirely (e.g. in CI where files are already committed) |
 | `ApiContractsClientName` | *(empty)* | When set, also generates a typed client — see [Client Generation](#client-generation) |
 | `ApiContractsClientConfigurationNameOverride` | *(empty)* | Override the generated configuration class name — see [Configuration Name Override](#configuration-name-override) |
+| `ApiContractsGenerateHealthCheck` | `false` | Generate a typed APIM health-check wrapper alongside the client |
+| `ApiContractsHealthCheckDescription` | Client name | Display description for the generated health check; blank values use `ApiContractsClientName` |
 | `ApiContractsJsonLibrary` | `SystemTextJson` | Serialiser attributes on generated response DTOs — see [JSON Serialiser Attributes](#json-serialiser-attributes) |
 | `ApiContractsNSwagDtoFlags` | *(set by package)* | The complete set of NSwag flags used when generating response DTOs. Reference this in secondary generation targets (e.g. for a v2 swagger) instead of repeating the flags — see [Multiple API Versions](#multiple-api-versions) |
 
@@ -212,6 +214,30 @@ The generated `Data` property will then be `JsonPatchDocument<T>` using the expl
 ## Client Generation
 
 Setting `ApiContractsClientName` causes a third file, `Generated/Client.g.cs`, to be generated. This contains a configuration class, a typed interface, a concrete pass-through client, and a DI registration extension.
+
+To also generate a typed health check based on `SFA.DAS.Apim.Shared.Infrastructure.HealthCheck.ApiHealthCheck<T>`, enable:
+
+```xml
+<PropertyGroup>
+  <ApiContractsClientName>AssessorApi</ApiContractsClientName>
+  <ApiContractsGenerateHealthCheck>true</ApiContractsGenerateHealthCheck>
+  <ApiContractsHealthCheckDescription>Assessor API</ApiContractsHealthCheckDescription>
+</PropertyGroup>
+```
+
+This adds `AssessorApiHealthCheck` to `Client.g.cs` in the same namespace as the client.
+The check uses the generated configuration type, including any configuration-name override,
+and delegates ping behaviour to the shared APIM health check. An omitted or blank description
+defaults to the client name. Generation is disabled by default.
+
+Each consuming application registers the check explicitly after registering its API client:
+
+```csharp
+services.AddHealthChecks()
+    .AddCheck<AssessorApiHealthCheck>(AssessorApiHealthCheck.HealthCheckResultDescription);
+```
+
+Enabling generation does not add a health-check registration to the generated client DI extension.
 
 ```xml
 <PropertyGroup>

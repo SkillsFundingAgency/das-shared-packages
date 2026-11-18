@@ -54,6 +54,14 @@
         <ApiContractsClientConfigurationNameOverride Condition="'$(ApiContractsClientConfigurationNameOverride)' == ''"></ApiContractsClientConfigurationNameOverride>
 
         <!--
+            Optional typed health check alongside the generated client. Each consuming
+            application chooses whether to register it. The description defaults to
+            ApiContractsClientName when no display description is supplied.
+        -->
+        <ApiContractsGenerateHealthCheck Condition="'$(ApiContractsGenerateHealthCheck)' == ''">false</ApiContractsGenerateHealthCheck>
+        <ApiContractsHealthCheckDescription Condition="'$(ApiContractsHealthCheckDescription)' == ''"></ApiContractsHealthCheckDescription>
+
+        <!--
             Resolved path to the templates shipped inside this package.
             Used by the .targets file to point NSwag at our Client.liquid template.
             Do not override this unless you need fully custom templates.

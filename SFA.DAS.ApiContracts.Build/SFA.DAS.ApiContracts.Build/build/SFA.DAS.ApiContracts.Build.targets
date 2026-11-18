@@ -1016,6 +1016,7 @@
             IMyApiV2Client<T>             : IInternalApiClient<T>
             MyApiV2Client                 : IMyApiV2Client<MyApiV2Configuration>
             AddMyApiV2ClientExtension     IServiceCollection extension to register the client
+            MyApiV2HealthCheck            optional ApiHealthCheck<MyApiV2Configuration> wrapper
     -->
     <UsingTask TaskName="GenerateApiClientWrapper"
                TaskFactory="RoslynCodeTaskFactory"
@@ -1023,6 +1024,8 @@
         <ParameterGroup>
             <ClientName ParameterType="System.String" Required="true" />
             <ConfigurationName ParameterType="System.String" Required="true" />
+            <GenerateHealthCheck ParameterType="System.Boolean" Required="false" />
+            <HealthCheckDescription ParameterType="System.String" Required="false" />
             <Namespace  ParameterType="System.String" Required="true" />
             <OutputPath ParameterType="System.String" Required="true" />
         </ParameterGroup>
@@ -1055,6 +1058,12 @@
                 sb.AppendLine("using Microsoft.Extensions.Configuration;");
                 sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
                 sb.AppendLine("using Microsoft.Extensions.Options;");
+                if (GenerateHealthCheck)
+                {
+                    sb.AppendLine("using Microsoft.Extensions.Diagnostics.HealthChecks;");
+                    sb.AppendLine("using Microsoft.Extensions.Logging;");
+                    sb.AppendLine("using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;");
+                }
                 sb.AppendLine("using SFA.DAS.Apim.Shared.Interfaces;");
                 sb.AppendLine("using SFA.DAS.Apim.Shared.Models;");
                 sb.AppendLine();
@@ -1088,6 +1097,30 @@
                 sb.AppendLine("    public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request) => apiClient.PutWithResponseCode<TData, TResponse>(request);");
                 sb.AppendLine("}");
                 sb.AppendLine();
+
+                if (GenerateHealthCheck)
+                {
+                    string healthCheckClass = ClientName + "HealthCheck";
+                    string description = string.IsNullOrWhiteSpace(HealthCheckDescription)
+                        ? ClientName
+                        : HealthCheckDescription;
+                    string descriptionLiteral = "@\"" + description.Replace("\"", "\"\"") + "\"";
+
+                    sb.AppendLine("public class " + healthCheckClass + "(");
+                    sb.AppendLine("    " + ifaceName + "<" + configClass + "> client,");
+                    sb.AppendLine("    ILogger<" + healthCheckClass + "> logger)");
+                    sb.AppendLine("    : ApiHealthCheck<" + configClass + ">(");
+                    sb.AppendLine("        HealthCheckDescription,");
+                    sb.AppendLine("        HealthCheckResultDescription,");
+                    sb.AppendLine("        client,");
+                    sb.AppendLine("        logger), IHealthCheck");
+                    sb.AppendLine("{");
+                    sb.AppendLine("    public static readonly string HealthCheckDescription = " + descriptionLiteral + ";");
+                    sb.AppendLine("    public static string HealthCheckResultDescription => HealthCheckDescription + \" check\";");
+                    sb.AppendLine("}");
+                    sb.AppendLine();
+                }
+
                 sb.AppendLine("public static class Add" + clientClass + "Extension");
                 sb.AppendLine("{");
                 sb.AppendLine("    public static IServiceCollection Add" + clientClass + "(this IServiceCollection services, IConfiguration configuration)");
@@ -1133,6 +1166,8 @@
         <GenerateApiClientWrapper
             ClientName="$(ApiContractsClientName)"
             ConfigurationName="$(_ApiContractsResolvedConfigName)"
+            GenerateHealthCheck="$(ApiContractsGenerateHealthCheck)"
+            HealthCheckDescription="$(ApiContractsHealthCheckDescription)"
             Namespace="$(ApiContractsNamespace)"
             OutputPath="$(ApiContractsOutputDirectory)/Client.g.cs" />
 

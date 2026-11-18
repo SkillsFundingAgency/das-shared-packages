@@ -39,6 +39,7 @@
     <PackageReference Include="FluentAssertions" Version="7.*" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
     <PackageReference Include="NSwag.MSBuild" Version="14.2.0">
       <PrivateAssets>all</PrivateAssets>
@@ -112,12 +113,31 @@
     <GenerateApiClientWrapper
         ClientName="TestApi"
         ConfigurationName="OverriddenApiConfiguration"
+        GenerateHealthCheck="true"
         Namespace="SFA.DAS.ApiContracts.Build.Tests.Override"
         OutputPath="$(MSBuildThisFileDirectory)Generated\ClientOverride\Client.g.cs" />
   </Target>
 
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Generated\ClientOverride\*.g.cs" />
+  </ItemGroup>
+
+  <!-- Dedicated fixture exercises opt-in generation and C# string escaping. -->
+  <Target Name="GenerateApiClientWithHealthCheck"
+          BeforeTargets="BeforeBuild"
+          AfterTargets="GenerateApiClient">
+    <MakeDir Directories="$(MSBuildThisFileDirectory)Generated\HealthCheck" />
+    <GenerateApiClientWrapper
+        ClientName="TestApi"
+        ConfigurationName="TestApiConfiguration"
+        GenerateHealthCheck="true"
+        HealthCheckDescription="Test &quot;API&quot; \ health"
+        Namespace="SFA.DAS.ApiContracts.Build.Tests.HealthCheckFixture"
+        OutputPath="$(MSBuildThisFileDirectory)Generated\HealthCheck\Client.g.cs" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Generated\HealthCheck\Client.g.cs" />
   </ItemGroup>
 
 </Project>
