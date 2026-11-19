@@ -1,6 +1,14 @@
+## ⛔Never push sensitive information such as client id's, secrets or keys into repositories including in the README file⛔
 
-SFA.DAS.Employer.Shared.UI
-==========
+# SFA.DAS.Employer.Shared.UI
+
+<img src="https://avatars.githubusercontent.com/u/9841374?s=200&v=4" align="right" alt="UK Government logo">
+
+[![Build Status](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_apis/build/status%2FShared%20Packages%2Fdas-shared-packages-SFA.DAS.Employer.Shared.UI?repoName=SkillsFundingAgency%2Fdas-shared-packages&branchName=refs%2Fpull%2F953%2Fmerge)](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_build/latest?definitionId=2934&repoName=SkillsFundingAgency%2Fdas-shared-packages&branchName=refs%2Fpull%2F953%2Fmerge)
+
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?longCache=true&style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
+
+## About
 
 This project provides shared Employer site UI components via a [Razor Class Library](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-2.2&tabs=visual-studio). It currently consists of the following:
 
@@ -108,3 +116,29 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
+## 🚀 Installation
+
+### Pre-Requisites
+* A clone of this repository
+* An appropriate IDE
+
+
+## Technologies
+* .NetCore 10.0
+* NUnit
+* Moq
+* FluentAssertions
+
+## Build
+
+Open the solution in your C# IDE of choice and build the solution.
+
+Alternatively, from the command line you can navigate to the solution folder and run the following command:
+
+```
+dotnet build
+```
+
+## License
+
+Licensed under the [MIT license](https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE)
