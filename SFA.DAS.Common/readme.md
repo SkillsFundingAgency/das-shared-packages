@@ -11,10 +11,7 @@
 
 ## About
 
-Provides a single location for common types across multiple SFA DAS solutions.
-
-Code placed in here should represent truly global facts or data structures that can be used everywhere and that should be managed in one place.
-
+Provides a single location for common code across multiple SFA DAS solutions.
 
 
 -------
@@ -32,16 +29,16 @@ Code placed in here should represent truly global facts or data structures that 
 * Moq
 * FluentAssertions
 
-### Build
+## Build
 
-Open the solution in your C# IDE of choice and build the project.
+Open the solution in your C# IDE of choice and build the solution.
 
+Alternatively, from the command line you can navigate to the solution folder and run the following command:
+
+```
+dotnet build
+```
 
 ## License
 
-Licensed under the [MIT license](LICENSE)
-
-
-
-
-
+Licensed under the [MIT license](https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE)
