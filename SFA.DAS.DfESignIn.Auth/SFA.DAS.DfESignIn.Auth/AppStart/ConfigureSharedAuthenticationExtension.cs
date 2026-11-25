@@ -26,7 +26,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
         public static void AddAuthenticationCookie(
             this AuthenticationBuilder services,
             string cookieName,
-            string signedOutCallbackPath,
+            string signOutPath,
             string resourceEnvironmentName,
             ClientName clientName)
         {
@@ -36,14 +36,14 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
 
             services.AddAuthenticationCookie(
                 cookieName,
-                signedOutCallbackPath,
+                signOutPath,
                 cookieDomain);
         }
 
         public static void AddAuthenticationCookie(
             this AuthenticationBuilder services,
             string cookieName,
-            string signedOutCallbackPath,
+            string signOutPath,
             string cookieDomain)
         {
             services.AddCookie(options =>
@@ -56,7 +56,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 options.SlidingExpiration = true;
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.CookieManager = new ChunkingCookieManager { ChunkSize = 3000 };
-                options.LogoutPath = new PathString(signedOutCallbackPath);
+                options.LogoutPath = new PathString(signOutPath);
 
                 if (!string.IsNullOrEmpty(cookieDomain))
                 {

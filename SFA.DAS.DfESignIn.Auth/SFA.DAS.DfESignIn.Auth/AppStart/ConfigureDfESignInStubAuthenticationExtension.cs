@@ -15,7 +15,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
         internal static void AddProviderStubAuthentication(
             this IServiceCollection services,
             string authenticationCookieName,
-            string signedOutCallbackPath, 
+            string signOutPath, 
             string resourceEnvironmentName,
             ClientName clientName)
         {
@@ -35,14 +35,14 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     };
                 });
 
-            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, resourceEnvironmentName, clientName);
+            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signOutPath, resourceEnvironmentName, clientName);
         }
 
         internal static void ConfigureDfESignInStubAuthentication(
             this IServiceCollection services,
             DfEOidcConfiguration configuration,
             string authenticationCookieName,
-            string signedOutCallbackPath)
+            string signOutPath)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -54,7 +54,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 })
                 .AddAuthenticationCookie(
                     $"{authenticationCookieName}.stub",
-                    signedOutCallbackPath,
+                    signOutPath,
                     configuration.CookieDomain);
 
             services

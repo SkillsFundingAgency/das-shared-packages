@@ -36,13 +36,14 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             IConfiguration configuration,
             string authenticationCookieName,
             ClientName clientName,
-            string signedOutCallbackPath,
+            string signOutPath,
             string redirectUrl)
         {
             var configName = clientName;
 
             if (clientName == ClientName.RoatpServiceAdmin)
             {
+                // preserving the original fudge for backwards compatibility
                 configName = ClientName.ServiceAdmin;
             }
 
@@ -61,14 +62,14 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             services.ConfigureDfESignInAuthentication(
                 oidcConfiguration,
                 authenticationCookieName,
-                signedOutCallbackPath);
+                signOutPath);
         }
 
         internal static void ConfigureDfESignInAuthentication(
             this IServiceCollection services,
             DfEOidcConfiguration configuration,
             string authenticationCookieName,
-            string signedOutCallbackPath)
+            string signOutPath)
         {
             services
                 .AddAuthentication(sharedOptions =>
@@ -151,7 +152,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 })
                 .AddAuthenticationCookie(
                     authenticationCookieName,
-                    signedOutCallbackPath,
+                    signOutPath,
                     configuration.CookieDomain);
 
             services

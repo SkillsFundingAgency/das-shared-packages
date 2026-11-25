@@ -30,27 +30,30 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             string authenticationCookieName,
             Type customServiceRole,
             ClientName clientName,
-            string signedOutCallbackPath = "/signed-out",
+            string signOutPath = "/signed-out",
             string redirectUrl = "")
         {
-            services.AddServiceRegistration(configuration, customServiceRole, clientName);
-            if (!string.IsNullOrEmpty(configuration["NoAuthEmail"]))
+            var useStub = !string.IsNullOrEmpty(configuration["NoAuthEmail"]);
+
+            services.AddServiceRegistration(configuration, customServiceRole, clientName, useStub);
+
+            if (useStub)
             {
-                services.AddProviderStubAuthentication($"{authenticationCookieName}.stub", signedOutCallbackPath,configuration["ResourceEnvironmentName"], clientName);
+                services.AddProviderStubAuthentication($"{authenticationCookieName}.stub", signOutPath,configuration["ResourceEnvironmentName"], clientName);
             }
             else
             {
-                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signedOutCallbackPath, redirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"], clientName));
+                services.ConfigureDfESignInAuthentication(configuration, authenticationCookieName, clientName, signOutPath, redirectUrl.GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"], clientName));
             }
         }
 
         public static void AddAndConfigureDfESignInAuthentication(
-    this IServiceCollection services,
-    IConfiguration configuration,
-    string authenticationCookieName,
-    Type customServiceRole,
-    string clientConfigurationSectionName,
-    string signedOutCallbackPath = "/signed-out")
+            this IServiceCollection services,
+            IConfiguration configuration,
+            string authenticationCookieName,
+            Type customServiceRole,
+            string clientConfigurationSectionName,
+            string signOutPath = "/signed-out")
         {
             services.AddServiceRegistration(configuration, customServiceRole, clientConfigurationSectionName);
             services.Configure<DfESignInStubConfiguration>(configuration.GetSection(nameof(DfESignInStubConfiguration)));
@@ -66,14 +69,14 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                 services.ConfigureDfESignInStubAuthentication(
                     oidcConfiguration,
                     authenticationCookieName,
-                    signedOutCallbackPath);
+                    signOutPath);
             }
             else
             {
                 services.ConfigureDfESignInAuthentication(
                     oidcConfiguration,
                     authenticationCookieName,
-                    signedOutCallbackPath);
+                    signOutPath);
             }
         }
     }

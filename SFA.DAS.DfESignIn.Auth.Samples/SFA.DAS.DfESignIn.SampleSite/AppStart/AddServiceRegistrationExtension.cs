@@ -8,7 +8,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.AppStart
 {
     public static class AddServiceRegistrationExtension
     {
-        private const string SignedOutCallbackPath = "/signed-out";
+        private const string SignOutPath = "/signed-out";
 
         public static void AddServiceRegistration(
             this IServiceCollection services,
@@ -31,7 +31,7 @@ namespace SFA.DAS.DfESignIn.SampleSite.AppStart
                 $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth",
                 typeof(CustomServiceRole),
                 "DfEOidcConfiguration_Assessor",
-                SignedOutCallbackPath);
+                SignOutPath);
 
             services.AddProviderUiServiceRegistration(configuration);
         }

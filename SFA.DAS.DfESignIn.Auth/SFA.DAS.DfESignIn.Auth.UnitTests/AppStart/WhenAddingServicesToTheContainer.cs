@@ -695,6 +695,87 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart
                 new List<IConfigurationProvider> { provider });
         }
 
+        [Test]
+        public void Then_The_Legacy_Stub_Registration_Allows_A_Missing_Client_Section()
+        {
+            // Arrange
+            const string missingClientSection =
+                "DfEOidcConfiguration_SupportConsole";
+
+            // Act
+            _sut.AddServiceRegistration(
+                _configuration,
+                typeof(TestCustomServiceRole),
+                ClientName.SupportConsole,
+                useStub: true);
+
+            using var provider = _sut.BuildServiceProvider();
+
+            var actual = provider
+                .GetRequiredService<IOptions<DfEOidcConfiguration>>()
+                .Value;
+
+            // Assert
+            _configuration.GetSection(missingClientSection)
+                .GetChildren().Should().BeEmpty();
+
+            actual.BaseUrl.Should().Be("https://test.com/");
+            actual.APIServiceUrl.Should().Be("https://test-api.com/");
+            actual.ClientId.Should().BeNull();
+        }
+
+        [Test]
+        public async Task Then_NoAuthEmail_Allows_The_Legacy_Stub_Without_Client_Configuration()
+        {
+            // Arrange
+            _configuration["NoAuthEmail"] = "stub@example.com";
+
+            _configuration["DfEOidcConfiguration:DfELoginSessionConnectionString"] =
+                string.Empty;
+
+            // Act
+            _sut.AddAndConfigureDfESignInAuthentication(
+                _configuration,
+                "Test.Legacy.Auth",
+                typeof(TestCustomServiceRole),
+                ClientName.SupportConsole);
+
+            using var provider = _sut.BuildServiceProvider();
+
+            var schemeProvider = provider
+                .GetRequiredService<IAuthenticationSchemeProvider>();
+
+            var actual = await schemeProvider
+                .GetDefaultAuthenticateSchemeAsync();
+
+            // Assert
+            actual.Should().NotBeNull();
+            actual!.Name.Should().Be("Test.Legacy.Auth.stub");
+            actual.HandlerType.Should().Be(typeof(ProviderStubAuthHandler));
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        public void Then_Real_Authentication_Requires_The_Client_Section(
+            string? noAuthEmail)
+        {
+            // Arrange
+            _configuration["NoAuthEmail"] = noAuthEmail;
+
+            // Act
+            Action act = () => _sut.AddAndConfigureDfESignInAuthentication(
+                _configuration,
+                "Test.Legacy.Auth",
+                typeof(TestCustomServiceRole),
+                ClientName.SupportConsole);
+
+            // Assert
+            act.Should()
+                .Throw<ArgumentException>()
+                .WithMessage(
+                    "Cannot find the client configuration section 'DfEOidcConfiguration_SupportConsole'.");
+        }
+
         public class TestCustomClaims : ICustomClaims
         {
             public IEnumerable<Claim> GetClaims(TokenValidatedContext tokenValidatedContext)
