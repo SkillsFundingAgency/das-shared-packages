@@ -19,41 +19,87 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
     internal static class AddServiceRegistrationExtension
     {
         internal static void AddServiceRegistration(
-            this IServiceCollection services, 
-            IConfiguration configuration, 
-            Type customServiceRole, 
-            ClientName clientName)
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Type customServiceRole,
+            ClientName clientName,
+            bool useStub = false)
+        {
+            var configName = clientName;
+
+            if (clientName == ClientName.RoatpServiceAdmin)
+            {
+                // preserving the original fudge for backwards compatibility
+                configName = ClientName.ServiceAdmin;
+            }
+
+            services.AddServiceRegistration(
+                configuration,
+                customServiceRole,
+                $"{nameof(DfEOidcConfiguration)}_{configName}",
+                requireClientConfiguration: !useStub);
+        }
+
+        internal static void AddServiceRegistration(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Type customServiceRole,
+            string clientConfigurationSectionName)
+        {
+            services.AddServiceRegistration(
+                configuration,
+                customServiceRole,
+                clientConfigurationSectionName,
+                requireClientConfiguration: true);
+        }
+
+        private static void AddServiceRegistration(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Type customServiceRole,
+            string clientConfigurationSectionName,
+            bool requireClientConfiguration)
         {
             if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
             {
                 throw new ArgumentException(
-                    "Cannot find DfEOidcConfiguration in configuration. Please add a section called DfESignInOidcConfiguration with BaseUrl, ClientId and Secret properties.");
+                    $"Cannot find the shared configuration section '{nameof(DfEOidcConfiguration)}'.");
             }
 
-            var configName = clientName;
-            if (clientName == ClientName.RoatpServiceAdmin)
+            if (requireClientConfiguration &&
+                !configuration.GetSection(clientConfigurationSectionName).GetChildren().Any())
             {
-                configName = ClientName.ServiceAdmin;
+                throw new ArgumentException(
+                    $"Cannot find the client configuration section '{clientConfigurationSectionName}'.");
             }
-            
-            services.AddOptions();
-            services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
-            services.Configure<DfEOidcConfiguration>(configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{configName}"));
 
-            services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
+            services.AddOptions();
+
+            services.Configure<DfEOidcConfiguration>(
+                configuration.GetSection(nameof(DfEOidcConfiguration)));
+
+            services.Configure<DfEOidcConfiguration>(
+                configuration.GetSection(clientConfigurationSectionName));
+
+            services.AddSingleton(
+                cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
+
             services.AddTransient(typeof(ICustomServiceRole), customServiceRole);
             services.AddTransient<IDfESignInService, DfESignInService>();
-            services.AddHttpClient<IApiHelper, DfeSignInApiHelper>
-                (
-                    options => options.Timeout = TimeSpan.FromMinutes(30)
-                )
+
+            services.AddHttpClient<IApiHelper, DfeSignInApiHelper>(
+                    options => options.Timeout = TimeSpan.FromMinutes(30))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(10))
                 .AddPolicyHandler(HttpClientRetryPolicy());
+
             services.AddTransient<ITokenDataSerializer, TokenDataSerializer>();
             services.AddTransient<ITokenBuilder, TokenBuilder>();
             services.AddSingleton<ITicketStore, AuthenticationTicketStore>();
 
-            var connection = configuration.GetSection(nameof(DfEOidcConfiguration)).Get<DfEOidcConfiguration>();
+            var connection = configuration
+                .GetSection(nameof(DfEOidcConfiguration))
+                .Get<DfEOidcConfiguration>();
+
             if (string.IsNullOrEmpty(connection.DfELoginSessionConnectionString))
             {
                 services.AddDistributedMemoryCache();

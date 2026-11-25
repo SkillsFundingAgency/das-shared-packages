@@ -1,8 +1,12 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Enums;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
@@ -11,7 +15,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
         internal static void AddProviderStubAuthentication(
             this IServiceCollection services,
             string authenticationCookieName,
-            string signedOutCallbackPath, 
+            string signOutPath, 
             string resourceEnvironmentName,
             ClientName clientName)
         {
@@ -31,7 +35,48 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     };
                 });
 
-            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signedOutCallbackPath, resourceEnvironmentName, clientName);
+            services.AddAuthentication(authenticationCookieName).AddAuthenticationCookie(authenticationCookieName, signOutPath, resourceEnvironmentName, clientName);
+        }
+
+        internal static void ConfigureDfESignInStubAuthentication(
+            this IServiceCollection services,
+            DfEOidcConfiguration configuration,
+            string authenticationCookieName,
+            string signOutPath)
+        {
+            services
+                .AddAuthentication(sharedOptions =>
+                {
+                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    sharedOptions.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    sharedOptions.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddAuthenticationCookie(
+                    $"{authenticationCookieName}.stub",
+                    signOutPath,
+                    configuration.CookieDomain);
+
+            services
+                .AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+                .Configure<ITicketStore, DfEOidcConfiguration>(
+                    (options, ticketStore, config) =>
+                    {
+                        options.LoginPath = new PathString("/stub/sign-in-stub");
+
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(
+                            config.LoginSlidingExpiryTimeOutInMinutes);
+
+                        options.SlidingExpiration = true;
+                        options.SessionStore = ticketStore;
+
+                        options.Events.OnSigningOut = context =>
+                        {
+                            context.Response.Redirect(config.SignedOutRedirectUrl);
+
+                            return Task.CompletedTask;
+                        };
+                    });
         }
     }
 }

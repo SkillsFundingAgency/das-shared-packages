@@ -1,0 +1,70 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model SFA.DAS.DfESignIn.Auth.Models.Stub.SelectOrganisationStubViewModel
+@{
+    ViewData["Title"] = "Choose an organisation";
+    Layout = "_Layout";
+}
+
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Choose an organisation</h1>
+
+            <p class="govuk-body">
+                Signing in as <strong>@Model.Email</strong>.
+            </p>
+
+            @if (Model.Organisations.Count == 0)
+            {
+                <p class="govuk-body">
+                    This user has no configured organisations.
+                </p>
+            }
+            else
+            {
+                <form method="post"
+                      action="@Url.Content("~/stub/sign-in")"
+                      asp-antiforgery="true">
+                    <input asp-for="UserId" type="hidden" />
+                    <input asp-for="ReturnUrl" type="hidden" />
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="OrganisationId">
+                            Organisation
+                        </label>
+
+                        <span asp-validation-for="OrganisationId"
+                              class="govuk-error-message"></span>
+
+                        <select asp-for="OrganisationId"
+                                class="govuk-select"
+                                required>
+                            <option value="">Select an organisation</option>
+
+                            @foreach (var organisation in Model.Organisations)
+                            {
+                                <option value="@organisation.Id">
+                                    @organisation.Name
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <button class="govuk-button"
+                            data-module="govuk-button"
+                            type="submit">
+                        Sign in
+                    </button>
+                </form>
+            }
+
+            <p class="govuk-body">
+                <a asp-action="SignInStub"
+                   asp-route-returnUrl="@Model.ReturnUrl"
+                   class="govuk-link">
+                    Choose a different user
+                </a>
+            </p>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,51 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model SFA.DAS.DfESignIn.Auth.Models.Stub.SignInStubViewModel
+@{
+    ViewData["Title"] = "DfE Sign-in stub";
+    Layout = "_Layout";
+}
+
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">DfE Sign-in stub</h1>
+
+            @if (Model.Users.Count == 0)
+            {
+                <p class="govuk-body">
+                    No stub users have been configured.
+                </p>
+            }
+            else
+            {
+                <form method="get"
+                      action="@Url.Content("~/stub/select-organisation")">
+                    <input asp-for="ReturnUrl" type="hidden" />
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="UserId">
+                            Choose a user
+                        </label>
+
+                        <select asp-for="UserId"
+                                class="govuk-select"
+                                required>
+                            <option value="">Select a user</option>
+
+                            @foreach (var user in Model.Users)
+                            {
+                                <option value="@user.Id">@user.Email</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button class="govuk-button"
+                            data-module="govuk-button"
+                            type="submit">
+                        Continue
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</main>

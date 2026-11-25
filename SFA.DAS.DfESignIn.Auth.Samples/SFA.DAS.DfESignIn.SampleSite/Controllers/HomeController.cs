@@ -11,6 +11,14 @@ namespace SFA.DAS.DfESignIn.SampleSite.Controllers;
 [SetNavigationSection(NavigationSection.YourCohorts)]
 public class HomeController : Controller
 {
+    private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
+
+    public HomeController(
+        IAuthenticationSchemeProvider authenticationSchemeProvider)
+    {
+        _authenticationSchemeProvider = authenticationSchemeProvider;
+    }
+
     [HttpGet]
     public IActionResult Index()
     {
@@ -26,17 +34,33 @@ public class HomeController : Controller
 
     [Authorize]
     [HttpGet]
-    [Route("signed-out")]
+    [Route("signed-out", Name = "provider-signout")]
     public async Task<IActionResult> SigningOut()
     {
+        var signOutScheme = await _authenticationSchemeProvider
+            .GetDefaultSignOutSchemeAsync();
+
+        if (signOutScheme == null)
+        {
+            throw new InvalidOperationException(
+                "No default sign-out scheme has been configured.");
+        }
+
+        if (signOutScheme.Name == CookieAuthenticationDefaults.AuthenticationScheme)
+        {
+            return SignOut(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
         var idToken = await HttpContext.GetTokenAsync("id_token");
 
         var authenticationProperties = new AuthenticationProperties();
-        authenticationProperties.Parameters.Clear();
         authenticationProperties.Parameters.Add("id_token", idToken);
-        return SignOut(authenticationProperties,
+
+        return SignOut(
+            authenticationProperties,
             CookieAuthenticationDefaults.AuthenticationScheme,
-            OpenIdConnectDefaults.AuthenticationScheme);
+            signOutScheme.Name);
     }
 
     [HttpGet]
