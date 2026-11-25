@@ -2,12 +2,14 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Moq;
 using SFA.DAS.DfESignIn.Auth.Api.Helpers;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Configuration;
@@ -643,6 +645,105 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart
 
             actual.SessionStore.Should().BeSameAs(
                 provider.GetRequiredService<ITicketStore>());
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task Then_Only_The_New_Registration_Invokes_Custom_Claims(
+            bool useClientConfigurationSection)
+        {
+            // Arrange
+            _configuration["NoAuthEmail"] = null;
+            _configuration["StubAuth"] = "false";
+
+            _configuration["DfEOidcConfiguration:DfELoginSessionConnectionString"] =
+                string.Empty;
+
+            var customClaims = new Mock<ICustomClaims>(MockBehavior.Strict);
+
+            customClaims
+                .Setup(handler => handler.GetClaimsAsync(
+                    It.IsAny<TokenValidatedContext>()))
+                .ReturnsAsync(new[]
+                {
+                    new Claim("application-user-id", "application-user-one")
+                });
+
+            _sut.AddLogging();
+            _sut.AddScoped<ICustomClaims>(_ => customClaims.Object);
+
+            if (useClientConfigurationSection)
+            {
+                RegisterAssessorAuthentication();
+            }
+            else
+            {
+                _sut.AddAndConfigureDfESignInAuthentication(
+                    _configuration,
+                    "Test.Provider.Auth",
+                    typeof(TestCustomServiceRole),
+                    ClientName.ProviderRoatp);
+            }
+
+            using var provider = _sut.BuildServiceProvider(
+                new ServiceProviderOptions
+                {
+                    ValidateScopes = true
+                });
+
+            using var requestScope = provider.CreateScope();
+
+            var options = provider
+                .GetRequiredService<IOptionsMonitor<OpenIdConnectOptions>>()
+                .Get(OpenIdConnectDefaults.AuthenticationScheme);
+
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(
+                new[]
+                {
+                    new Claim("sub", "user-one")
+                },
+                OpenIdConnectDefaults.AuthenticationScheme));
+
+            var context = new TicketReceivedContext(
+                new DefaultHttpContext
+                {
+                    RequestServices = requestScope.ServiceProvider
+                },
+                new AuthenticationScheme(
+                    OpenIdConnectDefaults.AuthenticationScheme,
+                    "DfE Sign-in",
+                    typeof(OpenIdConnectHandler)),
+                options,
+                new AuthenticationTicket(
+                    principal,
+                    new AuthenticationProperties(),
+                    OpenIdConnectDefaults.AuthenticationScheme));
+
+            // Act
+            await options.Events.TicketReceived(context);
+
+            // Assert
+            context.Principal!.FindFirst("sub")!.Value
+                .Should().Be("user-one");
+
+            context.Principal.HasClaim(
+                    "application-user-id",
+                    "application-user-one")
+                .Should().Be(useClientConfigurationSection);
+
+            customClaims.Verify(
+                handler => handler.GetClaimsAsync(
+                    It.IsAny<TokenValidatedContext>()),
+                useClientConfigurationSection
+                    ? Times.Once()
+                    : Times.Never());
+
+            customClaims.Verify(
+                handler => handler.GetClaims(
+                    It.IsAny<TokenValidatedContext>()),
+                Times.Never());
+
+            customClaims.VerifyNoOtherCalls();
         }
 
         private void RegisterAssessorAuthentication()

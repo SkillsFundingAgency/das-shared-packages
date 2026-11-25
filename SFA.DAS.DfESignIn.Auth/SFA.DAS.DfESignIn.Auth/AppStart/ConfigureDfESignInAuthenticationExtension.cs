@@ -146,8 +146,7 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                                 .GetRequiredService<IDfESignInService>();
 
                             await dfeSignInService.PopulateAccountClaims(ctx);
-                        },
-                        OnTicketReceived = context => context.PopulateCustomClaimsAsync(),
+                        }
                     };
                 })
                 .AddAuthenticationCookie(

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.DfESignIn.Auth.Configuration;
@@ -77,6 +78,14 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
                     oidcConfiguration,
                     authenticationCookieName,
                     signOutPath);
+
+                services.Configure<OpenIdConnectOptions>(
+                    OpenIdConnectDefaults.AuthenticationScheme,
+                    options =>
+                    {
+                        options.Events.OnTicketReceived =
+                            context => context.PopulateCustomClaimsAsync();
+                    });
             }
         }
     }
