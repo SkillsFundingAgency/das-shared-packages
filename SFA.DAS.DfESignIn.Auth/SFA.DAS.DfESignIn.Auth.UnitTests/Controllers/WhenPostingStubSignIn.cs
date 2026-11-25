@@ -484,10 +484,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Controllers
             _authenticationService.VerifyNoOtherCalls();
         }
 
-        [TestCase("failed")]
-        [TestCase("skipped")]
-        public async Task Then_A_Stopped_Custom_Claims_Result_Prevents_Sign_In(
-            string outcome)
+        [Test]
+        public async Task Then_A_Custom_Claims_Failure_Returns_Forbidden_Without_Signing_In()
         {
             // Arrange
             var model = new SelectOrganisationStubViewModel
@@ -499,38 +497,42 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Controllers
             _customClaims
                 .Setup(handler => handler.GetClaimsAsync(
                     It.IsAny<TokenValidatedContext>()))
-                .Callback<TokenValidatedContext>(context =>
-                {
-                    if (outcome == "failed")
-                    {
-                        context.Fail("Access denied.");
-                    }
-                    else
-                    {
-                        context.SkipHandler();
-                    }
-                })
+                .Callback<TokenValidatedContext>(context => context.Fail("Access denied."))
+                .ReturnsAsync(Array.Empty<Claim>());
+
+            // Act
+            var actual = await _sut.SignIn(model);
+
+            // Assert
+            actual.Should().BeOfType<StatusCodeResult>()
+                .Which.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+
+            _authenticationService.VerifyNoOtherCalls();
+        }
+
+        [Test]
+        public async Task Then_A_Skipped_Custom_Claims_Result_Prevents_Sign_In()
+        {
+            // Arrange
+            var model = new SelectOrganisationStubViewModel
+            {
+                UserId = "user-one",
+                OrganisationId = _organisationId
+            };
+
+            _customClaims
+                .Setup(handler => handler.GetClaimsAsync(
+                    It.IsAny<TokenValidatedContext>()))
+                .Callback<TokenValidatedContext>(context => context.SkipHandler())
                 .ReturnsAsync(Array.Empty<Claim>());
 
             // Act
             Func<Task> act = () => _sut.SignIn(model);
 
             // Assert
-            var exception = await act.Should()
+            await act.Should()
                 .ThrowAsync<InvalidOperationException>()
-                .WithMessage(
-                    "The custom claims handler stopped stub sign-in.");
-
-            if (outcome == "failed")
-            {
-                exception.Which.InnerException.Should().NotBeNull();
-                exception.Which.InnerException!.Message
-                    .Should().Be("Access denied.");
-            }
-            else
-            {
-                exception.Which.InnerException.Should().BeNull();
-            }
+                .WithMessage("The custom claims handler stopped stub sign-in.");
 
             _authenticationService.VerifyNoOtherCalls();
         }

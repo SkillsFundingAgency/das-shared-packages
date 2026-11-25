@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -103,8 +104,8 @@ namespace SFA.DAS.DfESignIn.Auth.Controllers
             }
 
             var returnUrl = Url.IsLocalUrl(model.ReturnUrl)
-    ? model.ReturnUrl
-    : Url.Content("~/");
+                ? model.ReturnUrl
+                : Url.Content("~/");
 
             var properties = new AuthenticationProperties
             {
@@ -131,12 +132,15 @@ namespace SFA.DAS.DfESignIn.Auth.Controllers
                 return new EmptyResult();
             }
 
-            if (customClaimsContext.Result?.Skipped == true ||
-                customClaimsContext.Result?.Failure != null)
+            if (customClaimsContext.Result?.Failure is not null)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+
+            if (customClaimsContext.Result?.Skipped == true)
             {
                 throw new InvalidOperationException(
-                    "The custom claims handler stopped stub sign-in.",
-                    customClaimsContext.Result.Failure);
+                    "The custom claims handler stopped stub sign-in.");
             }
 
             await HttpContext.SignInAsync(
