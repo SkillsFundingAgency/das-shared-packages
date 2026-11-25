@@ -86,7 +86,7 @@ Omit the property to inherit the shared scopes. A client value replaces the shar
 
 The existing schema permits only the four credential properties in older client sections. Extend the relevant schema before adding cookie settings, sign-out settings or scope overrides to another client.
 
-Registration throws an `ArgumentException` identifying the missing section if either the shared section or the selected client section is absent. Section existence checks do not validate every setting or run JSON Schema validation.
+The configuration-based registration requires both the shared section and the selected client section. Legacy real authentication also requires its selected client section, while the legacy automatic Provider stub does not. Registration throws an `ArgumentException` identifying a required section that is missing. Section existence checks do not validate every setting or run JSON Schema validation.
 
 ## Standard usage
 
@@ -110,7 +110,7 @@ namespace Example.Web.StartupExtensions
                 authenticationCookieName: "Example.Web.Auth",
                 customServiceRole: typeof(CustomServiceRole),
                 clientConfigurationSectionName: "DfEOidcConfiguration_Assessor",
-                signedOutCallbackPath: "/account/sign-out");
+                signOutPath: "/account/sign-out");
 
             return services;
         }
@@ -128,14 +128,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 ```
 
-The package registers the following defaults:
+For real authentication, the package registers the following defaults:
 
 | Operation | Scheme |
 | --- | --- |
 | Authenticate and sign in | `CookieAuthenticationDefaults.AuthenticationScheme` (`Cookies`) |
 | Challenge and sign out | `OpenIdConnectDefaults.AuthenticationScheme` (`OpenIdConnect`) |
 
-The authentication cookie is essential, secure, and uses sliding expiry. Authentication tickets are stored through `ITicketStore` using the configured distributed cache.
+The authentication cookie is essential, secure, and uses sliding expiry. Authentication tickets are stored through `ITicketStore` using the configured distributed cache. The new interactive stub uses `Cookies` for authenticate, sign-in, challenge and sign-out; it uses the same ticket-store configuration and appends `.stub` to the supplied cookie name.
 
 ## ICustomServiceRole
 
@@ -191,20 +191,71 @@ A person can belong to multiple organisations and hold different service roles i
 
 ### Application-specific claims
 
-The current `SFA.DAS.DfESignIn.Auth.Interfaces.ICustomClaims` interface is synchronous and is called by the legacy Provider stub with a null `TokenValidatedContext`. It is not automatically called by real DfE authentication.
+Applications can register an implementation of `SFA.DAS.DfESignIn.Auth.Interfaces.ICustomClaims`:
 
-It therefore does not currently provide the equivalent of the asynchronous custom-claims extension in `SFA.DAS.GovUK.Auth`. Application user creation and additional application claims require application integration.
+```csharp
+services.AddScoped<ICustomClaims, CustomClaims>();
+```
+
+| Registration path | Custom claims behaviour |
+| --- | --- |
+| Legacy enum registration, real authentication | Does not invoke `ICustomClaims`. |
+| Legacy automatic Provider stub | Calls `GetClaims(null)` synchronously. |
+| Configuration-based registration, real authentication | Awaits `GetClaimsAsync()` after user-info processing and before issuing the authentication cookie. |
+| Configuration-based registration, interactive stub | Awaits `GetClaimsAsync()` after constructing the selected user's claims and before issuing the authentication cookie. |
+
+The async handler is resolved from the current request's service provider. It is optional: authentication continues without additional application claims when no implementation is registered.
+
+Use `context.Principal` to read `sub`, `email` and the selected organisation. The async hook supplies a constructed `TokenValidatedContext`; its security-token and token-endpoint-response properties are not populated.
+
+Both interface methods must be implemented. The following minimal example supports the legacy stub and both new authentication paths without duplicating the claims:
+
+```csharp
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using SFA.DAS.DfESignIn.Auth.Interfaces;
+
+namespace Example.Web.StartupExtensions
+{
+    public class CustomClaims : ICustomClaims
+    {
+        public IEnumerable<Claim> GetClaims(
+            TokenValidatedContext tokenValidatedContext)
+        {
+            return new List<Claim>
+            {
+                new Claim("example:custom-claims", "added")
+            };
+        }
+
+        public Task<IEnumerable<Claim>> GetClaimsAsync(
+            TokenValidatedContext tokenValidatedContext)
+        {
+            return Task.FromResult(GetClaims(tokenValidatedContext));
+        }
+    }
+}
+```
+
+Applications that create or update a user through an API should await that work inside `GetClaimsAsync()` and return the resulting application claims. The synchronous wrapper shown above does not make synchronous I/O asynchronous.
+
+`GetClaimsAsync()` must return a non-null collection, which may be empty. Returned claims are added to the resulting principal. A replacement principal must contain a `ClaimsIdentity`.
+
+A handler can redirect the response and call `context.HandleResponse()` to stop normal sign-in. Calling `Fail()`, calling `SkipHandler()`, or throwing an exception also prevents the normal authentication cookie from being issued.
 
 ## Signing in and signing out
 
-Protect application endpoints using the normal ASP.NET Core authorization attributes or policies. An authentication challenge uses the registered OpenID Connect scheme.
+Protect application endpoints using the normal ASP.NET Core authorization attributes or policies. Let challenges use the registered default scheme so the same application can use either real authentication or the new interactive stub.
 
-An application can also expose explicit sign-in and sign-out actions:
+The following example also reads the effective default sign-out scheme. This follows the authentication mode actually registered by the package, including when production configuration prevents stub mode.
 
 ```csharp
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -213,34 +264,69 @@ namespace Example.Web.Controllers
     [Route("account")]
     public class AccountController : Controller
     {
+        private readonly IAuthenticationSchemeProvider _authenticationSchemeProvider;
+
+        public AccountController(
+            IAuthenticationSchemeProvider authenticationSchemeProvider)
+        {
+            _authenticationSchemeProvider = authenticationSchemeProvider;
+        }
+
         [AllowAnonymous]
         [HttpGet("sign-in")]
         public IActionResult Login(string returnUrl = "/")
         {
-            var redirectUri = Url.IsLocalUrl(returnUrl) ? returnUrl : "/";
+            var redirectUri = Url.IsLocalUrl(returnUrl)
+                ? returnUrl
+                : Url.Content("~/");
 
-            return Challenge(
-                new AuthenticationProperties
-                {
-                    RedirectUri = redirectUri
-                },
-                OpenIdConnectDefaults.AuthenticationScheme);
+            return Challenge(new AuthenticationProperties
+            {
+                RedirectUri = redirectUri
+            });
         }
 
         [HttpPost("sign-out")]
         [ValidateAntiForgeryToken]
-        public IActionResult SignOutUser()
+        public async Task<IActionResult> SignOutUser()
         {
+            var signOutScheme = await _authenticationSchemeProvider
+                .GetDefaultSignOutSchemeAsync();
+
+            if (signOutScheme == null)
+            {
+                throw new InvalidOperationException(
+                    "No default sign-out scheme has been configured.");
+            }
+
+            if (signOutScheme.Name ==
+                CookieAuthenticationDefaults.AuthenticationScheme)
+            {
+                return SignOut(
+                    CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+
             return SignOut(
                 new AuthenticationProperties(),
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                OpenIdConnectDefaults.AuthenticationScheme);
+                signOutScheme.Name);
         }
     }
 }
 ```
 
-Submit sign-out using a form containing an anti-forgery token. Provide an anonymous application endpoint for the configured `SignedOutRedirectUrl` so the signed-out landing page does not immediately challenge the user again.
+For this example, submit sign-out using a form containing an anti-forgery token:
+
+```cshtml
+<form asp-controller="Account"
+      asp-action="SignOutUser"
+      method="post"
+      asp-antiforgery="true">
+    <button type="submit" class="govuk-button">Sign out</button>
+</form>
+```
+
+Provide an anonymous application endpoint for the configured `SignedOutRedirectUrl` so the signed-out landing page does not immediately challenge the user again.
 
 The paths serve different purposes:
 
@@ -248,10 +334,12 @@ The paths serve different purposes:
 | --- | --- |
 | `/sign-in` | OIDC sign-in callback handled by authentication middleware. Register the full URL with DfE Sign-in. |
 | `/signout-callback-oidc` | OIDC sign-out callback handled by authentication middleware. Register the full URL with DfE Sign-in. |
-| `signedOutCallbackPath` registration argument | Despite its existing name, this sets the cookie scheme's `LogoutPath`. It does not change the OIDC sign-out callback or create a controller action. |
-| `SignedOutRedirectUrl` | Final destination after the OIDC sign-out callback, such as `/service/signed-out`. |
+| `signOutPath` registration argument | Sets the cookie scheme's `LogoutPath`, normally matching the application's action that initiates sign-out. It does not change the OIDC callback, create a controller action or automatically perform sign-out. |
+| `SignedOutRedirectUrl` | Final destination after the OIDC sign-out callback, such as `/service/signed-out`. The new stub redirects here directly when signing out. |
 
 The example uses `/account/sign-in` for the application's sign-in action so it does not conflict with the package's `/sign-in` OIDC callback.
+
+Do not decide which schemes to sign out solely by rereading `StubAuth`: it can be true while the package has selected real authentication because the environment is production.
 
 ## Legacy ClientName registration
 
@@ -276,10 +364,34 @@ To migrate an existing client:
 1. Extend its configuration schema to permit `CookieDomain` and `SignedOutRedirectUrl`, and `Scopes` if a client override is required.
 2. Populate the domain and sign-out destination with the values required by that service in each environment.
 3. Replace the enum argument with the complete client section name.
-4. Supply the cookie logout path through `signedOutCallbackPath`; move any explicit legacy `redirectUrl` value into `SignedOutRedirectUrl`.
+4. Supply the cookie logout path through `signOutPath`; move any explicit legacy `redirectUrl` value into `SignedOutRedirectUrl`.
 5. Verify sign-in, service-role authorization, cookie scope and sign-out in the consuming application.
 
-The enum-based overloads of `AddServiceRegistration`, `ConfigureDfESignInAuthentication` and `AddAuthenticationCookie` are also deprecated in favour of explicit configuration.
+The legacy public `AddAuthenticationCookie` overload accepting an environment and `ClientName` is also deprecated in favour of the overload accepting an explicit cookie domain.
+
+## Upgrading existing consumers
+
+This release includes source and interface changes; it is not a drop-in compatible upgrade for every consumer.
+
+1. Implement the additional `ICustomClaims.GetClaimsAsync()` method wherever the DfE interface is implemented.
+2. Rename named arguments from `signedOutCallbackPath:` to `signOutPath:`. Positional calls are unaffected by that rename.
+3. Ensure legacy real authentication has its selected client configuration section. A missing section now fails during registration; the legacy automatic Provider stub does not require that section.
+
+An existing synchronous claims implementation can add:
+
+```csharp
+public Task<IEnumerable<Claim>> GetClaimsAsync(
+    TokenValidatedContext tokenValidatedContext)
+{
+    return Task.FromResult(GetClaims(tokenValidatedContext));
+}
+```
+
+Implementations performing asynchronous I/O should await that work inside `GetClaimsAsync()`. Rebuild assemblies implementing the interface against the updated package.
+
+The legacy enum-based real authentication path retains its previous custom-claims behaviour: it does not invoke the application's handler. Switching to configuration-based registration enables the async hook for real authentication, so review any existing stub-only claims before migrating.
+
+Moving from the legacy automatic stub to the interactive stub also requires the new client-section registration, `StubAuth`, configured stub users and MVC controller discovery. The two stub mechanisms use different switches and authentication behaviour.
 
 ## Stub authentication
 
@@ -302,9 +414,145 @@ There is no login form or organisation chooser. The handler supplies no `sub` or
 
 ### Configuration-based registration
 
-The new configuration-based registration currently enables real DfE authentication. It does not select the legacy Provider stub through `NoAuthEmail`.
+The configuration-based overload uses the interactive stub when the consuming application sets `StubAuth` to `true`, unless `ResourceEnvironmentName` is `PRD` (case-insensitive). In that production case, real DfE authentication is registered.
 
-The interactive stub that accepts a user ID and email and then offers configured organisations has not yet been implemented. Razor view compilation is enabled to support adding those screens to this package; it does not itself provide or enable stub endpoints. No interactive `StubAuth` configuration is available yet.
+`StubAuth` and `DfESignInStubConfiguration` belong to the consuming application's configuration, separately from the shared DfE credentials configuration. This overload does not use `NoAuthEmail`.
+
+The shared `DfEOidcConfiguration` and selected client section are still required in stub mode. The stub uses the configured client ID for role claim issuers and the configured cookie and sign-out settings, but does not contact the live DfE service.
+
+The following example contains fictitious users and organisations:
+
+```json
+{
+  "StubAuth": true,
+  "DfESignInStubConfiguration": {
+    "DefaultUserId": "11111111-1111-1111-1111-111111111111",
+    "Users": [
+      {
+        "Id": "11111111-1111-1111-1111-111111111111",
+        "Email": "user.one@example.com",
+        "GivenName": "User",
+        "FamilyName": "One",
+        "Organisations": [
+          {
+            "Id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            "Name": "Organisation A",
+            "UkPrn": 10000001,
+            "Roles": [
+              {
+                "Id": "33333333-3333-3333-3333-333333333333",
+                "Name": "Administrator",
+                "Code": "ADMIN",
+                "NumericId": 1,
+                "Status": {
+                  "Id": 1
+                }
+              }
+            ]
+          },
+          {
+            "Id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+            "Name": "Organisation B",
+            "UkPrn": 10000002,
+            "Roles": []
+          }
+        ]
+      },
+      {
+        "Id": "22222222-2222-2222-2222-222222222222",
+        "Email": "user.two@example.com",
+        "GivenName": "User",
+        "FamilyName": "Two",
+        "Organisations": [
+          {
+            "Id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+            "Name": "Organisation B",
+            "UkPrn": 10000002,
+            "Roles": [
+              {
+                "Id": "44444444-4444-4444-4444-444444444444",
+                "Name": "Read only",
+                "Code": "READ",
+                "NumericId": 2,
+                "Status": {
+                  "Id": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`DefaultUserId` selects the initial user on the chooser. Each user's `Organisations` list defines their memberships. Roles belong to that user's membership, allowing different users to hold different roles in the same organisation. Include each role's ID, name, code, numeric ID and status; only roles with `Status.Id = 1` are added to the principal.
+
+Include the package's controller in MVC registration:
+
+```csharp
+using SFA.DAS.DfESignIn.Auth.Controllers;
+
+builder.Services
+    .AddControllersWithViews()
+    .AddApplicationPart(typeof(DfESignInStubController).Assembly);
+```
+
+If MVC is already registered, add `AddApplicationPart` to that existing registration. The default views use the consuming application's `_Layout` and GOV.UK CSS classes.
+
+The sign-in journey is:
+
+1. An authentication challenge redirects to `/stub/sign-in-stub`.
+2. The user chooses a configured identity.
+3. `/stub/select-organisation` offers that user's configured organisations.
+4. The POST to `/stub/sign-in` validates the selected membership and builds the principal.
+5. The package invokes the application's async custom-claims handler, if registered, and issues the authentication cookie.
+
+The POST requires an anti-forgery token. Identity, email, organisation and roles are read from server-side configuration, and the final return URL must be local.
+
+Generated claims include `sub`, `email`, `given_name`, `family_name`, organisation JSON, name, display name, UKPRN and active service roles. Display name is constructed from the configured given and family names. Organisation JSON contains `id`, `name` and `ukprn`; UKPRN is serialised as a string, or null when absent. The separate UKPRN claim uses `"0"` when absent.
+
+The stub does not manufacture the complete organisation object returned by real DfE Sign-in, or a DfE session identifier. Extend the stub data when a consuming application needs additional organisation fields.
+
+Sign-out clears the local authentication session and redirects to `SignedOutRedirectUrl`. A subsequent authentication challenge starts the chooser journey again, allowing a different user or organisation to be selected.
+
+## SampleSite
+
+The sample is located at:
+
+```text
+SFA.DAS.DfESignIn.Auth.Samples/SFA.DAS.DfESignIn.SampleSite
+```
+
+It references the authentication project directly. No local NuGet publishing is needed to exercise changes to the package.
+
+The sample loads Azure Table Storage configuration using `ConfigNames`, `ConfigurationStorageConnectionString` and `Environment` before registering authentication. Environment variables are applied afterwards so launch-profile settings can override the loaded configuration.
+
+The checked-in storage connection uses Azurite. Populate the required local configuration records from the private configuration repository, including the client section selected in `AddServiceRegistrationExtension`. Keep actual DfE credentials and real storage-account credentials out of the sample's checked-in settings.
+
+Launch profiles select:
+
+| Profile | Setting |
+| --- | --- |
+| `DfE Sign-in - Stub` | `StubAuth=true` |
+| `DfE Sign-in - Test server` | `StubAuth=false` |
+
+The configured DfE endpoint and client registration determine the real authentication environment; the launch profile's name does not select a DfE server.
+
+Both profiles use `https://localhost:5021`. The Provider shared UI dashboard URL must match the local address. The sample supplies the Provider UI's required named sign-out route, `provider-signout`.
+
+The authenticated page lists the principal's claims. The sample custom-claims handler adds `sample:custom-claims = added`, demonstrating that the async hook runs for both real and interactive stub sign-in.
+
+Verify the sample manually:
+
+1. Start the stub profile and select a configured user and organisation.
+2. Check the identity, organisation, UKPRN, role and custom claims.
+3. Sign out using the header link and confirm the signed-out destination.
+4. Sign in again and select another user or organisation.
+5. Start the real test-server profile and verify real sign-in, claims and sign-out using the configured DfE test client.
+
+No SampleSite unit tests are required; package behaviour is covered by the authentication unit tests.
 
 ## Building and testing
 
@@ -324,3 +572,4 @@ dotnet pack SFA.DAS.DfESignIn.Auth/SFA.DAS.DfESignIn.Auth/SFA.DAS.DfESignIn.Auth
 * [DfE Sign-in public API documentation](https://github.com/DFE-Digital/login.dfe.public-api)
 * [Test OpenID Connect discovery metadata](https://test-oidc.signin.education.gov.uk/.well-known/openid-configuration)
 * [Production OpenID Connect discovery metadata](https://oidc.signin.education.gov.uk/.well-known/openid-configuration)
+
