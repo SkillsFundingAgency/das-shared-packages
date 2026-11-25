@@ -63,6 +63,14 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
             var oidcConfiguration = configuration.GetSection(nameof(DfEOidcConfiguration)).Get<DfEOidcConfiguration>();
             configuration.GetSection(clientConfigurationSectionName).Bind(oidcConfiguration);
 
+            if (string.IsNullOrWhiteSpace(oidcConfiguration.SignedOutRedirectUrl))
+            {
+                throw new ArgumentException(
+                    $"Configure '{nameof(DfEOidcConfiguration.SignedOutRedirectUrl)}' " +
+                    $"for client configuration section '{clientConfigurationSectionName}'.",
+                    nameof(configuration));
+            }
+
             bool.TryParse(configuration["StubAuth"], out var stubAuth);
 
             if (stubAuth && !string.Equals(configuration["ResourceEnvironmentName"], "PRD", StringComparison.OrdinalIgnoreCase))

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.DfESignIn.Auth.Extensions
 {
@@ -69,7 +70,8 @@ namespace SFA.DAS.DfESignIn.Auth.Extensions
             }
             else if (customClaimsContext.Result?.Failure != null)
             {
-                context.Fail(customClaimsContext.Result.Failure);
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.HandleResponse();
             }
             else
             {

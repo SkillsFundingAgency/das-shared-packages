@@ -286,9 +286,8 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.Extensions
                     break;
 
                 case "failed":
-                    ticketContext.Result!.Failure.Should().NotBeNull();
-                    ticketContext.Result.Failure!.Message
-                        .Should().Be("Access denied.");
+                    ticketContext.Result!.Handled.Should().BeTrue();
+                    ticketContext.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
                     break;
             }
         }

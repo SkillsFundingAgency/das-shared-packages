@@ -746,6 +746,26 @@ namespace SFA.DAS.DfESignIn.Auth.UnitTests.AppStart
             customClaims.VerifyNoOtherCalls();
         }
 
+        [TestCase("")]
+        [TestCase("   ")]
+        public void Then_Assessor_Registration_Requires_A_Signed_Out_Redirect_Url(
+            string signedOutRedirectUrl)
+        {
+            // Arrange
+            const string clientSection = "DfEOidcConfiguration_Assessor";
+            const string setting = nameof(DfEOidcConfiguration.SignedOutRedirectUrl);
+
+            _configuration[$"{clientSection}:{setting}"] = signedOutRedirectUrl;
+
+            // Act
+            Action act = RegisterAssessorAuthentication;
+
+            // Assert
+            var exception = act.Should().Throw<ArgumentException>().Which;
+
+            exception.Message.Should().Contain(setting).And.Contain(clientSection);
+        }
+
         private void RegisterAssessorAuthentication()
         {
             _configuration["DfEOidcConfiguration:DfELoginSessionConnectionString"] =

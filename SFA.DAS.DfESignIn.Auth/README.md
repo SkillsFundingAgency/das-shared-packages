@@ -71,7 +71,7 @@ The cache implementation and its connection string are selected from the shared 
 | `APIServiceId` | DfE service identifier used when retrieving a user's roles. |
 | `APIServiceSecret` | Secret used to sign public API requests. |
 | `CookieDomain` | Authentication cookie domain, without a scheme or path. An empty value produces a host-only cookie. |
-| `SignedOutRedirectUrl` | Final destination after the DfE sign-out callback. This can be a local application path. |
+| `SignedOutRedirectUrl` | Required for the configuration-based registration, including interactive stub mode. Set it to the page users should see after signing out, for example `/service/signed-out`. If you use a local path, provide an anonymous endpoint at that path. |
 | `Scopes` | Optional client-specific replacement for the shared scopes, where permitted by the configuration schema. |
 
 For local development, use an empty `CookieDomain`. For a deployed service, set the required domain explicitly; the configuration-based overload does not calculate it from an environment name or client enum.
@@ -86,7 +86,7 @@ Omit the property to inherit the shared scopes. A client value replaces the shar
 
 The existing schema permits only the four credential properties in older client sections. Extend the relevant schema before adding cookie settings, sign-out settings or scope overrides to another client.
 
-The configuration-based registration requires both the shared section and the selected client section. Legacy real authentication also requires its selected client section, while the legacy automatic Provider stub does not. Registration throws an `ArgumentException` identifying a required section that is missing. Section existence checks do not validate every setting or run JSON Schema validation.
+The configuration-based registration requires both the shared section and the selected client section. Legacy real authentication also requires its selected client section, while the legacy automatic Provider stub does not. Registration throws an `ArgumentException` identifying a required section that is missing. Section existence checks do not validate every setting or run JSON Schema validation. The configuration-based overload also requires a non-blank `SignedOutRedirectUrl` after binding the shared and client settings. If the value is missing or blank, registration throws an `ArgumentException` naming the setting and the selected client section.
 
 ## Standard usage
 
@@ -374,7 +374,7 @@ The legacy public `AddAuthenticationCookie` overload accepting an environment an
 This release includes source and interface changes; it is not a drop-in compatible upgrade for every consumer.
 
 1. Implement the additional `ICustomClaims.GetClaimsAsync()` method wherever the DfE interface is implemented.
-2. Rename named arguments from `signedOutCallbackPath:` to `signOutPath:`. Positional calls are unaffected by that rename.
+2. If you use the named argument `signedOutCallbackPath:` when calling the legacy `AddAndConfigureDfESignInAuthentication` or `AddAuthenticationCookie` overload, rename it to `signOutPath:`. Positional calls are unaffected. This argument sets the cookie `LogoutPath`. The OIDC callback remains `/signout-callback-oidc`, and `SignedOutRedirectUrl` sets the final landing page for the configuration-based overload.
 3. Ensure legacy real authentication has its selected client configuration section. A missing section now fails during registration; the legacy automatic Provider stub does not require that section.
 
 An existing synchronous claims implementation can add:
