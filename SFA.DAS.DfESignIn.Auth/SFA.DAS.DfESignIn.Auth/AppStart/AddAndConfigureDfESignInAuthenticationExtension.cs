@@ -10,21 +10,21 @@ using System;
 
 namespace SFA.DAS.DfESignIn.Auth.AppStart
 {
-    /// <summary>
-    /// Registers DfE Sign-in using the legacy ClientName enum.
-    /// </summary>
-    /// <remarks>
-    /// Client configuration selection is coupled to the package-owned ClientName
-    /// enum. Adding a new client therefore requires a shared-package change and
-    /// release. Use the overload accepting clientConfigurationSectionName so
-    /// applications can select their configuration without extending the enum.
-    /// </remarks>
-    [Obsolete(
-        "Use the overload accepting clientConfigurationSectionName. " +
-        "This overload couples client selection to the package-owned ClientName enum, " +
-        "requiring a shared-package change and release for each new client.")]
     public static class AddAndConfigureDfESignInAuthenticationExtension
     {
+        /// <summary>
+        /// Registers DfE Sign-in using the legacy ClientName enum.
+        /// </summary>
+        /// <remarks>
+        /// Client configuration selection is coupled to the package-owned ClientName
+        /// enum. Adding a new client therefore requires a shared-package change and
+        /// release. Use the overload accepting clientConfigurationSectionName so
+        /// applications can select their configuration without extending the enum.
+        /// </remarks>
+        [Obsolete(
+            "Use the overload accepting clientConfigurationSectionName. " +
+            "This overload couples client selection to the package-owned ClientName enum, " +
+            "requiring a shared-package change and release for each new client.")]
         public static void AddAndConfigureDfESignInAuthentication(
             this IServiceCollection services,
             IConfiguration configuration,
