@@ -1,4 +1,14 @@
+## ⛔Never push sensitive information such as client id's, secrets or keys into repositories including in the README file⛔
+
 # SFA.DAS.Provider.Shared.UI
+
+<img src="https://avatars.githubusercontent.com/u/9841374?s=200&v=4" align="right" alt="UK Government logo">
+
+[![Build Status](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_apis/build/status%2FShared%20Packages%2Fdas-shared-SFA.DAS.Provider.Shared.UI?branchName=master)](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_build/latest?definitionId=1627&branchName=master)
+
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?longCache=true&style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
+
+## About
 
 This package provides shared Provider UI components via a [Razor Class Library](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-3.1&tabs=visual-studio).
 
@@ -69,3 +79,30 @@ If you are working with a solution that uses the asp-external-controller functio
 		"myotherwebapp": "7088" //for any subdomain you set a local port value for here, localhost with that port will be used. e.g. myotherwebapp.at-pas.apprenticeships.education.gov.uk becomes localhost:7088 (for any apps you want to use for example the at version of, just leave them out of this array)
 	}
 ```
+
+## 🚀 Installation
+
+### Pre-Requisites
+* A clone of this repository
+* An appropriate IDE
+
+
+## Technologies
+* .NetCore 10.0
+* NUnit
+* Moq
+* FluentAssertions
+
+## Build
+
+Open the solution in your C# IDE of choice and build the solution.
+
+Alternatively, from the command line you can navigate to the solution folder and run the following command:
+
+```
+dotnet build
+```
+
+## License
+
+Licensed under the [MIT license](https://github.com/SkillsFundingAgency/das-shared-packages/blob/master/LICENSE)
