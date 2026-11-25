@@ -1,27 +1,23 @@
 ﻿{
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "https://localhost:7136/",
-      "sslPort": 7136
-    }
-  },
   "profiles": {
-    "SFA.DAS.DfESignIn.SampleSite": {
+    "DfE Sign-in - Stub": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5021",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Test"
+        "ASPNETCORE_ENVIRONMENT": "Test",
+        "StubAuth": "true"
       }
     },
-    "IIS Express": {
-      "commandName": "IISExpress",
+    "DfE Sign-in - Test server": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
+      "applicationUrl": "https://localhost:5021",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Test",
+        "StubAuth": "false"
       }
     }
   }

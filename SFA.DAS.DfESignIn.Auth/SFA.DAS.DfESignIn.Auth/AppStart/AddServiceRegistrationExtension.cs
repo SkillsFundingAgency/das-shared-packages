@@ -19,26 +19,45 @@ namespace SFA.DAS.DfESignIn.Auth.AppStart
     internal static class AddServiceRegistrationExtension
     {
         internal static void AddServiceRegistration(
-            this IServiceCollection services, 
-            IConfiguration configuration, 
-            Type customServiceRole, 
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Type customServiceRole,
             ClientName clientName)
         {
-            if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
-            {
-                throw new ArgumentException(
-                    "Cannot find DfEOidcConfiguration in configuration. Please add a section called DfESignInOidcConfiguration with BaseUrl, ClientId and Secret properties.");
-            }
-
             var configName = clientName;
+
             if (clientName == ClientName.RoatpServiceAdmin)
             {
                 configName = ClientName.ServiceAdmin;
             }
-            
+
+            services.AddServiceRegistration(
+                configuration,
+                customServiceRole,
+                $"{nameof(DfEOidcConfiguration)}_{configName}");
+        }
+
+        internal static void AddServiceRegistration(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Type customServiceRole,
+            string clientConfigurationSectionName)
+        {
+            if (!configuration.GetSection(nameof(DfEOidcConfiguration)).GetChildren().Any())
+            {
+                throw new ArgumentException(
+                    $"Cannot find the shared configuration section '{nameof(DfEOidcConfiguration)}'.");
+            }
+
+            if (!configuration.GetSection(clientConfigurationSectionName).GetChildren().Any())
+            {
+                throw new ArgumentException(
+                    $"Cannot find the client configuration section '{clientConfigurationSectionName}'.");
+            }
+
             services.AddOptions();
             services.Configure<DfEOidcConfiguration>(configuration.GetSection(nameof(DfEOidcConfiguration)));
-            services.Configure<DfEOidcConfiguration>(configuration.GetSection($"{nameof(DfEOidcConfiguration)}_{configName}"));
+            services.Configure<DfEOidcConfiguration>(configuration.GetSection(clientConfigurationSectionName));
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<DfEOidcConfiguration>>().Value);
             services.AddTransient(typeof(ICustomServiceRole), customServiceRole);

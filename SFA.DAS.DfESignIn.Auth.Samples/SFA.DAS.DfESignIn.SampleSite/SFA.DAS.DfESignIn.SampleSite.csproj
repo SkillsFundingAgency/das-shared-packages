@@ -5,7 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.48" />
+    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.59" />
+    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165" />
     <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.3" />
   </ItemGroup>

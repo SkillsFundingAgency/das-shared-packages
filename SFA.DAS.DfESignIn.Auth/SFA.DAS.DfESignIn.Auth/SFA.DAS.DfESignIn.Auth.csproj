@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -13,7 +13,12 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.3" />
@@ -28,6 +33,10 @@
         <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.3" />
         <PackageReference Include="System.Text.Encodings.Web" Version="10.0.3" />
         <PackageReference Include="System.Text.Json" Version="10.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Views\DfeSignInStub\" />
     </ItemGroup>
 
 </Project>
