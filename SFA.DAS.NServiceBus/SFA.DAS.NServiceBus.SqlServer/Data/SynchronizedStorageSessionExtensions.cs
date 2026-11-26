@@ -6,7 +6,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Data
 {
     public static class SynchronizedStorageSessionExtensions
     {
-        public static ISqlStorageSession GetSqlStorageSession(this SynchronizedStorageSession synchronizedStorageSession)
+        public static ISqlStorageSession GetSqlStorageSession(this ISynchronizedStorageSession synchronizedStorageSession)
         {
             if (synchronizedStorageSession is ISqlStorageSession sqlStorageSession)
             {

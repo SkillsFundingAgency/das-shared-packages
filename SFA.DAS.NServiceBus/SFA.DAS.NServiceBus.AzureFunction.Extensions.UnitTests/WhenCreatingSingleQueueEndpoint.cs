@@ -1,12 +1,11 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace SFA.DAS.NServiceBus.AzureFunction.Extensions.UnitTests;
 public class WhenCreatingSingleQueueEndpoint
 {
-    [Test, AutoData]
+    [Test]
     public void Should_create_a_single_queue_endpoint()
     {
         var coll = new Dictionary<string, string>
@@ -19,7 +18,7 @@ public class WhenCreatingSingleQueueEndpoint
         endpoint.Should().NotBeNull();
     }
 
-    [Test, AutoData]
+    [Test]
     public void Should_create_a_single_queue_endpoint_using_managed_identity()
     {
         var coll = new Dictionary<string, string> 

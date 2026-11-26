@@ -1,5 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
@@ -8,13 +7,14 @@ namespace SFA.DAS.NServiceBus.Extensions.UnitTests;
 
 public class WhenGettingConfigurationValues
 {
-    [Test, AutoData]
-    public void Then_NServiceBusConnectionString_should_return_connection(string connection)
+    [Test]
+    public void Then_NServiceBusConnectionString_should_return_connection()
     {
+        var connectionString = "testConnectionString";
         var config = new Mock<IConfiguration>();
-        config.Setup(x => x["NServiceBusConnectionString"]).Returns(connection);
+        config.Setup(x => x["NServiceBusConnectionString"]).Returns(connectionString);
 
-        ConfigurationExtensions.NServiceBusConnectionString(config.Object).Should().Be(connection);
+        ConfigurationExtensions.NServiceBusConnectionString(config.Object).Should().Be(connectionString);
     }
 
     [Test]
@@ -25,9 +25,10 @@ public class WhenGettingConfigurationValues
         ConfigurationExtensions.NServiceBusConnectionString(config.Object).Should().Be("UseLearningEndpoint=true");
     }
 
-    [Test, AutoData]
-    public void Then_NServiceBusLicense_should_returned(string license)
+    [Test]
+    public void Then_NServiceBusLicense_should_returned()
     {
+        var license = "testConnectionString";
         var config = new Mock<IConfiguration>();
         config.Setup(x => x["NServiceBusLicense"]).Returns(license);
 
@@ -42,18 +43,20 @@ public class WhenGettingConfigurationValues
         ConfigurationExtensions.NServiceBusLicense(config.Object).Should().BeNull();
     }
 
-    [Test, AutoData]
-    public void Then_NServiceBusFullNamespace_should_return_connection(string connectionString)
+    [Test]
+    public void Then_NServiceBusFullNamespace_should_return_connection()
     {
+        var connectionString = "testConnectionString";
         var config = new Mock<IConfiguration>();
         config.Setup(x => x["AzureWebJobsServiceBus:fullyQualifiedNamespace"]).Returns(connectionString);
 
         ConfigurationExtensions.NServiceBusFullNamespace(config.Object).Should().Be(connectionString);
     }
 
-    [Test, AutoData]
-    public void Then_NServiceBusSASConnectionString_should_return_connection(string connectionString)
+    [Test]
+    public void Then_NServiceBusSASConnectionString_should_return_connection()
     {
+        var connectionString = "testConnectionString";
         var config = new Mock<IConfiguration>();
         config.Setup(x => x["AzureWebJobsServiceBus"]).Returns(connectionString);
 

@@ -28,7 +28,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Data
 
     public class SynchronizedStorageSessionExtensionsTestsFixture
     {
-        public Mock<SynchronizedStorageSession> Session { get; set; }
+        public Mock<ISynchronizedStorageSession> Session { get; set; }
         public Mock<ISqlStorageSession> SqlSession { get; set; }
 
         public ISqlStorageSession GetSqlStorageSession()
@@ -38,7 +38,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Data
 
         public SynchronizedStorageSessionExtensionsTestsFixture SetSqlSession()
         {
-            Session = new Mock<SynchronizedStorageSession>();
+            Session = new Mock<ISynchronizedStorageSession>();
             SqlSession = Session.As<ISqlStorageSession>();
 
             return this;
@@ -46,7 +46,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.UnitTests.Data
 
         public SynchronizedStorageSessionExtensionsTestsFixture SetNonSqlSession()
         {
-            Session = new Mock<SynchronizedStorageSession>();
+            Session = new Mock<ISynchronizedStorageSession>();
 
             return this;
         }

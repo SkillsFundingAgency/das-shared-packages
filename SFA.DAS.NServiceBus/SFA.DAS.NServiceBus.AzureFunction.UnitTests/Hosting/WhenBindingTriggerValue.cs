@@ -44,16 +44,16 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
                 new CancellationToken()));
 
             //Assert
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             var valueBinder = result.ValueProvider as NServiceBusMessageValueBinder;
 
-            Assert.IsNotNull(valueBinder);
+            Assert.That(valueBinder, Is.Not.Null);
 
             var actualMessage = await valueBinder.GetValueAsync() as TestMessage;
 
-            Assert.IsNotNull(actualMessage);
-            Assert.AreEqual(testMessage.Name, actualMessage.Name);
+            Assert.That(actualMessage, Is.Not.Null);
+            Assert.That(actualMessage.Name, Is.EqualTo(testMessage.Name));
         }
 
 
@@ -65,7 +65,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
                 new FunctionBindingContext(Guid.NewGuid(), new CancellationToken()),
                 new CancellationToken())));
 
-            Assert.AreEqual("value", exception.ParamName);
+            Assert.That(exception.ParamName, Is.EqualTo("value"));
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
                     new FunctionBindingContext(Guid.NewGuid(), new CancellationToken()),
                     new CancellationToken())));
 
-            Assert.AreEqual("value", exception.ParamName);
+            Assert.That(exception.ParamName, Is.EqualTo("value"));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace SFA.DAS.NServiceBus.AzureFunction.UnitTests.Hosting
                 new FunctionBindingContext(Guid.NewGuid(), new CancellationToken()),
                 new CancellationToken())));
 
-            Assert.AreEqual("value", exception.ParamName);
+            Assert.That(exception.ParamName, Is.EqualTo("value"));
         }
 
         private class TestMessage

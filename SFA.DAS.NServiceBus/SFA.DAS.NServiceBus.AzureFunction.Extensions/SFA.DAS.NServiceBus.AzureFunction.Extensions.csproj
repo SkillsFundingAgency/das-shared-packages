@@ -2,7 +2,7 @@
 
   <PropertyGroup>
       <LangVersion>latest</LangVersion>
-      <TargetFramework>net6.0</TargetFramework>
+      <TargetFramework>net8.0</TargetFramework>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       
@@ -23,14 +23,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.0" />
+    <PackageReference Include="Azure.Identity" Version="1.12.1" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.ServiceBus" Version="5.22.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage" Version="6.6.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.5.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.17.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="1.2.1" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.2.0" />
-    <PackageReference Include="NServiceBus" Version="7.8.0" />
-    <PackageReference Include="NServiceBus.AzureFunctions.InProcess.ServiceBus" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="NServiceBus.Persistence.AzureTable" Version="3.2.0" />
+    <PackageReference Include="NServiceBus" Version="9.2.2" />
+    <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="4.0.0" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="4.2.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="NServiceBus.Persistence.AzureTable" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -28,7 +28,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks
         private readonly TimeSpan _maxAge;
         private int _failures;
 
-        public ClientOutboxCleaner(ITimerService timerService, IClientOutboxStorage clientOutboxStorage, IClientOutboxStorageV2 clientOutboxStorageV2, ReadOnlySettings settings, CriticalError criticalError)
+        public ClientOutboxCleaner(ITimerService timerService, IClientOutboxStorage clientOutboxStorage, IClientOutboxStorageV2 clientOutboxStorageV2, IReadOnlySettings settings, CriticalError criticalError)
         {
             _timerService = timerService;
             _clientOutboxStorage = clientOutboxStorage;
@@ -38,14 +38,14 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.StartupTasks
             _maxAge = settings.GetOrDefault<TimeSpan?>("Persistence.Sql.Outbox.TimeToKeepDeduplicationData") ?? TimeSpan.FromDays(7);
         }
 
-        protected override Task OnStart(IMessageSession messageSession)
+        protected override Task OnStart(IMessageSession messageSession, CancellationToken cancellationToken)
         {            
             _timerService.Start((d, c) => Cleanup(messageSession, d, c), OnError, _frequency);
             
             return Task.CompletedTask;
         }
 
-        protected override Task OnStop(IMessageSession messageSession)
+        protected override Task OnStop(IMessageSession messageSession, CancellationToken cancellationToken)
         {
             return _timerService.Stop();
         }

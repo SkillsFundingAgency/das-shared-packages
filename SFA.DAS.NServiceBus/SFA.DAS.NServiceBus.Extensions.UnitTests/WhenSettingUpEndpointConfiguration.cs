@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using NServiceBus;
 using NServiceBus.Configuration.AdvancedExtensibility;
 using NUnit.Framework;
 using SFA.DAS.NServiceBus.Extensions.UnitTests.Messages.Commands;
