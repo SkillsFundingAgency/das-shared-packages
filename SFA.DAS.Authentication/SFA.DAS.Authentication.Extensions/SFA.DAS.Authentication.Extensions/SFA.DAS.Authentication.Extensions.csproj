@@ -7,12 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.IdentityModel.Protocol.Extensions" Version="1.0.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.5.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.7.0" />
     <PackageReference Include="Microsoft.Owin.Security" Version="3.1.0" />
     <PackageReference Include="Microsoft.Owin.Security.Jwt" Version="3.1.0" />
     <PackageReference Include="Owin" Version="1.0.0" />
     <PackageReference Include="SFA.DAS.NLog.Logger" Version="1.2.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="4.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0" />
   </ItemGroup>
 
   <ItemGroup>
