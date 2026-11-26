@@ -114,7 +114,7 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
             }
         }
 
-        public Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
+        public async Task SetAsDispatchedAsync(Guid messageId, SynchronizedStorageSession synchronizedStorageSession)
         {
             var sqlStorageSession = synchronizedStorageSession.GetSqlStorageSession();
 
@@ -126,11 +126,11 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
                 command.AddParameter("MessageId", messageId);
                 command.AddParameter("DispatchedAt", _dateTimeService.UtcNow);
 
-                return command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
         }
 
-        public Task StoreAsync(ClientOutboxMessageV2 clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction)
+        public async Task StoreAsync(ClientOutboxMessageV2 clientOutboxMessage, IClientOutboxTransaction clientOutboxTransaction)
         {
             var sqlClientOutboxTransaction = (SqlClientOutboxTransaction)clientOutboxTransaction;
 
@@ -143,8 +143,8 @@ namespace SFA.DAS.NServiceBus.SqlServer.Features.ClientOutbox.Data
                 command.AddParameter("EndpointName", clientOutboxMessage.EndpointName);
                 command.AddParameter("CreatedAt", _dateTimeService.UtcNow);
                 command.AddParameter("Operations", JsonConvert.SerializeObject(clientOutboxMessage.TransportOperations, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }));
-                
-                return command.ExecuteNonQueryAsync();
+
+                await command.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
         }
 
