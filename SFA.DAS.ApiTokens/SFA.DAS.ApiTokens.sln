@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApiTokens.Lib", "SFA.DAS.ApiTokens.Lib\SFA.DAS.ApiTokens.Lib.csproj", "{80CA886D-DE9C-486F-9E2C-D0D95D7C14DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApiTokens.Tests", "SFA.DAS.ApiTokens.Tests\SFA.DAS.ApiTokens.Tests.csproj", "{76C51BAF-70F7-4B43-B7C5-8426FA85EFB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApiTokens.Console", "SFA.DAS.ApiTokens.Console\SFA.DAS.ApiTokens.Console.csproj", "{FEDD4667-1591-40AA-891D-9FB419D6E796}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApiTokens.Client", "SFA.DAS.ApiTokens.Client\SFA.DAS.ApiTokens.Client.csproj", "{66CD63DA-E135-4CB0-8640-2EC4BF715983}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{FEDD4667-1591-40AA-891D-9FB419D6E796}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEDD4667-1591-40AA-891D-9FB419D6E796}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEDD4667-1591-40AA-891D-9FB419D6E796}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66CD63DA-E135-4CB0-8640-2EC4BF715983}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
