@@ -18,7 +18,9 @@ internal class UserProvider
 				return GetProviderUserClaims(appSettings.ProviderUser);
 			case "E":
 				return GetEmployerUserClaims(appSettings.EmployerUser);
-		} 
+            case "S":
+                return GetServiceAccountClaims(appSettings.ServiceAccount);
+        } 
 		throw new ArgumentException("Invalid user type");
         }
 
@@ -76,7 +78,24 @@ internal class UserProvider
 		return claims;
 	}
 
-	private static Claim CreateExpiryClaim()
+    private static List<Claim> GetServiceAccountClaims(ServiceAccount? serviceAccount)
+    {
+        if (serviceAccount == null)
+        {
+            serviceAccount = new ServiceAccount();
+        }
+
+        var claims = new List<Claim>
+        {
+            serviceAccount.CreateClaim(x => x.Sub),
+            serviceAccount.CreateClaim(x => x.ServiceAccountId),
+            CreateExpiryClaim()
+        };
+
+        return claims;
+    }
+
+    private static Claim CreateExpiryClaim()
 	{
 		long unixTime = ((DateTimeOffset)DateTime.UtcNow.AddMinutes(5)).ToUnixTimeSeconds();
 		return new Claim("exp", unixTime.ToString());

@@ -69,9 +69,9 @@ class Program
 		var userType = string.Empty;
 
 		//  Select user type
-		while (userType != "P" && userType != "E")
+		while (userType != "P" && userType != "E" && userType !="S")
 		{
-			Console.WriteLine("Enter P for provider user or E for employer user");
+			Console.WriteLine("Enter P for provider user, E for employer user or S for service account");
 			userType = Console.ReadLine()?.ToUpper();
 		}
 
